@@ -2880,9 +2880,10 @@ int ProcI_Result(game *g) {
 //409860
 int ProcI_Keyconfig(game *g) {
 	int fndkey;
-	if (g->KeyInput.config_key > -1 && g->KeyInput.config_button_inMap > 0) {
+	if (g->KeyInput.config_key >= 0 && g->KeyInput.config_button_inMap > 0) {
 		fndkey = FindPressedKey(&g->KeyInput);
-		if(fndkey > 0 && (fndkey < 0x3c || fndkey > 0x57) && (fndkey != 0x01) && (fndkey != 0x1c) && (fndkey != 0xC8) && (fndkey != 0xd0) && (fndkey != 0xcb) && (fndkey != 0xcd)){
+		//TOFIX : block F1, F12 & allow NUMPAD
+		if(fndkey > 0 && (fndkey <= 0x3B || fndkey >= 0x58) && (fndkey != D_DIK_ESCAPE) && (fndkey != D_DIK_RETURN) && (fndkey != D_DIK_UP) && (fndkey != D_DIK_DOWN) && (fndkey != D_DIK_LEFT) && (fndkey != D_DIK_RIGHT)){
 			g->config.input.buttonMap[g->KeyInput.config_button_inMap][g->KeyInput.config_key] = fndkey;
 			PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 			if (g->KeyInput.config_keymode == 0) {
@@ -2898,7 +2899,7 @@ int ProcI_Keyconfig(game *g) {
 		}
 	}
 	
-	if ( g->KeyInput.inputID[D_DIK_DELETE] == 1 && g->KeyInput.config_key > -1 && g->KeyInput.config_button_inMap > 0) {
+	if ( g->KeyInput.inputID[D_DIK_DELETE] == 1 && g->KeyInput.config_key >= 0 && g->KeyInput.config_button_inMap > 0) {
 		g->config.input.buttonMap [g->KeyInput.config_button_inMap] [g->KeyInput.config_key] = 0;
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 		ProcS_Keyconfig(g);
