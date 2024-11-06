@@ -106,10 +106,10 @@ int CheckClearLampChallenge(game *g){
 //4011f0
 int FxByMIDI(game *g) {
 	bool change = false;
-
+	
 	if (g->KeyInput.is_drag_now >= 0 && g->KeyInput.is_drag_now < g->skstruct.otherObject[2].srcSize) {
 		if (g->KeyInput.midi_n <= 0) {
-			if (g->KeyInput.inputID[211]) g->config.input.midi_control[g->KeyInput.is_drag_now] = 0;
+			if (g->KeyInput.inputID[D_DIK_DELETE]) g->config.input.midi_control[g->KeyInput.is_drag_now] = 0;
 		}
 		else if (1 <= g->KeyInput.is_drag_now && g->KeyInput.is_drag_now < 40) {
 			for (int i = 0; i < 40; i++) {
@@ -1657,7 +1657,7 @@ int ProcI_Decide(game *g) {
 		return 1;
 	}
 
-	if (GetTimeLapse(0, &g->timer1) > g->skstruct.startinput_start && (g->KeyInput.mouse_buttonR == 1 || g->KeyInput.inputID[1] == 1 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2) || (g->KeyInput.p2_buttonInput[12] == 2 && g->KeyInput.p2_buttonInput[13] == 2)) && g->procPhase == 1) {
+	if (GetTimeLapse(0, &g->timer1) > g->skstruct.startinput_start && (g->KeyInput.mouse_buttonR == 1 || g->KeyInput.inputID[D_DIK_ESCAPE] == 1 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2) || (g->KeyInput.p2_buttonInput[12] == 2 && g->KeyInput.p2_buttonInput[13] == 2)) && g->procPhase == 1) {
 		SetTimeLapse(2, &g->timer1);
 		g->procPhase = 2;
 		StopSysSound(g);
@@ -2795,7 +2795,7 @@ int Proc_Result(game *g, skstruct *sk, Timer *T) {
 char fWaitHiScoreUpdateInput = 0;
 int ProcI_Result(game *g) {
 
-	if ((g->KeyInput.mouse_buttonR == 2 || g->KeyInput.mouse_buttonL == 2 || g->KeyInput.inputID[1] == 1 || g->KeyInput.inputID[0x1c] == 1 
+	if ((g->KeyInput.mouse_buttonR == 2 || g->KeyInput.mouse_buttonL == 2 || g->KeyInput.inputID[D_DIK_ESCAPE] == 1 || g->KeyInput.inputID[D_DIK_RETURN] == 1
 		|| g->KeyInput.p1_buttonInput[1] == 1 || g->KeyInput.p1_buttonInput[2] == 1 || g->KeyInput.p1_buttonInput[3] == 1 || g->KeyInput.p1_buttonInput[4] == 1 || g->KeyInput.p1_buttonInput[5] == 1 || g->KeyInput.p1_buttonInput[6] == 1 || g->KeyInput.p1_buttonInput[7] == 1
 		|| g->KeyInput.p2_buttonInput[1] == 1 || g->KeyInput.p2_buttonInput[2] == 1 || g->KeyInput.p2_buttonInput[3] == 1 || g->KeyInput.p2_buttonInput[4] == 1 || g->KeyInput.p2_buttonInput[5] == 1 || g->KeyInput.p2_buttonInput[6] == 1 || g->KeyInput.p2_buttonInput[7] == 1
 		|| fWaitHiScoreUpdateInput || (g->rec.recMode == 2 && GetTimeLapse(0, &g->timer1) >= 5000.0))
@@ -2898,13 +2898,13 @@ int ProcI_Keyconfig(game *g) {
 		}
 	}
 	
-	if ( g->KeyInput.inputID[211] == 1 && g->KeyInput.config_key > -1 && g->KeyInput.config_button_inMap > 0) {
+	if ( g->KeyInput.inputID[D_DIK_DELETE] == 1 && g->KeyInput.config_key > -1 && g->KeyInput.config_button_inMap > 0) {
 		g->config.input.buttonMap [g->KeyInput.config_button_inMap] [g->KeyInput.config_key] = 0;
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 		ProcS_Keyconfig(g);
 	}
-
-	if (g->KeyInput.inputID[59] == 1) {
+	
+	if (g->KeyInput.inputID[D_DIK_F1] == 1) {
 		memset(g->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
 
 		if (g->KeyInput.config_keymode == 0) {
@@ -2922,11 +2922,11 @@ int ProcI_Keyconfig(game *g) {
 		ProcS_Keyconfig(g);
 	}
 
-	if (g->KeyInput.inputID[60] == 1) {
+	if (g->KeyInput.inputID[D_DIK_F2] == 1) {
 		memset(g->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
 		ProcS_Keyconfig(g);
 	}
-	if (((g->KeyInput.inputID[1] == 1) || (g->KeyInput.mouse_buttonR == 1)) && (g->procPhase == 1)) {
+	if (((g->KeyInput.inputID[D_DIK_ESCAPE] == 1) || (g->KeyInput.mouse_buttonR == 1)) && (g->procPhase == 1)) {
 		SetTimeLapse(2, &g->timer1);
 		g->procPhase = 2;
 		return 1;
@@ -4251,7 +4251,7 @@ int ProcI_PO4Decide(game *g) {
 		return 1;
 	}
 
-	if (GetTimeLapse(0, &g->timer1) > g->skstruct.startinput_start && (g->KeyInput.mouse_buttonR == 1 || g->KeyInput.inputID[1] == 1 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2) || (g->KeyInput.p2_buttonInput[12] == 2 && g->KeyInput.p2_buttonInput[13] == 2)) && g->procPhase == 1) {
+	if (GetTimeLapse(0, &g->timer1) > g->skstruct.startinput_start && (g->KeyInput.mouse_buttonR == 1 || g->KeyInput.inputID[D_DIK_ESCAPE] == 1 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2) || (g->KeyInput.p2_buttonInput[12] == 2 && g->KeyInput.p2_buttonInput[13] == 2)) && g->procPhase == 1) {
 		SetTimeLapse(2, &g->timer1);
 		g->procPhase = 2;
 		StopSysSound(g);
@@ -7718,7 +7718,7 @@ int ProcI_Play(game *g) {
 			(float)g->skstruct.adjust.size_x, (float)g->skstruct.adjust.size_y, 0);
 	}
 
-	if( ((g->KeyInput.inputID[1] == 2 || (g->KeyInput.mouse_buttonR == 2 && g->config.play.disableleftclickexit == 0) ) 
+	if( ((g->KeyInput.inputID[D_DIK_ESCAPE] == 2 || (g->KeyInput.mouse_buttonR == 2 && g->config.play.disableleftclickexit == 0) ) 
 			|| (g->KeyInput.p1_buttonInput[13] == 2 && g->KeyInput.p1_buttonInput[12] == 2)
 			|| (g->KeyInput.p2_buttonInput[13] == 2 || g->KeyInput.p2_buttonInput[12] == 2)
 			|| (g->gameplay.player[0].totalnotes <= g->gameplay.player[0].note_current && (g->KeyInput.p1_buttonInput[13] == 2 || g->KeyInput.p1_buttonInput[12] == 2 || g->KeyInput.p2_buttonInput[13] == 2 || g->KeyInput.p2_buttonInput[12] == 2))) 
@@ -7794,7 +7794,7 @@ int SkinSelect_SoundSet(game *g, CSTR filepath) {
 //419c00
 int ProcI_SkinSelect(game *g) {
 
-	if ((g->KeyInput.inputID[1] == 1 || g->KeyInput.mouse_buttonR == 1) && g->procPhase == 1) {
+	if ((g->KeyInput.inputID[D_DIK_ESCAPE] == 1 || g->KeyInput.mouse_buttonR == 1) && g->procPhase == 1) {
 		SetTimeLapse(2, &g->timer1);
 		g->procPhase = 2;
 	}
@@ -12789,7 +12789,7 @@ int ProcGame(game *g) {
 				break;
 			}
 			if (g->is_starter) {
-				if (g->KeyInput.inputID[1] == 2 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2)) {
+				if (g->KeyInput.inputID[D_DIK_ESCAPE] == 2 || (g->KeyInput.p1_buttonInput[12] == 2 && g->KeyInput.p1_buttonInput[13] == 2)) {
 					for (int i = 0; i < 6480; i++) {
 						StopSound(&g->audio, &g->gameplay.keysound[i]);
 					}
