@@ -18462,14 +18462,15 @@ int SliderByTime(DrawingBuf *drb, SRCstruct *src, DSTstruct *dst, Timer *T, int 
 
 //49c560
 int ButtonByInput(DrawingBuf *drb, SRCstruct *src, DSTstruct *dst, Timer *T, inputStructure *input, int *target, int min, int max, int panel) { //return 1:just clicked 2:changed 0:not changed
-	//DSTstruct dsts;
+	DSTdraw dstd;
 	int mouse, ret;
 	
 	if ((dst->dstCount < 1) || (dst->dataSize < 1)) return 0;
 	if (GetTimeLapse(dst->timer, T) == -1.0) return 0;
 
 	ret = 0;
-	mouse = MouseOnDSTD(&SetDSTdrawByTime(*dst, GetTimeLapse(dst->timer, T)), &input->mouse_oldX, &input->mouse_oldY);
+	dstd = SetDSTdrawByTime(*dst, GetTimeLapse(dst->timer, T));
+	mouse = MouseOnDSTD(&dstd, &input->mouse_oldX, &input->mouse_oldY);
 	if ( (mouse == 1 && src->op4 == 0) || (mouse != 0 && src->op4 == 1) ) { // right side or plusonly
 		if (src->op2 != 1 || input->mouse_buttonL != 1 || (src->op3 != panel && src->op3 != 0)) {
 			ret = 1;
@@ -19731,10 +19732,10 @@ int InitImageFont(ImageFont *imgfont) {
 }
 
 //4a0480
-int ReadImageFont(CSTR* filename, ImageFont *imgfont) {
+int ReadImageFont(CSTR filename, ImageFont *imgfont) {
 	CSTR str1;
 	
-	str1.assign(filename->getDirectory().outstr());
+	str1 = filename.getDirectory();
 
 	if (strcmp(str1.outstr(), imgfont->filepath)) {
 		imgfont->size = 0;
@@ -19749,7 +19750,7 @@ int ReadImageFont(CSTR* filename, ImageFont *imgfont) {
 			imgfont->images[i].filename[0] = '\0';
 		}
 
-		int f = FileRead_open(filename->outstr());
+		int f = FileRead_open(filename);
 		if (f == 0) {
 			ErrorLogFmtAdd("画像フォントファイル%sの読み込みに失敗しました\n");
 			return -1;
@@ -20886,7 +20887,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 										break;
 									}
 								}
-								ReadImageFont(&GetRandomFileNoError(csv.str[1], dir), &sk->ImageFonts[sk->num_of_ImageFont]);
+								ReadImageFont(GetRandomFileNoError(csv.str[1], dir), &sk->ImageFonts[sk->num_of_ImageFont]);
 							}
 							sk->num_of_ImageFont++;
 						}

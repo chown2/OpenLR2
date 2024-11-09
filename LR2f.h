@@ -280,7 +280,7 @@ int ReadSRC_BAR_TITLE(SRCstruct * src, CSVbuf * csv, skstruct * sk);
 int ScreenCapture(uint iGrHandle);
 int InitSkin(skstruct * sk, int p5, char font);
 int InitImageFont(ImageFont * imgfont);
-int ReadImageFont(CSTR * filename, ImageFont * imgfont);
+int ReadImageFont(CSTR filename, ImageFont * imgfont);
 int LoadFontGraph(ImageFont * imgfont, int * fontNum);
 int LoadFontCharGraph(ImageFont * imgfont, uint vChar);
 int LoadFontForText(ImageFont * imgfont, CSTR * str);
