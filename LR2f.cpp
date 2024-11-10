@@ -27278,12 +27278,13 @@ int MoveReplayFile(CSTR songMD5, CSTR localID){
 	CSTR pathFrom;
 	int stage = 0;
 	cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID, stage);
-	for (; pathFrom.canOpenFile(); stage++) {
+	while (pathFrom.canOpenFile()) {
 		CSTR pathTo;
 		cstrSprintf(&pathTo, "LR2files/Replay/%s/c/%s/%d.lr2rep", localID, songMD5, stage);
-		MoveFileA(pathFrom, pathTo);
+		MoveFileA(pathFrom, pathTo); //TOFIX : if file already exists at pathTo, it fails.
 		ErrorLogFmtAdd("リプレイの移動 stage%d\n", stage);
 
+		stage++;
 		cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID, stage);
 	}
 	ErrorLogFmtAdd("リプレイの移動終了 stage%d\n", stage);
