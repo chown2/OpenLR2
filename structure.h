@@ -497,7 +497,7 @@ struct DSTdraw { /* 80bytes,4*0x14 */
 	int fontHandle;
 	int subHandle;
 	int align;
-	char flag;
+	char isDrawBackbox;
 };
 
 struct DrawingBuf {

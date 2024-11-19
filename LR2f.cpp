@@ -18039,7 +18039,7 @@ int LRDrawImg(int *grHandle, DSTdraw *dstD) {
 	else {
 		GetGraphSize(*grHandle, &xs, &ys);
 		GetTimeWrap();
-		if (dstD->flag) {
+		if (dstD->isDrawBackbox) {
 			DrawBox(x1*skinsizeX, y1*skinsizeY, x2*skinsizeX, y2*skinsizeY, GetColor(0, 0, 0), true);
 		}
 		DrawExtendGraphF(x1*skinsizeX, y1*skinsizeY, x2*skinsizeX, y2*skinsizeY, *grHandle, 1);
@@ -18090,7 +18090,7 @@ int GetTextGraphLength(CSTR *str, ImageFont *imF) {
 	return ret;
 }
 
-//49b2a0 seems like ruined it
+//49b2a0
 void LRDrawText(int* grHandle, DSTdraw *dstd, CSTR *str, ImageFont *imF) {
 	double hl;
 	float width, wl;
@@ -18604,7 +18604,7 @@ DSTdraw DSTDbyTime(DSTdraw *dstd1, DSTdraw *dstd2, double t1, double t2, double 
 	ret.filter = dstd1->filter;
 	ret.time = 0;
 	ret.center = dstd1->center;
-
+	ret.isDrawBackbox = dstd1->isDrawBackbox; //DEBUG: not in original code
 	return ret;
 }
 
@@ -18702,7 +18702,6 @@ int AddDrawingBuffer_OnMouse(DrawingBuf *drb, SRCstruct *src, DSTstruct *dst, Ti
 	if (dst->dstCount <= 0 || dst->dataSize <= 0) return 0;
 
 	tDstd = SetDSTdrawByTime(*dst, GetTimeLapse(dst->timer, T));
-	//grh = src->grHandles[GetSRCcycleNow(*src, GetTimeLapse(src->timer, T))];
 	grh = GetSRCcycleNow(*src, GetTimeLapse(src->timer, T));
 	tDstd.x += src->op2;
 	tDstd.y += src->op3;
@@ -18874,7 +18873,7 @@ int AddDrawingBuffer_BGA(DrawingBuf *drb, SRCstruct *src, DSTstruct *dst, Timer 
 	
 	GetGraphSize(grHandle, &x, &y);
 	if (x < 256){
-		tDstd.x += tDstd.w / 256.0 * (256.0 - x) * 0.5;
+		tDstd.x += tDstd.w / 256.0 * (256.0 - x) * 0.5; // *0.00390625 /256
 		tDstd.w *= x / 256.0;
 	}
 	if (y < 256) {
@@ -18882,7 +18881,7 @@ int AddDrawingBuffer_BGA(DrawingBuf *drb, SRCstruct *src, DSTstruct *dst, Timer 
 	}
 	if (flag == 0) tDstd.sortID++;
 	
-	tDstd.flag = flag;
+	tDstd.isDrawBackbox = flag;
 
 	if (tDstd.time != -1 && grHandle != -1) AddDrawingBuffer(drb, grHandle, &tDstd);
 
@@ -19244,7 +19243,7 @@ int InitDSTdraw(DSTdraw *dstd){
 	dstd->fontHandle = -1;
 	dstd->subHandle = -1;
 	dstd->align = 0;
-	dstd->flag = '\0';
+	dstd->isDrawBackbox = '\0';
 	return 1;
 }
 
