@@ -1530,7 +1530,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		prevStageLastNoteTime = (int)lastNoteTime;
 		lastNoteTime = lastMeasure;
 		gp->freqSpeedMultiplier = oldSpeedMultiplier;
-		uint stageStartMeasure = lastMeasure;
+		int stageStartMeasure = lastMeasure;
 		if (gp->is2Pplay) {
 			if (gp->courseType == 1) {
 				filename = gp->courseFilepath[stage];
@@ -2521,16 +2521,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			if (gp->courseConnection[stage - 1] == 5) { //BLANK2
 				stageStartMeasure = 0;
 			}
-			else {
-				if (gp->courseConnection[stage - 1] == 4) { //BLANK1
-					while (firstNoteTime - stageStartMeasure - prevStageLastNoteTime > 1.5) {
-						stageStartMeasure++;
-					}
+			else if (gp->courseConnection[stage - 1] == 4) { //BLANK1
+				while (firstNoteTime - stageStartMeasure - prevStageLastNoteTime > 1.5) {
+					stageStartMeasure++;
 				}
-				else {
-					while (firstNoteTime - stageStartMeasure - prevStageLastNoteTime > 0.5) {
-						stageStartMeasure++;
-					}
+			}
+			else {
+				while (firstNoteTime - stageStartMeasure - prevStageLastNoteTime > 0.5) {
+					stageStartMeasure++;
 				}
 			}
 
