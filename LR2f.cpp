@@ -313,7 +313,7 @@ int SetTarget(game *g) {
 		return 1;
 	}
 
-	if (g->sSelect.stack_query[g->sSelect.cur].findStrPos("__RIVAL__") > -1 && g->procSelecter == 2) {
+	if (g->sSelect.stack_query[g->sSelect.cur].findStrPos("__RIVAL__") >= 0 && g->procSelecter == 2) {
 		SetObjectString(1, g->sSelect.stack_searchTitle[g->sSelect.cur], g->txtStruct.objectStr);
 		return 1;
 	}
@@ -361,12 +361,12 @@ int SetTarget(game *g) {
 int ProcS_Keyconfig(game *g) {
 	CSTR t("-",0);
 	for (int i = 0; i < 8; i++) {
-		SetObjectString(i+40,t,g->txtStruct.objectStr);
+		SetObjectString(40 + i, t, g->txtStruct.objectStr);
 	}
 	if (g->KeyInput.config_button_inMap > 0) {
 		for (int i = 0; i < 16; i++) {
 			t = GetKeyIDname(g->config.input.buttonMap[g->KeyInput.config_button_inMap][i]);
-			SetObjectString(i + 40, t, g->txtStruct.objectStr);
+			SetObjectString(40 + i, t, g->txtStruct.objectStr);
 		}
 	}
 	return 1;
@@ -6578,6 +6578,8 @@ int CmdSearch(game *g, CSTR *cmd, sqlite3 *sql) {
 		*cmd = "COMMAND ERROR";
 		return 1;
 	}
+
+	return 1;
 }
 
 //414900
@@ -13151,7 +13153,7 @@ void ProcGameThread(game *g) {
 //42cf70
 int ProcS_Play(game *g, sqlite3* sql) {
 
-	int iTemp, seed;
+	int iTemp;
 
 	if (g->gameplay.hThreadPreview) WaitForSingleObject(g->gameplay.hThreadPreview, 5000);
 	g->gameplay.flag_closingPhase = 0;
@@ -13169,7 +13171,7 @@ int ProcS_Play(game *g, sqlite3* sql) {
 		g->gameplay.targetScore.InitJudgeQueue();
 		g->net.WaitAndInitRanking();
 		if ((g->gameplay.ghostBattle == 0 && g->gameplay.isAutoplay != 1) || g->gameplay.replay.status == 2) {
-			g->net.GetTargetInfo(0, md5, &gData, &gName, &seed, &iTemp, &iTemp, &iTemp, &iTemp, &iTemp);
+			g->net.GetTargetInfo(0, md5, &gData, &gName, &iTemp, &iTemp, &iTemp, &iTemp, &iTemp, &iTemp);
 		}
 		else {
 			//TOFIX : seed is not putted into replaydata, when use ghostbattle. (retry puts seed) (see also ParseBmsFile())
@@ -15186,10 +15188,11 @@ int CMP_SongDataByExLevel(const void *p1, const void *p2) {
 	}
 
 	if(s1->exlevel > 0 && s2->exlevel > 0) return s1->exlevel - s2->exlevel;
-	if (s1->exlevel > 0 && s2->exlevel <= 0) return 1;
-	if (s1->exlevel <= 0 && s2->exlevel > 0) return -1;
+	if(s1->exlevel > 0 && s2->exlevel <= 0) return 1;
+	if(s1->exlevel <= 0 && s2->exlevel > 0) return -1;
 	if(s1->exlevel <= 0 && s2->exlevel <= 0) return s1->level - s2->level;
 
+	return 1;//not neccessary
 }
 
 //445270

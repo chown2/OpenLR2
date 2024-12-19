@@ -2659,20 +2659,23 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			gp->fadeinSOUNDstart[stage+1] = bpmt_realtime - 200.0;
 			gp->fadeinSOUNDend[stage+1] = bpmt_realtime;
 		}
-		else if ((gp->courseConnection[stage] == 1 || gp->courseConnection[stage] == 0) && stage < stages - 1) { //FADE, FADE+FIT
-			if (gp->courseConnection[stage] != 1) {
-				gp->fadeoutSOUNDstart[stage] = bpmt_realtime;
-				gp->fadeoutSOUNDend[stage] = bpmt_realtime + 10000.0;
+		else{
+			if ((gp->courseConnection[stage] == 1 || gp->courseConnection[stage] == 0) && stage < stages - 1) { //FADE, FADE+FIT
+				if (gp->courseConnection[stage] != 1) {
+					gp->fadeoutSOUNDstart[stage] = bpmt_realtime;
+					gp->fadeoutSOUNDend[stage] = bpmt_realtime + 10000.0;
+				}
+				gp->fadeinSOUNDstart[stage+1] = bpmt_realtime - 5000.0;
+				gp->fadeinSOUNDend[stage+1] = bpmt_realtime;
 			}
-		}
-		else if (gp->courseConnection[stage] == 4 && stage < stages - 1) { //BLANK1
-			gp->fadeinSOUNDstart[stage+1] = bpmt_realtime - 5000.0;
-			gp->fadeinSOUNDend[stage+1] = bpmt_realtime;
+			else if (gp->courseConnection[stage] == 4 && stage < stages - 1) { //BLANK1
+				gp->fadeinSOUNDstart[stage+1] = bpmt_realtime - 5000.0;
+				gp->fadeinSOUNDend[stage+1] = bpmt_realtime;
+			}	
 		}
 
 		gp->fadeoutBGAstart[stage] = bpmt_realtime;
 		gp->fadeoutBGAend[stage] = bpmt_realtime + 3000.0;
-
 		if (stage < stages - 1) {
 			gp->fadeinBGAstart[stage + 1] = bpmt_realtime - 3000.0;
 			gp->fadeinBGAend[stage + 1] = bpmt_realtime;
