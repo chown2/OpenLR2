@@ -1534,7 +1534,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		if (gp->isCourse) {
 			if (gp->courseType == 1) {
 				filename = gp->courseFilepath[stage];
-				if (gp->courseConnection[stage - 1] == 4 || gp->courseConnection[stage - 1] == 5) {
+				if (gp->courseConnection[stage - 1] == 4 || gp->courseConnection[stage - 1] == 5) { //BLANK1, BLANK2
 					gp->bmsobj.notes[gp->bmsobj.size].bmsTiming = lastMeasure;
 					gp->bmsobj.notes[gp->bmsobj.size].val = stage;
 					gp->bmsobj.notes[gp->bmsobj.size].op = 1002;
@@ -1890,7 +1890,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (gp->BPM_fix <= 0.0) {
 					gp->BPM_fix = val * gp->freqSpeedMultiplier;
 				}
-				if (stage > 0 && (gp->courseConnection[stage - 1] == 1 || gp->courseConnection[stage - 1] == 3)) {
+				if (stage > 0 && (gp->courseConnection[stage - 1] == 1 || gp->courseConnection[stage - 1] == 3)) { //FIT
 					gp->freqSpeedMultiplier *= nowBPM / val;
 					aud->param.stagePitch[stage] = nowBPM / val;
 					ErrorLogFmtAdd("BPMを前の曲に合わせました。 stagepitch %d\n", nowBPM / val * 100.0);
@@ -2176,7 +2176,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				bpmt_count = gp->bpmt_count - 1;
 				ErrorLogFmtAdd("リミット%d , %d\n", (int)bpmt_bmstime, (int)bpmt_realtime);
 			}
-			else if (unk23538_objNum == -1 && 0 < (int)unk23484_bmstime && gp->bmsobj.notes[i].op == 2 && unk2346c_realtime + 5000.0 < bpmt_realtime && gp->courseConnection[stage] == 5) {
+			else if (unk23538_objNum == -1 && 0 < (int)unk23484_bmstime && gp->bmsobj.notes[i].op == 2 && unk2346c_realtime + 5000.0 < bpmt_realtime && gp->courseConnection[stage] == 5) { //BALNK2
 				b2lastMeasure = gp->bmsobj.notes[i].bmsTiming;
 				b2bmsTime = bpmt_bmstime;
 				b2realTime = bpmt_realtime;
@@ -2336,7 +2336,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		}
 		/* end of setting notes on time*/
 
-		if (gp->courseConnection[stage] == 5 && unk23538_objNum != -1) {
+		if (gp->courseConnection[stage] == 5 && unk23538_objNum != -1) { //BLANK2
 			unk23484_bmstime = b2bmsTime;
 			objNumLastMeasure = unk23538_objNum;
 			unk2346c_realtime = b2realTime;
@@ -2570,7 +2570,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				k++;
 			}
 			/* That cutting place*/
-			if (gp->bmsobj.notes[bmsobj_stageFirst].bmsTiming <= 0 || gp->bmsobj.notes[bmsobj_stageFirst].realTiming <= 0 || gp->courseConnection[stage - 1] == 5) {
+			if (gp->bmsobj.notes[bmsobj_stageFirst].bmsTiming <= 0 || gp->bmsobj.notes[bmsobj_stageFirst].realTiming <= 0 || gp->courseConnection[stage - 1] == 5) { //BLANK2
 				bpmt_realtime = unk2346c_realtime;
 				bpmt_bmstime = unk23484_bmstime;
 				prevNoteRealtime = _bPrevNoteTime;
