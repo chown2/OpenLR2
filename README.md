@@ -16,7 +16,7 @@ sending score to LR2IR is disabled to avoid accidents.
 (accidents can be occur, by saving score with OpenLR2 and sending score with original LR2. DO NOT MIX yet)
 
 # known issues
- - behavior mismatch on NONSTOP MIX
+ - score save issue on NONSTOP MIX
  - readme left click scroll is faster than original (not important)
 
 # build
