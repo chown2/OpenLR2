@@ -1316,8 +1316,8 @@ int InitInputStructure(inputStructure *is){
 ///tmp
 //4b0690
 //TODO : rename variables
-//TODO : test done CUT BLANK1, mismatched BLANK2 FADE
 //TOFIX : freq +12 autoplay endtime doesn't match (#STOP?)
+//TOFIX : nonstop mix retry volume issue
 unsigned char channelConvert[] = { 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
 									0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
 									0x00, 0x3c, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x00, 0x0f, 0x10,
@@ -2626,10 +2626,10 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			for (int i = bmsobj_stageFirst; gp->bmsobj.notes[i].realTiming <= t; i++) {
 				if (i == gp->bmsobj.size) break;
 				if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
-					if (gp->bmsobj.notes[i].realTiming - prevStageTime < 100) {
-						for (int j = bmsobj_stageFirst - 1; j > -1; j--) {
-							if (gp->bmsobj.notes[j].realTiming < abs((int)prevStageTime - (int)100.0)) break; //need check float calc
-							if (gp->bmsobj.notes[i].op = gp->bmsobj.notes[j].op) {
+					if (abs((int)gp->bmsobj.notes[i].realTiming - (int)prevStageTime) < 100) {
+						for (int j = bmsobj_stageFirst - 1; j >= 0; j--) {
+							if (gp->bmsobj.notes[j].realTiming < prevStageTime - 100.0) break; //need check float calc
+							if (gp->bmsobj.notes[i].op == gp->bmsobj.notes[j].op) {
 								gp->bmsobj.notes[i].op = 1;
 								break;
 							}
