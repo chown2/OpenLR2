@@ -1869,7 +1869,7 @@ int CheckClear(PLAYERSTATUS *pstat, int gaugeType, char isCourse){
 
 
 //405Fb0
-int ApplyJudgeToScore(int judge, game *g, int player, int lane, Timer *T, char isReplay) {
+int ApplyJudgeNote(int judge, game *g, int player, int lane, Timer *T, char isReplay) {
 
 	if (g->gameplay.replay.status == 2) return 0; //playing replay
 	if (g->gameplay.replay.status == 1 && isReplay == 0) { //recording replay, not playing replay??
@@ -2041,7 +2041,7 @@ int ApplyJudgeToScore(int judge, game *g, int player, int lane, Timer *T, char i
 }
 
 //406530
-int ApplyJudge(int judge, game *g, int player, int lane, int damage) {
+int ApplyJudgeMine(int judge, game *g, int player, int lane, int damage) {
 
 	if (g->gameplay.replay.status == 2) return 0; //playing replay
 	if (g->gameplay.replay.status == 1) {
@@ -2424,30 +2424,30 @@ int DrawNotes(game *g, skstruct *sk, Timer *T, CONFIG_PLAY *cfg) {
 
 								if (isDpGbattle) {
 									do {
-										ApplyJudgeToScore(g->gameplay.targetScore.GetJudgeFromQueue(), g, 1, key, T, 0);
+										ApplyJudgeNote(g->gameplay.targetScore.GetJudgeFromQueue(), g, 1, key, T, 0);
 									} while (g->gameplay.targetScore.DealJudgeFromQueue() == 0);
 									g->gameplay.bmsobj_note[key].draw_count++;
 								}
 								else if (cfg->battle == 1 || (g->skinData.select > 11 && g->procSelecter == 7)) {
 									if (g->net.rankingData.target_ID <= 0 || g->gameplay.targetScore.ghostReadCount <= 0) {
-										ApplyJudgeToScore(5, g, key / 10, key, T, 0);
+										ApplyJudgeNote(5, g, key / 10, key, T, 0);
 										g->gameplay.bmsobj_note[key].draw_count++;
 									}
 									else {
 										do {
-											ApplyJudgeToScore(g->gameplay.targetScore.GetJudgeFromQueue(), g, key/10, key, T, 0);
+											ApplyJudgeNote(g->gameplay.targetScore.GetJudgeFromQueue(), g, key/10, key, T, 0);
 										} while (g->gameplay.targetScore.DealJudgeFromQueue() == 0);
 										g->gameplay.bmsobj_note[key].draw_count++;
 									}
 								}
 								else {
 									if (g->net.rankingData.target_ID <= 0 || g->gameplay.targetScore.ghostReadCount <= 0) {
-										ApplyJudgeToScore(5, g, 0, key, T, 0);
+										ApplyJudgeNote(5, g, 0, key, T, 0);
 										g->gameplay.bmsobj_note[key].draw_count++;
 									}
 									else {
 										do {
-											ApplyJudgeToScore(g->gameplay.targetScore.GetJudgeFromQueue(), g, 0, key, T, 0);
+											ApplyJudgeNote(g->gameplay.targetScore.GetJudgeFromQueue(), g, 0, key, T, 0);
 										} while (g->gameplay.targetScore.DealJudgeFromQueue() == 0);
 										g->gameplay.bmsobj_note[key].draw_count++;
 									}
@@ -7429,7 +7429,7 @@ void ThreadProc_RankingAutoUpdate(void *param) {
 
 //418820
 int JudgeToScore(int judge, game *g, int player, int lane, char isReplay) {
-	return ApplyJudgeToScore(judge, g, player, lane, &g->timer1, isReplay);
+	return ApplyJudgeNote(judge, g, player, lane, &g->timer1, isReplay);
 }
 
 //418850
@@ -7438,7 +7438,7 @@ int ProcSinglenote(game *g, int lane, int keypress, int timing, int player) {
 
 	if (note.mine > 0) {
 		if (keypress == 1 && note.realTiming - (double)timing < (double)g->gameplay.player[player].judgetime[4]) {
-			ApplyJudge(0, g, player, lane, note.mine);
+			ApplyJudgeMine(0, g, player, lane, note.mine);
 
 			if (g->gameplay.keysound[0].load)
 				PlaySound(&g->audio, &g->gameplay.keysound[0], g->audio.chnKey, -1);
@@ -7448,7 +7448,7 @@ int ProcSinglenote(game *g, int lane, int keypress, int timing, int player) {
 		else if ((double)timing <= note.realTiming)
 			return 0;
 		else if (keypress == 1 || keypress == 2) {
-			ApplyJudge(0, g, player, lane, note.mine);
+			ApplyJudgeMine(0, g, player, lane, note.mine);
 
 			if (g->gameplay.keysound[0].load)
 				PlaySound(&g->audio, &g->gameplay.keysound[0], g->audio.chnKey, -1);
@@ -7463,7 +7463,7 @@ int ProcSinglenote(game *g, int lane, int keypress, int timing, int player) {
 	else {
 		//passed note
 		if ((double)timing - note.realTiming > (double)g->gameplay.player[player].judgetime[2] && g->gameplay.player[player].note_current < g->gameplay.player[player].totalnotes) {
-			ApplyJudgeToScore(1, g, player, lane, &g->timer1, 0);
+			ApplyJudgeNote(1, g, player, lane, &g->timer1, 0);
 			g->gameplay.bmsobj_note[lane].noteVal = note.val;
 			note.active = -1;
 			g->gameplay.bmsobj_note[lane].note_count++;
@@ -7542,7 +7542,7 @@ int ProcLongnote(game *g, int lane, int keypress, int timing, int player) {
 	NoteStruct &note = g->gameplay.bmsobj_note[lane].notes[g->gameplay.bmsobj_note[lane].note_count];
 
 	if ((double)timing - note.realTiming > (double)g->gameplay.player[player].judgetime[3] && note.active <= 0) {
-		ApplyJudgeToScore(1, g, player, lane, &g->timer1, 0);
+		ApplyJudgeNote(1, g, player, lane, &g->timer1, 0);
 		g->gameplay.bmsobj_note[lane].noteVal = note.val;
 		note.active = -1;
 		g->gameplay.bmsobj_note[lane].note_count++;
@@ -27479,7 +27479,7 @@ int InputToReplay(REPLAY *rp, inputStructure *is, int timing, int scratchSide) {
 }
 
 //4c1490
-int REPLAY_ApplyJudgeToScore(gameplay *gp, Timer *T, game *g, uint judge, int player, int dp) {
+int REPLAY_ApplyJudgeNote(gameplay *gp, Timer *T, game *g, uint judge, int player, int dp) {
 
 	if (judge > 5) return 0;
 	
@@ -27608,7 +27608,7 @@ int REPLAY_ApplyJudgeToScore(gameplay *gp, Timer *T, game *g, uint judge, int pl
 
 
 //4c18b0
-int REPLAY_ApplyJudge(gameplay *gp, Timer *T, game *g, int dmg, int player, int dp) {
+int REPLAY_ApplyJudgeMine(gameplay *gp, Timer *T, game *g, int dmg, int player, int dp) {
 
 	gp->player[player].judgecount[1]++;
 	gp->player[player].recent_judge = 0;
@@ -27865,28 +27865,28 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 			g->config.play.dpflip = data->value;
 			break;
 		case 0xd2:
-			REPLAY_ApplyJudgeToScore(gp, T, g, data->value, 0, 0);
+			REPLAY_ApplyJudgeNote(gp, T, g, data->value, 0, 0);
 			break;
 		case 0xd3:
-			REPLAY_ApplyJudgeToScore(gp, T, g, data->value, 0, 1);
+			REPLAY_ApplyJudgeNote(gp, T, g, data->value, 0, 1);
 			break;
 		case 0xd4:
-			REPLAY_ApplyJudgeToScore(gp, T, g, data->value, 1, 0);
+			REPLAY_ApplyJudgeNote(gp, T, g, data->value, 1, 0);
 			break;
 		case 0xd5:
-			REPLAY_ApplyJudgeToScore(gp, T, g, data->value, 1, 1);
+			REPLAY_ApplyJudgeNote(gp, T, g, data->value, 1, 1);
 			break;
 		case 0xd6:
-			REPLAY_ApplyJudge(gp, T, g, data->value, 0, 0);
+			REPLAY_ApplyJudgeMine(gp, T, g, data->value, 0, 0);
 			break;
 		case 0xd7:
-			REPLAY_ApplyJudge(gp, T, g, data->value, 0, 1);
+			REPLAY_ApplyJudgeMine(gp, T, g, data->value, 0, 1);
 			break;
 		case 0xd8:
-			REPLAY_ApplyJudge(gp, T, g, data->value, 1, 0);
+			REPLAY_ApplyJudgeMine(gp, T, g, data->value, 1, 0);
 			break;
 		case 0xd9:
-			REPLAY_ApplyJudge(gp, T, g, data->value, 1, 1);
+			REPLAY_ApplyJudgeMine(gp, T, g, data->value, 1, 1);
 			break;
 	}
 
