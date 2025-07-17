@@ -740,6 +740,7 @@ int AddDrawingBuffer_JudgeCombo(DrawingBuf *drb, SRCstruct *jSrc, DSTstruct *jDs
 
 	digit = 0;
 	if (combo > 0) {
+		digit = 1;
 		for (int i = combo; i > 9; i /= 10) {
 			digit++;
 		}
