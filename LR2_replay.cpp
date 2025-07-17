@@ -370,7 +370,7 @@ int REPLAY_ApplyJudgeNote(gameplay *gp, Timer *T, game *g, uint judge, int playe
 	}
 	gp->player[player].exscore = gp->player[player].judgecount[4] + gp->player[player].judgecount[5] * 2;
 
-	if (gp->player[player].note_current > 0) gp->player[player].rate = gp->player[player].exscore * 100 / (gp->player[player].note_current * 2);
+	if (gp->player[player].note_current > 0) gp->player[player].rate = gp->player[player].exscore * 100 / (double)(gp->player[player].note_current * 2);
 
 	switch (judge) {
 		case 1:

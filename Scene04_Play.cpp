@@ -137,7 +137,7 @@ int ApplyJudgeNote(int judge, game *g, int player, int lane, Timer *T, char isRe
 	}
 	g->gameplay.player[player].exscore = g->gameplay.player[player].judgecount[4] + g->gameplay.player[player].judgecount[5] * 2;
 
-	if (g->gameplay.player[player].note_current > 0) g->gameplay.player[player].rate = g->gameplay.player[player].exscore * 100 / (g->gameplay.player[player].note_current * 2);
+	if (g->gameplay.player[player].note_current > 0) g->gameplay.player[player].rate = g->gameplay.player[player].exscore * 100 / (double)(g->gameplay.player[player].note_current * 2);
 
 	switch (judge) {
 		case 1:
