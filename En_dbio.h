@@ -9,7 +9,7 @@ int DB_EnterCriticalSection();
 int DB_LeaveCriticalSection();
 
 bool ANSItoUTF8(LPCSTR str, char * oBuf, size_t * oSize);
-bool UTF8toANSI(LPCSTR str, void * oBuf, size_t * oSize);
+bool UTF8toANSI(LPCSTR str, char * oBuf, size_t * oSize);
 
 int SQL_Run(CSTR queryStr, sqlite3 * sql);
 int SQL_prepare(CSTR queryStr, sqlite3 * sql, sqlite3_stmt ** ppStmt);
