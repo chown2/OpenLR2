@@ -1118,7 +1118,7 @@ int CmdSearch(game *g, CSTR *cmd, sqlite3 *sql) {
 		*cmd = "deleted";
 		return 1;
 	}
-	else if (cmd->isSame("/irupdateall")) { //TOFIX: input device MIDI??
+	else if (cmd->isSame("/irupdateall")) { 
 		for (g->sSelect.cur_song = 0; g->sSelect.cur_song < g->sSelect.bmsListCount; g->sSelect.cur_song++) {
 			if (g->sSelect.bmsList[g->sSelect.cur_song].mybest.stat_exscore > 0) {
 				g->net.myRanking.InitRanking();
@@ -1162,7 +1162,7 @@ int CmdSearch(game *g, CSTR *cmd, sqlite3 *sql) {
 				g->net.myRanking.line = meta.keymode;
 				g->net.myRanking.clear_ex = g->sSelect.bmsList[g->sSelect.cur_song].mybest.clear_ex;
 				g->net.myRanking.judge = meta.judge;
-				g->net.myRanking.inputtype = 2;
+				g->net.myRanking.inputtype = 2; //TOFIX: input device MIDI??
 
 				g->net.myRanking.ghost = ReadGhost(sql, g->sSelect.bmsList[g->sSelect.cur_song].hash);
 				CSTR scorehash;
@@ -1537,7 +1537,7 @@ void ThreadProc_RankingAutoUpdate(void *param) {
 			SetObjectStrings_SongSelect(g);
 		}
 
-		if (GetNowUnixtime() - GetFileUnixtime(path) < 86400 || g->config.network.autoupdate == 0) {
+		if (GetNowUnixtime() - GetFileUnixtime(path) < 86400 || g->config.network.autoupdate == 0) { //86400 is 24hours
 			g->net.hHandle = NULL;
 			g->sSelect.isRankingAutoUpdateThread = 0;
 			return;
