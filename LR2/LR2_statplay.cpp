@@ -386,7 +386,7 @@ int CheckMission(game *g){
 			}
 			break;
 		case 9:
-			if (g->gameplay.player[0].exscore >= (g->gameplay.player[0].totalnotes * 2) / 9) { //TOFIX : is it AAA? 8/9 //TODO: check original in debugger
+			if (g->gameplay.player[0].exscore >= (g->gameplay.player[0].totalnotes * 2)* 8/9) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
