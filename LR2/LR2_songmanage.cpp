@@ -1552,7 +1552,6 @@ int SearchCourseFromDB(sqlite3 *sql, SONGSELECT *ss, int keys, int multistagemod
 		song.title = "RANDOM MIX";
 		song.fulltitle = "RANDOM MIX";
 		song.artist = "ランダムでコースを作成します";
-		song.artist = ""; //original code, not a mistake
 		song.hash = "randomcourse";
 		song.filepath = "randomcourse";
 		song.folderType = 9;
