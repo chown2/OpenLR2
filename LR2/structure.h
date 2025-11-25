@@ -9,6 +9,11 @@
 #include "FMOD/fmod.h"
 #include "strclass.h"
 
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable: 26495) // 'always initialize a member variable' - usually zeroed with memset
+#endif
+
 struct sqlite3;
 
 typedef unsigned char   undefined;
@@ -1652,3 +1657,7 @@ struct CHARTCONVERTER {
 	int assist2p;
 	int playlevel;
 };
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif

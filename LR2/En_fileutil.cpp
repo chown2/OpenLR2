@@ -781,6 +781,10 @@ CSTR GetRandomFileNoError(CSTR path, CSTR dir) {
 
 //443550 _ need simplification
 void MD5byte(char **iStr, uint len, char *oByte){
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable: 4554) // ignore >> precedence
+#endif
 	int iVar1;
 	int iVar2;
 	int iVar3;
@@ -969,6 +973,9 @@ void MD5byte(char **iStr, uint len, char *oByte){
 	*(int *)oByte = iVar20;
 	*(uint *)(oByte + 8) = uVar19;
 	*(uint *)(oByte + 0xc) = uVar17;
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
 }
 
 //443ff0
