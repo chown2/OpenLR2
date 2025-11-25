@@ -38,6 +38,7 @@ int AllocDrawingBuffer(DrawingBuf *drb){
 int ReallocDrawingBuffer(DrawingBuf *drb){
 	drb->max = drb->max + 1000;
 	drb->dstd = (DSTdraw *)realloc(drb->dstd, drb->max * 0x50);
+	assert(drb->dstd != nullptr);
 	if (drb->dstd == (DSTdraw *)0x0) {
 		ErrorLogAdd("描画用バッファのメモリ再取得に失敗しました。\n");
 		return -1;

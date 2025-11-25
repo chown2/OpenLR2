@@ -576,6 +576,7 @@ int LoadFolderDataFromDB(CSTR query, SONGDATA *song, sqlite3 *sql, int difficult
 		if( (maxsize - 1001) == slistCount){
 			int newsize = nowsize + sizeof(SONGDATA) * 1000;
 			slist = (SONGDATA*)realloc(slist, newsize);
+			assert(slist != nullptr);
 			if (maxsize - 1000 < maxsize) {
 				memset((void*)((uintptr_t)slist + nowsize), 0, sizeof(SONGDATA) * 1000);
 			}
@@ -1439,6 +1440,7 @@ int SearchCourseFromDB(sqlite3 *sql, SONGSELECT *ss, int keys, int multistagemod
 
 		if (ss->prevListSize - 1 == ss->prevListCount) {
 			ss->prevList = (SONGDATA*)realloc(ss->prevList, (ss->prevListSize + 1000) * sizeof(SONGDATA));
+			assert(ss->prevList != nullptr);
 			for (int i = ss->prevListSize; i < ss->prevListSize + 1000; i++) {
 				memset(&ss->prevList[i], 0, sizeof(SONGDATA));
 			}
@@ -1589,6 +1591,7 @@ int LoadBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *difficulty,
 		if (count != 0 && i == count) break;
 		if (ss->prevListSize - 1 == i) {
 			ss->prevList = (SONGDATA*)realloc(ss->prevList, (ss->prevListSize + 1000) * sizeof(SONGDATA));
+			assert(ss->prevList != nullptr);
 			for (int j = ss->prevListSize; j < ss->prevListSize + 1000; j++) {
 				memset(&ss->prevList[j], 0, sizeof(SONGDATA));
 			}
@@ -1942,6 +1945,7 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 
 			if (count == ss->prevListSize - 1) {
 				ss->prevList = (SONGDATA*)realloc(ss->prevList, (ss->prevListSize + 1000) * sizeof(SONGDATA));
+				assert(ss->prevList != nullptr);
 				for (int i = ss->prevListSize; i < ss->prevListSize + 1000; i++) {
 					memset(&ss->prevList[i], 0, sizeof(SONGDATA));
 				}

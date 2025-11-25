@@ -79,6 +79,7 @@ int ExpandNoteBuffer(LaneStruct *lane, int addsize){
 	oldCount = lane->size;
 	lane->size += addsize;
 	lane->notes = (NoteStruct*)realloc(lane->notes, (lane->size) * sizeof(NoteStruct));
+	assert(lane->notes != nullptr);
 
 	for (int i = oldCount; i < lane->size; i++) {
 		lane->notes[i].bmsTiming_ln = -1.0;
@@ -2608,6 +2609,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
 						gp->bpmt_buffersize += 100;
 						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
@@ -2622,6 +2624,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
 						gp->bpmt_buffersize += 100;
 						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
@@ -2719,6 +2722,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
 						gp->bpmt_buffersize += 100;
 						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
@@ -2738,6 +2742,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						if (gp->bpmt_count == gp->bpmt_buffersize) {
 							gp->bpmt_buffersize += 100;
 							gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+							assert(gp->bpmt_data != nullptr);
 							for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 								gp->bpmt_data[i].BPM = 0;
 								gp->bpmt_data[i].converted = 0;
@@ -2762,6 +2767,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
 						gp->bpmt_buffersize += 100;
 						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
@@ -2802,6 +2808,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
 						gp->bpmt_buffersize += 100;
 						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;

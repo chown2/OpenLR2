@@ -169,6 +169,7 @@ int AddReplayData(REPLAY *rp, int timing, uchar op, short value){
 	if (rp->max == rp->count) {
 		rp->max += 10000;
 		rp->data = (ReplayData *)realloc(rp->data, rp->max * sizeof(ReplayData));
+		assert(rp->data != nullptr);
 	}
 	rp->data[rp->count].op = op;
 	rp->data[rp->count].timing = timing;

@@ -75,6 +75,7 @@ int ReadDST(DSTstruct *dst, CSVbuf *csv, int order){
 	if (dst->dataSize == dst->dstCount) {
 		dst->dataSize = dst->dataSize + 10;
 		dst->draw = (DSTdraw*)realloc(dst->draw, dst->dataSize * sizeof(DSTdraw));
+		assert(dst->draw != nullptr);
 		for (int i = dst->dstCount; i < dst->dataSize; i++) {
 			InitDSTdraw(&dst->draw[i]);
 		}
@@ -125,6 +126,7 @@ int ReadSRC(SRCstruct *src, CSVbuf *csv, skstruct *sk){
 		src->count = src->graphcount;
 		src->grHandles = (int*)realloc(src->grHandles, src->graphcount * sizeof(int));
 	}
+	assert(src->grHandles != nullptr);
 	for (int i = 0; i < src->count; i++) {
 		src->grHandles[i] = -1;
 	}
@@ -919,7 +921,9 @@ int ClearSkinGraph(skstruct *sk){
 int ExpandSkinObjectMax(SkinObject *so, int add) {
 	if (so->dstSize - 1 == so->srcSize) {
 		so->src = (SRCstruct*)realloc(so->src, (so->dstSize + add) * sizeof(SRCstruct));
+		assert(so->src != nullptr);
 		so->dst = (DSTstruct*)realloc(so->dst, (so->dstSize + add) * sizeof(DSTstruct));
+		assert(so->dst != nullptr);
 		for (int i = so->dstSize; i < so->dstSize + add; i++) {
 			memset(&so->src[i], 0, sizeof(SRCstruct));
 			InitSRC(&so->src[i]);

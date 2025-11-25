@@ -3041,12 +3041,14 @@ int InitBmsList(SONGSELECT *ss) {
 	ss->bmsListSize = 1000;
 	ss->cur = 0;
 	ss->bmsList = (SONGDATA*)malloc(sizeof(SONGDATA) * 1000);
+	assert(ss->bmsList != nullptr);
 	for (int i = 0; i < ss->bmsListSize; i++) {
 		memset(&ss->bmsList[i], 0, sizeof(SONGDATA));
 	}
 
 	ss->prevListSize = 1000;
 	ss->prevList = (SONGDATA*)malloc(sizeof(SONGDATA) * 1000);
+	assert(ss->prevList != nullptr);
 	for (int i = 0; i < ss->prevListSize; i++) {
 		memset(&ss->prevList[i], 0, sizeof(SONGDATA));
 	}

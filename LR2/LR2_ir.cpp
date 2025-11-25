@@ -57,6 +57,7 @@ int CMP_PlayerByExscore(const void *p1, const void *p2) {
 void RANKING::ExpandRankingBuffer(int add) {
 	
 	this->ranking = (RANKINGPLAYER*)realloc(this->ranking, (this->rankingMax + add) * sizeof(RANKINGPLAYER));
+	assert(this->ranking != nullptr);
 
 	for (int i = this->rankingMax; i < this->rankingMax + add; i++) {
 		memset(&this->ranking[i], 0, sizeof(RANKINGPLAYER));
@@ -511,6 +512,7 @@ CSTR UrlEncode(CSTR in) {
 //4bb820
 RANKING::RANKING() {
 	ranking = (RANKINGPLAYER*)malloc(sizeof(RANKINGPLAYER) * 1000);
+	assert(ranking != nullptr);
 	rankingCount = 0;
 	rankingMax = 1000;
 	for (int i = 0; i < rankingMax; i++) memset(&ranking[i], 0, sizeof(RANKINGPLAYER));

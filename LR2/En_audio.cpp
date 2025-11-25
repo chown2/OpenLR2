@@ -505,6 +505,7 @@ int SOUND_normalize(AUDIO *aud, SOUNDDATA *sound){
 	sound->raw.dataSize = len;
 	sound->raw.samples = samples;
 	sound->raw.data = (byte *)malloc(len);
+	assert(sound->raw.data != nullptr);
 	
 	memcpy(sound->raw.data, sound, len);
 
@@ -547,6 +548,7 @@ int RecordSound(AUDIO *aud, SOUNDDATA *sound, double time, double len) {
 			if (aud->size <= paramlen + i) {
 				//exapnd aud buffer size (*2)
 				short* newbuffer = (short*)malloc(aud->size * 2 * 2);
+				assert(newbuffer != nullptr);
 				memset(newbuffer, 0, aud->size * 4);
 				memcpy(newbuffer, aud->buffer, aud->size * 2);
 				if (aud->buffer != NULL) {

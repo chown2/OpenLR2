@@ -177,6 +177,7 @@ int SetFirstSkins(game *g){
 int InitSkinData(SkinManage *skm){
 	skm->Max = 100;
 	skm->Data = (SkinHeader *)malloc(sizeof(SkinHeader) * 100);
+	assert(skm->Data != nullptr);
 	skm->Count = 0;
 	memset(skm->Data, 0, skm->Max * sizeof(SkinHeader));
 	for (int i = 0; i < 100; i++) {
@@ -194,6 +195,7 @@ int InitSkinData(SkinManage *skm){
 //4a7450
 int ExpandSkinMax(SkinManage *skm){
 	skm->Data = (SkinHeader *)realloc(skm->Data, (skm->Max + 100) * 0xb14);
+	assert(skm->Data != nullptr);
 	memset(skm->Data + skm->Max, 0, sizeof(SkinHeader) * 100);
 	if (skm->Max < skm->Max + 100) {
 		for (int i = skm->Max; i < skm->Max + 100; i++) {
