@@ -1474,11 +1474,11 @@ void CheckNewSong(glb_dbgame *glb) {
 		if (err) {
 			ErrorLogAdd("未設定の#DIFFICULTYを設定します。\n");
 			SetUndefinedDifficulty(glb->pSql);
-			sqlite3_exec(glb->pSql, "DELETE FROM folder WHERE path=\'LR2files\\CustomFolder\\newsong.lr2folder\'", 0, 0, 0);
+			sqlite3_exec(glb->pSql, "DELETE FROM folder WHERE path=\'LR2files/CustomFolder/newsong.lr2folder\'", 0, 0, 0);
 			sqlite3_snprintf(1024, buf, "SELECT * FROM song WHERE adddate > %d", GetNowUnixtime() - jb.titleflash * 3600);
 			sqlite3_prepare(glb->pSql, buf, -1, &pStmt, NULL);
 			if (sqlite3_step(pStmt) == 100) {
-				jb.path[jb.numOfPath] = "LR2files\\CustomFolder\\newsong.lr2folder";
+				jb.path[jb.numOfPath] = "LR2files/CustomFolder/newsong.lr2folder";
 				GetFolderDataFromPath(jb.path[jb.numOfPath], glb->pSql);
 			}
 			sqlite3_finalize(pStmt);

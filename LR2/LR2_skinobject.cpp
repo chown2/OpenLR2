@@ -3582,13 +3582,13 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					g->KeyInput.config_key = -1;
 					switch (g->KeyInput.config_keymode) {
 						case 0:
-							ReadKeyConfig(g, "LR2files\\Config\\keyconfig.xml");
+							ReadKeyConfig(g, "LR2files/Config/keyconfig.xml");
 							break;
 						case 1:
-							ReadKeyConfig(g, "LR2files\\Config\\keyconfig_p.xml");
+							ReadKeyConfig(g, "LR2files/Config/keyconfig_p.xml");
 							break;
 						case 2:
-							ReadKeyConfig(g, "LR2files\\Config\\keyconfig_5.xml");
+							ReadKeyConfig(g, "LR2files/Config/keyconfig_5.xml");
 							break;
 					}
 					ProcS_Keyconfig(g);
@@ -3649,7 +3649,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					g->skinData.previewCustomID = 0;
 					CSTR tcstr;
 					SkinUser sku;
-					cstrSprintf(&tcstr, "LR2files\\SkinCustomize\\%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
+					cstrSprintf(&tcstr, "LR2files/SkinCustomize/%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
 					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)
@@ -3708,7 +3708,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					g->skinData.previewCustomID = 0;
 					CSTR tcstr;
 					SkinUser sku;
-					cstrSprintf(&tcstr, "LR2files\\SkinCustomize\\%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
+					cstrSprintf(&tcstr, "LR2files/SkinCustomize/%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
 					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)
@@ -3803,7 +3803,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 
 					CSTR tcstr;
 					SkinUser sku;
-					cstrSprintf(&tcstr, "LR2files\\SkinCustomize\\%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
+					cstrSprintf(&tcstr, "LR2files/SkinCustomize/%s.xml", MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
 					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)

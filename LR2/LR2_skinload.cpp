@@ -492,9 +492,9 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	if (sk->GrHandle[101] == -1) sk->GrHandle[101] = MakeGraph(640, 480);
 	if (sk->GrHandle[102] == -1) sk->GrHandle[102] = MakeGraph(300, 80);
 	DeleteGraph(sk->GrHandle[110]);
-	sk->GrHandle[110] = LoadGraph("LR2files\\Config\\black.bmp");
+	sk->GrHandle[110] = LoadGraph("LR2files/Config/black.bmp");
 	DeleteGraph(sk->GrHandle[111]);
-	sk->GrHandle[111] = LoadGraph("LR2files\\Config\\white.bmp");
+	sk->GrHandle[111] = LoadGraph("LR2files/Config/white.bmp");
 	sk->reloadbanner = 0;
 	for (int i = 0; i < 10; i++) {
 		InitSRC(&sk->src_BAR_RANK[i]);
@@ -1841,7 +1841,7 @@ int LoadScene(skstruct *sk, CSTR skinfile, int p5, char font) {
 	CSTR tStr;
 	InitSkin(sk, p5, font);
 	sk->skinMD5.assign(MD5str(skinfile));
-	cstrSprintf(&tStr, "LR2files\\SkinCustomize\\%s.xml",sk->skinMD5.body);
+	cstrSprintf(&tStr, "LR2files/SkinCustomize/%s.xml",sk->skinMD5.body);
 	ReadSkinCustomize(&tsku, tStr);
 	(sk->adjust).shift_x = tsku.adjust.shift_x;
 	(sk->adjust).shift_y = tsku.adjust.shift_y;

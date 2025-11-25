@@ -66,8 +66,8 @@ time_t GetFileUnixtime(CSTR str) {
 	LPWIN32_FIND_DATAA lpFindFileData;
 	HANDLE hFindFile;
 
-	if ( str.right(1).isSame("\\") ) {
-		str.nullAtPos( str.length() - 1 );
+	if (str.right(1).isSame("\\") ||  str.right(1).isSame("/")) {
+		str.nullAtPos(str.length() - 1);
 	}
 
 	lpFindFileData = (LPWIN32_FIND_DATAA)&FindFileData;
@@ -306,18 +306,10 @@ bool IsLR2Folder(CSTR str) {
 bool IsFileExist(CSTR path) {
 	HANDLE hFindFile;
 	_WIN32_FIND_DATAA findFileData;
-	bool isDir = false;
 	char *cur;
 	char dirFlag = 0;
 
-	if (path.right(1).isSame("\\") == true) {
-		isDir = true;
-	}
-	else if (path.right(1).isSame("/") == true) {
-		isDir = true;
-	}
-
-	if (isDir) {
+	if (path.right(1).isSame("\\") || path.right(1).isSame("/")) {
 		cur = path.atPos(path.length() - 1);
 		*cur = 0;
 	}
@@ -339,7 +331,7 @@ int IsFileChanged(unsigned int oldUnixtime, CSTR filepath, int *oNewtime) {
 	char* lpFileName;
 	_WIN32_FIND_DATAA findFileData;
 
-	if (filepath.right(1).isSame("\\")) {
+	if (filepath.right(1).isSame("\\") || filepath.right(1).isSame("/")) {
 		filepath.nullAtPos(filepath.length() - 1);
 	}
 	lpFileName = filepath;
@@ -599,7 +591,7 @@ int FindAltImage(CSTR filename, CSTR dir, CSTR *oBuf) {
 		}
 	}
 
-	path.assign(dir).add("..\\").add(filename);
+	path.assign(dir).add("../").add(filename);
 	if (IsFileExist(path)) {
 		oBuf->assign(path);
 		return 1;
@@ -683,7 +675,7 @@ int FindAltSound(CSTR filename, CSTR dir, CSTR *oBuf) {
 		}
 	}
 
-	path.assign(dir).add("..\\").add(filename);
+	path.assign(dir).add("../").add(filename);
 	if (IsFileExist(path)) {
 		oBuf->assign(path);
 		return 1;

@@ -101,8 +101,8 @@ int SetFirstSkins(game *g){
 	ErrorLogAdd("スキンを列挙します。\n");
 	sm = &g->skinData;
 	InitSkinData(sm);
-	MakeSkinList(sm, CSTR("LR2files\\Theme\\"));
-	MakeSkinList(sm, CSTR("LR2files\\Sound\\"));
+	MakeSkinList(sm, CSTR("LR2files/Theme/"));
+	MakeSkinList(sm, CSTR("LR2files/Sound/"));
 	ErrorLogAdd("スキンの列挙を終了しました。\n");
 
 	if (SetFirstSkin(sm, SKINTYPE_7KEYS, &g->config.skin.skinFilePath[0]) == -1) {
@@ -222,7 +222,7 @@ int ParseLR2SkinCustom(SkinManage *skm, CSTR filepath) {
 	FILE *pFile;
 	char* pBuffer;
 
-	cstrSprintf(&md5Filepath, "LR2files\\SkinCustomize\\%s.xml", MD5str(filepath) );
+	cstrSprintf(&md5Filepath, "LR2files/SkinCustomize/%s.xml", MD5str(filepath) );
 	ReadSkinCustomize(&skCustom, md5Filepath);
 	pFile = fopen(filepath, "r");
 	if (!pFile) return 0;

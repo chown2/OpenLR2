@@ -1047,7 +1047,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "system", "directdraw", 0, &g->config.system.directdraw, hXml);
 	ReadXml_Int("config", "system", "maindisplay", 0, &g->config.system.maindisplay, hXml);
 	Read_JukeboxPath(&g->config.jukebox, hXml);
-	ReadXml_Str("config", "system", "newsongfolder", "NEW SONG\\", &g->config.jukebox.newsongfolder, hXml);
+	ReadXml_Str("config", "system", "newsongfolder", "NEW SONG/", &g->config.jukebox.newsongfolder, hXml);
 	ReadXml_Int("config", "system", "titleflash", 24, &g->config.jukebox.titleflash, hXml);
 	ReadXml_Int("config", "system", "softwarerendering", 0, &g->config.system.softwarerendering, hXml);
 	ReadXml_Int("config", "system", "autoreload", 2, &g->config.jukebox.autoreload, hXml);

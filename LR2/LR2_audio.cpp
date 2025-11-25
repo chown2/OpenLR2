@@ -328,7 +328,7 @@ int ReadLR2SoundSet(game *g, CSTR filepath, char reFlag) {
 	if (g->audio.is_fmod_disabled == 0) FMOD_System_Update(g->audio.fmodSys);
 
 	CSTR path;
-	cstrSprintf(&path, "LR2files\\SkinCustomize\\%s.xml", MD5str(filepath));
+	cstrSprintf(&path, "LR2files/SkinCustomize/%s.xml", MD5str(filepath));
 	ReadSkinCustomize(&sku, path);
 	
 	CSTR dir(filepath.getDirectory());

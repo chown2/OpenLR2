@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 	GetModuleFileName(NULL, (LPCH)curDir, 260);
 	*(char*)(strrchr(curDir, '\\') + 1) = '\x00';
 	SetCurrentDirectory((LPCSTR)curDir);
-	gs.baseDirectory.assign(curDir, 0).add("\\");
+	gs.baseDirectory.assign(curDir, 0).add("/");
 	gs.is_starter = false;
 	auto copy_if_not_exists = [](auto&& from, auto&& to_) {
 		std::filesystem::path to = to_;
@@ -60,8 +60,8 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 	copy_if_not_exists("LR2files/Config/keyconfig_p_def.xml", "LR2files/Config/keyconfig_p.xml");
 	copy_if_not_exists("LR2files/Config/midi_def.xml", "LR2files/Config/midi.xml");
 	ErrorLogAdd("コンフィグを読み込みます…");
-	
-	if (!ReadConfig(&gs, "LR2files\\Config\\config.xml") && gs.is_starter == false) {
+
+	if (!ReadConfig(&gs, "LR2files/Config/config.xml") && gs.is_starter == false) {
 		MessageBoxA(NULL, "コンフィグファイルが見つかりません。", "エラー", NULL);
 		return -1;
 	}
@@ -81,17 +81,17 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			gs.config.play.hsfix = 4;
 			gs.config.player.passMD5.assign("STARTERMODE");
 			gs.config.player.id.assign("STARTERMODE");
-			gs.config.jukebox.newsongfolder.assign(".\\");
+			gs.config.jukebox.newsongfolder.assign("./");
 			gs.config.jukebox.titleflash = 0;
 			gs.config.select.sort = 1;
 			gs.config.select.key = 1;
 			gs.config.jukebox.numOfPath = 1;
-			gs.config.jukebox.path[0].assign("BeatVocaloids\\");
+			gs.config.jukebox.path[0].assign("BeatVocaloids/");
 		}
 		lr1ir = gs.config.network.lr1ir;
 		lr2ir = gs.config.network.lr2ir;
 		gs.flag_showFPS = 0;
-		ReadMIDI(&gs, "LR2files\\Config\\midi.xml");
+		ReadMIDI(&gs, "LR2files/Config/midi.xml");
 		if (gs.config.system.softwarerendering == 1) {
 			SetUse3DFlag(0);
 		}
@@ -201,10 +201,10 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			std::filesystem::create_directories("LR2files/SkinCustomize", ec);
 			std::filesystem::create_directories("screenshot", ec);
 		}
-		ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+		ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 		gs.is_clicked_screenModeChange = 0;
 		gs.flag_Screenshot = 0;
-		ReadOptionstrFile(gs.txtStruct.option_str, "LR2files\\Config\\optionstr.csv");
+		ReadOptionstrFile(gs.txtStruct.option_str, "LR2files/Config/optionstr.csv");
 		gs.audio.is_fmod_disabled = gs.config.sound.disablefmod;
 		if (gs.config.sound.disablefmod != 0) {
 			gs.config.select.preview = 0;
@@ -314,7 +314,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			SetDrawScreen(DX_SCREEN_BACK);
 
 			memcpy(gs.config.jukebox.rival, gs.net.rivals, 4 * 20);
-			sqlite3_open(gs.is_starter ? "LR2files\\Database.db" : "LR2files\\Database\\song.db", &sql3);
+			sqlite3_open(gs.is_starter ? "LR2files/Database.db" : "LR2files/Database/song.db", &sql3);
 			LoadLR2CustomFolder(sql3, &gs.config.jukebox, pathScoreDB, gs.is_starter, gs.cmd_directplay);
 			if ( gs.cmd_directplay == false && gs.config.network.lr2ir == 1 && (((unsigned char)gs.config.jukebox.customfolder & 0x80) != 0)) {
 				gs.net.GetInsaneList();
@@ -524,7 +524,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			InitSound(&gs.audio,gs.config.sound.bufferlength,gs.config.sound.numbuffers,gs.config.sound.disabledsp,gs.config.sound.output,gs.config.sound.driver);
 			ReadLR2SoundSet(&gs, gs.config.skin.skinFilePath[10], 0);
 			if (gs.is_starter == false) {
-				if (LoadSound(&gs.audio, &gs.gameplay.muon, CSTR("LR2files\\Config\\muon.wav"), 1, gs.config.sound.disabledsp, 0) == -1) {
+				if (LoadSound(&gs.audio, &gs.gameplay.muon, CSTR("LR2files/Config/muon.wav"), 1, gs.config.sound.disabledsp, 0) == -1) {
 					ErrorLogAdd("muon.wavがありません\n");
 					gs.procSelecter = 0;
 				}
@@ -651,7 +651,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 								memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
 							}
 							gs.gameplay.ghostBattle = '\0';
-							ReadKeyConfig(&gs, (gs.config.select.control == 0) ? "LR2files\\Config\\keyconfig.xml" : "LR2files\\Config\\keyconfig_p.xml");
+							ReadKeyConfig(&gs, (gs.config.select.control == 0) ? "LR2files/Config/keyconfig.xml" : "LR2files/Config/keyconfig_p.xml");
 							DeleteGraph(gs.skstruct.GrHandle[100]);
 							gs.skstruct.GrHandle[100] = -1;
 							DeleteGraph(gs.skstruct.GrHandle[101]);
@@ -841,13 +841,13 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 								if (gs.sSelect.bmsList[gs.sSelect.cur_song].keymode == 5) {
 									LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[13], gs.skinData.Data[gs.skinData.skinID[13]].informationP5, 0);
 									if (gs.skinData.Data[gs.skinData.skinID[13]].type != SKINTYPE_7KEYSBATTLE)
-										ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+										ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 									else 
-										ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+										ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 								}
 								else {
 									LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[12], gs.skinData.Data[gs.skinData.skinID[12]].informationP5, 0);
-									ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+									ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 								}
 							}
 							else if (gs.config.select.control == 1 && (gs.sSelect.metaSelected.keymode == 5 || gs.sSelect.metaSelected.keymode == 7)) {
@@ -857,7 +857,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 								else if (gs.config.play.battle == 1) {
 									LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[14], gs.skinData.Data[gs.skinData.skinID[14]].informationP5, 0);
 								}
-								ReadKeyConfig(&gs,"LR2files\\Config\\keyconfig_p.xml");
+								ReadKeyConfig(&gs,"LR2files/Config/keyconfig_p.xml");
 							}
 							else {
 								switch (gs.sSelect.metaSelected.keymode) {
@@ -865,23 +865,23 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 										if (gs.config.play.battle == 0) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[1], gs.skinData.Data[gs.skinData.skinID[1]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[1]].type != SKINTYPE_5KEYS)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 										}
 										else if (gs.config.play.battle == 1) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[13], gs.skinData.Data[gs.skinData.skinID[13]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[13]].type != SKINTYPE_7KEYSBATTLE)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 										}
 										else if (gs.config.play.battle == 2 || gs.config.play.battle == 3) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[3], gs.skinData.Data[gs.skinData.skinID[3]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[3]].type != SKINTYPE_10KEYS)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 										}
 										break;
 
@@ -895,13 +895,13 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 										else if (gs.config.play.battle == 2 || gs.config.play.battle == 3) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[2], gs.skinData.Data[gs.skinData.skinID[2]].informationP5, 0);
 										}
-										ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+										ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 										break;
 
 									case 9:
 										if (gs.config.play.battle == 3) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[0], gs.skinData.Data[gs.skinData.skinID[0]].informationP5, 0);
-											ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+											ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 											break;
 										}
 										else if (gs.config.play.battle == 0 || gs.config.play.battle == 2) {
@@ -910,30 +910,30 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 										else if (gs.config.play.battle == 1) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[14], gs.skinData.Data[gs.skinData.skinID[14]].informationP5, 0);
 										}
-										ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_p.xml");
+										ReadKeyConfig(&gs, "LR2files/Config/keyconfig_p.xml");
 										break;
 
 									case 10:
 										if (gs.config.play.battle == 0) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[3], gs.skinData.Data[gs.skinData.skinID[3]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[3]].type == SKINTYPE_10KEYS)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml"); 
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml"); 
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 										}
 										else if (gs.config.play.battle == 1 || gs.config.play.battle == 2) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[13], gs.skinData.Data[gs.skinData.skinID[13]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[13]].type == SKINTYPE_7KEYSBATTLE)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 										}
 										else if (gs.config.play.battle == 3) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[1], gs.skinData.Data[gs.skinData.skinID[1]].informationP5, 0);
 											if (gs.skinData.Data[gs.skinData.skinID[1]].type == SKINTYPE_5KEYS)
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig_5.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig_5.xml");
 											else
-												ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+												ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 										}
 										break;
 
@@ -947,14 +947,14 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 										else if(gs.config.play.battle == 3) {
 											LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[0], gs.skinData.Data[gs.skinData.skinID[0]].informationP5, 0);
 										}
-										ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+										ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 										break;
 								}
 							}
 
 							if (gs.config.play.m_lunaris) {
 								LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[0], gs.skinData.Data[gs.skinData.skinID[0]].informationP5, 0);
-								ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+								ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 								gs.gameplay.isAutoplay = 0;
 							}
 							for (int i = 0; i < gs.skstruct.num_of_ImageFont; i++) {
@@ -983,7 +983,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 							break;
 						case 8:
 							LoadScene(&gs.skstruct, gs.config.skin.skinFilePath[0], gs.skinData.Data[gs.skinData.skinID[0]].informationP5, 0);
-							ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+							ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 							LUNARIS_START(&gs);
 							break;
 						case 9:
@@ -1280,7 +1280,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 							break;
 						case 4: {
 							CSTR skinMD5;
-							cstrSprintf(&skinMD5, "LR2files\\SkinCustomize\\%s.xml", gs.skstruct.skinMD5);
+							cstrSprintf(&skinMD5, "LR2files/SkinCustomize/%s.xml", gs.skstruct.skinMD5);
 							SkinUser tmpSk;
 							ReadSkinCustomize(&tmpSk, skinMD5);
 							tmpSk.adjust.shift_x = gs.skstruct.adjust.shift_x;
@@ -1340,7 +1340,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 								ErrorLogAdd("BMSの音を初期化しました\n");
 							}
 
-							ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+							ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 							if (gs.gameplay.replay.status == 2) {
 								ReleaseReplayBuffer(&gs.gameplay.replay);
 								gs.audio.param.eq_gain[0] = gs.gameplay.replay.aud.eq_gain[0];
@@ -1442,7 +1442,7 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 							}
 							break;
 						case 6:
-							ReadKeyConfig(&gs, "LR2files\\Config\\keyconfig.xml");
+							ReadKeyConfig(&gs, "LR2files/Config/keyconfig.xml");
 							break;
 						case 7:
 							ClearSkinGraph(&gs.skstruct2);
@@ -2088,8 +2088,8 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			//phase_exit game
 			if (gs.is_recordmode) {
 				RecordBmsSound(&gs, gs.directoryFilename);
-				remove("LR2files\\movie_temp.mp3");
-				remove("LR2files\\movie_temp.wav");
+				remove("LR2files/movie_temp.mp3");
+				remove("LR2files/movie_temp.wav");
 			}
 			gs.net.WaitAndInitRanking();
 			gs.gameplay.flag_closingPhase = 1;
@@ -2146,8 +2146,8 @@ int WINAPI WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, LPSTR _lpCmdL
 			gs.config.network.lr1ir = lr1ir;
 			gs.config.network.lr2ir = lr2ir;
 			if ( gs.auto2avi == 0 && gs.is_recordmode == 0 && gs.rec.recMode == 0) {
-				WriteConfigXml(&gs, "LR2files\\Config\\config.xml");
-				WriteMidiXml(&gs, "LR2files\\Config\\midi.xml");
+				WriteConfigXml(&gs, "LR2files/Config/config.xml");
+				WriteMidiXml(&gs, "LR2files/Config/midi.xml");
 			}
 			CloseMIDI();
 			for (int i = 0; i < 6480; i++) {
