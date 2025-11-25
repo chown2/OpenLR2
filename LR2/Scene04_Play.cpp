@@ -381,6 +381,7 @@ int DrawNotes(game *g, skstruct *sk, Timer *T, CONFIG_PLAY *cfg) {
 			speed = cfg->hiSpeed[1];
 		}
 		
+		if (sk->dst_LINE[0].draw == nullptr) break; // Empty skin
 		if ((sk->horizontal == 0 && sk->dst_LINE[0].draw->y + (songtimer - g->gameplay.bmsobj_line.notes[i].bmsTiming)* speed * g->gameplay.speedmultiplier * (cfg->basespeed / 100.0) / 600.0 > drawStartHeight)
 			|| (sk->horizontal == 1 && (g->gameplay.bmsobj_line.notes[i].bmsTiming - songtimer)* speed * g->gameplay.speedmultiplier * (cfg->basespeed / 100.0) / 640.0 > drawStartHeight)) { 
 						
