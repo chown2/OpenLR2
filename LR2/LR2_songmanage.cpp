@@ -1990,7 +1990,7 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 						count -= nowCount;
 						nowCount = 0;
 					}
-					else if (lastreadKeymode = 10 && song.keymode == 14) {
+					else if (lastreadKeymode == 10 && song.keymode == 14) {
 						count -= nowCount;
 						nowCount = 0;
 					}
