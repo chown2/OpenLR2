@@ -1,18 +1,18 @@
 ﻿#include "dbgtool.h"
-#include <stdio.h>
+
+#include <fstream>
 
 int dump(char* filename, void* from, int size){
+	char newname[260];
+	snprintf(newname,260,"%s.LR2dmp",filename);
 
-    FILE* pFile;
-    char newname[260];
-    snprintf(newname,260,"%s.LR2dmp",filename);
-    
-    fopen_s(&pFile,filename,"wb");
-    if (!pFile) return -1;
+	std::ofstream file{newname};
+	if (!file.good()) {
+		return -1;
+	}
 
-    fwrite(from, size, 1, pFile);
+	// cast safety: you can always cast to char* to inspect values as bytes
+	file.write(reinterpret_cast<const char*>(from), size);
 
-    fclose(pFile);
-
-    return 0;
+	return 0;
 }
