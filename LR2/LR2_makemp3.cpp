@@ -34,7 +34,7 @@ int RunMP3Encoder(ConfigStruct *cfg, CSTR wavPath, CSTR mp3Path, char deleteWav,
 	sinfo.dwFlags = 0;
 	sinfo.lpReserved2 = 0;
 	CreateProcessA(NULL, cmd, 0, 0, 0, 0, 0, 0, (LPSTARTUPINFOA)&sinfo, &pinfo);
-	WaitForSingleObject(pinfo.hProcess, -1);
+	WaitForSingleObject(pinfo.hProcess, INFINITE);
 	if (deleteWav) {
 		remove(wavPath);
 	}
