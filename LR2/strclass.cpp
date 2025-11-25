@@ -9,6 +9,19 @@
 
 typedef unsigned char byte;
 
+#ifndef _WIN32
+
+#include <malloc.h>
+#include <strings.h>
+static unsigned long long _msize(void* ptr) {
+	return malloc_usable_size(ptr);
+}
+static int _stricmp(const char* s1, const char* s2) {
+	return strcasecmp(s1,s2);
+}
+
+#endif // _WIN32
+
 //43ad60
 CSTR::CSTR(int size) {
 	body = (char*)calloc(1, size);
@@ -590,7 +603,7 @@ CSTR& CSTR::assign(const char *str, int len) {
 
 //43b890
 int CSTR::icmp(CSTR *param_1) {
-	if (body != (char *)0x0) {
+	if (body != nullptr) {
 		return _stricmp(body, param_1->body);
 	}
 	return 0;
