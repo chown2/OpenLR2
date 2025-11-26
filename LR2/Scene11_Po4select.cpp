@@ -305,7 +305,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 
 				int cur = g->sSelect.listCalculatedBar / 1000 + 1;
 				if (cur >= 4) cur = 0;
-				if (g->sSelect.listCalculatedBar % 1000 == NULL) {
+				if (g->sSelect.listCalculatedBar % 1000 == 0) {
 					DSTdraw dstd;
 
 					dstd = SetDSTdrawByTime(g->skstruct.dst_EVENT_MODE_CURSOR_ON[g->sSelect.listCalculatedBar / 1000], GetTimeLapse(402, &g->timer1));
