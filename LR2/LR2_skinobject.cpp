@@ -9,6 +9,10 @@
 
 #include <DxLib/DxLib.h>
 
+#ifndef _WIN32
+#include "En_dxlibstub.h"
+#endif // _WIN32
+
 //40e790 // _mRet __mRet : return ret, ret : return !ret
 bool GetOptionFlag_dst(game *gs, int option) {
 	int t = 0;
@@ -175,7 +179,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 51:
-			if (gs->net.isOnline == 1) return ret;
+			if (gs->net.isOnline) return ret;
 			break;
 
 		case 52:
@@ -2663,7 +2667,6 @@ int SetObjectValue_Slider(game *g, skstruct *sk, Timer *T, char flag) {
 	return 1;
 }
 
-
 //41dc30
 int Proc_Text(game *g, sqlite3 *sql, char flag) {
 
@@ -2678,11 +2681,7 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 	}
 
 	if ( (g->KeyInput.mouse_buttonL == 3) || (g->KeyInput.mouse_buttonR == 3) ) {
-#ifdef WIN32
 		DeleteKeyInput(g->txtStruct.hKeyInput);
-#else
-		// FIXME(linux): stub
-#endif // WIN32
 		g->txtStruct.st_text_num = -1;
 	}
 
@@ -2694,7 +2693,6 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 				&& MouseOnObject(&g->skstruct.otherObject[0].dst[i], &g->timer1, &g->KeyInput.mouse_oldX, &g->KeyInput.mouse_oldY)) {
 				g->sSelect.is_mouseOnTextInput = 1;
 				if (g->KeyInput.mouse_buttonL == 3) {
-#ifdef WIN32
 					InitKeyInput();
 
 					int st = g->skstruct.otherObject[0].src[i].st;
@@ -2722,9 +2720,6 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 					if (g->txtStruct.st_text_num != 30) {
 						SetKeyInputString(GetStringFromArray(g->txtStruct.st_text_num, g->txtStruct.objectStr), g->txtStruct.hKeyInput);
 					}
-#else
-					// FIXME(linux): stub
-#endif // WIN32
 				}
 			}
 			AddDrawingBuffer_Text(&g->skstruct.drBuf, &g->skstruct.otherObject[0].src[i], &g->skstruct.otherObject[0].dst[i], &g->timer1);
@@ -2735,7 +2730,6 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 	if (g->txtStruct.st_text_num != -1) {
 		g->sSelect.is_mouseOnTextInput = 1;
 
-#ifdef _WIN32
 		if (CheckKeyInput(g->txtStruct.hKeyInput) >= 1 && flag == 0) {
 			//CheckKeyInput() 0:doing 1:done 2:cancle -1:error
 			if (CheckKeyInput(g->txtStruct.hKeyInput) == 1) {
@@ -2744,23 +2738,13 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 				GetKeyInputString(buf, g->txtStruct.hKeyInput);
 				CSTR query;
 
-				CSTR unused_path;
-				CSTR unused_type;
-				unused_path = g->sSelect.bmsList[g->sSelect.cur_song].filepath;
-				if (g->sSelect.bmsList[g->sSelect.cur_song].keymode == 0) {
-					unused_type = "folder";
-				}
-				else if (g->sSelect.bmsList[g->sSelect.cur_song].keymode > 0) {
-					unused_type = "song";
-				}
-
 				switch (g->txtStruct.st_text_num) {
 				case 20:
 					SetObjectString(g->txtStruct.st_text_num - 10, buf, g->txtStruct.objectStr);
 					SetObjectString(g->txtStruct.st_text_num, buf, g->txtStruct.objectStr);
 					g->sSelect.bmsList[g->sSelect.cur_song].title = buf;
 					if (g->sSelect.bmsList[g->sSelect.cur_song].subtitle.isDiff("(null)")) {
-						cstrSprintf(&g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, "%s %s", buf, g->sSelect.bmsList[g->sSelect.cur_song].subtitle);
+						cstrSprintf(&g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, "%s %s", buf.body, g->sSelect.bmsList[g->sSelect.cur_song].subtitle.body);
 						g->sSelect.is_tag_edited = 1;
 						g->sSelect.is_coursemaking_done = 1;
 					}
@@ -2774,7 +2758,7 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 					SetObjectString(g->txtStruct.st_text_num - 10, buf, g->txtStruct.objectStr);
 					SetObjectString(g->txtStruct.st_text_num, buf, g->txtStruct.objectStr);
 					g->sSelect.bmsList[g->sSelect.cur_song].title = buf;
-					cstrSprintf(&g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, "%s %s", g->sSelect.bmsList[g->sSelect.cur_song].title, buf);
+					cstrSprintf(&g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, "%s %s", g->sSelect.bmsList[g->sSelect.cur_song].title.body, buf.body);
 					g->sSelect.is_tag_edited = 1;
 					g->sSelect.is_coursemaking_done = 1;
 					break;
@@ -2870,7 +2854,7 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 						}
 
 						if (query.isSame("(null)")) {
-							sqlite3_snprintf(1024, str, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE title LIKE \'%%%s%%\' OR genre LIKE \'%%%s%%\'  OR artist LIKE \'%%%s%%\' OR tag LIKE \'%%%s%%\' OR path LIKE \'%%%s%%\' OR subtitle LIKE \'%%%s%%\' OR subartist LIKE \'%%%s%%\'", buf, buf, buf, buf, buf, buf, buf);
+							sqlite3_snprintf(1024, str, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE title LIKE \'%%%s%%\' OR genre LIKE \'%%%s%%\'  OR artist LIKE \'%%%s%%\' OR tag LIKE \'%%%s%%\' OR path LIKE \'%%%s%%\' OR subtitle LIKE \'%%%s%%\' OR subartist LIKE \'%%%s%%\'", buf.body, buf.body, buf.body, buf.body, buf.body, buf.body, buf.body);
 							query.assign(str);
 						}
 
@@ -2907,9 +2891,6 @@ int Proc_Text(game *g, sqlite3 *sql, char flag) {
 			g->txtStruct.st_text_num = -1;
 			SetTimeLapse(4, &g->timer1);
 		}
-#else
-					// FIXME(linux): stub
-#endif // WIN32
 	}
 
 	g->KeyInput.mouse_buttonL = mouseL;
@@ -3701,7 +3682,6 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			}
 
 			case 190: {
-				sk->otherObject[1].src[i];
 				iTmp = (g->KeyInput.config_key == op - 150);
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &iTmp, -1, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {

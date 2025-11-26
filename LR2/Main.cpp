@@ -309,9 +309,6 @@ int main(int argc, char** argv) {
 		}
 #endif // _WIN32
 
-		if constexpr (!is_linux()) {
-			SetMainWindowText(LR2TITLE); // DxLib-for-Linux on Wayland segfaults on it
-		}
 		// DxLib-for-Linux only writes to stderr when writing to the log file.
 		SetOutApplicationLogValidFlag(gs.config.system.outputlog || is_linux());
 #ifdef _WIN32
@@ -333,6 +330,7 @@ int main(int argc, char** argv) {
 		}
 #endif // _WIN32
 		if (DxLib_Init() != -1) {
+			SetMainWindowText(LR2TITLE);
 			ChangeFont("", 0);
 			SetLogFontSize(14); //DXLIBVER: change this for further dxlib version
 #ifdef _WIN32
@@ -344,8 +342,6 @@ int main(int argc, char** argv) {
 			InitInputStructure(&gs.KeyInput);
 			SetFirstSkins(&gs);
 			clsDx();
-			gs.net.unk234 = 1;
-			gs.net.Init();
 			if (gs.config.network.lr2ir == 1 && gs.is_starter == 0 && gs.cmd_nosave == 0) {
 				gs.net.IR_pass = gs.config.player.pass;
 				gs.net.IR_name = gs.config.player.id;
@@ -413,8 +409,6 @@ int main(int argc, char** argv) {
 			CSTR unk("(null)");
 			gs.sSelect.maniac_cursor = 0;
 			gs.sSelect.flag_maniacPanel = '\0';
-			gs.sSelect.unk4f78 = 0;
-			gs.sSelect.unk4f74 = '\0';
 			if (gs.cmd_directplay && !gs.is_starter) { //logic arranged
 				gs.sSelect.cur = 0;
 				cstrSprintf(&gs.sSelect.stack_query[gs.sSelect.cur], "SELECT * FROM folder WHERE parent = \'%s\'", AssignCRC32("ROOT").body);
@@ -511,7 +505,6 @@ int main(int argc, char** argv) {
 			gs.gameplay.flag_threadDoingProcGame = 0;
 			InitSkin(&gs.skstruct, 0, 0);
 			gs.skstruct.fontname.assign(&gs.config.skin.fontname);
-			gs.skstruct.unused_disableimagefont = gs.config.skin.disableimagefont;
 			if(gs.hThreadBanner.joinable()) gs.hThreadBanner.join();
 			for (int i = 0; i < 6480; i++) gs.gameplay.keysound->load = 0;
 			for (int i = 0; i < 200; i++) gs.skstruct2.caption[i].fillzero();
@@ -538,7 +531,6 @@ int main(int argc, char** argv) {
 			gs.skstruct2.drBuf.flagImageFont = gs.config.skin.disableimagefont != 0;
 			InitSkin(&gs.skstruct2, 0, 0);
 			gs.skstruct2.fontname.assign(&gs.config.skin.fontname);
-			gs.skstruct2.unused_disableimagefont = gs.config.skin.disableimagefont;
 
 			gs.sSelect.toRoot = 1;
 			gs.sSelect.is_buttonIRpage = 0;
@@ -1228,7 +1220,6 @@ int main(int argc, char** argv) {
 									gs.config.play.m_accel = 0;
 									gs.config.play.m_addnote = 0;
 									gs.config.play.autokey = 0;
-									gs.config.play.unknown_1 = 0;
 									gs.config.play.m_char = 0;
 									gs.config.play.m_earthquake = 0;
 									gs.config.play.m_extra = 0;
@@ -1238,16 +1229,12 @@ int main(int argc, char** argv) {
 									gs.config.play.m_sidejump = 0;
 									gs.config.play.m_nabeatsu = 0;
 									gs.config.play.m_heartbeat = 0;
-									gs.config.play.unk_c0 = 0;
-									gs.config.play.unknown_2 = 0;
 									gs.config.play.m_sincurve = 0;
 									gs.config.play.m_softlanding = 0;
 									gs.config.play.m_spiral = 0;
 									gs.config.play.m_loudness = 0;
-									gs.config.play.unk_f1 = 0;
 									gs.config.play.m_wave = 0;
 									gs.config.play.m_tornado = 0;
-									gs.config.play.unk_f2 = '\0';
 									gs.audio.param.pitch_amount = 0;
 									gs.audio.param.pitch_on = 0;
 									ApplySoundFX(&gs.audio, 1, 0);
@@ -1787,7 +1774,7 @@ int main(int argc, char** argv) {
 						printfDx("ノート位置(2P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_2p_x, gs.skstruct.adjust.note_2p_y);
 					}
 				}
-				if ( gs.KeyInput.inputID[KEY_INPUT_F1] == '\x02' && gs.sSelect.flag_maniacPanel == '\0' && gs.sSelect.unk4f74 == '\0' && gs.is_starter == '\0') {
+				if ( gs.KeyInput.inputID[KEY_INPUT_F1] == '\x02' && gs.sSelect.flag_maniacPanel == '\0' && gs.is_starter == '\0') {
 					printfDx( (gs.sSelect.bmsList[gs.sSelect.cur_song].folderType == 8) ?
 								"F2 マニアックオプション F3 コースのソート変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6  スクリーンショット F7 FPS表示\nF8 フォルダのリロード\n" 
 								: "F2 マニアックオプション F3 レベルの変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6 スク リーンショット F7 FPS表示\nF8 フォルダのリロード\n");
@@ -1809,7 +1796,6 @@ int main(int argc, char** argv) {
 					//TEST2 END
 				}
 				gs.sSelect.flag_maniacPanel = 0;
-				gs.sSelect.unk4f74 = '\0';
 				if(gs.procSelecter == 2){
 					if ( (gs.KeyInput.inputID[KEY_INPUT_F5] == 1 || gs.sSelect.is_buttonIRpage != 0) && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode > 4 && gs.config.network.lr2ir == 1) {
 						if (gs.config.system.screenmode == 0) {
@@ -1880,12 +1866,12 @@ int main(int argc, char** argv) {
 						gs.sSelect.is_buttonIRpage = 0;
 						InitInputStructure2(&gs.KeyInput);
 						std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-						if (gs.sSelect.flag_maniacPanel || gs.sSelect.unk4f74) ClsDrawScreen();
+						if (gs.sSelect.flag_maniacPanel) ClsDrawScreen();
 					}
 					else if (gs.KeyInput.inputID[KEY_INPUT_F2] == 2) {
 						gs.sSelect.flag_maniacPanel = 1;
 						Print_ManiacOptions(&gs);
-						if (gs.sSelect.flag_maniacPanel || gs.sSelect.unk4f74) ClsDrawScreen();
+						if (gs.sSelect.flag_maniacPanel) ClsDrawScreen();
 					}
 					else if (gs.KeyInput.inputID[KEY_INPUT_F3] == 2) {
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].folderType == 8) {
@@ -1962,7 +1948,7 @@ int main(int argc, char** argv) {
 								}
 							}
 						}
-						if (gs.sSelect.flag_maniacPanel || gs.sSelect.unk4f74) ClsDrawScreen();
+						if (gs.sSelect.flag_maniacPanel) ClsDrawScreen();
 					}
 				}
 				GetTimeWrap();

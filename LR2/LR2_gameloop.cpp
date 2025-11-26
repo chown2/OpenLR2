@@ -6,8 +6,6 @@
 
 #include "Scenes.h"
 
-glb_dbgame glb;
-
 //427090
 void ReactInput(game *g) {
 

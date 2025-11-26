@@ -40,6 +40,12 @@ typedef unsigned short    ushort;
 //typedef short    wchar_t;
 typedef unsigned short    word;
 
+typedef long LONG;
+typedef ulong DWORD;
+typedef void * LPVOID;
+typedef ushort WORD;
+typedef uchar BYTE;
+
 #ifndef _WIN32
 using LPCSTR = const char*;
 using HANDLE = void*;
@@ -83,9 +89,6 @@ typedef enum GRHANDLETYPE {
 #define GrH_Banner 102
 #define GrH_Preview 105 
 
-
-typedef struct BMSMETA BMSMETA, *PBMSMETA;
-
 struct BMSMETA {
 	CSTR hash;
 	CSTR title;
@@ -115,15 +118,11 @@ struct BMSMETA {
 	int hasTxt;
 };
 
-typedef struct BPMtiming BPMtiming, *PBPMtiming;
-
 struct BPMtiming {
 	double converted;
 	double BPM;
 	double realtime;
 };
-
-typedef struct CONFIG_COURSE CONFIG_COURSE, *PCONFIG_COURSE;
 
 struct CONFIG_COURSE {
 	int defaultgauge;
@@ -141,39 +140,31 @@ struct CONFIG_COURSE {
 	int stage;
 };
 
-typedef struct CONFIG_INPUT CONFIG_INPUT, *PCONFIG_INPUT;
-
 struct CONFIG_INPUT {
 	int buttonMap[40][16];
 	int sys_inputinterval; 
 	int midi_control[40];
 };
 
-typedef struct CONFIG_JUKEBOX CONFIG_JUKEBOX, *PCONFIG_JUKEBOX;
-
 struct CONFIG_JUKEBOX {
-	CSTR path[1000]; 
-	int numOfPath;
-	int autoreload;
-	int customfolder;
+	CSTR path[1000];
+	int numOfPath{};
+	int autoreload{};
+	int customfolder{};
 	CSTR newsongfolder;
-	int titleflash;
-	int rival[20];
+	int titleflash{};
+	int rival[20]{};
 };
-
-typedef struct CONFIG_NETWORK CONFIG_NETWORK, *PCONFIG_NETWORK;
 
 struct CONFIG_NETWORK {
-	int lr1ir; 
-	CSTR lr1id; 
-	CSTR lr1pass; 
-	int lr2ir; 
-	CSTR mail; 
-	int autoupdate; 
-	int getrival; 
+	int lr1ir{};
+	CSTR lr1id;
+	CSTR lr1pass;
+	int lr2ir{};
+	CSTR mail;
+	int autoupdate{};
+	int getrival{};
 };
-
-typedef struct CONFIG_PLAY CONFIG_PLAY, *PCONFIG_PLAY;
 
 struct CONFIG_PLAY {
 	int hiSpeed[2];
@@ -186,11 +177,9 @@ struct CONFIG_PLAY {
 	int p1_lanecover;
 	int p2_lanecover;
 	int autokey;
-	int unknown_1;
 	int p1_assist;
 	int p2_assist;
 	int dpflip;
-	int unknown_2;
 	int hsfix; // 1:max 2:min 3:average 4:constant
 	int battle; // 1:battle 2:d-battle 3:sp-to-dp 4:g-battle
 	int autojudge;
@@ -219,7 +208,6 @@ struct CONFIG_PLAY {
 	int m_gambol;
 	int m_char;
 	int m_heartbeat;
-	int unk_c0;
 	int m_loudness;
 	int m_addnote;
 	int m_nabeatsu;
@@ -232,14 +220,10 @@ struct CONFIG_PLAY {
 	int m_extra;
 	char m_lunaris;
 	bool m_gas;
-	char unk_f1;
-	char unk_f2;
 	int gomiscore; 
 	int disablecurspeedchange; 
 	int disableleftclickexit; 
 };
-
-typedef struct CONFIG_PLAYER CONFIG_PLAYER, *PCONFIG_PLAYER;
 
 struct CONFIG_PLAYER {
 	CSTR id; 
@@ -250,8 +234,6 @@ struct CONFIG_PLAYER {
 	CSTR irpassMD5;
 	CSTR name; 
 };
-
-typedef struct CONFIG_SELECT CONFIG_SELECT, *PCONFIG_SELECT;
 
 struct CONFIG_SELECT {
 	int difficulty;
@@ -281,15 +263,11 @@ struct CONFIG_SELECT {
 	int disablesubtitle;
 };
 
-typedef struct CONFIG_SKIN CONFIG_SKIN, *PCONFIG_SKIN;
-
 struct CONFIG_SKIN {
 	int disableimagefont; 
 	CSTR fontname; 
 	CSTR skinFilePath[30];
 };
-
-typedef struct CONFIG_SOUND CONFIG_SOUND, *PCONFIG_SOUND;
 
 struct CONFIG_SOUND {
 	int disabledsp;
@@ -330,8 +308,6 @@ struct CONFIG_SOUND {
 	int fxp2_2;
 };
 
-typedef struct CONFIG_SYSTEM CONFIG_SYSTEM, *PCONFIG_SYSTEM;
-
 struct CONFIG_SYSTEM {
 	int screenmode;
 	int vsync; 
@@ -355,8 +331,6 @@ struct CONFIG_SYSTEM {
 	int softwarerendering; 
 };
 
-typedef struct CONFIG_TOOLS CONFIG_TOOLS, *PCONFIG_TOOLS;
-
 struct CONFIG_TOOLS {
 	CSTR mp3enc_body; 
 	CSTR mp3enc_option_normal; 
@@ -375,8 +349,6 @@ struct CONFIG_TOOLS {
 	int autofumensearch;
 };
 
-typedef struct ConfigStruct ConfigStruct, *PConfigStruct;
-
 struct ConfigStruct {
 	struct CONFIG_PLAY play;
 	struct CONFIG_SYSTEM system;
@@ -390,12 +362,6 @@ struct ConfigStruct {
 	struct CONFIG_COURSE course;
 	struct CONFIG_TOOLS tools;
 };
-
-typedef struct COURSESELECT COURSESELECT, *PCOURSESELECT;
-
-typedef struct SONGDATA SONGDATA, *PSONGDATA;
-
-typedef struct STATUS STATUS, *PSTATUS;
 
 struct STATUS {
 	int stat_pgreat;
@@ -499,17 +465,10 @@ struct COURSESELECT {
 	int type; /* 0:expert 1:nonstop 2:grade */
 };
 
-typedef struct CSVbuf CSVbuf, *PCSVbuf;
-
 struct CSVbuf {
 	int val[30];
 	CSTR str[30];
 };
-
-typedef struct DrawingBuf DrawingBuf, *PDrawingBuf;
-
-typedef struct DSTdraw DSTdraw, *PDSTdraw;
-
 struct DSTdraw { /* 80bytes,4*0x14 */
 	float x;
 	float y;
@@ -546,8 +505,6 @@ struct DrawingBuf {
 	char unkFF;
 };
 
-typedef struct DSTstruct DSTstruct, *PDSTstruct;
-
 struct DSTstruct { /* 44bytes.4*0x0b */
 	int n; /* (NULL) on file */
 	int opt1; /* dst_option */
@@ -562,8 +519,6 @@ struct DSTstruct { /* 44bytes.4*0x0b */
 	int dstCount;
 };
 
-typedef struct FontChar FontChar, *PFontChar;
-
 struct FontChar {
 	int srcX;
 	int srcY;
@@ -573,92 +528,10 @@ struct FontChar {
 	int grHandle;
 };
 
-typedef struct FontImage FontImage, *PFontImage;
-
 struct FontImage {
 	char filename[32];
 	int grHandle;
 };
-
-typedef struct game game, *Pgame;
-
-typedef struct SONGSELECT SONGSELECT, *PSONGSELECT;
-
-typedef struct skstruct skstruct, *Pskstruct;
-
-typedef struct SkinManage SkinManage, *PSkinManage;
-
-typedef struct inputStructure inputStructure, *PinputStructure;
-
-typedef struct Timer Timer, *PTimer;
-
-typedef struct RECORDING RECORDING, *PRECORDING;
-
-typedef struct TextStruct TextStruct, *PTextStruct;
-
-typedef struct AUDIO AUDIO, *PAUDIO;
-
-typedef struct AUDIO_PARAM AUDIO_PARAM, *PAUDIO_PARAM;
-
-typedef struct gameplay gameplay, *Pgameplay;
-
-typedef struct NETWORK NETWORK, *PNETWORK;
-
-typedef struct ImageFont ImageFont, *PImageFont;
-
-typedef struct SkinObject SkinObject, *PSkinObject;
-
-typedef struct SRCstruct SRCstruct, *PSRCstruct;
-
-typedef struct SkinAdjust SkinAdjust, *PSkinAdjust;
-
-typedef struct SkinHeader SkinHeader, *PSkinHeader;
-
-typedef struct README README, *PREADME;
-
-typedef struct OptionString OptionString, *POptionString;
-
-typedef struct SYSTEMSOUND SYSTEMSOUND, *PSYSTEMSOUND;
-
-typedef struct LaneStruct LaneStruct, *PLaneStruct;
-
-typedef struct SOUNDDATA SOUNDDATA, *PSOUNDDATA;
-
-typedef struct PLAYERSTATUS PLAYERSTATUS, *PPLAYERSTATUS;
-
-typedef struct GRAPHDATA GRAPHDATA, *PGRAPHDATA;
-
-typedef struct GRAPHDATAB GRAPHDATAB, *PGRAPHDATAB;
-
-typedef struct PLAYERSTATISTIC PLAYERSTATISTIC, *PPLAYERSTATISTIC;
-
-typedef struct REPLAY REPLAY, *PREPLAY;
-
-typedef struct PLAYSCORE PLAYSCORE, *PPLAYSCORE;
-
-typedef long LONG;
-
-typedef struct RANKING RANKING, *PRANKING;
-
-typedef struct MYRANKING MYRANKING, *PMYRANKING;
-
-typedef struct SkinCustom SkinCustom, *PSkinCustom;
-
-typedef ulong DWORD;
-
-typedef void * LPVOID;
-
-typedef struct NoteStruct NoteStruct, *PNoteStruct;
-
-typedef struct RAWSOUND RAWSOUND, *PRAWSOUND;
-
-typedef struct ReplayData ReplayData, *PReplayData;
-
-typedef ushort WORD;
-
-typedef struct RANKINGPLAYER RANKINGPLAYER, *PRANKINGPLAYER;
-
-typedef uchar BYTE;
 
 struct RECORDING {
 	double framerate;
@@ -708,20 +581,15 @@ struct LaneStruct {
 };
 
 struct RANKING {
-	CSTR unk_0;
-	CSTR unk_4;
 	struct RANKINGPLAYER * ranking;
 	int rankingCount;
 	int rankingMax;
 	int clearPlayers[6]; // 5fc 4hd 3gr 2ez 1fail 0no?
 	int totalPlaycount;
-	void * unused30;
 	int rankingCursor;
 	CSTR lastupdate;
 	int target_ID;
 	int target_number;
-	void * unused48;
-	void * unused44;
 	char showRanking; /* char */
 	int myRanking;
 	int myID;
@@ -748,7 +616,6 @@ struct RAWSOUND {
 	void MakeStereo(void);
 	void MakeSampleRate44100(void);
 };
-
 
 struct SOUNDDATA {
 	char load;
@@ -801,8 +668,6 @@ struct SkinAdjust {
 	int shift_y;
 	int judge_x;
 	int judge_y;
-	int unk18;
-	int unk1c;
 	int size_x;
 	int size_y;
 	int note_1p_x;
@@ -942,7 +807,6 @@ struct skstruct {
 	int textmergin_1;
 	int textmergin_2;
 	struct DrawingBuf drBuf;
-	int unused_disableimagefont;
 	CSTR fontname;
 	struct SkinAdjust adjust;
 	CSTR skinMD5;
@@ -1134,8 +998,6 @@ struct SONGSELECT {
 	char flag_folderlamp;
 	char flag_maniacPanel;
 	int maniac_cursor; 
-	char unk4f74; /* //clear screen flag? */
-	int unk4f78;
 	char fExtraCmdDone;
 	int oldIRrank;
 	int titleflash;
@@ -1143,9 +1005,7 @@ struct SONGSELECT {
 	int searchType; /* 0: 1: 2: 3:search 4:course */
 	CSTR curQuery[3];
 	CSTR unk4fa4[4];
-	CSTR unk4fb4;
 	int unk4fb8[2]; /* folder map? */
-	int unk4fc0;
 	char unk4fc4[3];
 	int searchFocused; /* about active? 2,4:multithread */
 	int filterDifficulty; 
@@ -1369,7 +1229,6 @@ struct gameplay {
 	int courseLayer1ChangeTime[10];
 	int courseLayer2ChangeTime[10]; /* not used. */
 	char isBgaPlaying;
-	int unused_73b68;
 	int lastMissTime;
 	int misslayerTime[2]; 
 	int lastMeasure;
@@ -1419,13 +1278,10 @@ struct gameplay {
 	char flag_0note;
 	float nabeatsu_x;
 	float nabeatsu_y;
-	float unusedX_7bf50;
-	float unusedY_7bf54;	
 	float earthquake_x;
 	float earthquake_y;
 	int bpmChangedRealtime; /* timer142 */
 	int bpmChangedBmstime; /* bpm change timing */
-	char unused_7bf68;
 	char ghostBattle; 
 	struct CONFIG_PLAY targetCfg; /* //1p_speed ~ struct */
 	int delayDetectedCount;
@@ -1499,38 +1355,32 @@ struct NETWORK {
 #ifdef _WIN32
 	WSADATA wsa;
 #endif // _WIN32
-	int isOnline;
-	int rankUpdateDelayLevel;
-	int waitTime;
+	bool isOnline{false};
+	int rankUpdateDelayLevel{0};
+	int waitTime{10000};
 	std::mutex criticalSection;
 	CSTR param;
 	CSTR httpResult;
-	int isRequestSuccess;
 	CSTR request_debug;
 	CSTR target_URL;
 	CSTR IR_pass;
 	CSTR IR_passMD5;
 	CSTR IR_name;
-	int IR_ID;
+	int IR_ID{0};
 	int rivals[20];
-	int rivalcount;
-	int getrival;
-	CSTR domain;
-	undefined unk234;
-	char waitForHandle;
-	int timeout;
+	int rivalcount{};
+	int getrival{};
+	CSTR domain = "www.dream-pro.info";
+	bool waitForHandle {false};
+	int timeout {15000};
 	CSTR request_result;
-	int loginResult;
 	struct RANKING rankingData;
 	struct MYRANKING myRanking;
 	std::jthread hHandle;
-	int IRstatus; /* 0:notIR 1:loading 2:loaded -1:playerNotExist -3:connection_fail -2:bansong 3:waitUpadate 4:connection 5:IRbusy */
+	int IRstatus {0}; /* 0:notIR 1:loading 2:loaded -1:playerNotExist -3:connection_fail -2:bansong 3:waitUpadate 4:connection 5:IRbusy */
 	CSTR IRresultMessage;
 
-
 	int GetInsaneList();
-
-	int Init();
 
 	void ParseRankingXml(const char* path);
 
@@ -1632,26 +1482,11 @@ struct RANKINGPLAYER {
 	CSTR comment; /* hash */
 };
 
-typedef struct glb_dbgame glb_dbgame, *Pglb_dbgame;
-
-struct glb_dbgame {
-	struct sqlite3 * pSql;
-	struct game * pGame;
-};
-
-typedef struct SkinUser SkinUser, *PSkinUser;
-
 struct SkinUser {
 	struct SkinAdjust adjust;
 	int customize_value[100];
 	CSTR customize_filename[100];
 };
-
-typedef struct CHARTCONVERTER CHARTCONVERTER, *PCHARTCONVERTER;
-
-typedef struct struct_0x14 struct_0x14, *Pstruct_0x14;
-
-typedef struct struct_0x14_2 struct_0x14_2, *Pstruct_0x14_2;
 
 struct struct_0x14 {
 	int ID;

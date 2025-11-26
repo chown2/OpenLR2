@@ -5,7 +5,7 @@ struct sqlite3;
 //song list
 int SwapBmsList(SONGSELECT * ss);
 int InitBmsList(SONGSELECT * ss);
-void CheckNewSong(glb_dbgame * glb);
+void CheckNewSong(struct glb_dbgame * glb);
 int InitSelectBySearchResult(game * g, sqlite3 * sql);
 
 int CmdSearch(game * g, CSTR * cmd, sqlite3 * sql);

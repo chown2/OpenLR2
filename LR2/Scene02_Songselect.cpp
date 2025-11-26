@@ -3,6 +3,14 @@
 #include "LR2.h"
 #include <stdio.h>
 
+#ifndef _WIN32
+#include "En_dxlibstub.h"
+#endif // _WIN32
+
+struct glb_dbgame {
+	struct sqlite3 * pSql;
+	struct game * pGame;
+};
 
 //401be0
 int SetTarget(game *g) {
@@ -630,7 +638,7 @@ int ShowReadmes(game *g) {
 	cstrSprintf(&search, "%s*.txt", g->txtStruct.readme.folderpath.body);
 	hFindFile = FindFirstFileA(search, (LPWIN32_FIND_DATAA)&FindFileData);
 	if (hFindFile == (HANDLE)-1) {
-		ErrorLogFmtAdd("テキストファイルが見つからない。%s\n", search);
+		ErrorLogFmtAdd("テキストファイルが見つからない。%s\n", search.body);
 		return -1;
 	}
 
@@ -1204,16 +1212,17 @@ int CmdSearch(game *g, CSTR *cmd, sqlite3 *sql) {
 
 				g->net.myRanking.ghost = ReadGhost(sql, g->sSelect.bmsList[g->sSelect.cur_song].hash);
 				CSTR scorehash;
-				cstrSprintf(&scorehash, "%s%s%d%d", g->net.IR_passMD5, g->net.myRanking.songMD5, g->net.myRanking.exscore, g->net.myRanking.clear);
+				cstrSprintf(&scorehash, "%s%s%d%d", g->net.IR_passMD5.body, g->net.myRanking.songMD5.body, g->net.myRanking.exscore, g->net.myRanking.clear);
 				scorehash = MD5str(scorehash);
+				// TOFIX: metadata not escaped. Consolidate with the other score sending function.
 				cstrSprintf(&g->net.param, "songmd5=%s&id=%d&passmd5=%s&title=%s&genre=%s&artist=%s&maxbpm=%d&minbpm=%d&&playlevel=%d&clear=%d&exscore=%d&pg=%d&gr=%d&gd=%d&bd=%d&pr=%d&maxcombo=%d&playcount=%d&clearcount=%d&rate=%d&minbp=%d&totalnotes=%d&opt_history=%d&opt_this=%d&line=%d&judge=%d&inputtype=%d&ghost=%s&rseed=%d&clear_db=%d&clear_ex=%d&clear_sd=%d&scorehash=%s",
-					g->net.myRanking.songMD5, g->net.IR_ID, g->net.IR_passMD5, g->net.myRanking.title, g->net.myRanking.genre, g->net.myRanking.artist, g->net.myRanking.maxbpm, g->net.myRanking.minbpm, g->net.myRanking.playlevel, g->net.myRanking.clear,
+					g->net.myRanking.songMD5.body, g->net.IR_ID, g->net.IR_passMD5.body, g->net.myRanking.title.body, g->net.myRanking.genre.body, g->net.myRanking.artist.body, g->net.myRanking.maxbpm, g->net.myRanking.minbpm, g->net.myRanking.playlevel, g->net.myRanking.clear,
 					g->net.myRanking.exscore, g->net.myRanking.pg, g->net.myRanking.gr, g->net.myRanking.gd, g->net.myRanking.bd, g->net.myRanking.pr, g->net.myRanking.maxcombo, g->net.myRanking.playcount, g->net.myRanking.clearcount, g->net.myRanking.rate,
-					g->net.myRanking.minbp, g->net.myRanking.totalnotes, g->net.myRanking.opt_history, g->net.myRanking.opt_this, g->net.myRanking.line, g->net.myRanking.judge, g->net.myRanking.inputtype, g->net.myRanking.ghost, g->net.myRanking.rseed,
-					g->net.myRanking.clear_db, g->net.myRanking.clear_ex, g->net.myRanking.clear_sd, scorehash);
+					g->net.myRanking.minbp, g->net.myRanking.totalnotes, g->net.myRanking.opt_history, g->net.myRanking.opt_this, g->net.myRanking.line, g->net.myRanking.judge, g->net.myRanking.inputtype, g->net.myRanking.ghost.body, g->net.myRanking.rseed,
+					g->net.myRanking.clear_db, g->net.myRanking.clear_ex, g->net.myRanking.clear_sd, scorehash.body);
 				g->net.target_URL = "http://www.dream-pro.info/~lavalse/LR2IR/2/score.cgi";
 				g->net.HTTPrequest();
-				printfDx("%sを送信中です…", g->net.myRanking.title);
+				printfDx("%sを送信中です…", g->net.myRanking.title.body);
 				ScreenFlip();
 				ClsDrawScreen();
 				clsDx();
@@ -1545,8 +1554,8 @@ void ThreadProc_RankingAutoUpdate(void *param) { // TODO: take game&
 	}
 	g->sSelect.isRankingAutoUpdateThread = 1;
 	CSTR path;
-	if (hash.length() < 50) cstrSprintf(&path, "LR2files/Ir/%s.xml", hash);
-	else cstrSprintf(&path, "LR2files/Ir/%s.xml", hash.makeCRCstr());
+	if (hash.length() < 50) cstrSprintf(&path, "LR2files/Ir/%s.xml", hash.body);
+	else cstrSprintf(&path, "LR2files/Ir/%s.xml", hash.makeCRCstr().body);
 	
 	if (path.canOpenFile()) {
 		if (hash.isSame(g->sSelect.bmsList[g->sSelect.cur_song].hash)) {
@@ -1749,9 +1758,7 @@ int ProcS_Select(game *g) {
 	
 	SetObjectString(30, g->sSelect.stack_searchTitle[g->sSelect.cur], g->txtStruct.objectStr);
 	SetTarget(g);
-#ifdef WIN32
 	DeleteKeyInput(g->txtStruct.hKeyInput);
-#endif // _WIN32
 	g->txtStruct.st_text_num = -1;
 	g->sSelect.metaSelected.artist = g->sSelect.bmsList[g->sSelect.cur_song].artist;
 	g->sSelect.metaSelected.filepath = g->sSelect.bmsList[g->sSelect.cur_song].filepath;
@@ -1778,7 +1785,7 @@ int ProcS_Select(game *g) {
 	if (g->sSelect.bmsList[g->sSelect.cur_song].isBanner && g->skstruct.reloadbanner == 1 && g->procSelecter == 2) {
 		g->hThreadBanner = std::jthread(ThreadProc_LoadBanner, g);
 	}
-	if (g->net.isOnline == 1 && g->procSelecter == 2) {
+	if (g->net.isOnline && g->procSelecter == 2) {
 		g->net.WaitAndInitRanking();
 		if (g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5 && (g->sSelect.bmsList[g->sSelect.cur_song].courseStageCount < 1 || g->sSelect.bmsList[g->sSelect.cur_song].courseIR)) {
 			g->net.IRstatus = 1;
@@ -1922,7 +1929,6 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					g->sSelect.unk4fa4[1] = sqlite3_snprintf(1024, buf, "SELECT path,date FROM folder WHERE parent = \'%s\'", g->sSelect.stack_query[g->sSelect.cur].right(9).left(8).body);
 					g->sSelect.unk4fa4[2] = sqlite3_snprintf(1024, buf, "SELECT path,date FROM folder WHERE parent = \'%s\'", g->sSelect.stack_query[g->sSelect.cur - 1].right(9).left(8).body);
 				}
-				g->sSelect.unk4fb4 = sqlite3_snprintf(1024, buf, "SELECT difficulty,folder,mode,path FROM song WHERE parent = \'%s\'", g->sSelect.stack_query[g->sSelect.cur].right(9).left(8).body);
 				g->sSelect.filter_clicked = 4;
 			}
 
@@ -2330,11 +2336,10 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					g->sSelect.filterDifficulty = g->config.select.difficulty;
 					if (g->sSelect.bmsList[g->sSelect.cur_song].tag.length() > 2 && g->sSelect.bmsList[g->sSelect.cur_song].tag.isDiff("(null)")) {
 						g->sSelect.queryCount = 3;
-						g->sSelect.curQuery[0] = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE %s", g->sSelect.bmsList[g->sSelect.cur_song].tag);
+						g->sSelect.curQuery[0] = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE %s", g->sSelect.bmsList[g->sSelect.cur_song].tag.body);
 						g->sSelect.curQuery[2] = sqlite3_snprintf(1024, buf, "SELECT * FROM folder WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath.body).body);
 						g->sSelect.curQuery[1] = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
 						(g->sSelect).unk4fb8[0] = 0;
-						(g->sSelect).unk4fc0 = 1;
 						(g->sSelect).unk4fb8[1] = 0;
 						(g->sSelect).unk4fc4[0] = 1;
 						(g->sSelect).unk4fc4[1] = 0;
@@ -2347,7 +2352,6 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 						g->sSelect.queryCount = 2;
 						g->sSelect.unk4fa4[1] = sqlite3_snprintf(1024, buf, "SELECT path,date FROM folder WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
 						g->sSelect.unk4fa4[0] = sqlite3_snprintf(1024, buf, "SELECT path,date FROM song WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
-						g->sSelect.unk4fb4 = sqlite3_snprintf(1024, buf, "SELECT difficulty,folder,mode,path FROM song WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
 						g->sSelect.curQuery[1] = sqlite3_snprintf(1024, buf, "SELECT * FROM folder WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
 						g->sSelect.curQuery[0] = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE parent = \'%s\'", AssignCRC32(g->sSelect.bmsList[g->sSelect.cur_song].filepath).body);
 						g->sSelect.unk4fb8[1] = 1;
@@ -2815,8 +2819,7 @@ int InitSelectBySearchResult(game *g, sqlite3 *sql) {
 			g->sSelect.filterDifficulty = 0;
 			g->config.select.difficulty = 0;
 		}
-		glb.pGame = g;
-		glb.pSql = sql;
+		glb_dbgame glb {sql, g};
 		CheckNewSong(&glb);
 		SetTimeLapse(170, &g->timer1);
 		ResetTimeLapse(171, &g->timer1);
@@ -2991,8 +2994,8 @@ int InitSelectBySearchResult(game *g, sqlite3 *sql) {
 				g->sSelect.stack_query[g->sSelect.cur] = g->sSelect.curQuery;
 				g->sSelect.stack_isFolder[g->sSelect.cur] = 0;
 
-				if (g->sSelect.bmsListCount < 2) cstrSprintf(&msg, "%s (1 HIT)", g->sSelect.searchInput);
-				else cstrSprintf(&msg, "%s (%d HITS)", g->sSelect.searchInput, g->sSelect.bmsListCount);
+				if (g->sSelect.bmsListCount < 2) cstrSprintf(&msg, "%s (1 HIT)", g->sSelect.searchInput.body);
+				else cstrSprintf(&msg, "%s (%d HITS)", g->sSelect.searchInput.body, g->sSelect.bmsListCount);
 
 				SetObjectString(g->txtStruct.st_text_num, msg, g->txtStruct.objectStr);
 				g->sSelect.stack_searchTitle[g->sSelect.cur] = msg;

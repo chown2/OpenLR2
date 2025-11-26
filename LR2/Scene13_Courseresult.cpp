@@ -96,7 +96,7 @@ int ProcS_subCourseResult(game *g, sqlite3 *sql) {
 	UpdatePlayerStat(&g->gameplay.playerstat, sql);
 
 	g->sSelect.oldIRrank = g->sSelect.bmsList[g->sSelect.cur_song].mybest.IRranking;
-	if (g->sSelect.bmsList[g->sSelect.cur_song].courseIR == 0 && g->net.isOnline == 1) {
+	if (g->sSelect.bmsList[g->sSelect.cur_song].courseIR == 0 && g->net.isOnline) {
 		g->sSelect.bmsList[g->sSelect.cur_song].mybest.IRranking = 0;
 		g->sSelect.oldIRrank = 0;
 
@@ -107,7 +107,7 @@ int ProcS_subCourseResult(game *g, sqlite3 *sql) {
 		g->net.rankingData.Init();
 	}
 
-	if (g->net.isOnline == 1 && g->is_starter == 0 && g->sSelect.bmsList[g->sSelect.cur_song].courseIR == 1) {
+	if (g->net.isOnline && g->is_starter == 0 && g->sSelect.bmsList[g->sSelect.cur_song].courseIR == 1) {
 		if (g->gameplay.flag_longsound) {
 			g->net.IRresultMessage = "このコースはIRに登録できません";
 			SetObjectString(20, g->net.IRresultMessage, g->txtStruct.objectStr);

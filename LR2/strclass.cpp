@@ -108,21 +108,14 @@ DWORD CSTR::CRC32() {
 	return ~uVar4;
 }
 
-//43ae70
 int CSTR::msize() {
 	if (body)	return _msize(body);
-	else	return 0;
+	return 0;
 }
 
-//43ae90
 bool CSTR::resize(size_t size) {
-	if (body) {
-		body = (char *)realloc(body, size);
-	}
-	else {
-		body = (char *)calloc(1, size);
-	}
-	return body != NULL;
+	body = (char *)realloc(body, size);
+	return body != nullptr;
 }
 
 //43aed0 //TODO: wrong usage?
@@ -351,47 +344,40 @@ int CSTR::findChrBackPos(const char ch) {
 	return -1;
 }
 
-//43b2b0 ****not in class****
 char * cstrSprintf(CSTR *str, const char *format, ...) {
-	size_t bSize;
-	char *pStr;
-	int iVar1;
-	size_t _Size;
+	if (str->body == nullptr && !str->resize(64)) {
+		return nullptr;
+	}
+
+	const size_t capacity = _msize(str->body);
 
 	va_list ap;
+	va_start(ap, format);
+	auto ret = vsnprintf(str->body, capacity, format, ap);
+	va_end(ap);
 
-	if (str->body == NULL) {
-		bSize = 0;
-	}
-	else {
-		bSize = _msize(str->body);
+	if (ret < 0) {
+		// (void)errno;
+		return nullptr;
 	}
 
-	if (str->body == (char *)0x0) {
-		pStr = (char *)calloc(1, 0x40);
-		str->body = pStr;
-		if (pStr == (char *)0x0) {
-			return (char *)str;
+	if (ret >= capacity)
+	{
+		const auto new_capacity = ret + 1;
+		if (!str->resize(new_capacity)) {
+			return nullptr;
 		}
-	}
-	do {
-		_Size = bSize + 0x80;
 		va_start(ap, format);
-		iVar1 = vsnprintf(str->body, bSize - 1, format, ap);
+		ret = vsnprintf(str->body, new_capacity, format, ap);
 		va_end(ap);
-		if (-1 < iVar1) {
-			return (char *)str;
-		}
-		if (str->body == (char *)0x0) {
-			pStr = (char *)calloc(1, _Size);
-		}
-		else {
-			pStr = (char *)realloc(str->body, _Size);
-		}
-		str->body = pStr;
-		bSize = _Size;
-	} while (pStr != (char *)0x0);
-	return (char *)str;
+	}
+
+	if (ret < 0) {
+		// (void)errno;
+		return nullptr;
+	}
+
+	return str->body;
 }
 
 //43b330

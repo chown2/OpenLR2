@@ -243,7 +243,7 @@ int SetUndefinedDifficulty(sqlite3 *sql) {
 			else {
 				difficulty = 2;
 			}
-			SQL_Run(sqlite3_snprintf(1024, str, "UPDATE song SET difficulty = %d WHERE path = \'%q\'", difficulty, SQL_GetColumn(3, pStmt)), sql);
+			SQL_Run(sqlite3_snprintf(1024, str, "UPDATE song SET difficulty = %d WHERE path = \'%q\'", difficulty, SQL_GetColumn(3, pStmt).body), sql);
 			folder = SQL_GetColumn(1, pStmt);
 			mode = sqlite3_column_int(pStmt, 2);
 		}
@@ -377,20 +377,20 @@ int UpdateSongDataTag(SONGDATA *song, sqlite3 *sql){
 	SQL_Run("BEGIN", sql);
 	if (song->keymode >= 5) {
 		sqlite3_snprintf(0x400, query, "UPDATE song SET title=\'%q\',subtitle=\'%q\',genre=\'%q\',artist=\'%q\',subartist=\'%q\',tag=\'%q\',level=%d,difficulty=%d,mode=%d,favorite=%d,exlevel=%d WHERE hash = \'%q\'",
-			song->title, song->subtitle, song->genre, song->artist, song->subartist, song->tag, song->level, song->difficulty, song->keymode, song->favorite, song->exlevel, song->hash);
+			song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->difficulty, song->keymode, song->favorite, song->exlevel, song->hash.body);
 		SQL_Run(query, sql);
 
 		sqlite3_snprintf(0x400, query, "INSERT INTO tag (hash,title,subtitle,genre,artist,subartist,tag,level,difficulty,mode,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d)",
-			song->hash, song->title, song->subtitle, song->genre, song->artist, song->subartist, song->tag, song->level, song->difficulty, song->keymode, song->exlevel);
+			song->hash.body, song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->difficulty, song->keymode, song->exlevel);
 		if (SQL_Run(query, sql) != 0) {
 			sqlite3_snprintf(0x400, query, "UPDATE tag SET title=\'%q\',subtitle=\'%q\',genre=\'%q\',artist=\'%q\',subartist=\'%q\',tag=\'%q\',level=%d,difficulty=%d,mode=%d WHERE hash = \'%q\'",
-				song->title, song->subtitle, song->genre, song->artist, song->subartist, song->tag, song->level, song->filepath, song->keymode, song->hash);
+				song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->filepath.body, song->keymode, song->hash.body);
 			SQL_Run(query, sql);
 		}
 	}
 	else {
 		sqlite3_snprintf(0x400, query, "UPDATE folder SET title=\'%q\',subtitle=\'%q\',category=\'%q\',info_a=\'%q\',info_b=\'%q\',command=\'%q\',max=%d WHERE path = \'%q\'",
-			song->title, song->subtitle, song->genre, song->artist, song->subartist, song->tag, song->level, song->filepath);
+			song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->filepath.body);
 		SQL_Run(query, sql);
 	}
 	SQL_Run("COMMIT", sql);
@@ -402,27 +402,12 @@ int EditTag(SONGDATA *song, sqlite3 *sql) {
 	sqlite3_stmt *stmt;
 	CSTR query;
 
-	auto last_write = [](const char* filepath) -> time_t {
-#ifdef _WIN32
-		_WIN32_FIND_DATAA findFileData;
-		HANDLE hFindFile = FindFirstFileA(filepath, &findFileData);
-		if (hFindFile == (HANDLE)-1) {
-			FindClose(hFindFile);
-			return -1;
-		}
-		FindClose(hFindFile);
-		return GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
-#else
-		return GetNowUnixtime(); // FIXME(linux): stub
-#endif // _WIN32
-	};
-
-	int wtime = last_write(song->filepath);
+	int wtime = GetFileUnixtime(song->filepath);
 	int ntime = GetNowUnixtime();
 	int temp;
 	if (song->folderType == 0 || song->folderType == 5) {
 
-		sqlite3_snprintf(1024, query, "SELECT adddate FROM song WHERE path = \'%q\'", song->filepath);
+		sqlite3_snprintf(1024, query, "SELECT adddate FROM song WHERE path = \'%q\'", song->filepath.body);
 		SQL_prepare(query, sql, &stmt);
 		temp = 0;
 		if (sqlite3_step(stmt) == 100) {
@@ -432,20 +417,20 @@ int EditTag(SONGDATA *song, sqlite3 *sql) {
 		BMSMETA meta;
 		ParseBMSMETA(&meta, song->filepath, 0);
 
-		sqlite3_snprintf(1024, query, "DELETE FROM song WHERE path=\'%q\'", song->filepath);
+		sqlite3_snprintf(1024, query, "DELETE FROM song WHERE path=\'%q\'", song->filepath.body);
 		SQL_Run(query, sql);
-		sqlite3_snprintf(1024, query, "DELETE FROM tag WHERE hash=\'%q\'", song->hash);
+		sqlite3_snprintf(1024, query, "DELETE FROM tag WHERE hash=\'%q\'", song->hash.body);
 		SQL_Run(query, sql);
 
 		sqlite3_snprintf(1024, query, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-			meta.hash, meta.title, meta.subtitle, meta.genre, meta.artist, meta.subartist, meta.selLevel, wtime, song->filepath, AssignCRC32(meta.folderpath).body, meta.stagefilepath,meta.bannerpath,meta.backBMPpath, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm,meta.minbpm, meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,temp,meta.exlevel);
+			meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, wtime, song->filepath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body,meta.bannerpath.body,meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm,meta.minbpm, meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,temp,meta.exlevel);
 		SQL_Run(query, sql);
 
 		if (meta.difficulty <= 0 || meta.difficulty > 5) {
 			SetUndefinedDifficulty(sql);
 		}
 
-		sqlite3_snprintf(1024, query, "SELECT difficulty FROM song WHERE path = \'%q\'", song->filepath);
+		sqlite3_snprintf(1024, query, "SELECT difficulty FROM song WHERE path = \'%q\'", song->filepath.body);
 		SQL_prepare(query, sql, &stmt);
 		temp = 0;
 		if (sqlite3_step(stmt) == 100) {
@@ -465,12 +450,12 @@ int EditTag(SONGDATA *song, sqlite3 *sql) {
 		song->difficulty = temp;
 	}
 	else if (IsLR2Folder(song->filepath)) {
-		sqlite3_snprintf(1024, query, "DELETE FROM folder WHERE path=\'%q\'", song->filepath);
+		sqlite3_snprintf(1024, query, "DELETE FROM folder WHERE path=\'%q\'", song->filepath.body);
 		SQL_Run(query, sql);
 		BMSMETA meta;
 		ParseBMSMETA(&meta, song->filepath, 0);
 		sqlite3_snprintf(1024, query, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , adddate ) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , %d) ",
-			song->filepath, meta.title, song->folder, meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, wtime, song->folderType, ntime);
+			song->filepath.body, meta.title.body, song->folder.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, wtime, song->folderType, ntime);
 		SQL_Run(query, sql);
 
 		song->title = meta.title;
@@ -483,7 +468,7 @@ int EditTag(SONGDATA *song, sqlite3 *sql) {
 		song->level = meta.selLevel;
 	}
 	else if (song->folderType == 1 || song->folderType == 2) {
-		sqlite3_snprintf(1024, query, "UPDATE folder SET title=\'%q\',subtitle=\'\',category=\'\',info_a=\'\',info_b=\'\',command=\'\',max=0 WHERE path = \'%q\'", song->filepath.getFilename(), song->filepath);
+		sqlite3_snprintf(1024, query, "UPDATE folder SET title=\'%q\',subtitle=\'\',category=\'\',info_a=\'\',info_b=\'\',command=\'\',max=0 WHERE path = \'%q\'", song->filepath.getFilename().body, song->filepath.body);
 		SQL_Run(query, sql);
 
 		song->title = song->filepath.getFilename();
@@ -808,55 +793,55 @@ int LoadFolderDataFromDB(CSTR query, SONGDATA *song, sqlite3 *sql, int difficult
 
 //4474a0
 int UninstallSong(CSTR path, sqlite3 *sql) {
-#ifdef _WIN32
-	SHFILEOPSTRUCTA sh;
 	char query[2048];
-	
+
 	CSTR dir(path.getDirectory());
 	CSTR crc(AssignCRC32(dir));
 
-	sqlite3_snprintf(2048, query, "DELETE FROM song WHERE folder=\'%q\'", crc);
+	sqlite3_snprintf(2048, query, "DELETE FROM song WHERE folder=\'%q\'", crc.body);
 	SQL_Run(query, sql);
 
-	sqlite3_snprintf(2048, query, "DELETE FROM folder WHERE path=\'%q\'", dir);
+	sqlite3_snprintf(2048, query, "DELETE FROM folder WHERE path=\'%q\'", dir.body);
 	SQL_Run(query, sql);
 
 	dir.nullAtPos(dir.length()-1);
 
-	memset(&sh, 0, sizeof(SHFILEOPSTRUCTA));
+#ifdef _WIN32
+	SHFILEOPSTRUCTA sh{};
 	sh.wFunc = FO_DELETE; //3
 	sh.pFrom = dir;
 	sh.pTo = NULL;
 	sh.fFlags = FOF_NOERRORUI | FOF_NOCONFIRMATION | FOF_SILENT; //0x414
 
 	return (SHFileOperationA(&sh) == 0);
-#else
-	// FIXME(linux): stub
+#else // TODO: check if error handling matches and then consolidate the two.
+	// std::error_code ec; // not tested. dear game, pls never delete my stuff
+	// std::filesystem::remove_all(dir.body, ec);
 	return {};
 #endif // _WIN32
 }
 
 //4476b0
 int Rename(CSTR path, sqlite3 *sql) {
-#ifdef _WIN32
-	SHFILEOPSTRUCTA sh;
 	char query[2048];
 
 	CSTR newpath(path);
 	newpath.add("_");
 
-	sqlite3_snprintf(2048, query, "DELETE FROM song WHERE path=\'%q\'", path);
+	sqlite3_snprintf(2048, query, "DELETE FROM song WHERE path=\'%q\'", path.body);
 	SQL_Run(query, sql);
-	
-	memset(&sh, 0, sizeof(SHFILEOPSTRUCTA));
+
+#ifdef _WIN32
+	SHFILEOPSTRUCTA sh{};
 	sh.wFunc = FO_RENAME; //4
 	sh.pFrom = path;
 	sh.pTo = newpath;
 	sh.fFlags = FOF_NOERRORUI | FOF_NOCONFIRMATION | FOF_SILENT; //0x414
 
 	return (SHFileOperationA(&sh) == 0);
-#else
-	// FIXME(linux): stub
+#else // TODO: check if error handling matches and then consolidate the two.
+	std::error_code ec;
+	std::filesystem::rename(path.body, newpath.body, ec);
 	return {};
 #endif // _WIN32
 }
@@ -909,13 +894,13 @@ int GetSongData(CSTR songMD5, SONGDATA *song, sqlite3 *sql, SONGSELECT *ss) {
 			song->isBackBMP = 1;
 
 		if(song->subtitle.isDiff("(null)"))
-			cstrSprintf(&song->fulltitle,"%s %s", song->title, song->subtitle);
+			cstrSprintf(&song->fulltitle,"%s %s", song->title.body, song->subtitle.body);
 		else
 			song->fulltitle = song->title;
 
 		song->tag = SQL_GetColumn(6, stmt);
 		song->difficulty = sqlite3_column_int(stmt, 15);
-		cstrSprintf(&replayPath, "LR2files/Replay/%s/%s.lr2rep", ss->playerID, song->hash);
+		cstrSprintf(&replayPath, "LR2files/Replay/%s/%s.lr2rep", ss->playerID.body, song->hash.body);
 		song->replayExist = IsFileExist(replayPath);
 		if (song->keymode > 0) {
 			song->mybest.clear = sqlite3_column_int(stmt, 30);
@@ -981,31 +966,31 @@ int WriteCourse(sqlite3 *sql, COURSESELECT course, SONGDATA *song, CSTR passmd5,
 
 	if (course.id < 0) {
 		if (course.type == 1) 
-			cstrSprintf(&hash, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d00000000000000%s", connection, connection, connection, connection, connection, 0, 0, 0, 0, 0, 1, 0, 0, 0, passmd5.left(4));
+			cstrSprintf(&hash, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d00000000000000%s", connection, connection, connection, connection, connection, 0, 0, 0, 0, 0, 1, 0, 0, 0, passmd5.left(4).body);
 		else 
-			cstrSprintf(&hash, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d00000000000000%s", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, course.type, 0, 0, 0, passmd5.left(4));
+			cstrSprintf(&hash, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d00000000000000%s", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, course.type, 0, 0, 0, passmd5.left(4).body);
 
 		for (int i = 0; i < course.count; i++) hash.add(course.data[i].hash);
 
 		if (course.type == 0) 
-			query = sqlite3_snprintf(1024, t, "INSERT INTO expert (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name, hash, course.data[0].keymode);
+			query = sqlite3_snprintf(1024, t, "INSERT INTO expert (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name.body, hash.body, course.data[0].keymode);
 		else if (course.type == 1) 
-			query = sqlite3_snprintf(1024, t, "INSERT INTO nonstop (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name, hash, course.data[0].keymode);
+			query = sqlite3_snprintf(1024, t, "INSERT INTO nonstop (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name.body, hash.body, course.data[0].keymode);
 		else if (course.type == 2) 
-			query = sqlite3_snprintf(1024, t, "INSERT INTO grade (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name, hash, course.data[0].keymode);
+			query = sqlite3_snprintf(1024, t, "INSERT INTO grade (title,hash,line,ir) VALUES (\'%q\' , \'%q\', %d,0)", course.name.body, hash.body, course.data[0].keymode);
 	}
 	else {
 		cstrSprintf(&hash, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d00000000000000%s", song->courseKeys[0], song->courseKeys[1], song->courseKeys[2], song->courseKeys[3], song->courseKeys[4], song->courseKeys[5],
-			song->courseKeys[6], song->courseKeys[7], song->courseKeys[8], song->courseKeys[9], song->courseType, 0, 0, 0, passmd5.left(4));
+			song->courseKeys[6], song->courseKeys[7], song->courseKeys[8], song->courseKeys[9], song->courseType, 0, 0, 0, passmd5.left(4).body);
 
 		for (int i = 0; i < song->courseStageCount; i++) hash.add(song->courseHash[i]);
 
 		if (course.type == 0) 
-			query = sqlite3_snprintf(1024, t, "UPDATE expert SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title, hash, song->courseIR, course.id);
+			query = sqlite3_snprintf(1024, t, "UPDATE expert SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title.body, hash.body, song->courseIR, course.id);
 		else if (course.type == 1) 
-			query = sqlite3_snprintf(1024, t, "UPDATE nonstop SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title, hash, song->courseIR, course.id);
+			query = sqlite3_snprintf(1024, t, "UPDATE nonstop SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title.body, hash.body, song->courseIR, course.id);
 		else if (course.type == 2) 
-			query = sqlite3_snprintf(1024, t, "UPDATE grade SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title, hash, song->courseIR, course.id);
+			query = sqlite3_snprintf(1024, t, "UPDATE grade SET title=\'%q\',hash=\'%q\',ir=%d WHERE id = %d", song->title.body, hash.body, song->courseIR, course.id);
 	}
 
 	SQL_Run(query, sql);
@@ -1021,13 +1006,13 @@ int ChangeCourseTitle(sqlite3* sql, CSTR title, int id, int coursetype) {
 	CSTR query;
 
 	if (coursetype == 0) {
-		sqlite3_snprintf(0x400, str, "UPDATE expert SET title=\'%q\' WHERE id = %d",title, id);
+		sqlite3_snprintf(0x400, str, "UPDATE expert SET title=\'%q\' WHERE id = %d",title.body, id);
 	}
 	else if (coursetype == 1) {
-		sqlite3_snprintf(0x400, str, "UPDATE nonstop SET title=\'%q\' WHERE id = %d", title, id);
+		sqlite3_snprintf(0x400, str, "UPDATE nonstop SET title=\'%q\' WHERE id = %d", title.body, id);
 	}
 	else if (coursetype == 2) {
-		sqlite3_snprintf(0x400, str, "UPDATE grade SET title=\'%q\' WHERE id = %d", title, id);
+		sqlite3_snprintf(0x400, str, "UPDATE grade SET title=\'%q\' WHERE id = %d", title.body, id);
 	}
 
 	query = str;
@@ -1165,7 +1150,7 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 	int count = 0;
 	
 
-	ErrorLogFmtAdd("曲の検索を行います。パス%s\n", root);
+	ErrorLogFmtAdd("曲の検索を行います。パス%s\n", root.body);
 	ErrorLogTabAdd();
 	if (root.right(1).isDiff("/")) root.add("/");
 
@@ -1181,22 +1166,22 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 				searchPath = root;
 				searchPath.add(findFileData.cFileName);
 				filetime = GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
-				ErrorLogFmtAdd("曲を発見しました。　パス:%s\n", searchPath);
+				ErrorLogFmtAdd("曲を発見しました。　パス:%s\n", searchPath.body);
 				ParseBMSMETA(&meta, searchPath, 1);
 				LoadBMSMETAFromDB(&meta, sql);
 				sqlite3_snprintf(2048, str, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-					meta.hash, meta.title, meta.subtitle, meta.genre, meta.artist, meta.subartist, meta.selLevel, filetime, searchPath, AssignCRC32(meta.folderpath), meta.stagefilepath, meta.bannerpath, meta.backBMPpath, AssignCRC32(meta.parentfolderpath), meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, meta.hasTxt, meta.notecount, now, meta.exlevel);
+					meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, filetime, searchPath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, meta.hasTxt, meta.notecount, now, meta.exlevel);
 				SQL_Run(str, sql);
 				count++;
 			}
 			else if (((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) && IsLR2Folder(findFileData.cFileName)){
 				searchPath = root;
 				searchPath.add(findFileData.cFileName);
-				ErrorLogFmtAdd("カスタムフォルダを発見しました。　パス:%s\n", searchPath);
+				ErrorLogFmtAdd("カスタムフォルダを発見しました。　パス:%s\n", searchPath.body);
 				filetime = GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
 				ParseBMSMETA(&meta, searchPath, 1);
 				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , 2 , \'%q\' , %d) ",
-					searchPath, meta.title, AssignCRC32(path), meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, filetime, meta.bannerpath, now);
+					searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.bannerpath.body, now);
 				if (SQL_Run(str, sql) == 0) {
 					ErrorLogFmtAdd("追加失敗 エラー内容 %s\n", sqlite3_errmsg(sql));
 				}
@@ -1207,7 +1192,7 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 		else {
 			searchPath = root;
 			searchPath.add(findFileData.cFileName).add("/");
-			ErrorLogFmtAdd("フォルダを発見しました。　パス:%s\n", searchPath);
+			ErrorLogFmtAdd("フォルダを発見しました。　パス:%s\n", searchPath.body);
 			
 			CSTR folderinfo(searchPath);
 			folderinfo.add("folderinfo.txt");
@@ -1218,7 +1203,7 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 				if (meta.judge != 2) meta.judge = 1;
 
 				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
-					searchPath, meta.title, AssignCRC32(path), meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, filetime, meta.judge, meta.bannerpath, now);
+					searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.judge, meta.bannerpath.body, now);
 				if (SQL_Run(str, sql) == 0) {
 					ErrorLogAdd("再帰検索を行います。\n");
 					CSTR subPath(root);
@@ -1227,7 +1212,7 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 				}
 			}
 			else {
-				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , date , type  , adddate) VALUES(\'%q\',\'%q\',\'%q\',%d , 1 , %d )", searchPath, findFileData.cFileName, AssignCRC32(path), filetime, now);
+				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , date , type  , adddate) VALUES(\'%q\',\'%q\',\'%q\',%d , 1 , %d )", searchPath.body, findFileData.cFileName, AssignCRC32(path).body, filetime, now);
 				if (SQL_Run(str, sql) == 0) {
 					ErrorLogAdd("再帰検索を行います。\n");
 					CSTR subPath(root);
@@ -1253,62 +1238,58 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 
 	sqlite3_stmt *pStmt;
-	int newTime, time;
 	char sBuf[1024];
-	int chg = 0;
 	int cAlready = 0, cNot = 0, cChange = 0;
 
 	GetTimeWrap();
 	SQL_prepare(query, sql, &pStmt);
-	int now = GetNowUnixtime();
+	const int now = GetNowUnixtime();
 
 	while (sqlite3_step(pStmt) == 100) {
-		time = sqlite3_column_int(pStmt, 1);
+		const int time = sqlite3_column_int(pStmt, 1);
 		CSTR str = SQL_GetColumn(0, pStmt);
 		if (!str.left(8).isSame("LR2files")) {
-			int flgFile = 0, flgFolder = 0;
-			
-			if (IsBmsFile(str)) 
-				flgFile = 1;
-			else if(IsLR2Folder(str))
-				flgFolder = 1;
+			const bool is_bms_file = IsBmsFile(str);
+			const bool is_lr2folder = IsLR2Folder(str);
 
-			int isJbPath = 0;
+			int is_path_in_jukebox = 0;
 			for (int i = 0; i < jb->numOfPath; i++) {
 				if (str.left(jb->path[i].length()).isSame(&jb->path[i])) {
-					isJbPath = 1;
+					is_path_in_jukebox = 1;
 				}
 			}
-			if (jb->numOfPath == 0 || isJbPath){
-				chg = IsFileChanged(time, str, &newTime);
+
+			if (jb->numOfPath == 0 || is_path_in_jukebox){
+				int newTime;
+				const int chg = IsFileChanged(time, str, &newTime);
 				if (chg == 0) {
 					cAlready++;
 				}
 				else if (chg == 1) {
 					cNot++;
-					if (flgFile) {
-						SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM song WHERE path=\'%q\'", str), sql); 
+					if (is_bms_file) {
+						SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM song WHERE path=\'%q\'", str.body), sql); 
 					}
 					else {
-						SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str), sql);
+						SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str.body), sql);
 					}
 				}
 				else if (chg == 2) {
 					cChange++;
-					if (flgFile) {
-						SQL_Run(sqlite3_snprintf(1024, sBuf, "DELETE FROM song WHERE path=\'%q\'", str), sql);
+					if (is_bms_file) {
+						SQL_Run(sqlite3_snprintf(1024, sBuf, "DELETE FROM song WHERE path=\'%q\'", str.body), sql);
 						BMSMETA meta;
 						ParseBMSMETA(&meta, str, 1);
 						LoadBMSMETAFromDB(&meta, sql);
 						SQL_Run(sqlite3_snprintf(1024, sBuf, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-							meta.hash, meta.title, meta.subtitle, meta.genre, meta.artist, meta.subartist, meta.selLevel, newTime, str, AssignCRC32(meta.folderpath).body, meta.stagefilepath, meta.bannerpath, meta.backBMPpath,AssignCRC32(meta.parentfolderpath),meta.maxbpm,meta.minbpm,meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,now,meta.exlevel), sql);
+							meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, newTime, str.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body,AssignCRC32(meta.parentfolderpath).body,meta.maxbpm,meta.minbpm,meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,now,meta.exlevel), sql);
 					}
-					else if (flgFolder) {
-						SQL_Run(sqlite3_snprintf(1024, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str), sql);
+					else if (is_lr2folder) {
+						SQL_Run(sqlite3_snprintf(1024, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str.body), sql);
 						BMSMETA meta;
 						ParseBMSMETA(&meta, str, 1);
 						SQL_Run(sqlite3_snprintf(1024, sBuf, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , 2 , %s , %d) ",
-							str, meta.title, AssignCRC32(meta.folderpath).body, meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, newTime, meta.bannerpath, now), sql);
+							str.body, meta.title.body, AssignCRC32(meta.folderpath).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, newTime, meta.bannerpath.body, now), sql);
 					}
 					else {
 						CSTR folderinfo(str);
@@ -1318,12 +1299,12 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 							ParseBMSMETA(&meta, folderinfo, 0);
 							if (meta.judge != 2) meta.judge = 1;
 							if (SQL_Run(sqlite3_snprintf(512, sBuf, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type  , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
-								str, meta.title, AssignCRC32(meta.folderpath), meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, newTime, meta.judge, meta.bannerpath, now), sql) == 0) {
+								str.body, meta.title.body, AssignCRC32(meta.folderpath).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, newTime, meta.judge, meta.bannerpath.body, now), sql) == 0) {
 								SearchSongsFromPath(str, sql, str);
 							}
 						}
 						else {
-							if (SQL_Run(sqlite3_snprintf(512, sBuf, "UPDATE folder SET date = %d , adddate = %d WHERE path = \'%q\'", newTime, now, str), sql) == 0) {
+							if (SQL_Run(sqlite3_snprintf(512, sBuf, "UPDATE folder SET date = %d , adddate = %d WHERE path = \'%q\'", newTime, now, str.body), sql) == 0) {
 								SearchSongsFromPath(str, sql, str);
 							}
 						}
@@ -1332,11 +1313,11 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 				
 			}
 			else {
-				if (flgFile) {
-					SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM song WHERE path=\'%q\'", str), sql);
+				if (is_bms_file) {
+					SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM song WHERE path=\'%q\'", str.body), sql);
 				}
 				else {
-					SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str), sql);
+					SQL_Run(sqlite3_snprintf(512, sBuf, "DELETE FROM folder WHERE path=\'%q\'", str.body), sql);
 				}
 			}
 		}
@@ -1513,10 +1494,10 @@ int SearchCourseFromDB(sqlite3 *sql, SONGSELECT *ss, int keys, int multistagemod
 		}
 
 		if (multistagemode == 1) { //nonstop
-			cstrSprintf(&str, "LR2files/Replay/%s/%s.lr2rep", ss->playerID, MD5str(song.hash));
+			cstrSprintf(&str, "LR2files/Replay/%s/%s.lr2rep", ss->playerID.body, MD5str(song.hash));
 		}
 		else {
-			cstrSprintf(&str, "LR2files/Replay/%s/c/%s", ss->playerID, MD5str(song.hash));
+			cstrSprintf(&str, "LR2files/Replay/%s/c/%s", ss->playerID.body, MD5str(song.hash));
 		}
 		song.replayExist = IsFileExist(str);
 		song.mybest.clear = sqlite3_column_int(pStmt, 6);
@@ -1644,14 +1625,14 @@ int LoadBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *difficulty,
 			for (int i = 0; i < ss->prevListCount; i++) {
 				CSTR query(1024);
 				if (ss->prevList[i].tag.isDiff("(null)") && ss->prevList[i].tag.length() >= 5) {
-					query = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE %s", ss->prevList[i].tag);
+					query = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE %s", ss->prevList[i].tag.body);
 					if (query.findStrPos("__NEWSONG__") > -1) {
 						query = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE adddate > %d", GetNowUnixtime() - ss->titleflash * 3600);
 					}
 					LoadFolderDataFromDB(query, &ss->prevList[i], sql, *difficulty, *key, sort, ss->prevList[i].level, &ss->filter, 1);
 				}
 				else {
-					query = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE parent = \'%s\'", AssignCRC32(ss->prevList[i].filepath));
+					query = sqlite3_snprintf(1024, buf, "SELECT * FROM song LEFT JOIN score ON song.hash = score.hash WHERE parent = \'%s\'", AssignCRC32(ss->prevList[i].filepath).body);
 					LoadFolderDataFromDB(query, &ss->prevList[i], sql, *difficulty, *key, sort, 0, &ss->filter, 0);
 				}
 			}
@@ -1762,7 +1743,7 @@ int GetFolderDataFromPath(CSTR path, sqlite3 *sql) {
 	char str[1024];
 	int filetime, now;
 
-	ErrorLogFmtAdd("ルートの読み込みを行います。パス%s\n", path);
+	ErrorLogFmtAdd("ルートの読み込みを行います。パス%s\n", path.body);
 	ErrorLogTabAdd();
 	BMSMETA meta;
 	CSTR searchPath(path);
@@ -1789,7 +1770,7 @@ int GetFolderDataFromPath(CSTR path, sqlite3 *sql) {
 		if (meta.judge != 2) meta.judge = 1;
 
 		sqlite3_snprintf(1024, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
-			path, meta.title, AssignCRC32("ROOT"), meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, filetime, meta.judge, meta.bannerpath, now);
+			path.body, meta.title.body, AssignCRC32("ROOT").body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.judge, meta.bannerpath.body, now);
 		if (SQL_Run(str, sql) == 0) {
 			ErrorLogFmtAdd("新規登録なので検索を行います。\n");
 			SearchSongsFromPath(path, sql, path);
@@ -1807,14 +1788,14 @@ int GetFolderDataFromPath(CSTR path, sqlite3 *sql) {
 			else if (meta.tag.isSame("__EXPERT__") || meta.tag.isSame("__NONSTOP__") || meta.tag.isSame("__GRADE__")) meta.judge = 6;
 
 			sqlite3_snprintf(1024, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
-				path, meta.title, AssignCRC32("ROOT"), meta.genre, meta.artist, meta.subartist, meta.tag, meta.selLevel, filetime, meta.judge, meta.bannerpath, now);
+				path.body, meta.title.body, AssignCRC32("ROOT").body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.judge, meta.bannerpath.body, now);
 			SQL_Run(str, sql);
 		}
 		else if (((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) && (strcmp("..", findFileData.cFileName) && strcmp(".", findFileData.cFileName))) {
 			ErrorLogFmtAdd("通常フォルダです。\n");
 
 			sqlite3_snprintf(1024, str, "INSERT INTO folder (path , title , parent , date , type , adddate) VALUES(\'%q\',\'%q\',\'%q\',%d , 1 , %d )",
-				path, path.getFilename(), AssignCRC32("ROOT"), filetime, now);
+				path.body, path.getFilename().body, AssignCRC32("ROOT").body, filetime, now);
 			if (SQL_Run(str, sql) == 0) {
 				ErrorLogFmtAdd("新規登録なので検索を行います。\n");
 				SearchSongsFromPath(path, sql, path);
@@ -2068,13 +2049,13 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 					if (song.backBMP.isDiff("(null)") && song.backBMP.length() > 4) song.isBackBMP = 1;
 
 					if (song.subtitle.isDiff("(null)"))
-						cstrSprintf(&song.fulltitle, "%s %s", song.title, song.subtitle);
+						cstrSprintf(&song.fulltitle, "%s %s", song.title.body, song.subtitle.body);
 					else
 						song.fulltitle = song.title;
 
 					song.tag = SQL_GetColumn(6, pStmt);
 					song.difficulty = sqlite3_column_int(pStmt, 15);
-					cstrSprintf(&replayPath, "LR2files/Replay/%s/%s.lr2rep", ss->playerID, song.hash);
+					cstrSprintf(&replayPath, "LR2files/Replay/%s/%s.lr2rep", ss->playerID.body, song.hash.body);
 					song.replayExist = IsFileExist(replayPath);
 					thisFolder = SQL_GetColumn(9, pStmt);
 					song.folder = thisFolder;
@@ -2572,7 +2553,7 @@ int LoadLR2CustomFolder(sqlite3 *sql, CONFIG_JUKEBOX *jb, CSTR scoreDBpath, char
 		sqlite3_close(scoreDB);
 		sqlite3_close(tagDB);
 
-		sqlite3_snprintf(256, query2, "ATTACH \'%q\' AS scoredb", scoreDBpath);
+		sqlite3_snprintf(256, query2, "ATTACH \'%q\' AS scoredb", scoreDBpath.body);
 		if (SQL_Run(query2, sql) != 0) {
 			ErrorLogAdd("スコアデータベースの接続に失敗しました。\n");
 			return -1;
@@ -2595,19 +2576,20 @@ int LoadLR2CustomFolder(sqlite3 *sql, CONFIG_JUKEBOX *jb, CSTR scoreDBpath, char
 			CSTR path;
 			path = SQL_GetColumn(6, pStmt);
 
-			bool notJukebox = 1;
+			bool is_path_not_in_jukebox = 1;
 
 			for (int i = 0; i < jb->numOfPath; i++) {
 				if (path.isSame(&jb->path[i]))
-					notJukebox = 0;
+					is_path_not_in_jukebox = 0;
 			}
-			if(notJukebox) {
-				ErrorLogFmtAdd("エラーフォルダを削除します。%s\n", path);
-				sqlite3_snprintf(1024, query, "DELETE FROM folder WHERE path = \'%s\'", path);
+
+			if(is_path_not_in_jukebox) {
+				ErrorLogFmtAdd("エラーフォルダを削除します。%s\n", path.body);
+				sqlite3_snprintf(1024, query, "DELETE FROM folder WHERE path = \'%s\'", path.body);
 				SQL_Run(query, sql);
 			}
 			else {
-				ErrorLogFmtAdd("ジュークボックスに登録されています。%s\n", path);
+				ErrorLogFmtAdd("ジュークボックスに登録されています。%s\n", path.body);
 			}
 		}
 		sqlite3_finalize(pStmt);
@@ -2707,7 +2689,7 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 	bool flagIf;
 
 	if (flag) {
-		printfDx("Now Loading...\n%s\n",filepath);
+		printfDx("Now Loading...\n%s\n",filepath.body);
 		if (hBackImage > 0) {
 			DrawGraph(0, 0, hBackImage, 0);
 		}

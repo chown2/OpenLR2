@@ -1,5 +1,4 @@
 ﻿#include "LR2_skinload.h"
-#include "Engine.h"
 #include "LR2_skindraw.h"
 #include "LR2_configsave.h"
 
@@ -467,8 +466,6 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	(sk->adjust).shift_y = 0;
 	(sk->adjust).judge_x = 0;
 	(sk->adjust).judge_y = 0;
-	(sk->adjust).unk18 = 0; //name
-	(sk->adjust).unk1c = 0; //name
 	(sk->adjust).size_x = 0;
 	(sk->adjust).size_y = 0;
 	(sk->adjust).dark_type = 0;
@@ -543,10 +540,6 @@ int InitImageFont(ImageFont *imgfont) {
 
 //4a0480
 int ReadImageFont(CSTR filename, ImageFont *imgfont) {
-#ifndef _WIN32 // TODO(linux): check if needed
-	filename.replace("\\" ,"/");
-#endif // _WIN32
-
 	CSTR str1;
 	
 	str1 = filename.getDirectory();
@@ -566,7 +559,7 @@ int ReadImageFont(CSTR filename, ImageFont *imgfont) {
 
 		int f = FileRead_open(filename);
 		if (f == 0) {
-			ErrorLogFmtAdd("画像フォントファイル%sの読み込みに失敗しました\n",filename);
+			ErrorLogFmtAdd("画像フォントファイル%sの読み込みに失敗しました\n",filename.body);
 			return -1;
 		}
 		
@@ -937,6 +930,13 @@ int ExpandSkinObjectMax(SkinObject *so, int add) {
 	return 1;
 }
 
+static void adjust_input_filepath(CSTR& path)
+{
+#ifndef _WIN32
+	path.replace("\\", "/");
+#endif // _WIN32
+}
+
 //4a11c0 ReadSkin // maybe unsatble
 int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku, char flag_skipFont) {
 	FILE *pFile;
@@ -954,7 +954,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 	IFCOUNT = 0;
 	sk->op[0] = 1;
 	sk->op[999] = 0;
-	ErrorLogFmtAdd("スキンの読み込みを開始します。 %s\n", FilePath);
+	ErrorLogFmtAdd("スキンの読み込みを開始します。 %s\n", FilePath.body);
 	ErrorLogTabAdd();
 
 	pFile = fopen(FilePath, "r");
@@ -962,7 +962,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 	line = 0;
 
 	if (!pFile) {
-		ErrorLogFmtAdd("スキンの読み込みに失敗しました。 %s\n", FilePath);
+		ErrorLogFmtAdd("スキンの読み込みに失敗しました。 %s\n", FilePath.body);
 		ErrorLogTabSub();
 		return 0;
 	}
@@ -1010,7 +1010,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							IFCOUNT++;
 						}
 						else {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nネスト可能な#IFの上限に達しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nネスト可能な#IFの上限に達しました。\n", line, fBuf.body);
 							if (IFSWITCH[IFCOUNT] > 1) {
 								*fBuf.atPos(0) = '\0';
 								continue;
@@ -1031,11 +1031,11 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 								}
 							}
 						}
-						else ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf);
+						else ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf.body);
 					}
 					else if (fBuf.left(5).isSame("#ELSE") && IFSWITCH[IFCOUNT] != 3) {
 						if (IFCOUNT == 0) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf.body);
 						}
 						else {
 							IFSWITCH[IFCOUNT] = (IFSWITCH[IFCOUNT] == 1) ? 3 : 1;
@@ -1043,7 +1043,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(6).isSame("#ENDIF")) {
 						if (IFCOUNT == 0) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n対応する#IFが見つかりません。\n", line, fBuf.body);
 						}
 						else {
 							IFSWITCH[IFCOUNT] = 0;
@@ -1063,13 +1063,11 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 				if (!fBuf.left(1).isDiff("#")) {
 					if (fBuf.left(6).isSame("#IMAGE")) {
 						if (sk->count == 100) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#IMAGEを登録できません。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#IMAGEを登録できません。\n", line, fBuf.body);
 						}
 						else {
 							SplitCSV(fBuf, &csv, ",");
-#ifndef _WIN32 // TODO(linux): check if needed
-							csv.str[1].replace("\\" ,"/");
-#endif // _WIN32
+							adjust_input_filepath(csv.str[1]);
 							if (csv.str[1].isSame("CONTINUE")) {
 								sk->caption[sk->count].assign("CONTINUE");
 								sk->count++;
@@ -1100,7 +1098,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(5).isSame("#FONT") && !flag_skipFont) {
 						if (sk->num_of_struct == 10) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#FONTを登録できません。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#FONTを登録できません。\n", line, fBuf.body);
 						}
 						else {
 							SplitCSV(fBuf, &csv, ",");
@@ -1116,10 +1114,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->image.src[sk->image.srcSize], &csv, sk);
 						if (sk->image.src[sk->image.srcSize].graphcount < 1 || sk->image.src[sk->image.srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->image.srcSize > 0 && (sk->image.dst[sk->image.srcSize - 1].dstCount < 1 || sk->image.dst[sk->image.srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_IMAGEに対応した#DST_IMAGEが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_IMAGEに対応した#DST_IMAGEが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->image.srcSize++;
 					}
@@ -1128,10 +1126,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->image.dst[sk->image.srcSize - 1], &csv, tSkin_num);
 						if (sk->image.dst[sk->image.srcSize - 1].dstCount < 1 || sk->image.dst[sk->image.srcSize - 1].dataSize < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。DSTの一番最初がエラーを起こしている可能性があります。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。DSTの一番最初がエラーを起こしている可能性があります。\n", line, fBuf.body);
 						}
 						else if (sk->image.dst[sk->image.srcSize - 1].dstCount == oldDstCount){
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。この行の登録のみ失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。この行の登録のみ失敗しました。\n", line, fBuf.body);
 						}
 					}
 					else if (fBuf.left(9).isSame("#SRC_TEXT")) {
@@ -1156,10 +1154,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[2].src[sk->otherObject[2].srcSize], &csv, sk);
 						if (sk->otherObject[2].src[sk->otherObject[2].srcSize].graphcount < 1 || sk->otherObject[2].src[sk->otherObject[2].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[2].srcSize > 0 && (sk->otherObject[2].dst[sk->otherObject[2].srcSize - 1].dstCount < 1 || sk->otherObject[2].dst[sk->otherObject[2].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_SLIDERに対応した#DST_SLIDERが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_SLIDERに対応した#DST_SLIDERが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[2].srcSize++;
 					}
@@ -1171,10 +1169,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[1].src[sk->otherObject[1].srcSize], &csv, sk);
 						if (sk->otherObject[1].src[sk->otherObject[1].srcSize].graphcount < 1 || sk->otherObject[1].src[sk->otherObject[1].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[1].srcSize > 0 && (sk->otherObject[1].dst[sk->otherObject[1].srcSize - 1].dstCount < 1 || sk->otherObject[1].dst[sk->otherObject[1].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BUTTONに対応した#DST_BUTTONが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BUTTONに対応した#DST_BUTTONが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[1].srcSize++;
 					}
@@ -1187,10 +1185,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[3].src[sk->otherObject[3].srcSize], &csv, sk);
 						if (sk->otherObject[3].src[sk->otherObject[3].srcSize].graphcount < 1 || sk->otherObject[3].src[sk->otherObject[3].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[3].srcSize > 0 && (sk->otherObject[3].dst[sk->otherObject[3].srcSize - 1].dstCount < 1 || sk->otherObject[3].dst[sk->otherObject[3].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[3].srcSize++;
 					}
@@ -1202,10 +1200,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[4].src[sk->otherObject[4].srcSize], &csv, sk);
 						if (sk->otherObject[4].src[sk->otherObject[4].srcSize].graphcount < 1 || sk->otherObject[4].src[sk->otherObject[4].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[4].srcSize > 0 && (sk->otherObject[4].dst[sk->otherObject[4].srcSize - 1].dstCount < 1 || sk->otherObject[4].dst[sk->otherObject[4].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[4].srcSize++;
 					}
@@ -1218,10 +1216,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[6].src[sk->otherObject[6].srcSize], &csv, sk);
 						if (sk->otherObject[6].src[sk->otherObject[6].srcSize].graphcount < 1 || sk->otherObject[6].src[sk->otherObject[6].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しました。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[6].srcSize > 0 && (sk->otherObject[6].dst[sk->otherObject[6].srcSize - 1].dstCount < 1 || sk->otherObject[6].dst[sk->otherObject[6].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_NUMBERに対応した#DST_NUMBERが 存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_NUMBERに対応した#DST_NUMBERが 存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[6].srcSize++;
 					}
@@ -1242,10 +1240,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[5].src[sk->otherObject[5].srcSize], &csv, sk);
 						if (sk->otherObject[5].src[sk->otherObject[5].srcSize].graphcount < 1 || sk->otherObject[5].src[sk->otherObject[5].srcSize].count < 1) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しまし た。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n画像の登録に失敗しまし た。\n", line, fBuf.body);
 						}
 						if (sk->otherObject[5].srcSize > 0 && (sk->otherObject[5].dst[sk->otherObject[5].srcSize - 1].dstCount < 1 || sk->otherObject[5].dst[sk->otherObject[5].srcSize - 1].dataSize < 1)) {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_BARGRAPHに対応した#DST_BARGRAP Hが存在しないか、登録に失敗したようです\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_BARGRAPHに対応した#DST_BARGRAP Hが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[5].srcSize++;
 					}
@@ -1683,9 +1681,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(8).isSame("#LR2FONT") && !flag_skipFont) {
 						SplitCSV(fBuf, &csv, ",");
-#ifndef _WIN32 // TODO(linux): check if needed
-						csv.str[1].replace("\\" ,"/");
-#endif // _WIN32
+						adjust_input_filepath(csv.str[1]);
 						if (sk->num_of_ImageFont == 10) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上の登録はできません。\n", line, fBuf.body);
 						}
@@ -1708,9 +1704,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						}
 					}
 					else if (fBuf.left(9).isSame("#HELPFILE")) {
-#ifndef _WIN32 // TODO(linux): check if needed
-						csv.str[1].replace("\\" ,"/");
-#endif // _WIN32
+						adjust_input_filepath(csv.str[1]);
 						SplitCSV(fBuf, &csv, ",");
 						if (sk->helpfileCount < 10) {
 							sk->helpfilePath[sk->helpfileCount].assign(&csv.str[1]);
@@ -1745,9 +1739,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(8).isSame("#INCLUDE")) {
 						SplitCSV(fBuf, &csv, ",");
-#ifndef _WIN32 // TODO(linux): check if needed
-						csv.str[1].replace("\\" ,"/");
-#endif // _WIN32
+						adjust_input_filepath(csv.str[1]);
 						for (int i = 0; i < sk->customfile_count; i++) {
 							if (sk->customfileRANDOM[i].isSame(csv.str[1].left(sk->customfileRANDOM[i].length()))
 								&& sk->customfile[i].isDiff("RANDOM") && sk->customfile[i].isDiff("ERROR")
@@ -1765,9 +1757,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(11).isSame("#CUSTOMFILE")) {
 						SplitCSV(fBuf, &csv, ",");
-#ifndef _WIN32 // TODO(linux): check if needed
-						csv.str[2].replace("\\" ,"/");
-#endif // _WIN32
+						adjust_input_filepath(csv.str[2]);
 						sk->customfileRANDOM[sk->customfile_count].assign(&csv.str[2]);
 						sk->customfile[sk->customfile_count].assign(&sku->customize_filename[sk->customfile_count]);
 						if (sk->customfile[sk->customfile_count].isSame("RANDOM")) {
@@ -1777,9 +1767,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					else if (fBuf.left(13).isSame("#CUSTOMFOLDER")) {
 						SplitCSV(fBuf, &csv, ",");
-#ifndef _WIN32 // TODO(linux): check if needed
-						csv.str[2].replace("\\" ,"/");
-#endif // _WIN32
+						adjust_input_filepath(csv.str[2]);
 						sk->customfileRANDOM[sk->customfile_count].assign(&csv.str[2]);
 						sk->customfile[sk->customfile_count].assign(&sku->customize_filename[sk->customfile_count]);
 						sk->customfile_count++;
@@ -1793,7 +1781,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							sk->op[csv.val[1]] = (csv.val[2] != 0);
 						}
 						else {
-							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n#SETOPTIONの第一引数(オプション値)は900～999の範囲内にして下さい。\n", line, fBuf);
+							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n#SETOPTIONの第一引数(オプション値)は900～999の範囲内にして下さい。\n", line, fBuf.body);
 						}
 					}
 					else if (fBuf.left(13).isSame("#SRC_BAR_RANK")) {

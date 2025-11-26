@@ -242,8 +242,6 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	gp->nabeatsu_x = 0.0;
 	gp->nabeatsu_y = 0.0;
 	gp->isNosave = '\0'; //TOFIX : ?
-	gp->unusedX_7bf50 = 0.0;
-	gp->unusedY_7bf54 = 0.0;
 	gp->earthquake_x = 0.0;
 	gp->earthquake_y = 0.0;
 	
@@ -395,8 +393,6 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	}
 	gp->rategraph[0].cursor = 0;
 	gp->rategraph[1].cursor = 0;
-	gp->unused_73b68 = 0;
-	gp->unused_7bf68 = 0;
 	for (int i = 0; i < 6480; i++) {
 		gp->keysound_filename[i].fillzero();
 		gp->BMP_filename[i].fillzero();
@@ -609,8 +605,6 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 	gp->bgaMixer[9] = 0;
 	gp->bgaMixer[0] = 100;
 
-	gp->unused_7bf68 = '\0';
-	gp->unused_73b68 = 0;
 	gp->lanecoverDisplayP1 = true;
 	gp->lanecoverDisplayP2 = true;
 	gp->flag_threadDoingProcGame = false;
@@ -710,8 +704,6 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 	gp->nabeatsu_y = 0.0;
 	gp->bpmChangedRealtime = -1;
 	gp->bpmChangedBmstime = -1;
-	gp->unusedX_7bf50 = 0.0;
-	gp->unusedY_7bf54 = 0.0;
 	gp->earthquake_x = 0.0;
 	gp->earthquake_y = 0.0;
 	
@@ -1127,7 +1119,6 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 
 			for (int j = cur; j <= i-1; j++) {
 
-				gp->bmsobj.notes[j].bmsTiming;
 				if (gp->bmsobj.notes[j].op == 1 && gp->bmsobj.notes[j].bmsTiming >= 0) {
 					
 					int newLane = laneOfSound[(int)gp->bmsobj.notes[j].val];
@@ -1388,14 +1379,12 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 				}
 				ErrorLogFmtAdd("つめるレーンは%d\n", emptyLane);
 				for (int j = prev; j < i; j++) {
-					gp->bmsobj.notes[j].op;
 					if (emptyLane + 10 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
 						gp->bmsobj.notes[j].op--;
 					}
 				}
 				ErrorLogFmtAdd("さらに全体左シフト\n");
 				for (int j = prev; j < i; j++) {
-					gp->bmsobj.notes[j].op;
 					if (11 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
 						gp->bmsobj.notes[j].op--;
 					}
@@ -1433,13 +1422,11 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 					}
 					ErrorLogFmtAdd("つめるレーンは%dと%d\n", emptyLaneL, emptyLaneR);
 					for (int j = prev; j < i; j++) {
-						gp->bmsobj.notes[j].op;
 						if (emptyLaneL + 10 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
 							gp->bmsobj.notes[j].op--;
 						}
 					}
 					for (int j = prev; j < i; j++) {
-						gp->bmsobj.notes[j].op;
 						if (emptyLaneR + 9 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
 							gp->bmsobj.notes[j].op--;
 						}
@@ -1738,7 +1725,6 @@ int SPtoDP(LaneStruct *lane, int baseNoteID, CHARTCONVERTER *cc) {
 	for (int i = 0; i < 1296; i++) {
 		if (cc->arr1[i].count > 0) {
 			if (fB && cc->arr2[cc->arr1[i].ID].field3_0xc != -1 && i == 0) {
-				cc->arr2[cc->arr1[i].ID].field3_0xc;
 				unkArr[cc->arr2[cc->arr1[0].ID].field3_0xc] += cc->arr1[0].count; //really 0. not i
 				cc->arr1[0].field3_0xc = cc->arr2[cc->arr1[i].ID].field3_0xc;
 			}
@@ -2034,7 +2020,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 			else {
 				filename = gp->courseFilepath[gp->courseStageNow];
-				ErrorLogFmtAdd("エキスパ:ステージ=%d、フルパス=%s\n", gp->courseStageNow, filename);
+				ErrorLogFmtAdd("エキスパ:ステージ=%d、フルパス=%s\n", gp->courseStageNow, filename.body);
 			}
 		}
 		hFile = fopen(filename, "r");
@@ -3366,10 +3352,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	for (int i = 0; i < 30; i++) intArr[i] = -1;
 	memset(mapAdded, 0, sizeof(mapAdded));
 	char chArr[20] = { 0, };
-	int unkFbuf = 0; //rename this unused one
-	int unused_LaneA[10], unused_LaneB[10], unused_swapLane[10];
-	for (int i = 0; i < 10; i++) unused_LaneA[i] = -1;
-	for (int i = 0; i < 10; i++) unused_LaneB[i] = -1;
 	int isBattle = 0;
 
 
@@ -3381,11 +3363,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		if (optemp < 10 || optemp >= 30) {
 			if (optemp == 2) {
 				if (cfg->play.battle == 3 && (meta->keymode == 5 || meta->keymode == 7) && gp->isCourse == 0) {
-					for (int j = 0; j < 10; j++) {
-						unused_swapLane[j] = unused_LaneA[j];
-						unused_LaneA[j] = unused_LaneB[j];
-						unused_LaneB[j] = unused_swapLane[j];
-					}
 					SPtoDP(&gp->bmsobj, i, &cc);
 				}
 
@@ -3417,9 +3394,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							chArr[lane] = 0;
 						}
 					}
-					
-					if (unkFbuf == 1 || unkFbuf == 2) unkFbuf += 2;
-					else unkFbuf = 0;
 				}
 			}
 			else {
@@ -3438,9 +3412,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							chArr[10 + lane] = 0;
 						}
 					}
-
-					if (unkFbuf == 1 || unkFbuf == 2) unkFbuf += 2;
-					else unkFbuf = 0;
 				}
 			}
 
@@ -3533,7 +3504,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 			
-			gp->bmsobj.notes[i].op;
 			chArr[gp->bmsobj.notes[i].op - 10] = 1;
 			if (meta->keymode == 14) {
 				if (gp->bmsobj.notes[i].op == 10) {
@@ -3950,9 +3920,6 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						if (gp->bmsobj_note[i].count == gp->bmsobj_note[i].size) {
 							ExpandNoteBuffer(&gp->bmsobj_note[i], 1000);
 						}
-						gp->bmsobj_note[i].notes;
-						gp->bmsobj_note[i].notes[j + 1].realTiming_ln;
-						gp->bmsobj_note[i].notes[j + 1].realTiming;
 
 						if (gp->bmsobj_note[i].notes[j + 1].realTiming_ln > gp->bmsobj_note[i].notes[j + 1].realTiming) {
 							if (200.0 < gp->bmsobj_note[i].notes[j + 1].realTiming - gp->bmsobj_note[i].notes[j].realTiming_ln) {

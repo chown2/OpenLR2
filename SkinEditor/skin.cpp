@@ -245,7 +245,7 @@ int LR2SEDrawLoop(game* g, int gHandle) {
 			printfDx("ノート位置(2P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", g->skstruct.adjust.note_2p_x, g->skstruct.adjust.note_2p_y);
 		}
 	}
-	if (g->KeyInput.inputID[KEY_INPUT_F1] == '\x02' && g->sSelect.flag_maniacPanel == '\0' && g->sSelect.unk4f74 == '\0' && g->is_starter == '\0') {
+	if (g->KeyInput.inputID[KEY_INPUT_F1] == '\x02' && g->sSelect.flag_maniacPanel == '\0' && g->is_starter == '\0') {
 		printfDx((g->sSelect.bmsList[g->sSelect.cur_song].folderType == 8) ?
 			"F2 マニアックオプション F3 コースのソート変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6  スクリーンショット F7 FPS表示\nF8 フォルダのリロード\n"
 			: "F2 マニアックオプション F3 レベルの変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6 スク リーンショット F7 FPS表示\nF8 フォルダのリロード\n");
@@ -254,7 +254,6 @@ int LR2SEDrawLoop(game* g, int gHandle) {
 		printfDx("FPS %d\n", (int)g->timer1.FPS);
 	}
 	g->sSelect.flag_maniacPanel = 0;
-	g->sSelect.unk4f74 = '\0';
 	if (g->procSelecter == 2) {
 		if ((g->KeyInput.inputID[KEY_INPUT_F5] == 1 || g->sSelect.is_buttonIRpage != 0) && g->sSelect.bmsList[g->sSelect.cur_song].keymode > 4 && g->config.network.lr2ir == 1) {
 			if (g->config.system.screenmode == 0) {
@@ -317,12 +316,12 @@ int LR2SEDrawLoop(game* g, int gHandle) {
 			g->sSelect.is_buttonIRpage = 0;
 			InitInputStructure2(&g->KeyInput);
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-			if (g->sSelect.flag_maniacPanel || g->sSelect.unk4f74) ClsDrawScreen();
+			if (g->sSelect.flag_maniacPanel) ClsDrawScreen();
 		}
 		else if (g->KeyInput.inputID[KEY_INPUT_F2] == 2) {
 			g->sSelect.flag_maniacPanel = 1;
 			Print_ManiacOptions(g);
-			if (g->sSelect.flag_maniacPanel || g->sSelect.unk4f74) ClsDrawScreen();
+			if (g->sSelect.flag_maniacPanel) ClsDrawScreen();
 		}
 		else if (g->KeyInput.inputID[KEY_INPUT_F3] == 2) {
 			if (g->sSelect.bmsList[g->sSelect.cur_song].folderType == 8) {
@@ -332,7 +331,7 @@ int LR2SEDrawLoop(game* g, int gHandle) {
 				if (g->config.select.disabledifficultyfilter == 0) printfDx("カーソルキー↑↓ 難度カテゴリの変更\nカーソルキー←→ レベルの変更\n");
 				else printfDx("カーソルキー←→ レベルの変更\n");
 			}
-			if (g->sSelect.flag_maniacPanel || g->sSelect.unk4f74) ClsDrawScreen();
+			if (g->sSelect.flag_maniacPanel) ClsDrawScreen();
 		}
 	}
 	GetTimeWrap();

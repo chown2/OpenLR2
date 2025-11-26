@@ -1,37 +1,46 @@
 ﻿#include "LR2_replay.h"
 #include "Engine.h"
 
+#include <filesystem>
+#include <system_error>
+
 //4c03c0 //TODO suspection about usage of cstrsprintf
-int MoveReplayFile(CSTR songMD5, CSTR localID){
-#ifdef _WIN32
+int MoveReplayFile(CSTR songMD5, CSTR localID) {
 	if (songMD5.length() > 36) {
 		songMD5 = MD5str(songMD5);
 	}
 
-	CSTR path;
-	cstrSprintf(&path, "LR2files/Replay/%s/c", localID);
-	CreateDirectoryA(path, 0);
-	cstrSprintf(&path, "LR2files/Replay/%s/c/%s", localID,songMD5);
-	CreateDirectoryA(path, 0);
+	{
+		CSTR path;
+
+		cstrSprintf(&path, "LR2files/Replay/%s/c", localID.body);
+		std::error_code ec; // ignore errors
+		std::filesystem::create_directories(path.body, ec);
+
+		cstrSprintf(&path, "LR2files/Replay/%s/c/%s", localID.body, songMD5.body);
+		std::filesystem::create_directories(path.body, ec);
+	}
 
 	CSTR pathFrom;
 	int stage = 0;
-	cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID, stage);
+	cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID.body, stage);
 	while (pathFrom.canOpenFile()) {
 		CSTR pathTo;
-		cstrSprintf(&pathTo, "LR2files/Replay/%s/c/%s/%d.lr2rep", localID, songMD5, stage);
+		cstrSprintf(&pathTo, "LR2files/Replay/%s/c/%s/%d.lr2rep", localID.body, songMD5.body, stage);
+#ifdef _WIN32
 		MoveFileA(pathFrom, pathTo); //TOFIX : if file already exists at pathTo, it fails.
+#else // TODO: consolidate these two. Didn't check what fs::rename does if target already exists.
+		std::error_code ec; // ignore errors
+		std::filesystem::rename(pathFrom.body, pathTo.body, ec);
+#endif // _WIN32
 		ErrorLogFmtAdd("リプレイの移動 stage%d\n", stage);
 
 		stage++;
-		cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID, stage);
+		cstrSprintf(&pathFrom, "LR2files/Replay/%s/__%d.lr2rep", localID.body, stage);
 	}
 	ErrorLogFmtAdd("リプレイの移動終了 stage%d\n", stage);
 
 	return (stage != 0);
-#else
-	return {}; // FIXME(linux): stub
-#endif
 }
 
 //4c05e0
@@ -44,7 +53,7 @@ int LoadReplayFileCourse(REPLAY *rp, CSTR songMD5, int stage, CSTR localID){
 	}
 
 	CSTR path;
-	cstrSprintf(&path, "LR2files/Replay/%s/c/%s/%d.lr2rep", localID, songMD5, stage);
+	cstrSprintf(&path, "LR2files/Replay/%s/c/%s/%d.lr2rep", localID.body, songMD5.body, stage);
 
 	if (!IsFileExist(path)) return 0;
 
@@ -82,7 +91,7 @@ int LoadReplayFile(REPLAY *rp, CSTR songMD5, CSTR localID) {
 	}
 
 	CSTR path;
-	cstrSprintf(&path, "LR2files/Replay/%s/%s.lr2rep", localID, songMD5);
+	cstrSprintf(&path, "LR2files/Replay/%s/%s.lr2rep", localID.body, songMD5.body);
 
 	if (!IsFileExist(path)) return 0;
 
@@ -119,7 +128,7 @@ int SaveReplay(REPLAY *rp, CSTR songMD5, CSTR localID) {
 	}
 
 	CSTR path;
-	cstrSprintf(&path, "LR2files/Replay/%s/%s.lr2rep", localID, songMD5);
+	cstrSprintf(&path, "LR2files/Replay/%s/%s.lr2rep", localID.body, songMD5.body);
 	pFile = fopen(path, "wb");
 	if (pFile == NULL) {
 		ErrorLogAdd("リプレイデータの保存に失敗しました。\n");
@@ -183,58 +192,58 @@ int AddReplayData(REPLAY *rp, int timing, uchar op, short value){
 
 //4c0c70
 int AddReplayDataHeader(CONFIG_PLAY *cfg, REPLAY *rp, AUDIO *snd, gameplay *gp){
-	AddReplayData(rp, 0, 0x64, *(short *)&cfg->hiSpeed[0]);
-	AddReplayData(rp, 0, 0x96, *(short *)&cfg->hiSpeed[1]);
-	AddReplayData(rp, 0, 0x67, *(short *)&cfg->random[0]);
-	AddReplayData(rp, 0, 0x99, *(short *)&cfg->random[1]);
-	AddReplayData(rp, 0, 0x68, *(short *)&cfg->m_HIDSUD1);
-	AddReplayData(rp, 0, 0x9a, *(short *)&cfg->m_HIDSUD2);
-	AddReplayData(rp, 0, 0x65, *(short *)&cfg->gaugeOption[0]);
-	AddReplayData(rp, 0, 0x97, *(short *)&cfg->gaugeOption[1]);
-	AddReplayData(rp, 0, 0x66, *(short *)&cfg->p1_lanecoverv);
-	AddReplayData(rp, 0, 0x98, *(short *)&cfg->p2_lanecoverv);
-	AddReplayData(rp, 0, 0x6b, *(short *)&cfg->p1_assist);
-	AddReplayData(rp, 0, 0x9d, *(short *)&cfg->p2_assist);
-	AddReplayData(rp, 0, 0x6a, *(short *)&cfg->randSC[0]);
-	AddReplayData(rp, 0, 0x9c, *(short *)&cfg->randSC[1]);
-	AddReplayData(rp, 0, 0x69, *(short *)&cfg->randFix[0]);
-	AddReplayData(rp, 0, 0x9b, *(short *)&cfg->randFix[1]);
-	AddReplayData(rp, 0, 0xc9, *(short *)&cfg->battle);
-	AddReplayData(rp, 0, 0xca, *(short *)&gp->isAutoplay);
-	AddReplayData(rp, 0, 0xcb, *(short *)&cfg->hsfix);
-	AddReplayData(rp, 0, 0xcc, *(short *)&cfg->is_extra);
-	AddReplayData(rp, 0, 0xcd, *(short *)&cfg->m_extra);
-	AddReplayData(rp, 0, 0xce, *(short *)&cfg->dpflip);
-	AddReplayData(rp, 0, 0x28, *(short *)&snd->param.fx_volume_on);
-	AddReplayData(rp, 0, 0x29, *(short *)&snd->param.volume_master);
-	AddReplayData(rp, 0, 0x2a, *(short *)&snd->param.volume_key);
-	AddReplayData(rp, 0, 0x2b, *(short *)&snd->param.volume_BGM);
-	AddReplayData(rp, 0, 0x32, *(short *)&snd->param.eq_on);
-	AddReplayData(rp, 0, 0x33, *(short *)&snd->param.eq_gain[0]);
-	AddReplayData(rp, 0, 0x34, *(short *)&snd->param.eq_gain[1]);
-	AddReplayData(rp, 0, 0x35, *(short *)&snd->param.eq_gain[2]);
-	AddReplayData(rp, 0, 0x36, *(short *)&snd->param.eq_gain[3]);
-	AddReplayData(rp, 0, 0x37, *(short *)&snd->param.eq_gain[4]);
-	AddReplayData(rp, 0, 0x38, *(short *)&snd->param.eq_gain[5]);
-	AddReplayData(rp, 0, 0x39, *(short *)&snd->param.eq_gain[6]);
-	AddReplayData(rp, 0, 0x3c, *(short *)&snd->param.fx_on[0]);
-	AddReplayData(rp, 0, 0x3d, *(short *)&snd->param.fxType[0]);
-	AddReplayData(rp, 0, 0x3e, *(short *)&snd->param.fxParam[0][0]);
-	AddReplayData(rp, 0, 0x3f, *(short *)&snd->param.fxParam[0][1]);
-	AddReplayData(rp, 0, 0x40, *(short *)&snd->param.fxChannel[0]);
-	AddReplayData(rp, 0, 0x46, *(short *)&snd->param.fx_on[1]);
-	AddReplayData(rp, 0, 0x47, *(short *)&snd->param.fxType[1]);
-	AddReplayData(rp, 0, 0x48, *(short *)&snd->param.fxParam[1][0]);
-	AddReplayData(rp, 0, 0x49, *(short *)&snd->param.fxParam[1][1]);
-	AddReplayData(rp, 0, 0x4a, *(short *)&snd->param.fxChannel[1]);
-	AddReplayData(rp, 0, 0x50, *(short *)&snd->param.fx_on[2]);
-	AddReplayData(rp, 0, 0x51, *(short *)&snd->param.fxType[2]);
-	AddReplayData(rp, 0, 0x52, *(short *)&snd->param.fxParam[2][0]);
-	AddReplayData(rp, 0, 0x53, *(short *)&snd->param.fxParam[2][1]);
-	AddReplayData(rp, 0, 0x54, *(short *)&snd->param.fxChannel[2]);
-	AddReplayData(rp, 0, 0x5a, *(short *)&snd->param.pitch_on);
-	AddReplayData(rp, 0, 0x5b, *(short *)&snd->param.pitch_amount);
-	AddReplayData(rp, 0, 0x5c, *(short *)&snd->param.pitch_type);
+	AddReplayData(rp, 0, 0x64, static_cast<short>(cfg->hiSpeed[0]));
+	AddReplayData(rp, 0, 0x96, static_cast<short>(cfg->hiSpeed[1]));
+	AddReplayData(rp, 0, 0x67, static_cast<short>(cfg->random[0]));
+	AddReplayData(rp, 0, 0x99, static_cast<short>(cfg->random[1]));
+	AddReplayData(rp, 0, 0x68, static_cast<short>(cfg->m_HIDSUD1));
+	AddReplayData(rp, 0, 0x9a, static_cast<short>(cfg->m_HIDSUD2));
+	AddReplayData(rp, 0, 0x65, static_cast<short>(cfg->gaugeOption[0]));
+	AddReplayData(rp, 0, 0x97, static_cast<short>(cfg->gaugeOption[1]));
+	AddReplayData(rp, 0, 0x66, static_cast<short>(cfg->p1_lanecoverv));
+	AddReplayData(rp, 0, 0x98, static_cast<short>(cfg->p2_lanecoverv));
+	AddReplayData(rp, 0, 0x6b, static_cast<short>(cfg->p1_assist));
+	AddReplayData(rp, 0, 0x9d, static_cast<short>(cfg->p2_assist));
+	AddReplayData(rp, 0, 0x6a, static_cast<short>(cfg->randSC[0]));
+	AddReplayData(rp, 0, 0x9c, static_cast<short>(cfg->randSC[1]));
+	AddReplayData(rp, 0, 0x69, static_cast<short>(cfg->randFix[0]));
+	AddReplayData(rp, 0, 0x9b, static_cast<short>(cfg->randFix[1]));
+	AddReplayData(rp, 0, 0xc9, static_cast<short>(cfg->battle));
+	AddReplayData(rp, 0, 0xca, static_cast<short>(gp->isAutoplay));
+	AddReplayData(rp, 0, 0xcb, static_cast<short>(cfg->hsfix));
+	AddReplayData(rp, 0, 0xcc, static_cast<short>(cfg->is_extra));
+	AddReplayData(rp, 0, 0xcd, static_cast<short>(cfg->m_extra));
+	AddReplayData(rp, 0, 0xce, static_cast<short>(cfg->dpflip));
+	AddReplayData(rp, 0, 0x28, static_cast<short>(snd->param.fx_volume_on));
+	AddReplayData(rp, 0, 0x29, static_cast<short>(snd->param.volume_master));
+	AddReplayData(rp, 0, 0x2a, static_cast<short>(snd->param.volume_key));
+	AddReplayData(rp, 0, 0x2b, static_cast<short>(snd->param.volume_BGM));
+	AddReplayData(rp, 0, 0x32, static_cast<short>(snd->param.eq_on));
+	AddReplayData(rp, 0, 0x33, static_cast<short>(snd->param.eq_gain[0]));
+	AddReplayData(rp, 0, 0x34, static_cast<short>(snd->param.eq_gain[1]));
+	AddReplayData(rp, 0, 0x35, static_cast<short>(snd->param.eq_gain[2]));
+	AddReplayData(rp, 0, 0x36, static_cast<short>(snd->param.eq_gain[3]));
+	AddReplayData(rp, 0, 0x37, static_cast<short>(snd->param.eq_gain[4]));
+	AddReplayData(rp, 0, 0x38, static_cast<short>(snd->param.eq_gain[5]));
+	AddReplayData(rp, 0, 0x39, static_cast<short>(snd->param.eq_gain[6]));
+	AddReplayData(rp, 0, 0x3c, static_cast<short>(snd->param.fx_on[0]));
+	AddReplayData(rp, 0, 0x3d, static_cast<short>(snd->param.fxType[0]));
+	AddReplayData(rp, 0, 0x3e, static_cast<short>(snd->param.fxParam[0][0]));
+	AddReplayData(rp, 0, 0x3f, static_cast<short>(snd->param.fxParam[0][1]));
+	AddReplayData(rp, 0, 0x40, static_cast<short>(snd->param.fxChannel[0]));
+	AddReplayData(rp, 0, 0x46, static_cast<short>(snd->param.fx_on[1]));
+	AddReplayData(rp, 0, 0x47, static_cast<short>(snd->param.fxType[1]));
+	AddReplayData(rp, 0, 0x48, static_cast<short>(snd->param.fxParam[1][0]));
+	AddReplayData(rp, 0, 0x49, static_cast<short>(snd->param.fxParam[1][1]));
+	AddReplayData(rp, 0, 0x4a, static_cast<short>(snd->param.fxChannel[1]));
+	AddReplayData(rp, 0, 0x50, static_cast<short>(snd->param.fx_on[2]));
+	AddReplayData(rp, 0, 0x51, static_cast<short>(snd->param.fxType[2]));
+	AddReplayData(rp, 0, 0x52, static_cast<short>(snd->param.fxParam[2][0]));
+	AddReplayData(rp, 0, 0x53, static_cast<short>(snd->param.fxParam[2][1]));
+	AddReplayData(rp, 0, 0x54, static_cast<short>(snd->param.fxChannel[2]));
+	AddReplayData(rp, 0, 0x5a, static_cast<short>(snd->param.pitch_on));
+	AddReplayData(rp, 0, 0x5b, static_cast<short>(snd->param.pitch_amount));
+	AddReplayData(rp, 0, 0x5c, static_cast<short>(snd->param.pitch_type));
 	return 1;
 }
 
