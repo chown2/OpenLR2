@@ -1031,7 +1031,6 @@ struct SONGSELECT {
 	double levelBarGraph[5];
 	double levelIndicatorAnimation[5];
 	struct CONFIG_SELECT filter;
-	char isRankingAutoUpdateThread; /* IR */
 	int rivalID;
 	struct COURSESELECT course;
 	int isExLevel;

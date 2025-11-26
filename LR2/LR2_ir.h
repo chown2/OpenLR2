@@ -5,6 +5,5 @@ int CheckRivaldataNew(int rivalID);
 int ParseRivalData(long ID);
 CSTR UrlEncode(CSTR in);
 int OpenWebRanking(CSTR songmd5);
-void IRsendScore(NETWORK *ir);
 
 int SaveIRID(int IRID, CSTR ID);
