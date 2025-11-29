@@ -383,7 +383,9 @@ int Mp3toWavF(FILE *iFile, FILE *oFile) { //TODO : need test
 		ErrorLogAdd("ファイルに書けません。\n");
 		return 0; 
 	}
-	
+
+	// FIXME: missing fclose(iFile); fclose(oFile);
+
 	return 1;
 }
 

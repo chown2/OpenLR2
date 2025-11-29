@@ -4361,6 +4361,8 @@ int ReadOptionstrFile(OptionString *arrOpStr, CSTR filepath) {
 		pFbuf = fBuf.outstr();
 	}
 
+	fclose(pFile);
+
 	ErrorLogAdd("オプション文字列リストを読み込みました。\n");
 	return 1;
 }
