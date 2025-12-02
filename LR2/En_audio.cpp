@@ -604,7 +604,7 @@ int RecordFadeout(AUDIO *aud, double from, double length) {
 	return 1;
 }
 
-static std::string s2utf8(const std::string_view& str, unsigned int codepage) {
+static std::string s2utf8(const std::string_view str, unsigned int codepage) {
 	int size_needed = MultiByteToWideChar(codepage, 0, str.data(), (int)str.size(), NULL, 0);
 	std::wstring wstr(size_needed, 0);
 	MultiByteToWideChar(codepage, 0, str.data(), (int)str.size(), wstr.data(), size_needed);
