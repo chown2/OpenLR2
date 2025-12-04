@@ -4,6 +4,7 @@
 
 #include "structure.h"
 #include "filesystem.h"
+#include "En_fileutil.h"
 
 #include <DxLib/DxLib.h>
 
@@ -381,13 +382,13 @@ int Mp3toWavF(FILE *iFile, FILE *oFile) { //TODO : need test
 bool Mp3toWavP(char *iPath, char *oPath) {
 	FILE *iFile, *oFile;
 
-	iFile = fopen(iPath, "rb");
+	iFile = _wfopen(utf2ws(iPath).c_str(), L"rb");
 	if (iFile == NULL) {
 		ErrorLogFmtAdd("入力ファイルが開けません(%s)。\n", iPath);
 		_exit(1);
 	}
 
-	oFile = fopen(oPath, "wb");
+	oFile = _wfopen(utf2ws(iPath).c_str(), L"wb");
 	if (oFile == NULL) {
 		ErrorLogFmtAdd("出力ファイルが開けません(%s)。\n", oPath);
 		_exit(1);

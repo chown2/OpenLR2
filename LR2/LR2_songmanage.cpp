@@ -2680,7 +2680,7 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 	InitBMSMETA(meta);
 	notes = 0.0;
 	flagIf = 0;
-	pFile = fopen(filepath, "r");
+	pFile = _wfopen(utf2ws(filepath.body).c_str(), L"r");
 	if (pFile == NULL) return 0;
 
 	CSTR dir(filepath.getDirectory()); // check this works as intended
@@ -2899,7 +2899,7 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 	} // TOFIX: meta->filepath is not loaded yet, so above this is useless hahahaha
 	//TOFIX: find difficulty at left???
 	makeFileHash(filepath, meta->hash); //test : CSTR to char* as oBuf : possible
-	meta->parentfolderpath = filepath.getParaentDirectory();
+	meta->parentfolderpath = filepath.getParentDirectory();
 	meta->filepath = filepath;
 	meta->filename = filepath.getFilename();
 	meta->folderpath = filepath.getDirectory();

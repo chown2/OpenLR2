@@ -4255,7 +4255,7 @@ int ReadOptionstrFile(OptionString *arrOpStr, CSTR filepath) {
 	CSVbuf csv;
 
 	DefineOptionStrNum(arrOpStr);
-	pFile = fopen(filepath, "r");
+	pFile = _wfopen(utf2ws(filepath.body).c_str(), L"r");
 	if (pFile == 0) {
 		ErrorLogAdd("オプション文字列リストが見つかりません。\n");
 		return 0;

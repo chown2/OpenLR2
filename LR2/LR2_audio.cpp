@@ -345,7 +345,7 @@ int ReadLR2SoundSet(game *g, CSTR filepath, char reFlag) {
 		int t = sku.customize_value[i];
 		if (899 < t &&  t < 1000) dst_op[t] = 1;
 	}
-	hFile = fopen(filepath, "r");
+	hFile = _wfopen(utf2ws(filepath.body).c_str(), L"r");
 	if (!hFile) return 0;
 	CSTR fBuf(260);
 	char* pFbuf;

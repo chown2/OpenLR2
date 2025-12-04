@@ -38,6 +38,13 @@ static std::filesystem::path GetExecutablePath()
 }
 */
 
+static std::filesystem::path GetExecutablePath()
+{
+	std::wstring exePath(MAX_PATH, 0);
+	GetModuleFileNameW(nullptr, exePath.data(), MAX_PATH);
+	return std::filesystem::path(exePath).parent_path();
+}
+
 #else
 
 #include <iostream>
@@ -96,21 +103,11 @@ int main(int argc, char** argv) {
 
 	int tmp;
 
-#ifdef _WIN32
-	{
-		char curDir[260];
-		GetModuleFileName(NULL, (LPCH)curDir, 260);
-		*(char*)(strrchr(curDir, '\\') + 1) = '\x00';
-		SetCurrentDirectory((LPCSTR)curDir);
-		gs.baseDirectory.assign(curDir, 0).add("\\");
-	}
-#else // TODO(utf-8): use this
 	{
 		auto curDir = GetExecutablePath();
 		std::filesystem::current_path(curDir);
 		gs.baseDirectory.assign(curDir.string().c_str(), 0).add("/");
 	}
-#endif // _WIN32
 
 	gs.is_starter = false;
 	auto copy_if_not_exists = [](auto&& from, auto&& to_) {
@@ -337,6 +334,8 @@ int main(int argc, char** argv) {
 		ErrorLogFmtAdd("動画作成モードなのでVSyncを待ちます。\n");
 	}
 #ifdef _WIN32
+	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
+	SetFontCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 	SetMultiThreadFlag(1);
 	SetUseFPUPreserveFlag(1);
 	SetUseDirectInputFlag(1); //DXLIBVER: not in original, but we need it to make same reaction.
@@ -390,8 +389,8 @@ int main(int argc, char** argv) {
 	}
 	if (gs.is_starter == false) {
 		if (gs.cmd_directplay == false) {
-			printfDx(LR2VERSIONSTRING);
-			printfDx("\nPUSH ANY KEY\n");
+			printfDx(LR2VERSIONSTRING"\n");
+			printfDx("PUSH ANY KEY\n");
 			if (loadingGrHandle > 0) {
 				DrawGraph(0, 0, loadingGrHandle, 0);
 			}
@@ -470,7 +469,6 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < 20; i++) gs.skstruct.customfile[i].fillzero();
 	gs.skstruct.skinMD5.fillzero();
 	gs.skstruct.skFontname.fillzero();
-	memset(&gs.skstruct, 0, sizeof(skstruct));
 	for (int i = 0; i < 200; i++) gs.skstruct.caption[i].fillzero();
 	for (int i = 0; i < 200; i++) gs.skstruct.caption[i].assign("(null)");
 	for (int i = 0; i < 200; i++) gs.skstruct.GrHandle[i] = -1;
@@ -520,7 +518,6 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < 20; i++) gs.skstruct2.customfile[i].fillzero();
 	gs.skstruct2.skinMD5.fillzero();
 	gs.skstruct2.skFontname.fillzero();
-	memset(&gs.skstruct2, 0, sizeof(skstruct));
 	for (int i = 0; i < 200; i++) gs.skstruct2.caption[i].fillzero();
 	for (int i = 0; i < 200; i++) gs.skstruct2.caption[i].assign("(null)");
 	for (int i = 0; i < 200; i++) gs.skstruct2.GrHandle[i] = -1;

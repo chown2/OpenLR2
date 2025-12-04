@@ -604,7 +604,7 @@ int ShowReadmes(game *g) {
 #ifdef _WIN32
 	CSTR search;
 	HANDLE hFindFile;
-	WIN32_FIND_DATA FindFileData;
+	WIN32_FIND_DATAW FindFileData;
 	CSTR fBuf(2048);
 
 	FILE *pFile;
@@ -625,7 +625,7 @@ int ShowReadmes(game *g) {
 
 	g->txtStruct.readme.folderpath = g->sSelect.bmsList[g->sSelect.cur_song].filepath.getDirectory();
 	cstrSprintf(&search, "%s*.txt", g->txtStruct.readme.folderpath.body);
-	hFindFile = FindFirstFileA(search, (LPWIN32_FIND_DATAA)&FindFileData);
+	hFindFile = FindFirstFileW(utf2ws(search.body).c_str(), &FindFileData);
 	if (hFindFile == (HANDLE)-1) {
 		ErrorLogFmtAdd("テキストファイルが見つからない。%s\n", search.body);
 		return -1;
@@ -633,7 +633,7 @@ int ShowReadmes(game *g) {
 
 	do {
 		g->txtStruct.readme.file_count++;
-	} while (FindNextFileA(hFindFile, (LPWIN32_FIND_DATAA)&FindFileData));
+	} while (FindNextFileW(hFindFile, &FindFileData));
 	FindClose(hFindFile);
 
 	if (g->txtStruct.readme.file_count == 0) return 0;
@@ -644,28 +644,31 @@ int ShowReadmes(game *g) {
 		g->txtStruct.readme.current = g->txtStruct.readme.file_count-1;
 
 	int currentFileNum = 0;
-	hFindFile = FindFirstFileA(search, (LPWIN32_FIND_DATAA)&FindFileData);
+	hFindFile = FindFirstFileW(utf2ws(search.body).c_str(), &FindFileData);
 	do {
+		std::string filename = ws2utf(FindFileData.cFileName);
 		g->txtStruct.readme.path = g->txtStruct.readme.folderpath;
-		g->txtStruct.readme.path.add((const char*)FindFileData.cFileName);
+		g->txtStruct.readme.path.add(filename.c_str());
 
-		fopen_s(&pFile, g->txtStruct.readme.path, "r");
+		_wfopen_s(&pFile, utf2ws(g->txtStruct.readme.path.body).c_str(), L"r");
 
 		char *pFbuf = fBuf.outstr();
 		if (pFile != NULL) {
 			
 			currentFileNum++;
 			if (g->txtStruct.readme.file_count == 1) {
-				g->txtStruct.readme.body[g->txtStruct.readme.lines] = (const char*)FindFileData.cFileName;
+				g->txtStruct.readme.body[g->txtStruct.readme.lines] = filename.c_str();
 			}
 			else {
-				cstrSprintf(&g->txtStruct.readme.body[g->txtStruct.readme.lines], "%d/%d %s", currentFileNum, g->txtStruct.readme.file_count, FindFileData.cFileName);
+				std::string line = std::format("{}/{} {}", currentFileNum, g->txtStruct.readme.file_count, filename);
+				g->txtStruct.readme.body[g->txtStruct.readme.lines] = line.c_str();
 			}
 			g->txtStruct.readme.lines+=2;
 
 			g->txtStruct.readme.show = 1;
 			pFbuf = fBuf.outstr();
 			for (pFbuf = fgets(pFbuf, 2048, pFile); pFbuf; pFbuf = fgets(pFbuf, 2048, pFile)) {
+				fBuf = ansi2utf(fBuf.body, 932).c_str();
 				DealWhiteSpace(&fBuf);
 				g->txtStruct.readme.body[g->txtStruct.readme.lines] = fBuf;
 				g->txtStruct.readme.lines++;
@@ -677,7 +680,7 @@ int ShowReadmes(game *g) {
 			fclose(pFile);
 			g->txtStruct.readme.lines += 2;
 		}
-	} while (FindNextFileA(hFindFile, (LPWIN32_FIND_DATAA)&FindFileData));
+	} while (FindNextFileW(hFindFile, &FindFileData));
 	FindClose(hFindFile);
 
 	g->txtStruct.readme.y = g->skstruct.src_README[0].op1 * g->txtStruct.readme.lines;
@@ -711,7 +714,7 @@ int ShowReadme(game *g, CSTR path) {
 	CSTR fBuf(0x400);
 
 #ifdef _WIN32
-	fopen_s(&pFile, g->txtStruct.readme.path, "r");
+	_wfopen_s(&pFile, utf2ws(g->txtStruct.readme.path.body).c_str(), L"r");
 #else
 	pFile = fopen(g->txtStruct.readme.path, "r");
 #endif // _WIN32

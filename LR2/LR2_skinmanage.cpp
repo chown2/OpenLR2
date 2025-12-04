@@ -222,7 +222,7 @@ int ParseLR2SkinCustom(SkinManage *skm, CSTR filepath) {
 
 	cstrSprintf(&md5Filepath, fs::make_preferred("LR2files/SkinCustomize/%s.xml").data(), MD5str(filepath) );
 	ReadSkinCustomize(&skCustom, md5Filepath);
-	pFile = fopen(filepath, "r");
+	pFile = _wfopen(utf2ws(filepath.body).c_str(), L"r");
 	if (!pFile) return 0;
 
 	pBuffer = buffer.outstr();
