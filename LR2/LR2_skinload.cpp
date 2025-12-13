@@ -479,10 +479,10 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	if (sk->GrHandle[GrH_Stage] == -1) sk->GrHandle[GrH_Stage] = MakeGraph(640, 480);
 	if (sk->GrHandle[GrH_BackBMP] == -1) sk->GrHandle[GrH_BackBMP] = MakeGraph(640, 480);
 	if (sk->GrHandle[GrH_Banner] == -1) sk->GrHandle[GrH_Banner] = MakeGraph(300, 80);
-	DeleteGraph(sk->GrHandle[110]);
-	sk->GrHandle[110] = LoadGraph(fs::make_preferred("LR2files/Config/black.bmp").data());
-	DeleteGraph(sk->GrHandle[111]);
-	sk->GrHandle[111] = LoadGraph(fs::make_preferred("LR2files/Config/white.bmp").data());
+	DeleteGraph(sk->GrHandle[GRHTYPE_BLACK]);
+	sk->GrHandle[GRHTYPE_BLACK] = LoadGraph(fs::make_preferred("LR2files/Config/black.bmp").data());
+	DeleteGraph(sk->GrHandle[GRHTYPE_WHITE]);
+	sk->GrHandle[GRHTYPE_WHITE] = LoadGraph(fs::make_preferred("LR2files/Config/white.bmp").data());
 	sk->reloadbanner = 0;
 	for (int i = 0; i < 10; i++) {
 		InitSRC(&sk->src_BAR_RANK[i]);
