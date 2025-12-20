@@ -198,124 +198,21 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 		InitDST(&sk->image.dst[i]);
 	}
 
-	(sk->otherObject[0]).srcSize = 0;
-	if ((sk->otherObject[0]).dstSize == 0) {
-		(sk->otherObject[0]).dstSize = 20;
-		(sk->otherObject[0]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[0].src, '\0', (sk->otherObject[0]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[0]).dst = (DSTstruct *)malloc((sk->otherObject[0]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[0].dst, '\0', (sk->otherObject[0]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[0].dstSize; i++) {
-		InitSRC(&sk->otherObject[0].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[0].dstSize; i++) {
-		InitDST(&sk->otherObject[0].dst[i]);		
-	}
-
-	(sk->otherObject[2]).srcSize = 0;
-	if ((sk->otherObject[2]).dstSize == 0) {
-		(sk->otherObject[2]).dstSize = 20;
-		(sk->otherObject[2]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[2].src, '\0', (sk->otherObject[2]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[2]).dst = (DSTstruct *)malloc((sk->otherObject[2]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[2].dst, '\0', (sk->otherObject[2]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[2].dstSize; i++) {
-		InitSRC(&sk->otherObject[2].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[2].dstSize; i++) {
-		InitDST(&sk->otherObject[2].dst[i]);
-	}
-
-	(sk->otherObject[1]).srcSize = 0;
-	if ((sk->otherObject[1]).dstSize == 0) {
-		(sk->otherObject[1]).dstSize = 20;
-		(sk->otherObject[1]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[1].src, '\0', (sk->otherObject[1]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[1]).dst = (DSTstruct *)malloc((sk->otherObject[1]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[1].dst, '\0', (sk->otherObject[1]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[1].dstSize; i++) {
-		InitSRC(&sk->otherObject[1].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[1].dstSize; i++) {
-		InitDST(&sk->otherObject[1].dst[i]);
-	}
-
-	(sk->otherObject[3]).srcSize = 0;
-	if ((sk->otherObject[3]).dstSize == 0) {
-		(sk->otherObject[3]).dstSize = 20;
-		(sk->otherObject[3]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[3].src, '\0', (sk->otherObject[3]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[3]).dst = (DSTstruct *)malloc((sk->otherObject[3]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[3].dst, '\0', (sk->otherObject[3]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[3].dstSize; i++) {
-		InitSRC(&sk->otherObject[3].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[3].dstSize; i++) {
-		InitDST(&sk->otherObject[3].dst[i]);
-	}
-
-	(sk->otherObject[6]).srcSize = 0;
-	if ((sk->otherObject[6]).dstSize == 0) {
-		(sk->otherObject[6]).dstSize = 20;
-		(sk->otherObject[6]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[6].src, '\0', (sk->otherObject[6]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[6]).dst = (DSTstruct *)malloc((sk->otherObject[6]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[6].dst, '\0', (sk->otherObject[6]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[6].dstSize; i++) {
-		InitSRC(&sk->otherObject[6].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[6].dstSize; i++) {
-		InitDST(&sk->otherObject[6].dst[i]);
-	}
-
-	(sk->otherObject[7]).srcSize = 0;
-	if ((sk->otherObject[7]).dstSize == 0) {
-		(sk->otherObject[7]).dstSize = 20;
-		(sk->otherObject[7]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[7].src, '\0', (sk->otherObject[7]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[7]).dst = (DSTstruct *)malloc((sk->otherObject[7]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[7].dst, '\0', (sk->otherObject[7]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[7].dstSize; i++) {
-		InitSRC(&sk->otherObject[7].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[7].dstSize; i++) {
-		InitDST(&sk->otherObject[7].dst[i]);
-	}
-
-	(sk->otherObject[4]).srcSize = 0;
-	if ((sk->otherObject[4]).dstSize == 0) {
-		(sk->otherObject[4]).dstSize = 20;
-		(sk->otherObject[4]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[4].src, '\0', (sk->otherObject[4]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[4]).dst = (DSTstruct *)malloc((sk->otherObject[4]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[4].dst, '\0', (sk->otherObject[4]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[4].dstSize; i++) {
-		InitSRC(&sk->otherObject[4].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[4].dstSize; i++) {
-		InitDST(&sk->otherObject[4].dst[i]);
-	}
-
-	(sk->otherObject[5]).srcSize = 0;
-	if ((sk->otherObject[5]).dstSize == 0) {
-		(sk->otherObject[5]).dstSize = 20;
-		(sk->otherObject[5]).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
-		memset(sk->otherObject[5].src, '\0', (sk->otherObject[5]).dstSize * sizeof(SRCstruct));
-		(sk->otherObject[5]).dst = (DSTstruct *)malloc((sk->otherObject[5]).dstSize * sizeof(DSTstruct));
-		memset(sk->otherObject[5].dst, '\0', (sk->otherObject[5]).dstSize * sizeof(DSTstruct));
-	}
-	for (int i = 0; i < sk->otherObject[5].dstSize; i++) {
-		InitSRC(&sk->otherObject[5].src[i]);
-	}
-	for (int i = 0; i < sk->otherObject[5].dstSize; i++) {
-		InitDST(&sk->otherObject[5].dst[i]);
+	for (auto& obj : sk->otherObject) {
+		(obj).srcSize = 0;
+		if ((obj).dstSize == 0) {
+			(obj).dstSize = 20;
+			(obj).src = (SRCstruct *)malloc(20 * sizeof(SRCstruct));
+			memset(obj.src, '\0', (obj).dstSize * sizeof(SRCstruct));
+			(obj).dst = (DSTstruct *)malloc((obj).dstSize * sizeof(DSTstruct));
+			memset(obj.dst, '\0', (obj).dstSize * sizeof(DSTstruct));
+		}
+		for (int i = 0; i < obj.dstSize; i++) {
+			InitSRC(&obj.src[i]);
+		}
+		for (int i = 0; i < obj.dstSize; i++) {
+			InitDST(&obj.dst[i]);
+		}
 	}
 
 	InitSRC(&sk->src_MOUSECURSOR);
@@ -950,27 +847,11 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 	pFbuf = fBuf.outstr();
 	for (pFbuf = fgets(pFbuf, 1023, pFile); pFbuf; pFbuf = fgets(pFbuf, 1023, pFile)) {
 		fBuf = ansi2utf(pFbuf, 932).c_str();
-		//if (sk->image.dstSize - 1 == sk->image.srcSize) {
-		//	sk->image.src = (SRCstruct*)realloc(sk->image.src, (sk->image.dstSize + 50) * sizeof(SRCstruct));
-		//	sk->image.dst = (DSTstruct*)realloc(sk->image.dst, (sk->image.dstSize + 50) * sizeof(DSTstruct));
-		//	for (int i = sk->image.dstSize; i < sk->image.dstSize + 50; i++) {
-		//		memset(&sk->image.src[i], 0, sizeof(SRCstruct));
-		//		InitSRC(&sk->image.src[i]);
-		//		memset(&sk->image.dst[i], 0, sizeof(DSTstruct));
-		//		InitDST(&sk->image.dst[i]);
-		//	}
-		//	sk->image.dstSize += 50;
-		//}
 		ExpandSkinObjectMax(&sk->image, 50);
-		ExpandSkinObjectMax(&sk->otherObject[0], 20);
-		ExpandSkinObjectMax(&sk->otherObject[1], 20);
-		ExpandSkinObjectMax(&sk->otherObject[2], 20);
-		ExpandSkinObjectMax(&sk->otherObject[3], 20);
-		ExpandSkinObjectMax(&sk->otherObject[4], 20);
-		ExpandSkinObjectMax(&sk->otherObject[6], 20);
-		ExpandSkinObjectMax(&sk->otherObject[7], 20);
-		ExpandSkinObjectMax(&sk->otherObject[5], 20);
-		
+		for (auto& obj : sk->otherObject) {
+			ExpandSkinObjectMax(&obj, 20);
+		}
+
 		line++;
 
 		if (fBuf.length() > 6) {

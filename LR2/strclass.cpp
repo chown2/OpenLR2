@@ -520,11 +520,6 @@ CSTR& CSTR::operator=(CSTR &iBuf) {
 	return assign(iBuf.body, 0);
 }
 
-/*
-'= fuctionOutput' is const CSTR, so goes to 43bc10() with casting (const char*)
-'= normal CSTR' is not const CSTR, goes to 43bbf0.
-*/
-
 CSTR& CSTR::assign(const char *str) {
 	return assign(str, 0);
 }
@@ -532,17 +527,11 @@ CSTR& CSTR::operator=(const char *str) {
 	return assign(str, 0);
 }
 
-[[nodiscard]] inline const char* cs(const std::u8string& s)
-{
-	// Don't try making this take fs::path, pray on lifetime extension.
-	return reinterpret_cast<const char*>(s.c_str());
-}
-
 CSTR CSTR::getDirectory() {
 	CSTR out;
-	std::filesystem::path path(reinterpret_cast<char8_t*>(this->body));
-	out.assign(cs(path.parent_path().u8string()));
-	*out.atPos(out.length()) = std::filesystem::path::preferred_separator;
+	out.assign(std::filesystem::path{this->body}.parent_path().string().c_str());
+	*out.atPos(out.length()) /* out += */ = std::filesystem::path::preferred_separator;
+	*out.atPos(out.length()) /* out += */ = '\0';
 	return out;
 }
 
