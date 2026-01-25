@@ -18,7 +18,7 @@ void file_utf_to_ansi(const char* filepath) {
 	}
 }
 
-bool parse_xml_utf(TiXmlDocument* xml, const char* filepath) {
+bool parse_cp932_xml(TiXmlDocument* xml, const char* filepath) {
 	std::ifstream file(filepath);
 	if (!file.good()) return false;
 	std::stringstream total;

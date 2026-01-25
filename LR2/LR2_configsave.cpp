@@ -60,7 +60,7 @@ int ReadKeyConfig(game *game, const char *FilePath) {
 	memset(game->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
 
 	hXml = new TiXmlDocument(FilePath);
-	if (!parse_xml_utf(hXml, FilePath)) {
+	if (!parse_cp932_xml(hXml, FilePath)) {
 		if (hXml) {
 			delete(hXml);
 		}
@@ -142,7 +142,7 @@ int ReadMIDI(game *gs, const char *filepath){
 	(gs->config).input.midi_control[0x27] = 0;
 
 	hXml = new TiXmlDocument(filepath);
-	if (!parse_xml_utf(hXml, filepath)) {
+	if (!parse_cp932_xml(hXml, filepath)) {
 		if (hXml) {
 			delete(hXml);
 		}
@@ -846,7 +846,7 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	(sku->adjust).rate_y = 100;
 	
 	hXml = new TiXmlDocument(FilePath);
-	if (!parse_xml_utf(hXml, FilePath)) {
+	if (!parse_cp932_xml(hXml, FilePath)) {
 		if (hXml) {
 			delete(hXml);
 		}
@@ -1044,7 +1044,7 @@ int ReadConfig(game* g, const char* filepath) {
 	hXml = new TiXmlDocument(filepath);
 
 	hXml->SetCondenseWhiteSpace(false);
-	if (!parse_xml_utf(hXml, filepath)) {
+	if (!parse_cp932_xml(hXml, filepath)) {
 		if (hXml) {
 			delete(hXml);
 		}

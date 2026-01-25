@@ -114,7 +114,7 @@ int RANKING::ParseXML(const char* path) {
 
 	TiXmlDocument *hXml = new TiXmlDocument(path);
 
-	parse_xml_utf(hXml, path);
+	parse_cp932_xml(hXml, path);
 
 	TiXmlElement *cur;
 	cur = hXml->FirstChildElement("lastupdate");
@@ -265,7 +265,7 @@ int ParseRivalData(long ID) {
 	
 	cstrSprintf(&path, fs::make_preferred("LR2files/Rival/%d.xml").data(), ID);
 	hXml = new TiXmlDocument(path);
-	parse_xml_utf(hXml, path.body);
+	parse_cp932_xml(hXml, path.body);
 
 	std::string name;
 	cur = hXml->FirstChildElement("rivalname");
@@ -413,7 +413,7 @@ int NETWORK::GetInsaneList() {
 
 	std::string path = fs::make_preferred("LR2files/Database/exlevel.xml").data();
 	hXml = new TiXmlDocument(path.c_str());
-	if (!parse_xml_utf(hXml, path.c_str())) {
+	if (!parse_cp932_xml(hXml, path.c_str())) {
 		if (hXml) {
 			delete(hXml);
 		}
