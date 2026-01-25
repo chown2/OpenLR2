@@ -58,6 +58,9 @@ class CSTR {
 		CSTR& lastCut(int len);
 		CSTR& trimWhiteSpace();
 		CSTR getFilename();
+
+		// Methods with same interface as std::string_view for easier transition later
+		bool starts_with(const char*);
 };
 
 char *cstrSprintf(CSTR *str, const char *format, ...)

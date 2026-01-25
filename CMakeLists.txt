@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.29)
 project(OpenLR2 LANGUAGES C CXX)
 
+# Make sure _DLL is not defined so that we use a specific DxLib DLL.
+# @gomazk
+# > my custom dxlib was only DxLib_vs2015_x86_MT. 3.24f based, can load old dxa
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 # We don't use them and they cause fake errors in clangd
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 

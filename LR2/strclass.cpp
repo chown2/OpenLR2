@@ -373,6 +373,10 @@ bool CSTR::isSame(const char *str) {
 	return (strcmp(body, str) == 0);
 }
 
+bool CSTR::starts_with(const char *str) {
+	return left(std::string_view{str}.length()).isSame(str);
+}
+
 bool CSTR::isSame(CSTR *str) {
 	return (strcmp(body, str->body) == 0);
 }

@@ -85,8 +85,6 @@ int main(int argc, char** argv) {
 	gs.config.system.coreCount = std::thread::hardware_concurrency();
 	if (gs.config.system.coreCount == 0) gs.config.system.coreCount = 2;
 
-	const bool use_dx9 = getenv("OPENLR2_NO_DX9") == nullptr; // chown2: crashes on DxLib_Init with DX9 for me
-
 	int tmp;
 
 	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
@@ -154,17 +152,18 @@ int main(int argc, char** argv) {
 	gs.rec.recMode = 0;
 	gs.audio.replay2avi = false;
 	gs.skstruct.drBuf.isDisabled = '\0';
+	bool use_dx9 = false;
 	//commandline
 	for (int i = 1; i < argc; i++) {
 		CSTR tStr1;
 		tStr1.assign(argv[i]);
 		CSTR tStr2(tStr1);
 		tStr2.lower();
-		if (IsBmsFile(tStr2)) {
+		if (IsBmsFile(tStr1)) {
 			gs.cmd_directplay = true;
 			gs.directoryPath.assign(&tStr1);
 		}
-		else if (IsMediaFile(tStr2)) {
+		else if (IsMediaFile(tStr1)) {
 			gs.directoryFilename.assign(&tStr1);
 			gs.config.system.vsync = 1;
 			gs.config.system.screenmode = 1;
@@ -187,35 +186,38 @@ int main(int argc, char** argv) {
 				gs.config.system.vsync = 1;
 			}
 		}
-		else if (tStr2.left(9).isSame("-auto2avi")) {
+		else if (tStr2.starts_with("-auto2avi")) {
 			gs.rec.recMode = 1;
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.left(11).isSame("-replay2avi")) {
+		else if (tStr2.starts_with("-replay2avi")) {
 			gs.rec.recMode = 2;
 			gs.audio.replay2avi = true;
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.left(8).isSame("-bga2avi")) {
+		else if (tStr2.starts_with("-bga2avi")) {
 			gs.rec.recMode = 3;
 			gs.skstruct.drBuf.isDisabled = '\x01';
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.left(6).isSame("-movie")) {
+		else if (tStr2.starts_with("-movie")) {
 			gs.rec.recMode = 4;
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.left(3).isSame("-ns")) {
+		else if (tStr2.starts_with("-ns")) {
 			gs.cmd_nosave = '\x01';
 		}
-		else if (tStr2.left(2).isSame("-a")) {
+		else if (tStr2.starts_with("-a")) {
 			gs.cmd_auto = '\x01';
 		}
-		else if (tStr2.left(2).isSame("-n")) {
+		else if (tStr2.starts_with("-n")) {
 			gs.cmd_n = atol(tStr1.right(tStr1.length() - 2)); //TOFIX : never used
+		}
+		else if (tStr2.starts_with("-dx9")) {
+			use_dx9 = true;
 		}
 	}
 	gs.config.system.thread = 0;
@@ -328,6 +330,7 @@ int main(int argc, char** argv) {
 	SetMultiThreadFlag(1);
 	SetUseFPUPreserveFlag(1);
 	SetUseDirectInputFlag(1); //DXLIBVER: not in original, but we need it to make same reaction.
+	// NOTE(chown2): with DX9, in a virtual machine crashes on DxLib_Init
 	if (use_dx9) {
 		SetUseDirect3DVersion(DX_DIRECT3D_9); //DXLIBVER: if not set, it's DX11 (over 3.13e)
 	}
