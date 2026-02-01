@@ -1696,8 +1696,6 @@ static void ThreadProc_LoadPreview(game *g) {
 		g->gameplay.previewStatus = 0;
 		g->gameplay.isPreviewLoad = 0;
 	}
-
-	g->gameplay.hThreadPreview.detach(); // Detach ourselves TODO: refactor surrounding code to avoid this
 }
 
 
@@ -2669,13 +2667,18 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 	}
 
 	if(g->config.select.preview == 1){
-		if (GetTimeLapse(11, &g->timer1) >= 500.0 && g->gameplay.previewStatus == 0 && g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5 && g->sSelect.bmsList[g->sSelect.cur_song].courseStageCount == 0 && !g->gameplay.hThreadPreview.joinable()) {
+		if (GetTimeLapse(11, &g->timer1) >= 500.0 && g->gameplay.previewStatus == 0 &&
+				g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5 &&
+				g->sSelect.bmsList[g->sSelect.cur_song].courseStageCount == 0 &&
+				(!g->gameplay.hThreadPreview.valid() ||
+				 g->gameplay.hThreadPreview.wait_for(std::chrono::seconds(0)) ==
+				 std::future_status::ready)) {
 			g->gameplay.flag_closingPhase = 1;
 			g->gameplay.isPreviewLoad = 0;
 			g->gameplay.previewStatus = 1;
 			g->gameplay.previewBMShash = g->sSelect.bmsList[g->sSelect.cur_song].hash;
 			g->gameplay.previewBMSfilepath = g->sSelect.bmsList[g->sSelect.cur_song].filepath;
-			g->gameplay.hThreadPreview = std::jthread(ThreadProc_LoadPreview, g);
+			g->gameplay.hThreadPreview = std::async(std::launch::async, ThreadProc_LoadPreview, g);
 		}
 		else if (g->gameplay.previewStatus) {
 			if (g->gameplay.previewBMShash.isDiff(g->sSelect.bmsList[g->sSelect.cur_song].hash)) {

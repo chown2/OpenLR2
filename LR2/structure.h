@@ -1312,7 +1312,7 @@ struct gameplay {
 	int fadeoutBGAend[10];
 	int bgaMixer[10];
 	char isPreviewLoad;
-	std::jthread hThreadPreview;
+	std::future<void> hThreadPreview;
 	int previewStatus; /* 1:start 2:loaded */
 	CSTR previewBMShash;
 	CSTR previewBMSfilepath;

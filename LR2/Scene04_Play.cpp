@@ -1786,9 +1786,7 @@ int ProcS_Play(game *g, sqlite3* sql) {
 
 	int iTemp;
 
-	if (g->gameplay.hThreadPreview.joinable()) {
-		g->gameplay.hThreadPreview.join();
-	}
+	g->gameplay.hThreadPreview = {};
 	g->gameplay.flag_closingPhase = 0;
 	
 	CSTR gData, gName;
