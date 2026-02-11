@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <thread>
 
 #include <DxLib/DxLib.h>
@@ -675,7 +676,97 @@ int main(int argc, char** argv) {
 			GetTimeWrap();
 		}
 
-		if (gs.procPhase == 0) {
+		enum {
+			PROC_PHASE_ENTERING = 0,
+		};
+		enum {
+			SCENE_SELECT = 2,
+			SCENE_DECIDE = 3,
+			SCENE_PLAY = 4,
+			SCENE_RESULT = 5,
+			SCENE_KEYCONFIG = 6,
+			SCENE_SKINSELECT = 7,
+			SCENE_LUNARIS = 8,
+			SCENE_PO4MENU = 9,
+			SCENE_PO4DECIDE = 10,
+			SCENE_PO4SELECT = 11,
+			SCENE_COURSERESULT = 13,
+		};
+		static const auto get_scene_name_for_nowplayingtxt = [](int procSelecter) -> const char* {
+			switch (procSelecter) {
+			case SCENE_SELECT: return "select";
+			case SCENE_DECIDE: return "decide";
+			case SCENE_PLAY: return "play";
+			case SCENE_RESULT: return "result";
+			case SCENE_KEYCONFIG: return "keyconfig";
+			case SCENE_SKINSELECT: return "skinselect";
+			case SCENE_LUNARIS: return "lunaris";
+			case SCENE_PO4MENU: return "po4menu";
+			case SCENE_PO4DECIDE: return "po4decide";
+			case SCENE_PO4SELECT: return "po4select";
+			case SCENE_COURSERESULT: return "courseresult";
+			default: return "unknown";
+			}
+		};
+		if (gs.procPhase == PROC_PHASE_ENTERING) {
+			static const auto put_json_escaped = [](std::string& sink, std::string_view s) {
+				// Not multi-byte aware. Cry about it.
+				for (const auto c : s)
+					switch (c) { // https://www.json.org/json-en.html
+					case '"':
+					case '\\':
+					case '/':
+					case '\b':
+					case '\f':
+					case '\n':
+					case '\r':
+					case '\t': sink += '\\'; [[fallthrough]];
+					default: sink += c; break;
+					}
+			};
+			static const auto put_json_k_atom = [](std::string& sink, std::string_view k) {
+				sink += '"';
+				sink += k;
+				sink += R"(": )";
+			};
+			static const auto put_json_kv_atom = [](std::string& sink, std::string_view k, std::string_view v) {
+				put_json_k_atom(sink, k);
+				sink += '"';
+				put_json_escaped(sink, v);
+				sink += '"';
+			};
+			static const auto put_song_data = [](std::string& sink, game& g) {
+				put_json_k_atom(sink, "song");
+				sink += '{';
+				put_json_kv_atom(sink, "artist", g.sSelect.bmsList->artist.c_str());
+				sink += ',';
+				put_json_kv_atom(sink, "search", g.sSelect.stack_searchTitle[g.sSelect.cur].c_str());
+				sink += ',';
+				put_json_kv_atom(sink, "subartist", g.sSelect.bmsList->subartist.c_str());
+				sink += ',';
+				put_json_kv_atom(sink, "subtitle", g.sSelect.bmsList->subtitle.c_str());
+				sink += ',';
+				put_json_kv_atom(sink, "tag", g.sSelect.bmsList->tag.c_str());
+				sink += ',';
+				put_json_kv_atom(sink, "title", g.sSelect.bmsList->title.c_str());
+				sink += '}';
+			};
+			static const auto get_scene_status_string = [](game& g) -> std::string {
+				std::string ret;
+				ret += '{';
+				put_json_kv_atom(ret, "state", get_scene_name_for_nowplayingtxt(g.procSelecter));
+				switch (g.procSelecter) {
+				case SCENE_PLAY:
+				case SCENE_RESULT:
+				case SCENE_COURSERESULT:
+					ret += ',';
+					put_song_data(ret, g);
+					break;
+				}
+				ret += '}';
+				return ret;
+			};
+			std::ofstream("nowplaying.json") << get_scene_status_string(gs);
 
 			InitFade(&gs.audio);
 			gs.gameplay.flag_closingPhase = 1;
@@ -697,7 +788,7 @@ int main(int argc, char** argv) {
 			}
 
 			switch (gs.procSelecter) {
-				case 2:
+				case SCENE_SELECT:
 					if (gs.gameplay.replay.status == 2) {
 						memcpy(&gs.config.play, &gs.gameplay.replay.cfg, sizeof(CONFIG_PLAY));
 					}
@@ -815,7 +906,7 @@ int main(int argc, char** argv) {
 					ProcS_Select(&gs);
 					break;
 							
-				case 3:{
+				case SCENE_DECIDE:{
 					DeleteGraph(gs.skstruct.GrHandle[GrH_Stage]);
 					gs.skstruct.GrHandle[GrH_Stage] = -1;
 					DeleteGraph(gs.skstruct.GrHandle[GrH_BackBMP]);
@@ -855,7 +946,7 @@ int main(int argc, char** argv) {
 					else
 						PlaySound(&gs.audio, &gs.audio.sysSound.decide, gs.audio.chnBgm, -1);
 					break; }
-				case 4:
+				case SCENE_PLAY:
 					if (gs.gameplay.courseType==0 || gs.gameplay.courseType==2) {
 						SONGDATA sd;
 						GetSongData(gs.sSelect.bmsList[gs.sSelect.cur_song].courseHash[gs.gameplay.courseStageNow], &sd, sql3, &gs.sSelect);
@@ -1020,10 +1111,10 @@ int main(int argc, char** argv) {
 					}
 					ProcS_Play(&gs, sql3);
 					break;
-				case 5:
+				case SCENE_RESULT:
 					ProcS_Result(&gs);
 					break;
-				case 6:
+				case SCENE_KEYCONFIG:
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_KEYCONFIG);
 					gs.KeyInput.config_keymode = 0;
 					gs.KeyInput.config_button = 1;
@@ -1031,16 +1122,16 @@ int main(int argc, char** argv) {
 					gs.KeyInput.config_key = -1;
 					ProcS_Keyconfig(&gs);
 					break;
-				case 7:
+				case SCENE_SKINSELECT:
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_SKINSELECT);
 					ProcS_SkinSelect(&gs);
 					break;
-				case 8:
+				case SCENE_LUNARIS:
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYS);
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 					LUNARIS_START(&gs);
 					break;
-				case 9:
+				case SCENE_PO4MENU:
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_MODESELECT);
 					gs.sSelect.listCalculatedBar = gs.po4MainMenuCursor * 1000;
 					gs.sSelect.barMoveStartTime = GetTimeWrap();
@@ -1099,13 +1190,13 @@ int main(int argc, char** argv) {
 
 					ProcS_Select(&gs);
 					break;
-				case 10:
+				case SCENE_PO4DECIDE:
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_MODEDECIDE);
 					break;
-				case 11:
+				case SCENE_PO4SELECT:
 					LoadScene(&gs.skstruct, fs::make_preferred("LR2files/event.csv").data(), 0, 0);
 					break;
-				case 13:
+				case SCENE_COURSERESULT:
 					ProcS_CourseResult(&gs,sql3);
 					break;
 			}
