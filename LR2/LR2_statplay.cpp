@@ -614,7 +614,7 @@ int SaveResult(game *g, sqlite3* sql) {
 
 	if (g->gameplay.isAutoplay) return -1;
 
-	if (g->config.play.m_gas) {
+	if (g->config.play.m_gas && g->gameplay.replay.status != 2) {
 		g->gameplay.player[0].gaugeType = GetBestClearedGauge(g->gameplay, 0, g->config.play, g->gameplay.courseStageNow != 0);
 	}
 	auto is_gauge_better = [](int gauge1, int gauge2) {
@@ -785,7 +785,7 @@ int SaveResult(game *g, sqlite3* sql) {
 		
 		if (g->config.play.battle == 1) {
 			g->gameplay.player[1].lastCourseGaugeType = g->gameplay.player[1].gaugeType;
-			if (g->config.play.m_gas) {
+			if (g->config.play.m_gas && g->gameplay.replay.status != 2) {
 				g->gameplay.player[1].gaugeType = GetBestClearedGauge(g->gameplay, 1, g->config.play, g->gameplay.courseStageNow != 0);
 			}
 			if (g->gameplay.courseStageNow == 0 || is_gauge_better(g->gameplay.player[1].clearGaugeTypeCourse, g->gameplay.player[1].gaugeType)) {

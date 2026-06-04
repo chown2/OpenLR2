@@ -232,7 +232,7 @@ int ProcI_Result(game *g) {
 			}
 		}
 	};
-	if (g->config.play.m_gas && g->procSelecter != 13) {
+	if (g->config.play.m_gas && g->procSelecter != 13 && g->gameplay.replay.status != 2) {
 		switch_gauge_display(g->gameplay, g->KeyInput.p1_buttonInput[13], g->gameplay.player[0]);
 		if (g->config.play.battle == 1) {
 			switch_gauge_display(g->gameplay, g->KeyInput.p2_buttonInput[13], g->gameplay.player[1]);
