@@ -1,6 +1,6 @@
 # OpenLR2
 Rewritten source code of BMS player Lunatic Rave 2. Project started in January 2021.
-Original code accessible at [LR2Beta3-v100201]([LR2Beta3-v100201](https://github.com/GOMazk/OpenLR2/tree/LR2Beta3-v100201))
+Original code accessible at [LR2Beta3-v100201](https://github.com/GOMazk/OpenLR2/tree/LR2Beta3-v100201)
 
 ## Open source?
 After the closure of LR2IR, the project has been made public.
