@@ -728,12 +728,7 @@ static void ThreadProc_IRsendScore(NETWORK *ir) {
 			ir->myRanking.rseed, ir->myRanking.clear_db, ir->myRanking.clear_ex,
 			ir->myRanking.clear_sd, scorehash.body);
 	ir->target_URL = "http://www.dream-pro.info/~lavalse/LR2IR/2/score.cgi";
-	int httpResponse;
-	if constexpr (true) { // DEBUG: do not send IR before test is done enough.
-		httpResponse = 0;
-	} else {
-		httpResponse = ir->HTTPrequest();
-	}
+	const int httpResponse = ir->HTTPrequest();
 	if (httpResponse == 1) {
 		ir->IRresultMessage = "スコアを送信しました";
 		ir->GetRanking(ir->myRanking.songMD5, 1);
