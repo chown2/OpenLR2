@@ -18,8 +18,6 @@ bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 }
 
 int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
-	int gauge;
-
 	if (g->config.play.m_addlong == 1 || g->config.play.m_loudness > 0
 		|| g->config.play.m_lunaris || g->config.play.m_addlong > 0
 		|| g->config.play.m_addmine || g->config.play.m_addnote || g->config.play.battle == 1) {
@@ -29,14 +27,16 @@ int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 	if (g->config.play.random[0] < 4 && g->config.play.random[1] < 4 && g->config.play.hsfix != 4
 		&& g->config.play.autokey == 0 && (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10)) {
-
-		gauge = g->gameplay.player[0].gaugeType;
-		if (gauge == 1) return 3;
-		else if (gauge == 2) return 4;
-		else if (gauge == 3) return 1;
-		else if (gauge == 4) return 4;
-		else if (gauge == 5) return 3;
-		else return 2;
+		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
+			? g->gameplay.player[0].gaugeType
+			: g->config.play.gaugeOption[0]) {
+		case 1: return 3;
+		case 2: return 4;
+		case 3: return 1;
+		case 4: return 4;
+		case 5: return 3;
+		default: return 2;
+		}
 	}
 	return 1;
 }
