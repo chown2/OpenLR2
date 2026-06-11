@@ -13,6 +13,7 @@
 
 #include <DxLib/DxLib.h>
 #include <libloaderapi.h>
+#include <wtypes.h>
 
 #if _WIN64
 #if _DEBUG
@@ -32,6 +33,24 @@ constexpr auto&& ARCH = ".x86";
 
 // TODO
 #define OverlayNotification ErrorLogFmtAdd
+
+class CustomIR {
+public:
+	CustomIR() = delete;
+	CustomIR(const std::filesystem::path& directory);
+	bool Initialize();
+	bool Login();
+	SendScoreStatus SendScore(const IRScoreV1& score);
+
+	[[nodiscard]] const std::string& Name() const { return mName; };
+private:
+	struct ModuleDeleter {
+		void operator()(std::remove_pointer_t<HMODULE>* handle);
+	};
+	std::unique_ptr<std::remove_pointer_t<HMODULE>, ModuleDeleter> mDllHandle;
+	std::string mName;
+	MethodTable mMethods;
+};
 
 CustomIR::CustomIR(const std::filesystem::path& _directory) {
 	for (auto& file : std::filesystem::directory_iterator(_directory)) {
