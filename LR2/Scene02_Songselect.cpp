@@ -1,8 +1,11 @@
 ﻿#include "Scene02_Songselect.h"
 #include "Engine.h"
 #include "LR2.h"
-#include <stdio.h>
 #include "filesystem.h"
+#include <format>
+#include <functional>
+#include <stdio.h>
+#include <string>
 #ifndef _WIN32
 #include "En_dxlibstub.h"
 #endif // _WIN32

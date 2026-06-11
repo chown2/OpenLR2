@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 struct game;
 struct sqlite3;
