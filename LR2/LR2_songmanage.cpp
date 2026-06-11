@@ -4,6 +4,7 @@
 #include "filesystem.h"
 #include "filesystem.h"
 #include <iterator>
+#include <ranges>
 #include <vector>
 
 #ifdef _WIN32
@@ -1055,60 +1056,31 @@ int ChangeCourseID(sqlite3 *sql, int newID, int oldID, int type) {
 }
 
 
-// Returns the stored timestamp for a song/folder path, or -1 when no row exists.
-// SearchSongsFromPath uses this as the old "missing row" signal before insert/update.
-int GetRegisteredDateFromPath(const char *table, sqlite3 *sql, CSTR path) {
-	sqlite3_stmt *pStmt = NULL;
-	char str[1024];
-	int date = -1;
-
-	sqlite3_snprintf(1024, str, "SELECT date FROM %s WHERE path = \'%q\'", table, path.body);
-	if (SQL_prepare(str, sql, &pStmt) != 0) {
-		return -1;
-	}
-	if (sqlite3_step(pStmt) == 100) {
-		date = sqlite3_column_int(pStmt, 0);
+// Repair songs left by the previous OpenLR2 bug where 'parent' became the same as 'folder'.
+// Costs nothing on a healthy DB. https://github.com/GOMazk/OpenLR2/pull/111
+static void RepairSongHierarchy(sqlite3 *sql) {
+	std::vector<CSTR> pathList;
+	sqlite3_stmt *pStmt;
+	sqlite3_prepare(sql, "SELECT path FROM song WHERE parent = folder", -1, &pStmt, nullptr);
+	while (sqlite3_step(pStmt) == 100) {
+		pathList.push_back(SQL_GetColumn(0, pStmt));
 	}
 	sqlite3_finalize(pStmt);
-	return date;
-}
-
-// Checks whether an existing song row can be kept without reparsing the BMS file.
-// The timestamp check keeps the fast path for unchanged charts, while the CRC checks
-// repair legacy rows created with a stale parent/folder relationship.
-int IsRegisteredSongCurrent(sqlite3 *sql, CSTR path, int filetime) {
-	sqlite3_stmt *pStmt = NULL;
-	char str[1024];
-	const char *folder;
-	const char *parent;
-	CSTR expectedFolder;
-	CSTR expectedParent;
-	int ret = 0;
-
-	// folder is the physical chart directory; parent is where the chart appears in select.
-	expectedFolder = AssignCRC32(path.getDirectory());
-	expectedParent = AssignCRC32(path.getParentDirectory());
-
-	sqlite3_snprintf(1024, str, "SELECT date,folder,parent FROM song WHERE path = \'%q\'", path.body);
-	if (SQL_prepare(str, sql, &pStmt) != 0) {
-		return 0;
+	char query[1024];
+	for (auto& path : pathList) {
+		sqlite3_exec(sql, sqlite3_snprintf(sizeof(query), query, "UPDATE song SET parent=\'%q\' WHERE path=\'%q\'",
+			AssignCRC32(path.getParentDirectory()).body, path.body), nullptr, nullptr, nullptr);
 	}
-	if (sqlite3_step(pStmt) == 100) {
-		folder = (const char *)sqlite3_column_text(pStmt, 1);
-		parent = (const char *)sqlite3_column_text(pStmt, 2);
-		if (sqlite3_column_int(pStmt, 0) >= filetime && folder && parent && expectedFolder.isSame(folder) && expectedParent.isSame(parent)) {
-			ret = 1;
-		}
+	if (pathList.size() > 0) {
+		ErrorLogFmtAdd("Repaired hierarchy info: %d\n", static_cast<int>(pathList.size()));
 	}
-	sqlite3_finalize(pStmt);
-	return ret;
 }
 
 int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 #ifdef _WIN32
 	HANDLE hFindFile;
 	_WIN32_FIND_DATAA findFileData;
-	int now,filetime,oldtime,ret;
+	int now,filetime;
 	char str[2048];
 	int count = 0;
 	
@@ -1133,32 +1105,24 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 				searchPath = root;
 				searchPath.add(findFileData.cFileName);
 				filetime = GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
-				// Skip expensive metadata parsing only when date and hierarchy CRCs are valid.
-				if (IsRegisteredSongCurrent(sql, searchPath, filetime) == 0) {
-					ErrorLogFmtAdd("曲を発見しました。　パス:%s\n", searchPath.body);
-					SQL_Run(sqlite3_snprintf(2048, str, "DELETE FROM song WHERE path = \'%q\'", searchPath.body), sql);
-					ParseBMSMETA(&meta, searchPath, 1);
-					LoadBMSMETAFromDB(&meta, sql);
-					sqlite3_snprintf(2048, str, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-						meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, filetime, searchPath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, meta.hasTxt, meta.notecount, now, meta.exlevel);
-					SQL_Run(str, sql);
-				}
+				ErrorLogFmtAdd("曲を発見しました。　パス:%s\n", searchPath.body);
+				ParseBMSMETA(&meta, searchPath, 1);
+				LoadBMSMETAFromDB(&meta, sql);
+				sqlite3_snprintf(2048, str, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
+					meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, filetime, searchPath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, meta.hasTxt, meta.notecount, now, meta.exlevel);
+				SQL_Run(str, sql);
 				count++;
 			}
 			else if (((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) && IsLR2Folder(findFileData.cFileName)){
 				searchPath = root;
 				searchPath.add(findFileData.cFileName);
+				ErrorLogFmtAdd("カスタムフォルダを発見しました。　パス:%s\n", searchPath.body);
 				filetime = GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
-				oldtime = GetRegisteredDateFromPath("folder", sql, searchPath);
-				if (oldtime < filetime) {
-					ErrorLogFmtAdd("カスタムフォルダを発見しました。　パス:%s\n", searchPath.body);
-					if (oldtime >= 0) {
-						SQL_Run(sqlite3_snprintf(2048, str, "DELETE FROM folder WHERE path = \'%q\'", searchPath.body), sql);
-					}
-					ParseBMSMETA(&meta, searchPath, 1);
-					sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , 2 , \'%q\' , %d) ",
-						searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.bannerpath.body, now);
-					SQL_Run(str, sql);
+				ParseBMSMETA(&meta, searchPath, 1);
+				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , 2 , \'%q\' , %d) ",
+					searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.bannerpath.body, now);
+				if (SQL_Run(str, sql) == 0) {
+					ErrorLogFmtAdd("追加失敗 エラー内容 %s\n", sqlite3_errmsg(sql));
 				}
 				count++;
 			}
@@ -1172,24 +1136,14 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 			CSTR folderinfo(searchPath);
 			folderinfo.add("folderinfo.txt");
 			filetime = GetUnixtimeFromFiletime(findFileData.ftLastWriteTime);
-			oldtime = GetRegisteredDateFromPath("folder", sql, searchPath);
-			// The folder row timestamp only describes this folder entry.
-			// Child charts may still be missing, changed, or require parent/folder repair.
 			if (IsFileExist(folderinfo)) {
-				ret = 0;
-				if (oldtime < filetime) {
-					ErrorLogAdd("ついでにフォルダインフォを発見しました\n");
-					ParseBMSMETA(&meta, folderinfo, 0);
-					if (meta.judge != 2) meta.judge = 1;
+				ErrorLogAdd("ついでにフォルダインフォを発見しました\n");
+				ParseBMSMETA(&meta, folderinfo, 0);
+				if (meta.judge != 2) meta.judge = 1;
 
-					if (oldtime >= 0) {
-						SQL_Run(sqlite3_snprintf(2048, str, "DELETE FROM folder WHERE path = \'%q\'", searchPath.body), sql);
-					}
-					sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
-						searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.judge, meta.bannerpath.body, now);
-					ret = SQL_Run(str, sql);
-				}
-				if (ret == 0) {
+				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , category , info_a , info_b , command , max , date , type , banner , adddate) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d , %d , %d , \'%q\' , %d) ",
+					searchPath.body, meta.title.body, AssignCRC32(path).body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.tag.body, meta.selLevel, filetime, meta.judge, meta.bannerpath.body, now);
+				if (SQL_Run(str, sql) == 0) {
 					ErrorLogAdd("再帰検索を行います。\n");
 					CSTR subPath(root);
 					subPath.add(findFileData.cFileName).add("\\");
@@ -1197,17 +1151,8 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 				}
 			}
 			else {
-				ret = 0;
-				if (oldtime < filetime) {
-					if (oldtime >= 0) {
-						sqlite3_snprintf(2048, str, "UPDATE folder SET title = \'%q\' , parent = \'%q\' , date = %d , type = 1 , adddate = %d WHERE path = \'%q\'", findFileData.cFileName, AssignCRC32(path).body, filetime, now, searchPath.body);
-					}
-					else {
-						sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , date , type  , adddate) VALUES(\'%q\',\'%q\',\'%q\',%d , 1 , %d )", searchPath.body, findFileData.cFileName, AssignCRC32(path).body, filetime, now);
-					}
-					ret = SQL_Run(str, sql);
-				}
-				if (ret == 0) {
+				sqlite3_snprintf(2048, str, "INSERT INTO folder (path , title , parent , date , type  , adddate) VALUES(\'%q\',\'%q\',\'%q\',%d , 1 , %d )", searchPath.body, findFileData.cFileName, AssignCRC32(path).body, filetime, now);
+				if (SQL_Run(str, sql) == 0) {
 					ErrorLogAdd("再帰検索を行います。\n");
 					CSTR subPath(root);
 					subPath.add(findFileData.cFileName).add("\\");
@@ -1234,24 +1179,20 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 	sqlite3_stmt *pStmt;
 	char sBuf[1024];
 	int cAlready = 0, cNot = 0, cChange = 0;
-	// This query often reads song/folder, and the branches below can delete or insert
-	// into those same tables. Snapshot first, then finalize the SELECT before mutating.
-	std::vector<CSTR> pathList;
-	std::vector<int> timeList;
 
 	GetTimeWrap();
 	SQL_prepare(query, sql, &pStmt);
 	const int now = GetNowUnixtime();
 
+	std::vector<CSTR> pathList;
+	std::vector<int> timeList;
 	while (sqlite3_step(pStmt) == 100) {
 		pathList.push_back(SQL_GetColumn(0, pStmt));
 		timeList.push_back(sqlite3_column_int(pStmt, 1));
 	}
 	sqlite3_finalize(pStmt);
 
-	for (size_t i = 0; i < pathList.size(); i++) {
-		const int time = timeList[i];
-		CSTR str = pathList[i];
+	for (const auto& [str, time] : std::views::zip(pathList, timeList)) {
 		if (!str.left(8).isSame("LR2files")) {
 			const bool is_bms_file = IsBmsFile(str);
 			const bool is_lr2folder = IsLR2Folder(str);
@@ -1265,11 +1206,7 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 
 			if (jb->numOfPath == 0 || is_path_in_jukebox){
 				int newTime;
-				int chg = IsFileChanged(time, str, &newTime);
-				// IsFileChanged only compares timestamps; force reinsert when hierarchy CRCs are stale.
-				if (chg == 0 && is_bms_file && IsRegisteredSongCurrent(sql, str, newTime) == 0) {
-					chg = 2;
-				}
+				const int chg = IsFileChanged(time, str, &newTime);
 				if (chg == 0) {
 					cAlready++;
 				}
@@ -1330,6 +1267,7 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb) {
 			}
 		}
 	}
+
 	GetTimeWrap();
 
 	if (cAlready == 0 && cNot == 0) {
@@ -2619,6 +2557,8 @@ int LoadLR2CustomFolder(sqlite3 *sql, CONFIG_JUKEBOX *jb, CSTR scoreDBpath, char
 			sqlite3_snprintf(1024, query, "SELECT path,date FROM folder WHERE parent = \'%s\' OR date = 0", AssignCRC32("ROOT").body);
 			ReloadSongsByQuery(query, sql, jb);
 		}
+
+		RepairSongHierarchy(sql);
 
 		ErrorLogAdd("未定義#DIFFICULTYの自動設定を行います。 / Auto-assigning undefined #DIFFICULTY.\n");
 		SetUndefinedDifficulty(sql);
