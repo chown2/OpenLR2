@@ -50,7 +50,7 @@ void MYRANKING::InitRanking() {
 	this->inputtype = 0;
 }
 
-int CMP_PlayerByExscore(const void *p1, const void *p2) {
+static int CMP_PlayerByExscore(const void *p1, const void *p2) {
 	
 	RANKINGPLAYER* s1 = (RANKINGPLAYER*)p1;
 	RANKINGPLAYER* s2 = (RANKINGPLAYER*)p2;
