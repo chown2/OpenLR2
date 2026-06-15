@@ -2598,32 +2598,34 @@ int LoadLR2CustomFolder(sqlite3 *sql, CONFIG_JUKEBOX *jb, CSTR scoreDBpath, char
 	return 1;
 }
 
-int InitBMSMETA(BMSMETA *meta) {
-	meta->title.fillzero();
-	meta->subtitle.fillzero();
-	meta->artist.fillzero();
-	meta->subartist.fillzero();
-	meta->hash.fillzero();
-	meta->filename.fillzero();
-	meta->stagefilepath.fillzero();
-	meta->bannerpath.fillzero();
-	meta->parentfolderpath.fillzero();
-	meta->folderpath.fillzero();
-	meta->tag.fillzero();
-	meta->backBMPpath.fillzero();
-	meta->filepath.fillzero();
-	meta->selLevel = 0;
-	meta->exlevel = 0;
-	meta->notecount = 0;
-	meta->maxbpm = 0;
-	meta->minbpm = 0;
-	meta->longnote = 0;
-	meta->random = 0;
-	meta->bga = 0;
-	meta->hasTxt = 0;
-	meta->keymode = 5;
-	meta->difficulty = -1;
-	meta->judge = 2;
+int InitBMSMETA(BMSMETA *meta_) {
+	auto& meta = *meta_;
+	meta.hash.fillzero();
+	meta.title.fillzero();
+	meta.subtitle.fillzero();
+	meta.artist.fillzero();
+	meta.subartist.fillzero();
+	meta.genre.fillzero();
+	meta.filepath.fillzero();
+	meta.filename.fillzero();
+	meta.stagefilepath.fillzero();
+	meta.bannerpath.fillzero();
+	meta.backBMPpath.fillzero();
+	meta.parentfolderpath.fillzero();
+	meta.folderpath.fillzero();
+	meta.tag.fillzero();
+	meta.notecount = 0;
+	meta.maxbpm = 0;
+	meta.minbpm = 0;
+	meta.keymode = 5;
+	meta.longnote = 0;
+	meta.selLevel = 0;
+	meta.exlevel = 0;
+	meta.judge = 2;
+	meta.difficulty = -1;
+	meta.random = 0;
+	meta.bga = 0;
+	meta.hasTxt = 0;
 	return 1;
 }
 
