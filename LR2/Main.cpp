@@ -418,6 +418,9 @@ int main(int argc, char** argv) {
 			: fs::make_preferred("LR2files/Database/song.db").data(), &sql3);
 	LoadLR2CustomFolder(sql3, &gs.config.jukebox, pathScoreDB, gs.is_starter, gs.cmd_directplay);
 	if (gs.cmd_directplay == false) {
+		if (loadingGrHandle > 0) {
+			DrawGraph(0, 0, loadingGrHandle, 0);
+		}
 		if (((unsigned char)gs.config.jukebox.customfolder & 0x80) != 0) {
 			if (gs.config.network.lr2ir == 1) {
 				gs.net.GetInsaneList();
@@ -427,15 +430,9 @@ int main(int argc, char** argv) {
 		if (gs.is_starter == false) {
 			printfDx(LR2VERSIONSTRING"\n");
 			printfDx("PUSH ANY KEY\n");
-			if (loadingGrHandle > 0) {
-				DrawGraph(0, 0, loadingGrHandle, 0);
-			}
 			ScreenFlip();
 			if (WaitInput(&gs.KeyInput) == -1) return 0;
 			printfDx("READY");
-		}
-		if (loadingGrHandle > 0) {
-			DrawGraph(0, 0, loadingGrHandle, 0);
 		}
 		ScreenFlip();
 	}
