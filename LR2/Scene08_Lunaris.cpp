@@ -3,17 +3,17 @@
 #include "Engine.h"
 #include "LR2.h"
 
-int lun_graph[8];
-int lun_timer;
-int lun_judgetime;
-int lun_nowblock;
-int lun_field[8][16];
-int lun_cleartimer[8][16];
-int lun_nextblock;
-int lun_nowblockshape[5][5];
-int lun_nextblockshape[5][5];
-int lun_x;
-int lun_y;
+static int lun_graph[8];
+static int lun_timer;
+static int lun_judgetime;
+static int lun_nowblock;
+static int lun_field[8][16];
+static int lun_cleartimer[8][16];
+static int lun_nextblock;
+static int lun_nowblockshape[5][5];
+static int lun_nextblockshape[5][5];
+static int lun_x;
+static int lun_y;
 
 
 int LUNARIS_GETBLOCKUP(void) {

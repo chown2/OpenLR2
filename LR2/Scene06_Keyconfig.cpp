@@ -62,7 +62,7 @@ int ProcI_Keyconfig(game *g) {
 	}
 	
 	if (g->KeyInput.inputID[KEY_INPUT_F1] == 1) {
-		memset(g->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
+		for (auto& a : g->config.input.buttonMap) for (auto& v : a) v = 0;
 
 		if (g->KeyInput.config_keymode == 0) {
 			ReadKeyConfig(g, fs::make_preferred("LR2files/Config/keyconfig_def.xml").data());
@@ -80,7 +80,7 @@ int ProcI_Keyconfig(game *g) {
 	}
 
 	if (g->KeyInput.inputID[KEY_INPUT_F2] == 1) {
-		memset(g->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
+		for (auto& a : g->config.input.buttonMap) for (auto& v : a) v = 0;
 		ProcS_Keyconfig(g);
 	}
 	if (((g->KeyInput.inputID[KEY_INPUT_ESCAPE] == 1) || (g->KeyInput.mouse_buttonR == 1)) && (g->procPhase == 1)) {

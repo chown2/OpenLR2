@@ -273,8 +273,8 @@ int InitSongData(SONGDATA *song){
 	song->courseID = -1;
 	song->courseStageCount = 0;
 	song->coursePlayable = 0;
-	memset(&song->mybest, 0, sizeof(STATUS));
-	memset(&song->rivalRecord, 0, sizeof(STATUS));
+	song->mybest = {};
+	song->rivalRecord = {};
 	(song->mybest).minbp = -1;
 	song->courseType = -1;
 	song->courseIR = 0;
@@ -953,7 +953,7 @@ int GetSongData(CSTR songMD5, SONGDATA *song, sqlite3 *sql, SONGSELECT *ss) {
 					song->mybest.minbp = -1; 
 			}
 			else {
-				memset(&song->mybest, 0, sizeof(STATUS));
+				song->mybest = {};
 				song->mybest.minbp = -1;
 				song->mybest.total_notes = sqlite3_column_int(stmt, 26);
 			}
@@ -1569,9 +1569,9 @@ int SearchCourseFromDB(sqlite3 *sql, SONGSELECT *ss, int keys, int multistagemod
 			if (song.mybest.minbp == 0 && song.mybest.clear != 5) song.mybest.minbp = -1;
 		}
 		else {
-			memset(&song.mybest, 0, sizeof(STATUS));
-			song.mybest.total_notes = 0;
+			song.mybest = {};
 			song.mybest.minbp = -1;
+			song.mybest.total_notes = 0;
 		}
 
 		COPY_SONGDATA(&ss->prevList[ss->prevListCount], &song);
@@ -2161,7 +2161,7 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 							}
 						}
 						else {
-							memset(&song.mybest, 0, sizeof(STATUS));
+							song.mybest = {};
 							song.mybest.minbp = -1;
 							song.mybest.total_notes = sqlite3_column_int(pStmt, 26);
 						}

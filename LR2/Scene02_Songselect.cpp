@@ -1128,7 +1128,7 @@ int CmdSearch(game *g, CSTR *cmd, sqlite3 *sql) {
 	}
 	else if (cmd->isSame("/deletescore")) {
 		DeleteScoreFromDB(g->sSelect.bmsList[g->sSelect.cur_song].hash, sql);
-		memset(&g->sSelect.bmsList[g->sSelect.cur_song].mybest, 0, sizeof(STATUS));
+		g->sSelect.bmsList[g->sSelect.cur_song].mybest = {};
 		g->sSelect.bmsList[g->sSelect.cur_song].mybest.minbp = -1;
 		*cmd = "deleted";
 		return 1;

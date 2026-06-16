@@ -57,7 +57,7 @@ int Read_JukeboxPath(CONFIG_JUKEBOX *box, TiXmlDocument *xml){
 int ReadKeyConfig(game *game, const char *FilePath) {
 	TiXmlDocument *hXml;
 
-	memset(game->config.input.buttonMap, 0, 16 * 40 * sizeof(int));
+	for (auto& a : game->config.input.buttonMap) for (auto& v : a) v = 0;
 
 	hXml = new TiXmlDocument(FilePath);
 	if (!parse_cp932_xml(hXml, FilePath)) {
@@ -957,7 +957,7 @@ int WriteSkinCustomizeXml(SkinUser *sku, char *filepath) {
 int ReadConfig(game* g, const char* filepath) {
 	TiXmlDocument* hXml;
 
-	memset(&g->config.play, 0, sizeof(g->config.play));
+	g->config.play = {};
 	g->config.play.hiSpeed[0] = 200;
 	g->config.play.hiSpeed[1] = 200;
 	g->config.play.p1_lanecoverv = 0;

@@ -142,25 +142,25 @@ struct BPMtiming {
 };
 
 struct CONFIG_COURSE {
-	int defaultgauge;
-	int defaultconnection;
-	int maxbpm;
-	int minbpm;
-	int bpmrange;
-	int optimumlevel_5;
-	int optimumlevel_7;
-	int optimumlevel_9;
-	int optimumlevel_10;
-	int optimumlevel_14;
-	int maxlevel;
-	int minlevel;
-	int stage;
+	int defaultgauge{};
+	int defaultconnection{};
+	int maxbpm{};
+	int minbpm{};
+	int bpmrange{};
+	int optimumlevel_5{};
+	int optimumlevel_7{};
+	int optimumlevel_9{};
+	int optimumlevel_10{};
+	int optimumlevel_14{};
+	int maxlevel{};
+	int minlevel{};
+	int stage{};
 };
 
 struct CONFIG_INPUT {
-	int buttonMap[40][16];
-	int sys_inputinterval; 
-	int midi_control[40];
+	int buttonMap[40][16]{};
+	int sys_inputinterval{};
+	int midi_control[40]{};
 };
 
 struct CONFIG_JUKEBOX {
@@ -184,231 +184,231 @@ struct CONFIG_NETWORK {
 };
 
 struct CONFIG_PLAY {
-	int hiSpeed[2];
-	int gaugeOption[2]; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
-	int random[2]; // 1:mirror 2:random 3:s-random 4:scatter 5:converge
-	int m_HIDSUD1;
-	int m_HIDSUD2;
-	int p1_lanecoverv;
-	int p2_lanecoverv;
-	int p1_lanecover;
-	int p2_lanecover;
-	int autokey;
-	int p1_assist;
-	int p2_assist;
-	int dpflip;
-	int hsfix; // 1:max 2:min 3:average 4:constant 5:main
-	int battle; // 1:battle 2:d-battle 3:sp-to-dp 4:g-battle
-	int autojudge;
-	int judgetiming;
-	int bga;
-	int bgasize;
-	int poorbga;
-	int scoregraph;
-	int play_ghost;
-	int target_percent;
-	int p1_target;
-	int randSC[2]; // include scratch to random by impossible command
-	int randFix[2]; // fix a lane by impossible command
-	int replay;
-	int hsmargin; 
-	int hsmax; 
-	int hsmin; 
-	int shuttermargin; 
-	int basespeed; 
-	int m_softlanding;
-	int m_addmine;
-	int m_addlong;
-	int m_earthquake;
-	int m_tornado;
-	int m_superloop;
-	int m_gambol;
-	int m_char;
-	int m_heartbeat;
-	int m_loudness;
-	int m_addnote;
-	int m_nabeatsu;
-	int m_accel;
-	int m_sincurve;
-	int m_wave;
-	int m_spiral;
-	int m_sidejump;
-	int is_extra;
-	int m_extra;
-	char m_lunaris;
-	bool m_gas;
-	int gomiscore; 
-	int disablecurspeedchange; 
-	int disableleftclickexit; 
+	int hiSpeed[2]{};
+	int gaugeOption[2]{}; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
+	int random[2]{}; // 1:mirror 2:random 3:s-random 4:scatter 5:converge
+	int m_HIDSUD1{};
+	int m_HIDSUD2{};
+	int p1_lanecoverv{};
+	int p2_lanecoverv{};
+	int p1_lanecover{};
+	int p2_lanecover{};
+	int autokey{};
+	int p1_assist{};
+	int p2_assist{};
+	int dpflip{};
+	int hsfix{}; // 1:max 2:min 3:average 4:constant 5:main
+	int battle{}; // 1:battle 2:d-battle 3:sp-to-dp 4:g-battle
+	int autojudge{};
+	int judgetiming{};
+	int bga{};
+	int bgasize{};
+	int poorbga{};
+	int scoregraph{};
+	int play_ghost{};
+	int target_percent{};
+	int p1_target{};
+	int randSC[2]{}; // include scratch to random by impossible command
+	int randFix[2]{}; // fix a lane by impossible command
+	int replay{};
+	int hsmargin{};
+	int hsmax{};
+	int hsmin{};
+	int shuttermargin{};
+	int basespeed{};
+	int m_softlanding{};
+	int m_addmine{};
+	int m_addlong{};
+	int m_earthquake{};
+	int m_tornado{};
+	int m_superloop{};
+	int m_gambol{};
+	int m_char{};
+	int m_heartbeat{};
+	int m_loudness{};
+	int m_addnote{};
+	int m_nabeatsu{};
+	int m_accel{};
+	int m_sincurve{};
+	int m_wave{};
+	int m_spiral{};
+	int m_sidejump{};
+	int is_extra{};
+	int m_extra{};
+	char m_lunaris{};
+	bool m_gas{};
+	int gomiscore{};
+	int disablecurspeedchange{};
+	int disableleftclickexit{};
 };
 
 struct CONFIG_PLAYER {
-	CSTR id; 
-	CSTR pass; 
-	CSTR passMD5; 
-	CSTR lrid; 
-	CSTR irpass; 
+	CSTR id;
+	CSTR pass;
+	CSTR passMD5;
+	CSTR lrid;
+	CSTR irpass;
 	CSTR irpassMD5;
-	CSTR name; 
+	CSTR name;
 };
 
 struct CONFIG_SELECT {
-	int difficulty;
-	int sort;
-	int key;
-	int searchmax; 
-	int randomclose;
-	int speedfirst; 
-	int speednext; 
-	int control; 
-	int buttonselect; 
-	int folderlamp;
-	int difficultychangetype;
-	int ignorekeyall; 
-	int ignorekeysingle; 
-	int ignorekeydouble; 
-	int ignoredp; 
-	int ignorepms; 
-	int ignoredifficultyall; 
-	int ignore5key; 
-	int titleflash;
-	int levelbarflash_7;
-	int levelbarflash_5;
-	int levelbarflash_9;
-	int disabledifficultyfilter;
-	int preview;
-	int disablesubtitle;
+	int difficulty{};
+	int sort{};
+	int key{};
+	int searchmax{};
+	int randomclose{};
+	int speedfirst{};
+	int speednext{};
+	int control{};
+	int buttonselect{};
+	int folderlamp{};
+	int difficultychangetype{};
+	int ignorekeyall{};
+	int ignorekeysingle{};
+	int ignorekeydouble{};
+	int ignoredp{};
+	int ignorepms{};
+	int ignoredifficultyall{};
+	int ignore5key{};
+	int titleflash{};
+	int levelbarflash_7{};
+	int levelbarflash_5{};
+	int levelbarflash_9{};
+	int disabledifficultyfilter{};
+	int preview{};
+	int disablesubtitle{};
 };
 
 struct CONFIG_SKIN {
-	int disableimagefont; 
-	CSTR fontname; 
+	int disableimagefont{};
+	CSTR fontname;
 	CSTR skinFilePath[30];
 };
 
 struct CONFIG_SOUND {
-	int disabledsp;
-	int bufferlength; 
-	int numbuffers; 
-	int output; 
-	int driver; 
-	int disablefmod; 
-	int volumemaster; 
-	int volumekey; 
-	int volumebgm; 
-	int volumeflag; 
-	int eqflag; 
-	int eqp0; 
-	int eqp1;
-	int eqp2;
-	int eqp3;
-	int eqp4;
-	int eqp5;
-	int eqp6;
-	int pitchflag;
-	int pitchp;
-	int pitchtype;
-	int fxflag_0;
-	int fxflag_1;
-	int fxflag_2;
-	int fxtype_0;
-	int fxtype_1;
-	int fxtype_2;
-	int fxtarget_0;
-	int fxtarget_1;
-	int fxtarget_2;
-	int fxp1_0;
-	int fxp1_1;
-	int fxp1_2;
-	int fxp2_0;
-	int fxp2_1;
-	int fxp2_2;
+	int disabledsp{};
+	int bufferlength{};
+	int numbuffers{};
+	int output{};
+	int driver{};
+	int disablefmod{};
+	int volumemaster{};
+	int volumekey{};
+	int volumebgm{};
+	int volumeflag{};
+	int eqflag{};
+	int eqp0{};
+	int eqp1{};
+	int eqp2{};
+	int eqp3{};
+	int eqp4{};
+	int eqp5{};
+	int eqp6{};
+	int pitchflag{};
+	int pitchp{};
+	int pitchtype{};
+	int fxflag_0{};
+	int fxflag_1{};
+	int fxflag_2{};
+	int fxtype_0{};
+	int fxtype_1{};
+	int fxtype_2{};
+	int fxtarget_0{};
+	int fxtarget_1{};
+	int fxtarget_2{};
+	int fxp1_0{};
+	int fxp1_1{};
+	int fxp1_2{};
+	int fxp2_0{};
+	int fxp2_1{};
+	int fxp2_2{};
 };
 
 struct CONFIG_SYSTEM {
-	int screenmode;
-	int vsync; 
-	int directdraw; 
-	int mainsleep; 
-	int bmssleep; 
-	int screenexrate; 
-	int highcolor; 
-	int disablesystemkey; 
-	int outputlog; 
-	int eventmode; 
-	int thread;
-	int disableskinpreview; 
-	int hptimer; 
-	int isablebmsthread; 
-	int disablefolderthread; 
-	int language; 
-	int windowsize_x; 
-	int windowsize_y; 
-	int maindisplay; 
-	int softwarerendering;
+	int screenmode{};
+	int vsync{};
+	int directdraw{};
+	int mainsleep{};
+	int bmssleep{};
+	int screenexrate{};
+	int highcolor{};
+	int disablesystemkey{};
+	int outputlog{};
+	int eventmode{};
+	int thread{};
+	int disableskinpreview{};
+	int hptimer{};
+	int isablebmsthread{};
+	int disablefolderthread{};
+	int language{};
+	int windowsize_x{};
+	int windowsize_y{};
+	int maindisplay{};
+	int softwarerendering{};
 	unsigned int coreCount = 0;
 };
 
 struct CONFIG_TOOLS {
-	CSTR mp3enc_body; 
-	CSTR mp3enc_option_normal; 
-	CSTR mp3enc_option_movie; 
-	int movie_audio;
-	int mp3_volume;
-	int movie_framerate;
-	CSTR oggenc_body; 
-	CSTR oggenc_option; 
-	CSTR oggdec_body; 
-	CSTR oggdec_option; 
-	CSTR bmse_body; 
-	CSTR bmse_option; 
-	int autowavtoogg;
-	int autobmptopng;
-	int autofumensearch;
+	CSTR mp3enc_body{};
+	CSTR mp3enc_option_normal{};
+	CSTR mp3enc_option_movie{};
+	int movie_audio{};
+	int mp3_volume{};
+	int movie_framerate{};
+	CSTR oggenc_body{};
+	CSTR oggenc_option{};
+	CSTR oggdec_body{};
+	CSTR oggdec_option{};
+	CSTR bmse_body{};
+	CSTR bmse_option{};
+	int autowavtoogg{};
+	int autobmptopng{};
+	int autofumensearch{};
 };
 
 struct ConfigStruct {
-	struct CONFIG_PLAY play;
-	struct CONFIG_SYSTEM system;
-	struct CONFIG_SELECT select;
-	struct CONFIG_INPUT input;
-	struct CONFIG_SOUND sound;
-	struct CONFIG_SKIN skin;
-	struct CONFIG_JUKEBOX jukebox;
-	struct CONFIG_PLAYER player;
-	struct CONFIG_NETWORK network;
-	struct CONFIG_COURSE course;
-	struct CONFIG_TOOLS tools;
+	struct CONFIG_PLAY play{};
+	struct CONFIG_SYSTEM system{};
+	struct CONFIG_SELECT select{};
+	struct CONFIG_INPUT input{};
+	struct CONFIG_SOUND sound{};
+	struct CONFIG_SKIN skin{};
+	struct CONFIG_JUKEBOX jukebox{};
+	struct CONFIG_PLAYER player{};
+	struct CONFIG_NETWORK network{};
+	struct CONFIG_COURSE course{};
+	struct CONFIG_TOOLS tools{};
 };
 
 struct STATUS {
-	int stat_pgreat;
-	int stat_great;
-	int stat_good;
-	int stat_bad;
-	int stat_poor;
-	int clear;
-	int stat_score;
-	int stat_exscore;
-	int rank;
-	int rate;
-	int minbp;
-	int stat_maxcombo;
-	int playcount; 
-	int clearcount; 
-	int failcount; 
-	int clear_db; 
-	int clear_sd; 
-	int clear_ex; 
-	int total_notes;
-	int op_history; 
-	int op_best; 
-	int IRranking;
-	int IRclearRate;
-	int IRplayercount;
-	char IRthreadEnd;
-	int complete; 
-	int rseed; 
+	int stat_pgreat{};
+	int stat_great{};
+	int stat_good{};
+	int stat_bad{};
+	int stat_poor{};
+	int clear{};
+	int stat_score{};
+	int stat_exscore{};
+	int rank{};
+	int rate{};
+	int minbp{};
+	int stat_maxcombo{};
+	int playcount{};
+	int clearcount{};
+	int failcount{};
+	int clear_db{};
+	int clear_sd{};
+	int clear_ex{};
+	int total_notes{};
+	int op_history{};
+	int op_best{};
+	int IRranking{};
+	int IRclearRate{};
+	int IRplayercount{};
+	char IRthreadEnd{};
+	int complete{};
+	int rseed{};
 };
 
 struct SONGDATA { /* 712bytes */
@@ -552,28 +552,28 @@ struct FontImage {
 };
 
 struct RECORDING {
-	double framerate;
-	int writeSamplePos;
-	int curFrame;
-	int recMode; /* 1:auto2avi 2:replay2avi 3:bga2avi 4:movie */
+	double framerate{};
+	int writeSamplePos{};
+	int curFrame{};
+	int recMode{}; /* 1:auto2avi 2:replay2avi 3:bga2avi 4:movie */
 
 #ifdef WIN32
-	HDC srcHDC; /* struct_entry */
-	int bitdepth;
-	CSTR filename;
-	uint framelen;
-	COMPVARS compvars; /* from vfw.h */
-	BITMAPINFOHEADER bmiHeader;
-	PAVISTREAM pAVIstream; /* from vfw.h */
-	PAVIFILE pAVIFILE; /* from vfw.h */
-	void * buf;
-	HWND hwnd;
-	HDC dstHDC;
-	HBITMAP hBIT;
-	HGDIOBJ hGDI;
+	HDC srcHDC{}; /* struct_entry */
+	int bitdepth{};
+	CSTR filename{};
+	uint framelen{};
+	COMPVARS compvars{}; /* from vfw.h */
+	BITMAPINFOHEADER bmiHeader{};
+	PAVISTREAM pAVIstream{}; /* from vfw.h */
+	PAVIFILE pAVIFILE{}; /* from vfw.h */
+	void * buf{};
+	HWND hwnd{};
+	HDC dstHDC{};
+	HBITMAP hBIT{};
+	HGDIOBJ hGDI{};
 #endif
 
-	RECORDING();
+	RECORDING() = default;
 	bool RefreshCurFrame();
 	int GetCurTime();
 	int CpyScreenToAVI();
@@ -1058,9 +1058,9 @@ struct SONGSELECT {
 };
 
 struct ReplayData {
-	int timing;
-	uchar op;
-	int value;
+	int timing{};
+	uchar op{};
+	int value{};
 };
 
 struct README {
@@ -1485,22 +1485,22 @@ struct SkinHeader { /* SkinInfo */
 
 struct RANKINGPLAYER {
 	CSTR name;
-	int id;
-	int sp;
-	int dp;
-	int clear;
-	int notes;
-	int combo;
-	int pg;
-	int gr;
-	int gd;
-	int bd;
-	int pr;
-	int minbp;
-	int option;
-	int sussussuspected;
-	int playcount;
-	int ranking;
+	int id{};
+	int sp{};
+	int dp{};
+	int clear{};
+	int notes{};
+	int combo{};
+	int pg{};
+	int gr{};
+	int gd{};
+	int bd{};
+	int pr{};
+	int minbp{};
+	int option{};
+	int sussussuspected{};
+	int playcount{};
+	int ranking{};
 	CSTR comment; /* hash */
 };
 

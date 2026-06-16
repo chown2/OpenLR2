@@ -7,7 +7,7 @@
 #include "En_dxlibstub.h"
 #endif // _WIN32
 
-#include <cstring>
+#include <algorithm>
 
 MIDI midi;
 
@@ -18,17 +18,16 @@ MIDI midi;
 
 // TODO structure array rework
 int InitInputStructure2(inputStructure *is){
-	
 	is->is_doubleclick = 0;
 	is->mousewheel = 0;
 	is->mouse_buttonL = 0;
 	is->mouse_buttonR = 0;
 	is->mouse_buttonW = 0;
 	is->mouse_button4 = 0;
-	memset(is->p1_buttonInput, 0, sizeof is->p1_buttonInput);
-	memset(is->p2_buttonInput, 0, sizeof is->p2_buttonInput);
-	memset(is->otherbuttons, 0, sizeof is->otherbuttons);
-	memset(is->inputID, 0, sizeof(char) * 0x600);
+	std::ranges::fill(is->p1_buttonInput, 0);
+	std::ranges::fill(is->p2_buttonInput, 0);
+	std::ranges::fill(is->otherbuttons, 0);
+	std::ranges::fill_n(is->inputID, 0x600, 0);
 	return 1;
 }
 
@@ -217,7 +216,7 @@ void ProcessInput(inputStructure *is, int interval) {
 
 	GetTimeWrap();
 	//joypad
-	memset(new_joyInput, 0, sizeof(int) * 0x100);
+	std::ranges::fill_n(new_joyInput, 0x100, 0);
 	for (int i = 1; i < 4; i++) {
 		int r = GetJoypadInputState(i);
 		for (int j = 0; j < 32; j++) {
@@ -296,10 +295,10 @@ int WaitInput(inputStructure *is){
 	is->is_doubleclick = 0;
 	is->mousewheel = 0;
 	is->mouse_buttonL = 0;
-	memset(is->p1_buttonInput, 0, sizeof is->p1_buttonInput);
-	memset(is->p2_buttonInput, 0, sizeof is->p2_buttonInput);
-	memset(is->otherbuttons, 0, sizeof is->otherbuttons);
-	memset(is->inputID, 0, 0x600);
+	std::ranges::fill(is->p1_buttonInput, 0);
+	std::ranges::fill(is->p2_buttonInput, 0);
+	std::ranges::fill(is->otherbuttons, 0);
+	std::ranges::fill_n(is->inputID, 0x600, 0);
 	while (FindPressedKey(is) == 0 && is->mouse_buttonL != 1 && is->mouse_buttonR != 1) {
 		WaitTimer(40);
 		ProcessInput(is, 0);
@@ -420,19 +419,15 @@ int InputToButton(inputStructure *is, CONFIG_INPUT *cfg_input, int player, int i
 
 void InitMIDIInput(void){
 #ifdef _WIN32
-	UINT numDev;
-	HMIDIIN phmi;
-
-	for (int i = 0; i < 256; i++) { //TOFIX : unneccessary loop
-		midi.controller_v = 0;
-		midi.controller_n = 0;
-	}
+	midi.controller_v = 0;
+	midi.controller_n = 0;
 	midi.unusedFC = 0x7f;
-	numDev = midiInGetNumDevs();
+	UINT numDev = midiInGetNumDevs();
 	if (numDev > 15) {
 		numDev = 15;
 	}
 
+	HMIDIIN phmi;
 	for (int i = 0; i < numDev; i++) {
 		midiInOpen(&phmi, i, (DWORD_PTR)MIDIInProc, NULL, CALLBACK_FUNCTION);
 		midiInStart(phmi);
@@ -442,8 +437,7 @@ void InitMIDIInput(void){
 }
 
 int InitInputStructure(inputStructure *is){
-
-	memset(is->inputID, 0, sizeof(char)*0x600);
+	std::ranges::fill_n(is->inputID, 0x600, 0);
 	is->mouse_buttonL = 0;
 	is->mouse_buttonR = 0;
 	is->mouse_buttonW = 0;

@@ -114,8 +114,8 @@ void ReactInput(game *g) {
 
 	GetTimeWrap();
 	if (g->txtStruct.st_text_num != -1) {
-		memset(g->KeyInput.p1_buttonInput, 0, 20);
-		memset(g->KeyInput.p2_buttonInput, 0, 20);
+		std::ranges::fill(g->KeyInput.p1_buttonInput, 0);
+		std::ranges::fill(g->KeyInput.p2_buttonInput, 0);
 	}
 	if (GetTimeLapse(1, &g->timer1) >= 0.0) {
 		for (int i = 0; i < 10; i++) {
