@@ -1,3 +1,5 @@
+#pragma once
+
 
 #include "Scene02_Songselect.h"
 #include "Scene03_Decide.h"

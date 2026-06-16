@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 int LUNARIS_GETBLOCKUP(void);

@@ -1,6 +1,7 @@
 ﻿/*
  * Not existing 'filepath' when reading is not an error.
  */
+#pragma once
 
 #include "structure.h"
 #include "Engine.h"

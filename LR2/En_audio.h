@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 #include "FMOD/fmod.h"
 

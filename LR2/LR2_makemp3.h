@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 int RunMP3Encoder(ConfigStruct * cfg, CSTR wavPath, CSTR mp3Path, char deleteWav, char movie);

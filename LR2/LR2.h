@@ -1,4 +1,6 @@
-﻿#include "Engine.h"
+﻿#pragma once
+
+#include "Engine.h"
 
 #include "LR2_audio.h"
 #include "LR2_bmsload.h"

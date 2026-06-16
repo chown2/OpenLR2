@@ -1,3 +1,5 @@
+#pragma once
+
 int LoopInRange(int min, int max, int add, int *num);
 
 double ByTime(double v1, double v2, double t1, double t2, double tO);

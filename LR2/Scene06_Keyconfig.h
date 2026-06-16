@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Engine.h"
 int ProcS_Keyconfig(game *g);
 int ProcI_Keyconfig(game *g);

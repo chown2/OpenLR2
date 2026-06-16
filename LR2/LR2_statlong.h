@@ -1,4 +1,6 @@
-﻿#include "Engine.h"
+﻿#pragma once
+
+#include "Engine.h"
 
 //player stat lifetime
 CSTR MakePlayerStatHash(PLAYERSTATISTIC * ps);

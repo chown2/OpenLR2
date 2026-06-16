@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 int ProcS_Result(game * g);

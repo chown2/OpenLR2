@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 int SkinSelect_SoundSet(game * g, CSTR filepath);

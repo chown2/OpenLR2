@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tinyxml/tinyxml.h"
 #include "sqlite/sqlite3.h"
 

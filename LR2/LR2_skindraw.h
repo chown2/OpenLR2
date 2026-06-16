@@ -1,4 +1,6 @@
-﻿#include "structure.h"
+﻿#pragma once
+
+#include "structure.h"
 
 //DrawingBuf collects what will be drawn
 int InitDrawingBuffer(DrawingBuf * drb);

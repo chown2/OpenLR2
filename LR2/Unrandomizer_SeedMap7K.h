@@ -1,3 +1,4 @@
+#pragma once
 // \retval 0xFFFF Impossible layout
 inline int GetSeed7K(int in) {
 	switch (in) {

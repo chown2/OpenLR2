@@ -1,4 +1,6 @@
-﻿#include "structure.h"
+﻿#pragma once
+
+#include "structure.h"
 #include "Engine.h"
 
 int WriteGhostInDatabase(sqlite3 * sql, CSTR songMD5, PLAYSCORE * score);

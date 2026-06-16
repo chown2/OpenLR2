@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 int InitNoteBuffer(LaneStruct *lane, int count);

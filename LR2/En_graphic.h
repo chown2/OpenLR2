@@ -1,4 +1,6 @@
-﻿#include "structure.h"
+﻿#pragma once
+
+#include "structure.h"
 
 int ScreenCapture(uint iGrHandle, int x, int y);
 extern int hBackImage;

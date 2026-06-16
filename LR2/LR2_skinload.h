@@ -1,4 +1,6 @@
-﻿#include "structure.h"
+﻿#pragma once
+
+#include "structure.h"
 
 //imagefont
 int InitImageFont(ImageFont * imgfont);

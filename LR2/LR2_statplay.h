@@ -1,3 +1,5 @@
+#pragma once
+
 #include "structure.h"
 
 uint ConvertOptionHistory(game *g);
