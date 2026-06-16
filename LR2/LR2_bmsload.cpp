@@ -2346,7 +2346,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					for (int i = 0; i < div; i++) {
 						int ii = i * 2 + 7;
 						if (HEXcharToInt(*fBuf.atPos(ii), *fBuf.atPos(ii + 1))) {
-							float notepos = i / (float)div; //do not simplify this. float80 - float32 noise is in original LR2
+							double notepos = i / (double)div;
 							gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 							gp->bmsobj.notes[gp->bmsobj.count].val = HEXcharToInt(*fBuf.atPos(ii), *fBuf.atPos(ii + 1)) * gp->freqSpeedMultiplier;
 							gp->bmsobj.notes[gp->bmsobj.count].op = 3;
@@ -2362,7 +2362,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					for (int i = 0; i < div; i++) {
 						int ii = i * 2 + 7;
 						if (Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1),isBase62)) {
-							float notepos = i / (float)div; //do not simplify this. float80 - float32 noise is in original LR2
+							double notepos = i / (double)div;
 							gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 							if (isVisibleNote(channel)) {
 								if (lastMeasure <= thisMeasure) {
