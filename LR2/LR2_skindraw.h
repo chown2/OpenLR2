@@ -8,7 +8,6 @@ int AllocDrawingBuffer(DrawingBuf * drb);
 int ReallocDrawingBuffer(DrawingBuf * drb);
 
 //calc draw position
-int InitDSTdraw(DSTdraw * dstd);
 DSTdraw DSTDbyTime(DSTdraw * dstd1, DSTdraw * dstd2, double t1, double t2, double tO);
 DSTdraw SetDSTdrawByTime(DSTstruct dst, double time);
 

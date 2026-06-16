@@ -207,10 +207,7 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 
 	for (int i = 1; i < 30; i++) {
 		if (g->skstruct.dst_BAR_BODY_OFF[i - 1].dstCount > 0 && g->skstruct.dst_BAR_BODY_OFF[i].dstCount > 0) {
-			DSTdraw dstd1, dstd2, dstd3;
-			InitDSTdraw(&dstd1);
-			InitDSTdraw(&dstd2);
-			InitDSTdraw(&dstd3);
+			DSTdraw dstd1{}, dstd2{}, dstd3{};
 
 			int bar = (g->sSelect.listCalculatedBar / 1000 - g->skstruct.BAR_CENTER) + i;
 			while (bar < 0) {

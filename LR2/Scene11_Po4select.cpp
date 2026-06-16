@@ -541,10 +541,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 
 		for (int i = l44c + 1; i < l44c + 5; i++) {
 			if (g->skstruct.dst_BAR_BODY_ON[i].dstCount > 0 && g->skstruct.dst_BAR_BODY_ON[i-1].dstCount > 0) {
-				DSTdraw dstd1, dstd2, dstd3;
-				InitDSTdraw(&dstd1);
-				InitDSTdraw(&dstd2);
-				InitDSTdraw(&dstd3);
+				DSTdraw dstd1{}, dstd2{}, dstd3{};
 
 				int cur = i + g->sSelect.listCalculatedBar / 1000 - g->skstruct.BAR_CENTER - l44c;
 				while (cur < 0) cur += g->sSelect.bmsListCount;

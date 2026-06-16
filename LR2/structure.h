@@ -488,26 +488,26 @@ struct CSVbuf {
 	CSTR str[30]{};
 };
 struct DSTdraw { /* 80bytes,4*0x14 */
-	float x;
-	float y;
-	float w;
-	float h;
-	int sortID;
-	int time;
-	int acc;
-	int blend;
-	int filter;
-	int a;
-	int r;
-	int g;
-	int b;
-	float angle;
-	int center;
-	int grHandle;
-	int fontHandle;
-	int subHandle;
-	int align;
-	char isDrawBackbox;
+	float x{0};
+	float y{0};
+	float w{0};
+	float h{0};
+	int sortID{0};
+	int time{-1};
+	int acc{0};
+	int blend{0};
+	int filter{0};
+	int a{0};
+	int r{0};
+	int g{0};
+	int b{0};
+	float angle{0};
+	int center{0};
+	int grHandle{-1};
+	int fontHandle{-1};
+	int subHandle{-1};
+	int align{0};
+	char isDrawBackbox{0};
 };
 
 struct DrawingBuf {

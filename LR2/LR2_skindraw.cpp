@@ -9,7 +9,7 @@
 
 int InitDrawingBuffer(DrawingBuf *drb){
 	for (int i = 0; i < drb->count; i++) {
-		InitDSTdraw(&drb->dstd[i]);
+		drb->dstd[i] = {};
 	}
 	drb->count = 0;
 	for (int i = 0; i < 20; i++) {
@@ -47,33 +47,8 @@ int ReallocDrawingBuffer(DrawingBuf *drb){
 	return 1;
 }
 
-int InitDSTdraw(DSTdraw *dstd){
-	dstd->x = 0;
-	dstd->y = 0;
-	dstd->w = 0;
-	dstd->sortID = 0;
-	dstd->h = 0;
-	dstd->a = 0;
-	dstd->angle = 0.0;
-	dstd->r = 0;
-	dstd->g = 0;
-	dstd->b = 0;
-	dstd->acc = 0;
-	dstd->blend = 0;
-	dstd->filter = 0;
-	dstd->time = -1;
-	dstd->center = 0;
-	dstd->grHandle = -1;
-	dstd->fontHandle = -1;
-	dstd->subHandle = -1;
-	dstd->align = 0;
-	dstd->isDrawBackbox = '\0';
-	return 1;
-}
-
 DSTdraw DSTDbyTime(DSTdraw *dstd1, DSTdraw *dstd2, double t1, double t2, double tO) {
-	DSTdraw ret;
-	InitDSTdraw(&ret);
+	DSTdraw ret{};
 	
 	ret.x = ByTime(dstd1->x, dstd2->x, t1, t2, tO);
 	ret.y = ByTime(dstd1->y, dstd2->y, t1, t2, tO);
@@ -97,12 +72,11 @@ DSTdraw DSTDbyTime(DSTdraw *dstd1, DSTdraw *dstd2, double t1, double t2, double 
 DSTdraw SetDSTdrawByTime(DSTstruct dst, double time) {
 	int tStart, tEnd;
 	int t = time, t2;
-	DSTdraw oBuf;
+	DSTdraw oBuf{};
 
 	DSTdraw *rDstd;
 	int select;
 
-	InitDSTdraw(&oBuf);
 	if (dst.dstCount > 0 && dst.dataSize > 0) {
 		tStart = dst.draw[0].time;
 		tEnd = dst.draw[dst.dstCount -1].time;

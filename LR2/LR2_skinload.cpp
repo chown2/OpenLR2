@@ -75,7 +75,7 @@ int ReadDST(DSTstruct *dst, CSVbuf *csv, int order){
 		dst->draw = (DSTdraw*)realloc(dst->draw, dst->dataSize * sizeof(DSTdraw));
 		assert(dst->draw != nullptr);
 		for (int i = dst->dstCount; i < dst->dataSize; i++) {
-			InitDSTdraw(&dst->draw[i]);
+			dst->draw[i] = {};
 		}
 	}
 
@@ -179,7 +179,7 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	sk->horizontal = 0;
 
 	for (int i = 0; i < 1000; i++) {
-		InitDSTdraw(&sk->drBuf.dstd[i]);
+		sk->drBuf.dstd[i] = {};
 	}
 	(sk->drBuf).count = 0;
 
