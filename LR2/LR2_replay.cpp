@@ -245,9 +245,13 @@ int AddReplayDataHeader(CONFIG_PLAY *cfg, REPLAY *rp, AUDIO *snd, gameplay *gp){
 int InputToReplay(REPLAY *rp, inputStructure *is, int timing, int scratchSide) {
 
 	if (scratchSide == 0) {
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < 20; i++) {
 			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i, 1);
 			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i, 0);
+		}
+		for (int i = 0; i < 20; i++) {
+			if (is->p2_buttonInput[i] == 1) AddReplayData(rp, timing, i + 20, 1);
+			else if (is->p2_buttonInput[i] == 3) AddReplayData(rp, timing, i + 20, 0);
 		}
 		return 1;
 	}
@@ -261,32 +265,38 @@ int InputToReplay(REPLAY *rp, inputStructure *is, int timing, int scratchSide) {
 			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i + 5, 0);
 		}
 		for (int i = 3; i < 8; i++) { // 3~7 -> 1~5
-			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i - 2, 1); //seems call function is optimized, for convenience I replaced it with function call.
+			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i - 2, 1);
 			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i - 2, 0);
 		}
-		for (int i = 8; i < 40; i++) {
-			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i, 1); //seems call function is optimized, for convenience I replaced it with function call.
-			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i, 0); //seems call function is optimized, for convenience I replaced it with function call.
+		for (int i = 8; i < 20; i++) {
+			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i, 1);
+			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i, 0);
+		}
+		for (int i = 0; i < 20; i++) {
+			if (is->p2_buttonInput[i] == 1) AddReplayData(rp, timing, i + 20, 1);
+			else if (is->p2_buttonInput[i] == 3) AddReplayData(rp, timing, i + 20, 0);
 		}
 		return 1;
 	}
 
 	if (scratchSide == 2) {
-		for (int i = 0; i < 21; i++) {
+		for (int i = 0; i < 20; i++) {
 			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i, 1);
 			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i, 0);
 		}
-		for (int i = 21; i < 23; i++) { // 21~22 -> 26~27
-			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i + 5, 1); 
-			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i + 5, 0);
+		if (is->p2_buttonInput[0] == 1) AddReplayData(rp, timing, 20, 1);
+		else if (is->p2_buttonInput[0] == 3) AddReplayData(rp, timing, 20, 0);
+		for (int i = 1; i < 3; i++) { // 1~2 -> 6~7
+			if (is->p2_buttonInput[i] == 1) AddReplayData(rp, timing, i + 5 + 20, 1);
+			else if (is->p2_buttonInput[i] == 3) AddReplayData(rp, timing, i + 5 + 20, 0);
 		}
-		for (int i = 23; i < 28; i++) { // 23~27 -> 21~25
-			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i - 2, 1); //seems call function is optimized, for convenience I replaced it with function call.
-			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i - 2, 0);
+		for (int i = 3; i < 8; i++) { // 3~7 -> 1~5
+			if (is->p2_buttonInput[i] == 1) AddReplayData(rp, timing, i - 2 + 20, 1);
+			else if (is->p2_buttonInput[i] == 3) AddReplayData(rp, timing, i - 2 + 20, 0);
 		}
-		for (int i = 28; i < 40; i++) {
-			if (is->p1_buttonInput[i] == 1) AddReplayData(rp, timing, i, 1); //seems call function is optimized, for convenience I replaced it with function call.
-			else if (is->p1_buttonInput[i] == 3) AddReplayData(rp, timing, i, 0); //seems call function is optimized, for convenience I replaced it with function call.
+		for (int i = 8; i < 20; i++) {
+			if (is->p2_buttonInput[i] == 1) AddReplayData(rp, timing, i + 20, 1);
+			else if (is->p2_buttonInput[i] == 3) AddReplayData(rp, timing, i + 20, 0);
 		}
 		return 1;
 	}
@@ -481,15 +491,17 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 		if (data->value == 1) {
 			if ((gp->scratchSide == 1 || gp->scratchSide == 3) && (1 <= data->op && data->op <= 5)) is->p1_buttonInput[data->op + 2] = 1;
 			else if ((gp->scratchSide == 1 || gp->scratchSide == 3) && (6 <= data->op && data->op <= 7)) is->p1_buttonInput[data->op - 5] = 1;
-			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (21 <= data->op && data->op <= 25)) is->p1_buttonInput[data->op + 2] = 1;
-			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (26 <= data->op && data->op <= 27)) is->p1_buttonInput[data->op - 5] = 1;
+			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (21 <= data->op && data->op <= 25)) is->p2_buttonInput[data->op + 2 - 20] = 1;
+			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (26 <= data->op && data->op <= 27)) is->p2_buttonInput[data->op - 5 - 20] = 1;
+			else if (data->op >= 20) is->p2_buttonInput[data->op - 20] = 1;
 			else is->p1_buttonInput[data->op] = 1;
 		}
 		else if (data->value == 0) {
 			if ((gp->scratchSide == 1 || gp->scratchSide == 3) && (1 <= data->op && data->op <= 5)) is->p1_buttonInput[data->op + 2] = 3;
 			else if ((gp->scratchSide == 1 || gp->scratchSide == 3) && (6 <= data->op && data->op <= 7)) is->p1_buttonInput[data->op - 5] = 3;
-			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (21 <= data->op && data->op <= 25)) is->p1_buttonInput[data->op + 2] = 3;
-			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (26 <= data->op && data->op <= 27)) is->p1_buttonInput[data->op - 5] = 3;
+			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (21 <= data->op && data->op <= 25)) is->p2_buttonInput[data->op + 2 - 20] = 3;
+			else if ((gp->scratchSide == 2 || gp->scratchSide == 3) && (26 <= data->op && data->op <= 27)) is->p2_buttonInput[data->op - 5 - 20] = 3;
+			else if (data->op >= 20) is->p2_buttonInput[data->op - 20] = 3;
 			else is->p1_buttonInput[data->op] = 3;
 		}
 		return 1;
