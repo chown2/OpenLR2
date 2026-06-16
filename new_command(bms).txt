@@ -1,1 +1,18 @@
-nothing yet
+1. #BASE 62
+base62 bms support
+
+260615 6:41(UTC)
+2. #SCROLLxx nnn, #XXXSC(channel) added
+Related article: https://note.com/numuther/n/n57bf895e7969
+
+- Example(Normal Chart)
+* NO MERCY
+http://box.keysounds.net/[Qwesta]NOMERCY.zip
+* Magia del Metamorfosi
+https://drive.google.com/file/d/1KN5YFAtG45dVJWRfGvmjQ6Hop6gWQkHt/view?usp=sharing
+
+- Example(Gimmick Chart)
+* $trange Attraktor [Labyrinth]
+https://ux.getuploader.com/numuther/download/108
+* #GOTO [Oraja Innovation]
+https://www.dropbox.com/s/8w4g9h6egbmdrn2/%23GOTO.zip?dl=1

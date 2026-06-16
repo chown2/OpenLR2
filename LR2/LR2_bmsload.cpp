@@ -68,10 +68,12 @@ int InitNoteBuffer(LaneStruct *lane, int count){
 
 	for (int i = 0; i < lane->size; i++) {
 		lane->notes[i].bmsTiming_ln = -1.0;
+		lane->notes[i].renderTiming_ln = -1.0;
 		lane->notes[i].realTiming_ln = -1.0;
 		lane->notes[i].active = -1;
 		lane->notes[i].val = -1.0;
 		lane->notes[i].bmsTiming = -1.0;
+		lane->notes[i].renderTiming = -1.0;
 		lane->notes[i].realTiming = -1.0;
 		lane->notes[i].op = -1;
 		lane->notes[i].mine = -1;
@@ -91,10 +93,12 @@ int ExpandNoteBuffer(LaneStruct *lane, int addsize){
 
 	for (int i = oldCount; i < lane->size; i++) {
 		lane->notes[i].bmsTiming_ln = -1.0;
+		lane->notes[i].renderTiming_ln = -1.0;
 		lane->notes[i].realTiming_ln = -1.0;
 		lane->notes[i].active = -1;
 		lane->notes[i].val = -1.0;
 		lane->notes[i].bmsTiming = -1.0;
+		lane->notes[i].renderTiming = -1.0;
 		lane->notes[i].realTiming = -1.0;
 		lane->notes[i].op = -1;
 		lane->notes[i].mine = -1;
@@ -180,10 +184,12 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	if (gp->bmsobj.count == 0) InitNoteBuffer(&gp->bmsobj, 1000);
 	for (int i = 0; i < gp->bmsobj.size; i++) {
 		gp->bmsobj.notes[i].bmsTiming_ln = -1.0;
+		gp->bmsobj.notes[i].renderTiming_ln = -1.0;
 		gp->bmsobj.notes[i].realTiming_ln = -1.0;
 		gp->bmsobj.notes[i].active = -1;
 		gp->bmsobj.notes[i].val = -1.0;
 		gp->bmsobj.notes[i].bmsTiming = -1.0;
+		gp->bmsobj.notes[i].renderTiming = -1.0;
 		gp->bmsobj.notes[i].realTiming = -1.0;
 		gp->bmsobj.notes[i].op = -1;
 		gp->bmsobj.notes[i].mine = -1;
@@ -199,10 +205,12 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 		if (gp->bmsobj_note[lane].count == 0) InitNoteBuffer(&gp->bmsobj_note[lane], 100);
 		for (int i = 0; i < gp->bmsobj_note[lane].size; i++) {
 			gp->bmsobj_note[lane].notes[i].bmsTiming_ln = -1.0;
+			gp->bmsobj_note[lane].notes[i].renderTiming_ln = -1.0;
 			gp->bmsobj_note[lane].notes[i].realTiming_ln = -1.0;
 			gp->bmsobj_note[lane].notes[i].active = -1;
 			gp->bmsobj_note[lane].notes[i].val = -1.0;
 			gp->bmsobj_note[lane].notes[i].bmsTiming = -1.0;
+			gp->bmsobj_note[lane].notes[i].renderTiming = -1.0;
 			gp->bmsobj_note[lane].notes[i].realTiming = -1.0;
 			gp->bmsobj_note[lane].notes[i].op = -1;
 			gp->bmsobj_note[lane].notes[i].mine = -1;
@@ -218,10 +226,12 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	if (gp->bmsobj_line.count == 0) InitNoteBuffer(&gp->bmsobj_line, 100);
 	for (int i = 0; i < gp->bmsobj_line.size; i++) {
 		gp->bmsobj_line.notes[i].bmsTiming_ln = -1.0;
+		gp->bmsobj_line.notes[i].renderTiming_ln = -1.0;
 		gp->bmsobj_line.notes[i].realTiming_ln = -1.0;
 		gp->bmsobj_line.notes[i].active = -1;
 		gp->bmsobj_line.notes[i].val = -1.0;
 		gp->bmsobj_line.notes[i].bmsTiming = -1.0;
+		gp->bmsobj_line.notes[i].renderTiming = -1.0;
 		gp->bmsobj_line.notes[i].realTiming = -1.0;
 		gp->bmsobj_line.notes[i].op = -1;
 		gp->bmsobj_line.notes[i].mine = -1;
@@ -768,6 +778,30 @@ double RealTimeToBMSTime(gameplay *gp, double time){
 		}
 	}
 	return gp->bpmt_data[gp->bpmt_count - 1].converted;
+}
+
+double RealTimeToRenderTime(gameplay *gp, double time){
+	if (gp->bpmt_count == 0) {
+		return {};
+	}
+
+	if (time <= gp->bpmt_data[0].realtime) {
+		return gp->bpmt_data[0].render_converted;
+	}
+
+	for (int i = gp->bpmt_start; i < gp->bpmt_count; i++) {
+		if (gp->bpmt_data[i-1].realtime <= time && time <= gp->bpmt_data[i].realtime) {
+			if (gp->bpmt_data[i-1].realtime == gp->bpmt_data[i].realtime) {
+				return gp->bpmt_data[i].render_converted;
+			}
+			if (gp->bpmt_data[i].render_converted == gp->bpmt_data[i-1].render_converted) {
+				return gp->bpmt_data[i-1].render_converted;
+			}
+			
+			return ChangeValueByTime(gp->bpmt_data[i - 1].render_converted, gp->bpmt_data[i].render_converted, gp->bpmt_data[i - 1].realtime, gp->bpmt_data[i].realtime, time, 0);
+		}
+	}
+	return gp->bpmt_data[gp->bpmt_count - 1].render_converted;
 }
 
 int CMP_CCARRbyCount(const void *p1, const void *p2) {
@@ -1828,6 +1862,7 @@ unsigned char channelConvert[] = { 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3
 									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
 									0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x31, 0x32, 0x33, 0x34,
 									0x00, 0x3c, 0x35, 0x36, 0x37, 0x38, 0x39, 0x00, 0x3a, 0x3b };
+#define SC_CHANNEL 888 //NOTE: channelConvert[] cannot handle SC channel unless make it use base36
 int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMSMETA *meta, int bgaFlag, int scratchSide) {
 	ErrorLogFmtAdd("ParseBmsFile(%s)\n", filename.c_str());
 
@@ -1850,7 +1885,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	int stages{};
 
 	LaneStruct tmpLane[10]{};
-	double BPMslot[SINGLESLOTS]{}, STOPslot[SINGLESLOTS]{};
+	double BPMslot[SINGLESLOTS]{}, STOPslot[SINGLESLOTS]{}, SCROLLslot[SINGLESLOTS]{};
 	int bmsobj_stageFirst{};
 	double oldSpeedMultiplier{};
 		
@@ -1915,6 +1950,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 	for (int i = 0; i < SINGLESLOTS; i++) BPMslot[i] = -1.0;
 	for (int i = 0; i < SINGLESLOTS; i++) STOPslot[i] = -1.0;
+	for (int i = 0; i < SINGLESLOTS; i++) SCROLLslot[i] = -1.0;
 
 	int isDSC = 0, isPMS = 0;
 	bool is5key = 0, is7key = 0, is9key = 0;
@@ -2003,6 +2039,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	avgBPM_notes = 0;
 	double bpmt_realtime = 0.0;
 	double bpmt_bmstime = 0.0;
+	double bpmt_rendertime = 0.0;
+	double bpmt_scMultiplier = 1.0;
 	double prevNoteBmstime = 0.0;
 	nowBPM = 0.0;
 	endtime = 0.0;
@@ -2118,10 +2156,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 
 
-			if (isdigit(*fBuf.atPos(1)) && isdigit(*fBuf.atPos(2)) && isdigit(*fBuf.atPos(3)) && isdigit(*fBuf.atPos(5))) {
+			if (isdigit(*fBuf.atPos(1)) && isdigit(*fBuf.atPos(2)) && isdigit(*fBuf.atPos(3)) && (isdigit(*fBuf.atPos(5)) || (*fBuf.atPos(4) == 'S' && *fBuf.atPos(5) == 'C'))) {
 				uint thisMeasure = atol(fBuf.getSliced(1, 3)) + stageStartMeasure;
-
-				channel = *fBuf.atPos(5) - 0x30 + HEXcharToInt('0', *fBuf.atPos(4)) * 10;
+				
+				if (*fBuf.atPos(4) == 'S' && *fBuf.atPos(5) == 'C') {
+					channel = SC_CHANNEL;
+				} else {
+					channel = *fBuf.atPos(5) - 0x30 + HEXcharToInt('0', *fBuf.atPos(4)) * 10;
+				}
 				if (channel == 4 || channel == 7) gp->soundonly = 0;
 				if (channel < 150) {
 					switch (channelConvert[channel]) {
@@ -2346,7 +2388,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					for (int i = 0; i < div; i++) {
 						int ii = i * 2 + 7;
 						if (HEXcharToInt(*fBuf.atPos(ii), *fBuf.atPos(ii + 1))) {
-							float notepos = i / (float)div; //do not simplify this. float80 - float32 noise is in original LR2
+							double notepos = i / (double)div;
 							gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 							gp->bmsobj.notes[gp->bmsobj.count].val = HEXcharToInt(*fBuf.atPos(ii), *fBuf.atPos(ii + 1)) * gp->freqSpeedMultiplier;
 							gp->bmsobj.notes[gp->bmsobj.count].op = 3;
@@ -2362,7 +2404,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					for (int i = 0; i < div; i++) {
 						int ii = i * 2 + 7;
 						if (Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1),isBase62)) {
-							float notepos = i / (float)div; //do not simplify this. float80 - float32 noise is in original LR2
+							double notepos = i / (double)div;
 							gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 							if (isVisibleNote(channel)) {
 								if (lastMeasure <= thisMeasure) {
@@ -2381,7 +2423,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 								lastNoteTime = gp->bmsobj.notes[gp->bmsobj.count].bmsTiming;
 							}
 
-							if (channel == 8 || channel == 9) { //BPM, STOP
+							if (channel == 8 || channel == 9 || channel == SC_CHANNEL) { //BPM, STOP, SCROLL
 								gp->bmsobj.notes[gp->bmsobj.count].val = Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1), isBase62);
 							}
 							else {
@@ -2424,6 +2466,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (stage == 0) {
 					gp->bpmt_data[gp->bpmt_count].BPM = gp->BPM_fix;
 					gp->bpmt_data[gp->bpmt_count].converted = 0.0;
+					gp->bpmt_data[gp->bpmt_count].render_converted = 0.0;
 					gp->bpmt_data[gp->bpmt_count].realtime = 0.0;
 					gp->maxBPM = gp->BPM_fix;
 					gp->minBPM = gp->BPM_fix;
@@ -2431,6 +2474,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				else {
 					gp->bpmt_data[gp->bpmt_count].BPM = gp->BPM;
 					gp->bpmt_data[gp->bpmt_count].converted = (double)stageStartMeasure;
+					gp->bpmt_data[gp->bpmt_count].render_converted = (double)stageStartMeasure;
 					gp->bpmt_data[gp->bpmt_count].realtime = 0.0;
 				}
 				gp->bpmt_count++; //TOFIX: possibility of writing over allocated memory
@@ -2480,6 +2524,15 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				param2 = atol(fBuf.right(fBuf.length() - 8));
 				if (1 <= param1 && param1 < SINGLESLOTS && param2 > 0) {
 					STOPslot[param1] = param2;
+				}
+			}
+			else if (fBuf.left(7).isSame("#SCROLL")) {
+				int param1;
+				double param2;
+				param1 = Base36or62ToInt(*fBufOrg.atPos(7), *fBufOrg.atPos(8),isBase62);
+				param2 = atof(fBuf.right(fBuf.length() - 10));
+				if (1 <= param1 && param1 < SINGLESLOTS) {
+					SCROLLslot[param1] = param2;
 				}
 			}
 			else if (fBuf.left(4).isSame("#WAV") && cfg->play.autojudge != 2) {
@@ -2566,6 +2619,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 		double unk23484_bmstime = -1.0;
 		double unk2346c_realtime = -1.0;
+		double unk_rendertime = -1.0;
 		double _bPrevNoteTime = -1.0;
 
 		double b2bmsTime = -1.0;
@@ -2654,12 +2708,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
+							gp->bpmt_data[i].render_converted = 0;
 							gp->bpmt_data[i].BPM = 0;
 						}
 					}
 					gp->bpmt_data[gp->bpmt_count].BPM = 0;
 					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
 					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 					gp->bpmt_count++;
 
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
@@ -2669,12 +2725,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
+							gp->bpmt_data[i].render_converted = 0;
 							gp->bpmt_data[i].BPM = 0;
 						}
 					}
 					gp->bpmt_data[gp->bpmt_count].BPM = nowBPM;
 					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime + stopRealtime;
 					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 					gp->bpmt_count++;
 				}
 				
@@ -2682,12 +2740,16 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				bpmt_realtime += addRealtime + stopRealtime;
 				
 				if (cfg->play.hsfix == 4 || (gp->isCourse && gp->courseType == 1)) {
-					bpmt_bmstime += addRealtime * 1.2;
+					double delta = addRealtime * 1.2;
+					bpmt_bmstime += delta;
+					bpmt_rendertime += delta;
 					prevNoteBmstime = gp->bmsobj.notes[i].bmsTiming;
 					stopRealtime = 0.0;
 				}
 				else {
-					bpmt_bmstime += meaLength * 1920.0 * (gp->bmsobj.notes[i].bmsTiming - prevNoteBmstime);
+					double delta = meaLength * 1920.0 * (gp->bmsobj.notes[i].bmsTiming - prevNoteBmstime);
+					bpmt_bmstime += delta;
+					bpmt_rendertime += delta * bpmt_scMultiplier;
 					prevNoteBmstime = gp->bmsobj.notes[i].bmsTiming;
 					stopRealtime = 0.0;
 				}
@@ -2712,6 +2774,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 
 			gp->bmsobj.notes[i].bmsTiming = bpmt_bmstime;
+			gp->bmsobj.notes[i].renderTiming = bpmt_rendertime;
 			gp->bmsobj.notes[i].realTiming = bpmt_realtime;
 			gp->bmsobj.notes[i].active = 0;
 			if (50 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 70) {
@@ -2721,6 +2784,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 				else {
 					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op - 40]].bmsTiming_ln = bpmt_bmstime;
+					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op - 40]].renderTiming_ln = bpmt_rendertime;
 					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op - 40]].realTiming_ln = bpmt_realtime;
 					intArr2[gp->bmsobj.notes[i].op - 40] = -1;
 				}
@@ -2731,6 +2795,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 				else {
 					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op]].bmsTiming_ln = bpmt_bmstime;
+					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op]].renderTiming_ln = bpmt_rendertime;
 					gp->bmsobj.notes[intArr2[gp->bmsobj.notes[i].op]].realTiming_ln = bpmt_realtime;
 					intArr2[gp->bmsobj.notes[i].op] = -1;
 					gp->bmsobj.notes[i].op = gp->bmsobj.notes[i].op + 40;
@@ -2767,12 +2832,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
+							gp->bpmt_data[i].render_converted = 0;
 							gp->bpmt_data[i].BPM = 0;
 						}
 					}
 					gp->bpmt_data[gp->bpmt_count].BPM = nowBPM;
 					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
 					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 					gp->bpmt_count++;
 					break;
 
@@ -2787,12 +2854,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 								gp->bpmt_data[i].BPM = 0;
 								gp->bpmt_data[i].converted = 0;
+								gp->bpmt_data[i].render_converted = 0;
 								gp->bpmt_data[i].BPM = 0;
 							}
 						}
 						gp->bpmt_data[gp->bpmt_count].BPM = nowBPM;
 						gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
 						gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+						gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 						gp->bpmt_count++;
 					}
 					break;
@@ -2812,12 +2881,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
+							gp->bpmt_data[i].render_converted = 0;
 							gp->bpmt_data[i].BPM = 0;
 						}
 					}
 					gp->bpmt_data[gp->bpmt_count].BPM = nowBPM;
 					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
 					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 					gp->bpmt_count++;
 					break;
 				}
@@ -2826,6 +2897,28 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					stopRealtime = stopVal / 192.0 * 240000.0 / nowBPM;
 					gp->bmsobj.notes[i].val = (240000.0 / nowBPM) * STOPslot[(int)gp->bmsobj.notes[i].val] / 192.0;
 					break;
+				case SC_CHANNEL: { // SCROLL
+					bpmt_scMultiplier = SCROLLslot[(int)gp->bmsobj.notes[i].val];
+
+					if (gp->bpmt_count == gp->bpmt_buffersize) {
+						gp->bpmt_buffersize += 100;
+						gp->bpmt_data = (BPMtiming*)realloc(gp->bpmt_data, gp->bpmt_buffersize * sizeof(BPMtiming));
+						assert(gp->bpmt_data != nullptr);
+						for (int j = gp->bpmt_buffersize - 100; j < gp->bpmt_buffersize; j++) {
+							gp->bpmt_data[j].BPM = 0;
+							gp->bpmt_data[j].converted = 0;
+							gp->bpmt_data[j].render_converted = 0;
+							gp->bpmt_data[j].realtime = 0;
+						}
+					}
+					
+					gp->bpmt_data[gp->bpmt_count].BPM = nowBPM; 
+					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
+					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
+					gp->bpmt_count++;
+					break;
+				}
 			}
 
 			if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 29) {
@@ -2853,12 +2946,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						for (int i = gp->bpmt_buffersize - 100; i < gp->bpmt_buffersize; i++) {
 							gp->bpmt_data[i].BPM = 0;
 							gp->bpmt_data[i].converted = 0;
+							gp->bpmt_data[i].render_converted = 0;
 							gp->bpmt_data[i].BPM = 0;
 						}
 					}
 					gp->bpmt_data[gp->bpmt_count].BPM = nowBPM;
 					gp->bpmt_data[gp->bpmt_count].realtime = bpmt_realtime;
 					gp->bpmt_data[gp->bpmt_count].converted = bpmt_bmstime;
+					gp->bpmt_data[gp->bpmt_count].render_converted = bpmt_rendertime;
 					gp->bpmt_count++;
 				}
 			}
@@ -2882,6 +2977,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				ErrorLogFmtAdd("PMSTOSPマージを行います");
 				for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 					gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
+					gp->bmsobj.notes[cur].renderTiming_ln = gp->bmsobj.notes[cur].renderTiming;
 					gp->bmsobj.notes[cur].realTiming_ln = gp->bmsobj.notes[cur].realTiming;
 				}
 				PMStoSP(gp);
@@ -2890,6 +2986,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				ErrorLogFmtAdd("DPTOSPマージを行います");
 				for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 					gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
+					gp->bmsobj.notes[cur].renderTiming_ln = gp->bmsobj.notes[cur].renderTiming;
 					gp->bmsobj.notes[cur].realTiming_ln = gp->bmsobj.notes[cur].realTiming;
 				}
 				DPtoSP(gp);
@@ -2899,6 +2996,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			gp->extramode_level = cfg->play.m_extra;
 			for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 				gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
+				gp->bmsobj.notes[cur].renderTiming_ln = gp->bmsobj.notes[cur].renderTiming;
 				gp->bmsobj.notes[cur].realTiming_ln = gp->bmsobj.notes[cur].realTiming;
 			}
 			MakeExtraChart(gp, &cc);
@@ -2907,12 +3005,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 			for (int i = 0; i < gp->bmsobj.count; i++) {
 				gp->bmsobj.notes[i].bmsTiming_ln = gp->bmsobj.notes[i].bmsTiming;
+				gp->bmsobj.notes[i].renderTiming_ln = gp->bmsobj.notes[i].renderTiming;
 				gp->bmsobj.notes[i].realTiming_ln = gp->bmsobj.notes[i].realTiming;
 			}
 			qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTimingOp);
 
 			double l_realTiming = 0.0;
 			double t_realTiming = 0.0;
+			double t_renderTiming = 0.0;
 			double t_bmsTiming = 0.0;
 			memset(mapAdded, 0, 20);
 			int addNoteCount[2] = { 0, };
@@ -2939,6 +3039,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 														gp->bmsobj.notes[gp->bmsobj.count].bmsTiming_ln = t_bmsTiming;
 														gp->bmsobj.notes[gp->bmsobj.count].realTiming = t_realTiming;
 														gp->bmsobj.notes[gp->bmsobj.count].realTiming_ln = t_realTiming;
+														gp->bmsobj.notes[gp->bmsobj.count].renderTiming = t_renderTiming;
+														gp->bmsobj.notes[gp->bmsobj.count].renderTiming_ln = t_renderTiming;
 														gp->bmsobj.notes[gp->bmsobj.count].val = 1294.0;
 														gp->bmsobj.notes[gp->bmsobj.count].op = p * 10 + 10 + lane;
 														gp->bmsobj.count++;
@@ -2960,6 +3062,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						}
 					}
 					t_bmsTiming = gp->bmsobj.notes[i].bmsTiming;
+					t_renderTiming = gp->bmsobj.notes[i].renderTiming;
 					t_realTiming = gp->bmsobj.notes[i].realTiming;
 					l_realTiming = gp->bmsobj.notes[i].realTiming;
 					memset(mapAdded, 0, sizeof(mapAdded));
@@ -2983,12 +3086,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			for (int i = 0; i < gp->bmsobj.count; i++) {
 				gp->bmsobj.notes[i].bmsTiming_ln = gp->bmsobj.notes[i].bmsTiming;
 				gp->bmsobj.notes[i].realTiming_ln = gp->bmsobj.notes[i].realTiming;
+				gp->bmsobj.notes[i].renderTiming_ln = gp->bmsobj.notes[i].renderTiming;
 			}
 			qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTimingOp);
 
 			double l_realTiming = 0.0;
 			double t_realTiming = 0.0;
 			double t_bmsTiming = 0.0;
+			double t_renderTiming = 0.0;
 			bool mapAdded[2][10] = { 0, };
 			int addNoteCount[2] = { 0, };
 
@@ -3005,6 +3110,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 											gp->bmsobj.notes[gp->bmsobj.count].bmsTiming_ln = t_bmsTiming;
 											gp->bmsobj.notes[gp->bmsobj.count].realTiming = t_realTiming;
 											gp->bmsobj.notes[gp->bmsobj.count].realTiming_ln = t_realTiming;
+											gp->bmsobj.notes[gp->bmsobj.count].renderTiming = t_renderTiming;
+											gp->bmsobj.notes[gp->bmsobj.count].renderTiming_ln = t_renderTiming;
 											gp->bmsobj.notes[gp->bmsobj.count].val = 1294.0;
 											gp->bmsobj.notes[gp->bmsobj.count].op = p * 10 + 10 + lane;
 											gp->bmsobj.count++;
@@ -3020,6 +3127,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					}
 					t_bmsTiming = gp->bmsobj.notes[i].bmsTiming;
 					t_realTiming = gp->bmsobj.notes[i].realTiming;
+					t_renderTiming = gp->bmsobj.notes[i].renderTiming;
 					l_realTiming = gp->bmsobj.notes[i].realTiming;
 					memset(mapAdded, 0, sizeof(mapAdded));
 					addNoteCount[0] = 0;
@@ -3040,6 +3148,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 		double realDiff = 0.0;
 		double bmsDiff = 0.0;
+		double renderDiff = 0.0;
 
 		if (stage >= 1) {
 			stageStartMeasure = (int)firstNoteTime - stageStartMeasure - 1;
@@ -3099,19 +3208,24 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			if (gp->bmsobj.notes[bmsobj_stageFirst].bmsTiming <= 0 || gp->bmsobj.notes[bmsobj_stageFirst].realTiming <= 0 || gp->courseConnection[stage - 1] == 5) { //BLANK2
 				bpmt_realtime = unk2346c_realtime;
 				bpmt_bmstime = unk23484_bmstime;
+				bpmt_rendertime = unk_rendertime;
 				prevNoteBmstime = _bPrevNoteTime;
 			}
 			else {
 				realDiff = gp->bmsobj.notes[k].realTiming - gp->bmsobj.notes[bmsobj_stageFirst].realTiming;
 				bmsDiff = gp->bmsobj.notes[k].bmsTiming - gp->bmsobj.notes[bmsobj_stageFirst].bmsTiming;
+				renderDiff = gp->bmsobj.notes[k].renderTiming - gp->bmsobj.notes[bmsobj_stageFirst].renderTiming;
 				for (int i = bmsobj_stageFirst; i < gp->bmsobj.count; i++) {
 					gp->bmsobj.notes[i].bmsTiming -= bmsDiff;
+					gp->bmsobj.notes[i].renderTiming -= renderDiff;
 					gp->bmsobj.notes[i].realTiming -= realDiff;
 					gp->bmsobj.notes[i].bmsTiming_ln -= bmsDiff;
+					gp->bmsobj.notes[i].renderTiming_ln -= renderDiff;
 					gp->bmsobj.notes[i].realTiming_ln -= realDiff;
 				}
 				bpmt_realtime = unk2346c_realtime - realDiff;
 				bpmt_bmstime = unk23484_bmstime - bmsDiff;
+				bpmt_rendertime = unk_rendertime - renderDiff;
 				prevNoteBmstime = _bPrevNoteTime - stageStartMeasure;
 			}
 		}
@@ -3119,6 +3233,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			//same with -22?line
 			bpmt_realtime = unk2346c_realtime;
 			bpmt_bmstime = unk23484_bmstime;
+			bpmt_rendertime = unk_rendertime;
 			prevNoteBmstime = _bPrevNoteTime;
 		}
 		// -2331 line
@@ -3211,6 +3326,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (gp->bpmt_data[oldbpmtCount - 1].realtime <= gp->bpmt_data[i].realtime - realDiff) { //TOFIX : nonstop mix sink mismatch after stop (stage 2-) related code
 					gp->bpmt_data[i].realtime -= realDiff;
 					gp->bpmt_data[i].converted -= bmsDiff;
+					gp->bpmt_data[i].render_converted -= bmsDiff;
 				}
 			}
 		}
@@ -3635,11 +3751,13 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				gp->bmsobj_note[10 + i].notes[j].op = gp->bmsobj_note[0 + i].notes[j].op + 10;
 				gp->bmsobj_note[10 + i].notes[j].bmsTiming_ln = gp->bmsobj_note[0 + i].notes[j].bmsTiming_ln;
 				gp->bmsobj_note[10 + i].notes[j].realTiming_ln = gp->bmsobj_note[0 + i].notes[j].realTiming_ln;
+				gp->bmsobj_note[10 + i].notes[j].renderTiming_ln = gp->bmsobj_note[0 + i].notes[j].renderTiming_ln;
 				gp->bmsobj_note[10 + i].notes[j].active = gp->bmsobj_note[0 + i].notes[j].active;
 				gp->bmsobj_note[10 + i].notes[j].mine = gp->bmsobj_note[0 + i].notes[j].mine;
 				gp->bmsobj_note[10 + i].notes[j].val = gp->bmsobj_note[0 + i].notes[j].val;
 				gp->bmsobj_note[10 + i].notes[j].bmsTiming = gp->bmsobj_note[0 + i].notes[j].bmsTiming;
 				gp->bmsobj_note[10 + i].notes[j].realTiming = gp->bmsobj_note[0 + i].notes[j].realTiming;
+				gp->bmsobj_note[10 + i].notes[j].renderTiming = gp->bmsobj_note[0 + i].notes[j].renderTiming;
 			}
 		}
 		noteCount[1] = noteCount[0];
@@ -3953,12 +4071,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						if (gp->bmsobj_note[i].notes[j].realTiming_ln < e) {
 							gp->bmsobj_note[i].notes[j].realTiming_ln = e;
 							gp->bmsobj_note[i].notes[j].bmsTiming_ln = RealTimeToBMSTime(gp, gp->bmsobj_note[i].notes[j].realTiming_ln);
+							gp->bmsobj_note[i].notes[j].renderTiming_ln = RealTimeToRenderTime(gp, gp->bmsobj_note[i].notes[j].realTiming_ln);
 						}
 					}
 				}
 				if (gp->bmsobj_note[i].count > 0 && cfg->play.m_addlong == 100) {
 					gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count - 1].realTiming_ln = endtime;
 					gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count - 1].bmsTiming_ln = RealTimeToBMSTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count - 1].realTiming_ln);
+					gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count - 1].renderTiming_ln = RealTimeToRenderTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count - 1].realTiming_ln);
 				}
 				gp->bpmt_start = 0;
 			}
@@ -3980,6 +4100,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							if (200.0 < gp->bmsobj_note[i].notes[j + 1].realTiming - gp->bmsobj_note[i].notes[j].realTiming_ln) {
 								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming = (gp->bmsobj_note[i].notes[j + 1].realTiming + gp->bmsobj_note[i].notes[j].realTiming_ln) * 0.5;
 								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].bmsTiming = RealTimeToBMSTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming);
+								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].renderTiming = RealTimeToRenderTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming);
 								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].val = 0.0;
 								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].mine = 4;
 								gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].op = gp->bmsobj_note[i].notes[j + 1].op;
@@ -3989,6 +4110,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						else if (200.0 < gp->bmsobj_note[i].notes[j + 1].realTiming - gp->bmsobj_note[i].notes[j].realTiming) {
 							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming = (gp->bmsobj_note[i].notes[j + 1].realTiming + gp->bmsobj_note[i].notes[j].realTiming) * 0.5;
 							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].bmsTiming = RealTimeToBMSTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming);
+							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].renderTiming = RealTimeToRenderTime(gp, gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].realTiming);
 							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].val = 0.0;
 							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].mine = 4;
 							gp->bmsobj_note[i].notes[gp->bmsobj_note[i].count].op = gp->bmsobj_note[i].notes[j + 1].op;
