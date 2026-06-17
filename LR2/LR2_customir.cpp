@@ -63,7 +63,7 @@ CustomIR::CustomIR(const std::filesystem::path& _directory) {
 			ErrorLogFmtAdd("'%s' skipping IR module with invalid file name stem (expected %s)\n", s.c_str(), ARCH);
 			continue;
 		}
-		mDllHandle.reset(LoadLibraryW(file.path().wstring().c_str()));
+		mDllHandle.reset(LoadLibrary(file.path().string().c_str()));
 		if (mDllHandle == nullptr) continue;
 		auto GetMethodTable = reinterpret_cast<void (__cdecl*)(MethodTable&)>(GetProcAddress(mDllHandle.get(), "GetMethodTable"));
 		if (GetMethodTable == nullptr) {
