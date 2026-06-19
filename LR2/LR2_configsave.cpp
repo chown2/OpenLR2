@@ -583,6 +583,10 @@ int WriteOpenLr2ConfigXml(game *g, const char *filename){
 	WriteXML_Tab2Str(pFile, "courseresult", (g->config).skin.skinFilePath[15]);
 	fputs("\t</skin>\n", pFile);
 
+	fputs("\t<network>\n", pFile);
+	WriteXML_Tab2Str(pFile, "display_ir", (g->config).network.displayIr);
+	fputs("\t</network>\n", pFile);
+
 	fputs("</config>\n", pFile);
 
 	fclose(pFile);
@@ -1174,6 +1178,7 @@ int ReadOpenLr2Config(game* g, const char* filepath) {
 	}
 	ReadXml_PositiveIntAsBool("config", "play", "gaugeautoshift", false, &g->config.play.m_gas, hXml);
 	ReadXml_Str("config", "skin", "courseresult", "", &g->config.skin.skinFilePath[15], hXml);
+	ReadXml_Str("config", "network", "display_ir", "", &g->config.network.displayIr, hXml);
 	delete(hXml);
 	return 1;
 }

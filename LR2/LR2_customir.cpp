@@ -5,10 +5,15 @@
 #include "structure.h"
 
 #include <algorithm>
+#include <array>
+#include <chrono>
 #include <cmath>
+#include <cstring>
 #include <filesystem>
 #include <future>
+#include <optional>
 #include <ranges>
+#include <string>
 #include <thread>
 
 #include <DxLib/DxLib.h>
@@ -73,6 +78,8 @@ public:
 	bool Initialize();
 	bool Login();
 	SendScoreStatus SendScore(const IRScoreV1& score);
+	openlr2::GetStatus GetResultRank(const char* songHash, openlr2::IRRankResult& out);
+	openlr2::GetStatus RestoreCachedRank(const char* songHash, openlr2::IRRankResult& out);
 
 	[[nodiscard]] const std::string& Name() const { return mName; };
 private:
@@ -135,14 +142,69 @@ SendScoreStatus CustomIR::SendScore(const IRScoreV1& score) {
 	return mMethods.SendScoreV1(score);
 }
 
+openlr2::GetStatus CustomIR::GetResultRank(const char* songHash, openlr2::IRRankResult& out) {
+	if (mMethods.GetResultRank == nullptr) return openlr2::GetStatus::Fail;
+	return mMethods.GetResultRank(songHash, -1, out);
+}
+
+openlr2::GetStatus CustomIR::RestoreCachedRank(const char* songHash, openlr2::IRRankResult& out) {
+	if (mMethods.RestoreCachedRank == nullptr) return openlr2::GetStatus::Fail;
+	return mMethods.RestoreCachedRank(songHash, -1, out);
+}
+
 CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() {
 	// Make sure all scores are sent before exiting out of the process. (Can hang for up to ~15 minutes...)
 	for (auto& thread : mSendThreads) {
 		thread.get();
 	}
+	if (mResultIrFuture.valid()) {
+		mResultIrFuture.get();
+	}
 }
 
-void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory) {
+static void SendScoreWithBlockingRetry(CustomIR& ir, const IRScoreV1& scoreV1) {
+	constexpr int tryMax = 6;
+	int tryCount = 1;
+	while (tryCount <= tryMax) {
+		switch (ir.SendScore(scoreV1)) {
+		case SendScoreStatus::Fail:
+			OverlayNotification("'%s' failed to submit score\n", ir.Name().c_str());
+			return;
+		case SendScoreStatus::Ok:
+			return;
+		case SendScoreStatus::Retry:
+			std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(std::pow(4, tryCount))));
+			tryCount++;
+			break;
+		}
+	}
+	OverlayNotification("'%s' failed to submit score after %d attempts\n", ir.Name().c_str(), tryCount);
+}
+static void SendScoreMultiplexed(std::vector<std::future<void>>& mSendThreads, const IRScoreV1& scoreV1, std::vector<std::shared_ptr<CustomIR>> irs) {
+	std::vector<int> finishedThreads;
+	for (const auto& [i, it] : std::views::enumerate(mSendThreads)) {
+		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+			finishedThreads.push_back(static_cast<int>(i));
+		}
+	}
+	// Deferred deletion because we need to keep the std::future for whatever reason
+	std::ranges::reverse(finishedThreads);
+	for (auto i : finishedThreads) {
+		mSendThreads.erase(mSendThreads.begin() + i);
+	}
+
+	mSendThreads.reserve(mSendThreads.size() + irs.size());
+	for (const auto& ir : irs) {
+		mSendThreads.push_back(std::async(
+					std::launch::async,
+					[](std::shared_ptr<CustomIR> ir, IRScoreV1 score){ SendScoreWithBlockingRetry(*ir, score); },
+					ir,
+					scoreV1));
+	}
+}
+
+void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::string displayIr) {
+	mDisplayIr = std::move(displayIr);
 	for (auto& dir : std::filesystem::directory_iterator(directory)) {
 		if (!dir.is_directory()) {
 			ErrorLogFmtAdd("'%s' skipped for loading custom IR module, not a directory\n", dir.path().string().c_str());
@@ -159,6 +221,23 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory) {
 			mModules.pop_back();
 			continue;
 		}
+	}
+
+	std::string allModules;
+	{
+		bool any = false;
+		for (auto& m : mModules) {
+			allModules += m->Name();
+			allModules += ';';
+			any = true;
+		}
+		if (any)
+			allModules.pop_back();
+	}
+	if (std::ranges::contains(mModules, mDisplayIr, &CustomIR::Name)) {
+		ErrorLogFmtAdd("Using '%s' as the display IR out of the list: %s\n", mDisplayIr.c_str(), allModules.c_str());
+	} else {
+		ErrorLogFmtAdd("Selected display IR '%s' was not found in the module list: %s\n", mDisplayIr.c_str(), allModules.c_str());
 	}
 }
 
@@ -268,10 +347,10 @@ struct IRScoreInternal {
 	} graphs{};
 
 	IRScoreInternal(game& game, sqlite3* sql, int player);
-	void MakeScoreV1(IRScoreV1& scoreOut);
+	void MakeScoreV1(IRScoreV1& scoreOut) const;
 };
 
-void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) {
+void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.song.hash = song.hash;
 	scoreOut.song.title = song.title;
 	scoreOut.song.subtitle = song.subtitle;
@@ -499,41 +578,127 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 	}
 }
 
-void CUSTOMIR_MANAGER::SendScore(game& game, sqlite3* sql, int player) {
-	// Deferred deletion because we need to keep the std::future for whatever reason
-	std::vector<int> finishedThreads;
-	for (const auto& [i, it] : std::views::enumerate(mSendThreads)) {
-		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) finishedThreads.push_back(i);
-	}
-	std::ranges::reverse(finishedThreads);
-	for (auto i : finishedThreads) {
-		mSendThreads.erase(mSendThreads.begin() + i);
-	}
-	mSendThreads.push_back(std::async(std::launch::async, [](IRScoreInternal internal, std::vector<std::shared_ptr<CustomIR>> toSend) {
-		IRScoreV1 scoreV1;
-		internal.MakeScoreV1(scoreV1);
-		constexpr const int tryMax = 6;
-		int tryCount = 1;
-		while (!toSend.empty() && tryCount <= tryMax) {
-			std::vector<std::future<SendScoreStatus>> sendThreads;
-			sendThreads.reserve(toSend.size());
-			for (const auto& module : toSend) {
-				sendThreads.push_back(std::async(std::launch::async, &CustomIR::SendScore, module, scoreV1));
-			}
+std::optional<openlr2::IRRankResult> CUSTOMIR_MANAGER::RestoreCachedRank(const char* songmd5) {
+	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
+	if (irIt == mModules.end()) { return std::nullopt; }
+	const auto ir = *irIt;
 
-			for (const auto& [i, t] : std::views::enumerate(sendThreads) | std::views::reverse) {
-				switch (t.get()) {
-				case SendScoreStatus::Fail:
-					OverlayNotification("'%s' failed to submit score\n", toSend[i]->Name().c_str());
-					[[fallthrough]];
-				case SendScoreStatus::Ok: toSend.erase(toSend.begin() + i); break;
-				case SendScoreStatus::Retry: break;
-				}
-			}
+	openlr2::IRRankResult out{};
+	switch(ir->RestoreCachedRank(songmd5, out)) {
+	case openlr2::GetStatus::Ok: return out;
+	case openlr2::GetStatus::Retry:
+		OverlayNotification("'%s' failed to get result rank - ignoring retry\n", ir->Name().c_str());
+		return std::nullopt;
+	case openlr2::GetStatus::Fail:
+		OverlayNotification("'%s' failed to get result rank\n", ir->Name().c_str());
+		return std::nullopt;
+	}
+	abort(); // unreachable
+}
 
-			const auto sleepFor = static_cast<int>(std::pow(4, tryCount));
-			std::this_thread::sleep_for(std::chrono::seconds(sleepFor));
-			tryCount++;
+static std::optional<openlr2::IRRankResult> ResultIrAsync(std::shared_ptr<CustomIR> ir, IRScoreV1 score) {
+	SendScoreWithBlockingRetry(*ir, score);
+
+	std::optional<openlr2::IRRankResult> out{ openlr2::IRRankResult{} };
+	switch (ir->GetResultRank(score.song.hash.c_str(), *out)) {
+	case openlr2::GetStatus::Ok: return out;
+	case openlr2::GetStatus::Retry:
+		OverlayNotification("'%s' failed to get result rank - ignoring retry\n", ir->Name().c_str());
+		return std::nullopt;
+	case openlr2::GetStatus::Fail:
+		OverlayNotification("'%s' failed to get result rank\n", ir->Name().c_str());
+		return std::nullopt;
+	}
+	abort(); // unreachable
+}
+void CUSTOMIR_MANAGER::BeginResultIr(game& game, sqlite3* sql, int player) {
+	if (mModules.empty()) {
+		return;
+	}
+
+	IRScoreInternal internal{ game, sql, player };
+	IRScoreV1 scoreV1;
+	internal.MakeScoreV1(scoreV1);
+
+	SendScoreMultiplexed(
+			mSendThreads, scoreV1,
+			mModules | std::views::filter([&](const std::shared_ptr<CustomIR> &module) {
+				return module->Name() != mDisplayIr;
+				}) | std::ranges::to<std::vector>());
+
+	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
+	if (irIt == mModules.end()) {
+		return;
+	}
+	if (mResultIrFuture.valid()) {
+		ErrorLogAdd("BUG: we have an unexpected mResultIrFuture");
+		mResultIrFuture.get();
+	}
+	mResultIrFuture = std::async(std::launch::async, &ResultIrAsync, *irIt, scoreV1);
+}
+
+static void fill_ranking_player_from_customir(RANKINGPLAYER& dest, const openlr2::IRRankPlayer& src, int ranking) {
+	dest.name = src.name.c_str();
+	dest.comment = src.comment.c_str();
+	dest.id = src.id; // TODO: actually has a different meaning, dest.id is LR2ID but src.id is custom IR's user ID
+	switch (src.clear) {
+	case openlr2::Lamp::NoPlay: dest.clear = 0; break;
+	case openlr2::Lamp::Fail: dest.clear = 1; break;
+	case openlr2::Lamp::Easy: dest.clear = 2; break;
+	case openlr2::Lamp::Groove: dest.clear = 3; break;
+	case openlr2::Lamp::Hard: dest.clear = 4; break;
+	case openlr2::Lamp::FullCombo: dest.clear = 5; break;
+	}
+	dest.notes = src.notes;
+	dest.combo = src.maxcombo;
+	dest.pg = src.pg;
+	dest.gr = src.gr;
+	dest.gd = src.gd;
+	dest.bd = src.bd;
+	dest.pr = src.pr;
+	dest.minbp = src.minbp;
+	dest.playcount = src.playcount;
+	dest.ranking = ranking;
+	(void)src.timestamp; // TODO
+	(void)src.randomLayout; // TODO
+	(void)src.randomOption; // TODO
+	(void)src.inputType; // TODO
+	(void)src.rseed; // TODO
+	(void)src.gauge; // TODO
+	(void)src.dpflip; // TODO
+}
+
+void openlr2::fill_ranking_from_customir(const openlr2::IRRankResult& result, RANKING& rd) {
+	rd.Init();
+
+	if (rd.rankingMax < static_cast<int>(result.ranking.size())) {
+		rd.ExpandRankingBuffer(static_cast<int>(result.ranking.size()));
+	}
+	for (auto [to, from, ranking] : std::views::zip(std::span(rd.ranking, rd.rankingMax), result.ranking, std::views::iota(1))) {
+		fill_ranking_player_from_customir(to, from, ranking);
+	}
+
+	rd.myRanking = result.myRank;
+	rd.rankingCount = result.totalPlayer;
+	rd.lastupdate = std::to_string(result.lastupdate).c_str();
+	rd.totalPlaycount = result.totalPlaycount;
+	for (auto [to, from] : std::views::zip(rd.clearPlayers, result.clearPlayers)) {
+		to = from;
+	}
+}
+
+void openlr2::fill_status_from_ranking(const RANKING& rd, bool fail_in_clear_rate, STATUS& best) {
+	best.IRranking = rd.myRanking;
+	best.IRplayercount = rd.rankingCount;
+	if (rd.rankingCount == 0) {
+		best.IRclearRate = 0;
+	} else {
+		if (fail_in_clear_rate) {
+			// fail%???? why is it inverted
+			best.IRclearRate = (rd.rankingCount + rd.clearPlayers[1] - rd.clearPlayers[0]) / rd.rankingCount;
+		} else {
+			// clear%
+			best.IRclearRate = (rd.clearPlayers[2] + rd.clearPlayers[3] + rd.clearPlayers[4] + rd.clearPlayers[5]) * 100 / rd.rankingCount;
 		}
-	}, IRScoreInternal{ game, sql, player }, mModules));
+	}
 }

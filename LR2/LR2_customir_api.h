@@ -1,7 +1,9 @@
 #pragma once
 
-#include <string>
 #include <array>
+#include <cstdint>
+#include <string>
+#include <vector>
 
 #ifdef _WIN32
 #define OLR2_IR_API __cdecl
@@ -113,6 +115,104 @@ enum class SendScoreStatus: int {
 	Fail,
 };
 
+namespace openlr2 {
+
+enum class Gauge : int {
+	Unknown,
+	Groove,
+	Survival,
+	Death,
+	Easy,
+	PAttack,
+	GAttack,
+};
+
+enum class InputType : int {
+	Unknown = 0,
+	Keyboard,
+	Controller,
+	Midi,
+};
+
+enum class Lamp : int {
+	NoPlay = 0,
+	Fail,
+	Easy,
+	Groove,
+	Hard,
+	FullCombo,
+};
+
+enum class Random : int {
+	No = 0,
+	Mirror,
+	Random,
+	SRandom,
+	Scatter, // AKA H-Random
+	Converge, // AKA All-Scratch
+};
+
+// \warning Experimental API, may be changed.
+struct IRRankPlayer {
+	std::string name; // Display name of the user
+	std::string comment; // User-defined comment of the score
+	uint64_t timestamp{}; // Seconds since Unix Epoch or 0 if unknown
+	// P1 and P2 random layouts.
+	// Should be 0 if the layout is not known, or the corresponding \ref randomOption is not noran, mirror, or random.
+	// Examples: 1234567 54321 135792468.
+	std::array<int, 2> randomLayout{};
+	std::array<Random, 2> randomOption{};
+	InputType inputType{InputType::Unknown};
+	int id{}; // Numeric ID of the user
+	int playcount{};
+	Lamp clear{};
+	int notes{}; // Amount of notes in the chart (TODO: allow 0 for such case?) or chart variation if the chart is affected by #RANDOM
+	int maxcombo{};
+	int pg{};
+	int gr{};
+	int gd{};
+	int bd{};
+	int pr{};
+	int minbp{};
+	Gauge gauge{Gauge::Unknown};
+	// LR2 rseed. If not known, the layout from \ref randomLayout can be used instead.
+	// -1 if unknown, 0-0x7ffe otherwise.
+	int rseed{-1};
+	bool dpflip{};
+	bool reserved1{};
+	bool reserved2{};
+	bool reserved3{};
+	uint64_t reserved4{};
+	uint64_t reserved5{};
+	uint64_t reserved6{};
+	uint64_t reserved7{};
+};
+
+// \warning Experimental API, may be changed.
+struct IRRankResult {
+	// The leaderboard. Top X players, usually 999.
+	std::vector<IRRankPlayer> ranking;
+	std::array<int, 6> clearPlayers{};
+	// Seconds since Unix Epoch.
+	// When the data was fetched, can be used to display how fresh the data is.
+	// It's up to the CustomIR module to decide for how long it wants to cache the data.
+	uint64_t lastupdate{};
+	// Current player's position in the leaderboard. Separate parameter since it may be outside of \ref ranking.
+	int myRank{};
+	int reserved{};
+	int totalPlayer{};
+	int totalPlaycount{};
+};
+
+// \warning Experimental API, may be changed.
+enum class GetStatus: int {
+	Ok = 0,
+	Retry,
+	Fail,
+};
+
+} // namespace openlr2
+
 struct MethodTable {
 	// Mandatory method. Module name must be unique among loaded modules.
 	const char*(OLR2_IR_API* GetName)() = nullptr;
@@ -126,6 +226,18 @@ struct MethodTable {
 	// For soft errors, SendScore should return SendScoreStatus::Retry. The game will retry calling a sensible amount
 	// times with a backoff then.
 	SendScoreStatus(OLR2_IR_API* SendScoreV1)(const IRScoreV1& score) = nullptr;
+	// Called from score result after SendScore completes.
+	// The game awaits on this to complete before it lets the user out of result.
+	// Make sure to save the fetched result somewhere, so that RestoreCachedRank can then load it.
+	// Replace with HTTP + mandatory cache write.
+	// \warning Experimental API, may be changed.
+	openlr2::GetStatus(OLR2_IR_API* GetResultRank)(const char* songHash, int reserved, openlr2::IRRankResult& out) = nullptr;
+	// Called from song select when scrolling past 'songHash' song.
+	// Loads the leaderboard from where GetResultRank saved it.
+	// Do not perform HTTP here.
+	// Replace with cache read.
+	// \warning Experimental API, may be changed.
+	openlr2::GetStatus(OLR2_IR_API* RestoreCachedRank)(const char* songHash, int reserved, openlr2::IRRankResult& out) = nullptr;
 	// Forward compatibility, so you can try running IR modules designed for newer OpenLR2 versions.
 	void* reserved1 = nullptr;
 	void* reserved2 = nullptr;

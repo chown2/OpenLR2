@@ -1804,13 +1804,26 @@ int ProcS_Select(game *g_) {
 					cur.filepath.getDirectory(),
 					cur.banner));
 	}
-	if (g.net.isOnline && g.procSelecter == 2) {
-		g.net.WaitAndInitRanking();
+	if (g.procSelecter == 2) {
 		if (cur.keymode >= 5 && (cur.courseStageCount < 1 || cur.courseIR)) {
-			g.net.IRstatus = 1;
-			g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
-			SetObjectStrings_SongSelect(&g);
-			return 1;
+			if (g.sSelect.stack_query[g.sSelect.cur].findStrPos("__RIVAL__") == -1/*not LR2IR rival, matches ThreadProc_RankingAutoUpdate*/) {
+				if (auto result = g.net.customIR.RestoreCachedRank(cur.hash); result) {
+					openlr2::fill_ranking_from_customir(*result, g.net.rankingData);
+					openlr2::fill_status_from_ranking(g.net.rankingData, false, g.sSelect.bmsList[g.sSelect.cur_song].mybest);
+					// Force 'IR READY' so that we can open the leader boards.
+					// TODO: re-write ThreadProc_RankingAutoUpdate with CustomIR in mind so that we can
+					// request fresh leaderboards.
+					g.net.IRstatus = 2;
+					return 1;
+				}
+			}
+			if (g.net.isOnline) {
+				g.net.WaitAndInitRanking();
+				g.net.IRstatus = 1;
+				g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
+				SetObjectStrings_SongSelect(&g);
+				return 1;
+			}
 		}
 	}
 	g.net.IRstatus = 0;

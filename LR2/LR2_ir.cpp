@@ -73,6 +73,7 @@ void RANKING::ExpandRankingBuffer(int add) {
 }
 
 void RANKING::Init() {
+	// NOTE: doesn't reset some fields. Be wary of that if you decide to replace it with `ranking = {}`.
 	this->lastupdate.fillzero();
 	this->clearPlayers[0] = 0;
 	this->clearPlayers[1] = 0;
