@@ -205,7 +205,7 @@ static void QuickRestart(game& game, bool newRandom) {
 	StopAllKeysound(&game);
 }
 
-char fWaitHiScoreUpdateInput = 0;
+static bool fWaitHiScoreUpdateInput = false;
 int ProcI_Result(game *g) {
 
 	auto switch_gauge_display = [](gameplay& gameplay, int buttonVal, PLAYERSTATUS& player) {
@@ -261,7 +261,7 @@ int ProcI_Result(game *g) {
 		else {
 			if (GetTimeLapse(151, &g->timer1) <= g->skstruct.startinput_rank || GetTimeLapse(152, &g->timer1) != -1.0 || (g->net.isOnline && (g->net.isOnline != 1 || g->net.hHandle.joinable()))) {
 				if (GetTimeLapse(151, &g->timer1) > g->skstruct.startinput_rank && GetTimeLapse(152, &g->timer1) == -1.0 && g->net.isOnline && g->net.hHandle.joinable()) {
-					fWaitHiScoreUpdateInput = 1;
+					fWaitHiScoreUpdateInput = true;
 				}
 				else if (GetTimeLapse(152, &g->timer1) > g->skstruct.startinput_update && GetTimeLapse(2, &g->timer1) == -1.0) {
 					SetTimeLapse(2, &g->timer1);
@@ -271,7 +271,7 @@ int ProcI_Result(game *g) {
 				}
 			}
 			else {
-				fWaitHiScoreUpdateInput = 0;
+				fWaitHiScoreUpdateInput = false;
 				if (g->gameplay.isNosave == 0) {
 					SetTimeLapse(152, &g->timer1);
 					SetObjectString(20, g->net.IRresultMessage, g->txtStruct.objectStr);
