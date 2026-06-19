@@ -126,4 +126,11 @@ struct MethodTable {
 	// For soft errors, SendScore should return SendScoreStatus::Retry. The game will retry calling a sensible amount
 	// times with a backoff then.
 	SendScoreStatus(OLR2_IR_API* SendScoreV1)(const IRScoreV1& score) = nullptr;
+	// Forward compatibility, so you can try running IR modules designed for newer OpenLR2 versions.
+	void* reserved1 = nullptr;
+	void* reserved2 = nullptr;
+	void* reserved3 = nullptr;
+	void* reserved4 = nullptr;
+	void* reserved5 = nullptr;
+	void* reserved6 = nullptr;
 };
