@@ -114,7 +114,16 @@ enum class SendScoreStatus: int {
 };
 
 struct MethodTable {
+	// Mandatory method. Module name must be unique among loaded modules.
 	const char*(OLR2_IR_API* GetName)() = nullptr;
+	// Maybe parse some configuration file there, and perform URL request to your IR for login.
+	// This method is ran at game initialization synchronously.
+	// Can be used for general initialization.
 	bool(OLR2_IR_API* LoginV1)() = nullptr;
+	// Ran on its own thread at score result, both for normal plays and courses.
+	// This is called even with scores that wouldn't be sent to LR2IR or saved to the score.db, it's up to the module to
+	// filter them.
+	// For soft errors, SendScore should return SendScoreStatus::Retry. The game will retry calling a sensible amount
+	// times with a backoff then.
 	SendScoreStatus(OLR2_IR_API* SendScoreV1)(const IRScoreV1& score) = nullptr;
 };
