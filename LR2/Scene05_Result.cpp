@@ -1,8 +1,12 @@
-﻿#include "Scene05_Result.h"
+#include "Scene05_Result.h"
 #include "LR2.h"
+#include "LR2_customir.h"
 #include "Scenes.h"
+#include <optional>
 
-int ProcS_Result(game *g) {
+int ProcS_Result(game *g, sqlite3 *sql) {
+
+	g->net.customIR.BeginResultIr(*g, sql, 0);
 
 	LoadSceneG(g, &g->skstruct, SKINTYPE_RESULT);
 	
@@ -205,7 +209,7 @@ static void QuickRestart(game& game, bool newRandom) {
 	StopAllKeysound(&game);
 }
 
-char fWaitHiScoreUpdateInput = 0;
+static bool fWaitHiScoreUpdateInput = false;
 int ProcI_Result(game *g) {
 
 	auto switch_gauge_display = [](gameplay& gameplay, int buttonVal, PLAYERSTATUS& player) {
@@ -259,9 +263,13 @@ int ProcI_Result(game *g) {
 			SetObjectString(20, g->net.IRresultMessage, g->txtStruct.objectStr);
 		}
 		else {
-			if (GetTimeLapse(151, &g->timer1) <= g->skstruct.startinput_rank || GetTimeLapse(152, &g->timer1) != -1.0 || (g->net.isOnline && (g->net.isOnline != 1 || g->net.hHandle.joinable()))) {
-				if (GetTimeLapse(151, &g->timer1) > g->skstruct.startinput_rank && GetTimeLapse(152, &g->timer1) == -1.0 && g->net.isOnline && g->net.hHandle.joinable()) {
-					fWaitHiScoreUpdateInput = 1;
+			auto& resultFuture = g->net.customIR.GetResult();
+			const bool isWaitingOnIr =
+				(resultFuture.valid() && resultFuture.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+					|| (g->net.isOnline && g->net.hHandle.joinable());
+			if (GetTimeLapse(151, &g->timer1) <= g->skstruct.startinput_rank || GetTimeLapse(152, &g->timer1) != -1.0 || isWaitingOnIr) {
+				if (GetTimeLapse(151, &g->timer1) > g->skstruct.startinput_rank && GetTimeLapse(152, &g->timer1) == -1.0 && isWaitingOnIr) {
+					fWaitHiScoreUpdateInput = true;
 				}
 				else if (GetTimeLapse(152, &g->timer1) > g->skstruct.startinput_update && GetTimeLapse(2, &g->timer1) == -1.0) {
 					SetTimeLapse(2, &g->timer1);
@@ -271,10 +279,34 @@ int ProcI_Result(game *g) {
 				}
 			}
 			else {
-				fWaitHiScoreUpdateInput = 0;
+				fWaitHiScoreUpdateInput = false;
 				if (g->gameplay.isNosave == 0) {
 					SetTimeLapse(152, &g->timer1);
-					SetObjectString(20, g->net.IRresultMessage, g->txtStruct.objectStr);
+					if (resultFuture.valid())
+					{
+						// TODO: DST options 50 and 51, that display g->net.isOnline, should
+						// return true when CustomIR is on. Otherwise this info is not visible.
+						// TODO: SetObjectString should refer to the result of score sending
+						// instead
+						// NOTE: SetObjectString(20, ...) will be overridden with the value
+						// of g->net.IRresultMessage on result exit somewhere down the line.
+						// But it's visible while result is open, so it can already display an
+						// error, and I think it serves as a decent example.
+						if (std::optional<openlr2::IRRankResult> result = resultFuture.get(); result)
+						{
+							openlr2::fill_ranking_from_customir(*result, g->net.rankingData);
+							openlr2::fill_status_from_ranking(g->net.rankingData, false, g->sSelect.bmsList[g->sSelect.cur_song].mybest);
+							SetObjectString(20, "CustomIR result list", g->txtStruct.objectStr);
+						}
+						else
+						{
+							SetObjectString(20, "Failed to get result list from CustomIR", g->txtStruct.objectStr);
+						}
+					}
+					else
+					{
+						SetObjectString(20, g->net.IRresultMessage, g->txtStruct.objectStr);
+					}
 				}
 				else {
 					SetTimeLapse(2, &g->timer1);

@@ -1722,97 +1722,112 @@ static std::pair<std::pair<std::string, std::string>, int> MyLoadImage(CSTR dir,
 	return {std::pair{dir.c_str(), banner.c_str()}, LoadSoftImageWithStrLen(image_path.c_str(), image_path.length())};
 }
 
-int ProcS_Select(game *g) {
-	
-	if (g->sSelect.cur_song >= g->sSelect.bmsListCount) g->sSelect.cur_song = 0;
+int ProcS_Select(game *g_) {
+	auto& g = *g_;
 
-	SetObjectString(10, g->sSelect.bmsList[g->sSelect.cur_song].title, g->txtStruct.objectStr);
-	SetObjectString(11, g->sSelect.bmsList[g->sSelect.cur_song].subtitle, g->txtStruct.objectStr);
-	SetObjectString(12, g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, g->txtStruct.objectStr);
-	SetObjectString(13, g->sSelect.bmsList[g->sSelect.cur_song].genre, g->txtStruct.objectStr);
-	SetObjectString(14, g->sSelect.bmsList[g->sSelect.cur_song].artist, g->txtStruct.objectStr);
-	SetObjectString(15, g->sSelect.bmsList[g->sSelect.cur_song].subartist, g->txtStruct.objectStr);
-	SetObjectString(16, g->sSelect.bmsList[g->sSelect.cur_song].tag, g->txtStruct.objectStr);
-	SetObjectStringInt(17, g->sSelect.bmsList[g->sSelect.cur_song].level, g->txtStruct.objectStr);
-	SetObjectStringInt(18, g->sSelect.bmsList[g->sSelect.cur_song].difficulty, g->txtStruct.objectStr);
-	SetObjectStringInt(19, g->sSelect.bmsList[g->sSelect.cur_song].exlevel, g->txtStruct.objectStr);
+	if (g.sSelect.cur_song >= g.sSelect.bmsListCount) g.sSelect.cur_song = 0;
+	auto& cur = g.sSelect.bmsList[g.sSelect.cur_song];
 
-	SetObjectString(20, g->sSelect.bmsList[g->sSelect.cur_song].title, g->txtStruct.objectStr);
-	SetObjectString(21, g->sSelect.bmsList[g->sSelect.cur_song].subtitle, g->txtStruct.objectStr);
-	SetObjectString(22, g->sSelect.bmsList[g->sSelect.cur_song].fulltitle, g->txtStruct.objectStr);
-	SetObjectString(23, g->sSelect.bmsList[g->sSelect.cur_song].genre, g->txtStruct.objectStr);
-	SetObjectString(24, g->sSelect.bmsList[g->sSelect.cur_song].artist, g->txtStruct.objectStr);
-	SetObjectString(25, g->sSelect.bmsList[g->sSelect.cur_song].subartist, g->txtStruct.objectStr);
-	SetObjectString(26, g->sSelect.bmsList[g->sSelect.cur_song].tag, g->txtStruct.objectStr);
-	SetObjectStringInt(27, g->sSelect.bmsList[g->sSelect.cur_song].level, g->txtStruct.objectStr);
-	SetObjectStringInt(28, g->sSelect.bmsList[g->sSelect.cur_song].difficulty, g->txtStruct.objectStr);
-	SetObjectStringInt(29, g->sSelect.bmsList[g->sSelect.cur_song].exlevel, g->txtStruct.objectStr);
+	SetObjectString(10, cur.title, g.txtStruct.objectStr);
+	SetObjectString(11, cur.subtitle, g.txtStruct.objectStr);
+	SetObjectString(12, cur.fulltitle, g.txtStruct.objectStr);
+	SetObjectString(13, cur.genre, g.txtStruct.objectStr);
+	SetObjectString(14, cur.artist, g.txtStruct.objectStr);
+	SetObjectString(15, cur.subartist, g.txtStruct.objectStr);
+	SetObjectString(16, cur.tag, g.txtStruct.objectStr);
+	SetObjectStringInt(17, cur.level, g.txtStruct.objectStr);
+	SetObjectStringInt(18, cur.difficulty, g.txtStruct.objectStr);
+	SetObjectStringInt(19, cur.exlevel, g.txtStruct.objectStr);
+
+	SetObjectString(20, cur.title, g.txtStruct.objectStr);
+	SetObjectString(21, cur.subtitle, g.txtStruct.objectStr);
+	SetObjectString(22, cur.fulltitle, g.txtStruct.objectStr);
+	SetObjectString(23, cur.genre, g.txtStruct.objectStr);
+	SetObjectString(24, cur.artist, g.txtStruct.objectStr);
+	SetObjectString(25, cur.subartist, g.txtStruct.objectStr);
+	SetObjectString(26, cur.tag, g.txtStruct.objectStr);
+	SetObjectStringInt(27, cur.level, g.txtStruct.objectStr);
+	SetObjectStringInt(28, cur.difficulty, g.txtStruct.objectStr);
+	SetObjectStringInt(29, cur.exlevel, g.txtStruct.objectStr);
 
 	for (int i = 0; i < 9; i++) {
-		if (g->sSelect.bmsList[g->sSelect.cur_song].courseType == 1) 
-			SetObjectString(171 + i, g->txtStruct.option_str[20].str[g->sSelect.bmsList[g->sSelect.cur_song].courseKeys[i]], g->txtStruct.objectStr);
+		if (cur.courseType == 1)
+			SetObjectString(171 + i, g.txtStruct.option_str[20].str[cur.courseKeys[i]], g.txtStruct.objectStr);
 		else
-			SetObjectString(171 + i, "DISABLE", g->txtStruct.objectStr);
+			SetObjectString(171 + i, "DISABLE", g.txtStruct.objectStr);
 	}
-	SetObjectString(183, g->txtStruct.option_str[24].str[g->sSelect.bmsList[g->sSelect.cur_song].courseIR], g->txtStruct.objectStr);
+	SetObjectString(183, g.txtStruct.option_str[24].str[cur.courseIR], g.txtStruct.objectStr);
 	
-	if (g->sSelect.course.isMakingCourse == 1) {
+	if (g.sSelect.course.isMakingCourse == 1) {
 		for (int i = 0; i < 5; i++) {
-			SetObjectString(150 + i, g->sSelect.course.data[i].title, g->txtStruct.objectStr);
-			SetObjectString(160 + i, g->sSelect.course.data[i].subtitle, g->txtStruct.objectStr);
+			SetObjectString(150 + i, g.sSelect.course.data[i].title, g.txtStruct.objectStr);
+			SetObjectString(160 + i, g.sSelect.course.data[i].subtitle, g.txtStruct.objectStr);
 		}
-		SetObjectString(170, g->sSelect.course.name, g->txtStruct.objectStr);
+		SetObjectString(170, g.sSelect.course.name, g.txtStruct.objectStr);
 	}
-	else if(g->sSelect.bmsList[g->sSelect.cur_song].folderType == 8){
+	else if(cur.folderType == 8){
 		for (int i = 0; i < 5; i++) {
-			SetObjectString(150 + i, g->sSelect.bmsList[g->sSelect.cur_song].courseTitle[i], g->txtStruct.objectStr);
-			SetObjectString(160 + i, g->sSelect.bmsList[g->sSelect.cur_song].courseSubtitle[i], g->txtStruct.objectStr);
+			SetObjectString(150 + i, cur.courseTitle[i], g.txtStruct.objectStr);
+			SetObjectString(160 + i, cur.courseSubtitle[i], g.txtStruct.objectStr);
 		}
-		SetObjectString(170, g->sSelect.bmsList[g->sSelect.cur_song].title, g->txtStruct.objectStr);
+		SetObjectString(170, cur.title, g.txtStruct.objectStr);
 	}
 	
-	SetObjectString(30, g->sSelect.stack_searchTitle[g->sSelect.cur], g->txtStruct.objectStr);
-	SetTarget(g);
-	DeleteKeyInput(g->txtStruct.hKeyInput);
-	g->txtStruct.st_text_num = -1;
-	g->sSelect.metaSelected.artist = g->sSelect.bmsList[g->sSelect.cur_song].artist;
-	g->sSelect.metaSelected.filepath = g->sSelect.bmsList[g->sSelect.cur_song].filepath;
-	g->sSelect.metaSelected.subartist = g->sSelect.bmsList[g->sSelect.cur_song].subartist;
-	g->sSelect.metaSelected.title = g->sSelect.bmsList[g->sSelect.cur_song].title;
-	g->sSelect.metaSelected.subtitle = g->sSelect.bmsList[g->sSelect.cur_song].subtitle;
+	SetObjectString(30, g.sSelect.stack_searchTitle[g.sSelect.cur], g.txtStruct.objectStr);
+	SetTarget(&g);
+	DeleteKeyInput(g.txtStruct.hKeyInput);
+	g.txtStruct.st_text_num = -1;
+	g.sSelect.metaSelected.artist = cur.artist;
+	g.sSelect.metaSelected.filepath = cur.filepath;
+	g.sSelect.metaSelected.subartist = cur.subartist;
+	g.sSelect.metaSelected.title = cur.title;
+	g.sSelect.metaSelected.subtitle = cur.subtitle;
 
-	g->sSelect.metaSelected.selLevel = g->sSelect.bmsList[g->sSelect.cur_song].level;
-	g->sSelect.metaSelected.exlevel = g->sSelect.bmsList[g->sSelect.cur_song].exlevel;
-	g->sSelect.metaSelected.difficulty = g->sSelect.bmsList[g->sSelect.cur_song].difficulty;
-	g->sSelect.metaSelected.keymode = g->sSelect.bmsList[g->sSelect.cur_song].keymode;
+	g.sSelect.metaSelected.selLevel = cur.level;
+	g.sSelect.metaSelected.exlevel = cur.exlevel;
+	g.sSelect.metaSelected.difficulty = cur.difficulty;
+	g.sSelect.metaSelected.keymode = cur.keymode;
 
-	g->sSelect.levelBarGraph[0] = g->sSelect.levelIndicatorAnimation[0];
-	g->sSelect.levelsOfSong[0] = g->sSelect.bmsList[g->sSelect.cur_song].difficultyLevel[0];
-	g->sSelect.levelBarGraph[1] = g->sSelect.levelIndicatorAnimation[1];
-	g->sSelect.levelsOfSong[1] = g->sSelect.bmsList[g->sSelect.cur_song].difficultyLevel[1];
-	g->sSelect.levelBarGraph[2] = g->sSelect.levelIndicatorAnimation[2];
-	g->sSelect.levelsOfSong[2] = g->sSelect.bmsList[g->sSelect.cur_song].difficultyLevel[2];
-	g->sSelect.levelBarGraph[3] = g->sSelect.levelIndicatorAnimation[3];
-	g->sSelect.levelsOfSong[3] = g->sSelect.bmsList[g->sSelect.cur_song].difficultyLevel[3];
-	g->sSelect.levelBarGraph[4] = g->sSelect.levelIndicatorAnimation[4];
-	g->sSelect.levelsOfSong[4] = g->sSelect.bmsList[g->sSelect.cur_song].difficultyLevel[4];
+	g.sSelect.levelBarGraph[0] = g.sSelect.levelIndicatorAnimation[0];
+	g.sSelect.levelsOfSong[0] = cur.difficultyLevel[0];
+	g.sSelect.levelBarGraph[1] = g.sSelect.levelIndicatorAnimation[1];
+	g.sSelect.levelsOfSong[1] = cur.difficultyLevel[1];
+	g.sSelect.levelBarGraph[2] = g.sSelect.levelIndicatorAnimation[2];
+	g.sSelect.levelsOfSong[2] = cur.difficultyLevel[2];
+	g.sSelect.levelBarGraph[3] = g.sSelect.levelIndicatorAnimation[3];
+	g.sSelect.levelsOfSong[3] = cur.difficultyLevel[3];
+	g.sSelect.levelBarGraph[4] = g.sSelect.levelIndicatorAnimation[4];
+	g.sSelect.levelsOfSong[4] = cur.difficultyLevel[4];
 
-	if (g->sSelect.bmsList[g->sSelect.cur_song].isBanner && g->skstruct.reloadbanner == 1 && g->procSelecter == 2) {
-		g->hThreadBanner.push_back(std::async(std::launch::async, MyLoadImage,
-					g->sSelect.bmsList[g->sSelect.cur_song].filepath.getDirectory(),
-					g->sSelect.bmsList[g->sSelect.cur_song].banner));
+	if (cur.isBanner && g.skstruct.reloadbanner == 1 && g.procSelecter == 2) {
+		g.hThreadBanner.push_back(std::async(std::launch::async, MyLoadImage,
+					cur.filepath.getDirectory(),
+					cur.banner));
 	}
-	if (g->net.isOnline && g->procSelecter == 2) {
-		g->net.WaitAndInitRanking();
-		if (g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5 && (g->sSelect.bmsList[g->sSelect.cur_song].courseStageCount < 1 || g->sSelect.bmsList[g->sSelect.cur_song].courseIR)) {
-			g->net.IRstatus = 1;
-			g->net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, g);
-			SetObjectStrings_SongSelect(g);
-			return 1;
+	if (g.procSelecter == 2) {
+		if (cur.keymode >= 5 && (cur.courseStageCount < 1 || cur.courseIR)) {
+			if (g.sSelect.stack_query[g.sSelect.cur].findStrPos("__RIVAL__") == -1/*not LR2IR rival, matches ThreadProc_RankingAutoUpdate*/) {
+				if (auto result = g.net.customIR.RestoreCachedRank(cur.hash); result) {
+					openlr2::fill_ranking_from_customir(*result, g.net.rankingData);
+					openlr2::fill_status_from_ranking(g.net.rankingData, false, g.sSelect.bmsList[g.sSelect.cur_song].mybest);
+					// Force 'IR READY' so that we can open the leader boards.
+					// TODO: re-write ThreadProc_RankingAutoUpdate with CustomIR in mind so that we can
+					// request fresh leaderboards.
+					g.net.IRstatus = 2;
+					return 1;
+				}
+			}
+			if (g.net.isOnline) {
+				g.net.WaitAndInitRanking();
+				g.net.IRstatus = 1;
+				g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
+				SetObjectStrings_SongSelect(&g);
+				return 1;
+			}
 		}
 	}
-	g->net.IRstatus = 0;
-	SetObjectStrings_SongSelect(g);
+	g.net.IRstatus = 0;
+	SetObjectStrings_SongSelect(&g);
 	return 1;
 }
 

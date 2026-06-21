@@ -181,6 +181,7 @@ struct CONFIG_NETWORK {
 	CSTR mail;
 	int autoupdate{};
 	int getrival{};
+	CSTR displayIr;
 };
 
 struct CONFIG_PLAY {
@@ -1486,8 +1487,8 @@ struct SkinHeader { /* SkinInfo */
 struct RANKINGPLAYER {
 	CSTR name;
 	int id{};
-	int sp{};
-	int dp{};
+	int sp{}; // TODO: remove when we throw out memset usage
+	int dp{}; // TODO: remove when we throw out memset usage
 	int clear{};
 	int notes{};
 	int combo{};
@@ -1497,7 +1498,7 @@ struct RANKINGPLAYER {
 	int bd{};
 	int pr{};
 	int minbp{};
-	int option{};
+	int option{}; // TODO: remove when we throw out memset usage
 	int sussussuspected{};
 	int playcount{};
 	int ranking{};

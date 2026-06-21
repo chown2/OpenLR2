@@ -71,8 +71,6 @@ int FindAltSound(CSTR filename, CSTR dir, CSTR * oBuf);
 CSTR GetRandomFile(CSTR path, char fOnlyName);
 CSTR GetRandomFileNoError(CSTR path, CSTR dir);
 
-//md5
-void MD5byte(char **iStr, uint len, char *oByte);
 char* MD5str(char *iStr);
 
 #ifdef _WIN32

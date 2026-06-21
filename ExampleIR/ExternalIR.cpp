@@ -1,8 +1,10 @@
 #include <LR2_customir_api.h>
 
 #include <filesystem>
-#include <fstream>
 #include <format>
+#include <fstream>
+#include <iostream>
+#include <print>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -14,25 +16,17 @@ namespace State {
 }
 
 static const char* GetName() {
-    // Module name must be unique among loaded modules.
+    std::println(std::cout, "GetName");
     return "ExampleIR";
 }
 
 static bool Login() {
-    // Maybe parse some configuration file there, and perform URL request to your IR for login.
-    // This method is ran at game initialization synchronously.
-    // Can be used for general initialization.
-    // system("rm -fr /");
+    std::println(std::cout, "Login");
     return true;
 }
 
 static SendScoreStatus SendScore(const IRScoreV1& score) {
-    // Process your score here, and output the result where you want it, perhaps send it to a URL.
-    // This method is ran on its own thread at each score result, both for normal plays and courses.
-    // It will run even for scores that wouldn't be sent to LR2IR or saved to the score.db, it's up to the module to filter them.
-
-    // If a module wants to retry sending the score, it should return 'false'. 
-    // OpenLR2 will retry several times, after which the score will be dropped.
+    std::println(std::cout, "SendScore({{.song.hash={}}})", score.song.hash);
     constexpr const char* lamps[6] = { "NO PLAY", "FAIL", "EASY", "NORMAL", "HARD", "FULL COMBO" };
     if (score.settings.assist[score.state.player]) return SendScoreStatus::Fail;
     std::string filename = std::format("score{}.txt", State::scoresSaved);
@@ -64,13 +58,44 @@ static SendScoreStatus SendScore(const IRScoreV1& score) {
     return SendScoreStatus::Ok;
 }
 
+static openlr2::GetStatus RestoreCachedRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
+    std::println(std::cout, "RestoreCachedRank({})", songHash);
+    out.ranking = {
+        { .name = "name1", .comment = "comment1", .timestamp = 1262304000, .id = 70100, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 520, .pg = 980, .gr = 180, .minbp = 42 },
+        { .name = "name2", .comment = "comment2", .timestamp = 1262304000, .id = 70101, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 505, .pg = 960, .gr = 190, .minbp = 48 },
+    };
+    out.clearPlayers = { 0, 25, 20, 15, 10, 5 };
+    out.lastupdate = 1245000000;
+    out.myRank = 18;
+    out.totalPlayer = 64;
+    out.totalPlaycount = 200;
+    return openlr2::GetStatus::Ok;
+}
+
+static openlr2::GetStatus GetResultRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
+    std::println(std::cout, "GetResultRank({})", songHash);
+    out = {};
+    out.ranking = {
+        { .name = "name1", .comment = "comment1", .timestamp = 1262304000, .id = 70200, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 520, .pg = 980, .gr = 180, .minbp = 42 },
+        { .name = "name2", .comment = "comment2", .timestamp = 1262304000, .id = 70201, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 505, .pg = 960, .gr = 190, .minbp = 48 },
+    };
+    out.clearPlayers = { 0, 50, 40, 30, 20, 10 };
+    out.lastupdate = 1262304000;
+    out.myRank = 3;
+    out.totalPlayer = 256;
+    out.totalPlaycount = 1024;
+    return openlr2::GetStatus::Ok;
+}
+
 extern "C" OLR2_IR_EXPORT void GetMethodTable(MethodTable& table) {
     // Fill out the pointers to methods you want to use. Leave them at nullptr if you don't want to use them.
-    // Only essential method is GetName(). Without it, your module will be rejected.
-    // As API gets updated, new methods may appear available at MethodTable, but old ones will never be removed or their prototypes modified. Method indexes are also stable.
+    // As API gets updated, new methods may appear available at MethodTable, but old ones will never be removed or their
+    // prototypes modified, so method indexes are stable.
     table.GetName = &GetName;
     table.LoginV1 = &Login;
     table.SendScoreV1 = &SendScore;
+    table.GetResultRank = &GetResultRank;
+    table.RestoreCachedRank = &RestoreCachedRank;
 }
 
 #ifdef _WIN32

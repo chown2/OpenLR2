@@ -1,14 +1,12 @@
 #include "strclass.h"
-#include "filesystem.h"
+
+#include <cctype>
+#include <cstdarg>
 #include <cstring>
+#include <filesystem>
 #include <span>
 #include <string>
 #include <string_view>
-#include <cstdarg>
-#include <cctype>
-#include <filesystem>
-
-#include "En_fileutil.h"
 
 typedef unsigned char byte;
 
@@ -39,7 +37,6 @@ int CSTR::length() const {
 
 unsigned int CSTR::CRC32() const {
 	unsigned int crc = 0xffffffff;
-	int j = 0;
 	for (int i = 0; i < length() + 1; i++) {
 		crc ^= body[i];
 		for (int k = 0; k < 8; k++) {
@@ -284,7 +281,7 @@ char * cstrSprintf(CSTR *str, const char *format, ...) {
 		return nullptr;
 	}
 
-	const size_t capacity = _msize(str->body);
+	const auto capacity = static_cast<long long>(_msize(str->body));
 
 	va_list ap;
 	va_start(ap, format);
