@@ -24,6 +24,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FMOD", "vcxproj\fmod.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DxLib", "vcxproj\DxLib.vcxproj", "{640B52EF-D6CC-459A-959D-9C8C14C70D8F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C4D93941-D72C-46B8-A410-12A137960395} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7DCFEC6B-4413-4250-B73F-BD39050D9167} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D59030DC-1466-47EF-9E90-31EACDA8D0BC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0FE31D1F-C769-4E5C-A95C-79EA84F48C62} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{640B52EF-D6CC-459A-959D-9C8C14C70D8F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7E11508-DD17-469C-8D5B-1D18256CD345}
