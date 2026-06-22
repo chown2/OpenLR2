@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef _WIN32
-#include <DxLib/DxLib.h>
+#include <DxLib.h>
 
 #include <cstddef>
 

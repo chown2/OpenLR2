@@ -1,5 +1,5 @@
 ﻿#include "En_graphic.h"
-#include "DxLib/DxLib.h"
+#include <DxLib.h>
 
 int ScreenCapture(uint iGrHandle, int x, int y){
 	GetDrawScreenGraph(0, 0, x, y, iGrHandle, 1);

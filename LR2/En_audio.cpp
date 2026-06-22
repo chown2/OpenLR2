@@ -1,14 +1,7 @@
-﻿#if _WIN64
-#pragma comment(lib,"bin64/fmod_vc.lib")
-#else
-#if _WIN32
-#pragma comment(lib,"bin86/fmod_vc.lib")
-#endif
-#endif
-#include "En_audio.h"
+﻿#include "En_audio.h"
 #include "strclass.h"
-#include "FMOD/fmod.h"
-#include "DxLib/DxLib.h"
+#include <fmod.h>
+#include <DxLib.h>
 #include <algorithm>
 #include <cmath>
 #include <array>
