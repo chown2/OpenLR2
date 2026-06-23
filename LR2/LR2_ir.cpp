@@ -835,7 +835,7 @@ int NETWORK::LR2IR_GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oNam
 				ErrorLogAdd("ゴーストのダウンロードに失敗しました\n");
 				return 0;
 			}
-			ErrorLogFmtAdd("ゴーストをダウンロードしました\nプレイヤー名%s\n", oName);
+			ErrorLogFmtAdd("ゴーストをダウンロードしました\nプレイヤー名%s\n", oName->body);
 		}
 		return 1;
 	}
