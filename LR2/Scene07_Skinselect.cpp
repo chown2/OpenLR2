@@ -257,9 +257,17 @@ int ProcI_SkinSelect(game *g) {
 
 
 
-	int& tx = g->skinData.Data[g->skinData.previewID].targetX;
-	int& ty = g->skinData.Data[g->skinData.previewID].targetY;
-	if (!(tx == 640 && ty == 480)) {
+	// effective resolution of the previewed skin: per-skin #RESOLUTION wins, else config global
+	const SkinHeader& pskin = g->skinData.Data[g->skinData.previewID];
+	int tx, ty;
+	if (pskin.hasResolutionTag) {
+		tx = pskin.targetX;
+		ty = pskin.targetY;
+	}
+	else {
+		GetConfigResolution(g->config.system.resolution, &tx, &ty);
+	}
+	if (!(tx == skinSizeX && ty == skinSizeY)) {
 		g->skstruct.GrHandle[106] = MakeScreen(tx, ty);
 		SetDrawScreen(g->skstruct.GrHandle[106]);
 	}
@@ -269,11 +277,11 @@ int ProcI_SkinSelect(game *g) {
 	}
 
 	SetDrawScreen(DX_SCREEN_BACK); //there is a flickering in not SD skins preview
-	if (!(tx == 640 && ty == 480)) {
-		DrawExtendGraph(0, 0, 640, 480, g->skstruct.GrHandle[106], 1);
+	if (!(tx == skinSizeX && ty == skinSizeY)) {
+		DrawExtendGraph(0, 0, skinSizeX, skinSizeY, g->skstruct.GrHandle[106], 1);
 		DeleteGraph(g->skstruct.GrHandle[106]);
 	}
-	ScreenCapture(g->skstruct.GrHandle[GrH_Preview], 640, 480); //thumbnail size is fixed as SRC 105(GrH_Preview], in skin file
+	ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY); //thumbnail size is fixed as SRC 105(GrH_Preview], in skin file
 	
 	clsDx();
 	InitDrawingBuffer(&g->skstruct2.drBuf);
@@ -285,15 +293,15 @@ int MakeSkinPreview(game* g, skstruct* sk, SkinManage* sm) {
 	if (g->config.system.disableskinpreview == 1 || sm->Data[sm->previewID].type == SKINTYPE_SOUNDSET) {
 		int grh = LoadGraph(sm->Data[sm->previewID].thumbnail, 0);
 		if (grh != -1) {
-			DrawExtendGraph(0, 0, 640, 480, grh, 0);
-			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], 640, 480);
+			DrawExtendGraph(0, 0, skinSizeX, skinSizeY, grh, 0);
+			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY);
 			DeleteGraph(grh);
 		}
 		//TOFIX : when no thumbnail, previsous selected thumbnail remains, I don't know how to draw that "thumbnail" image)
 		//thumbnail size is fixed, in skin file. it is SRC 105
 		else {
-			DrawBox(0, 0, 640, 480, 0x00000000, 1, 1);
-			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], 640, 480);
+			DrawBox(0, 0, skinSizeX, skinSizeY, 0x00000000, 1, 1);
+			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY);
 		}
 		return 0;
 	}

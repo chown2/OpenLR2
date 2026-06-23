@@ -6,6 +6,7 @@
 #include "En_timer.h"
 #include "En_xml.h"
 #include "LR2_ir.h"
+#include "LR2_customir.h"
 #include "LR2_version.h"
 #include "filesystem.h"
 #include "tinyxml/tinyxml.h"
@@ -25,7 +26,7 @@ void MYRANKING::InitRanking() {
 	this->title.fillzero();
 	this->genre.fillzero();
 	this->artist.fillzero();
-	this->ghost.fillzero();
+	this->_ghost.fillzero();
 	this->maxbpm = 0;
 	this->minbpm = 0;
 	this->playlevel = 0;
@@ -629,13 +630,17 @@ int NETWORK::HTTPrequest() {
 #endif // _WIN32
 }
 
-void NETWORK::WaitAndInitRanking() {
+void NETWORK::WaitForRankingHandle() {
 	GetTimeWrap();
 	this->waitForHandle = true;
 	if (hHandle.joinable()) {
 		hHandle.join();
 	}
 	this->waitForHandle = false;
+}
+
+void NETWORK::WaitAndInitRanking() {
+	WaitForRankingHandle();
 	this->rankingData.Init();
 }
 
@@ -702,7 +707,56 @@ int OpenWebRanking(CSTR songmd5){
 #endif
 }
 
-static void ThreadProc_IRsendScore(NETWORK *ir) {
+bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, int *oDigit1, int *oDigit2, int *oDigit3, int *oDigit4, int *oSeed, int *oExscore) {
+	WaitForRankingHandle();
+	if (auto result = customIR.TryGetTargetInfo(songmd5, mode, rankingData.target_ID)) {
+		if (mode == 8) {
+			*oName = "AVERAGE";
+			*oExscore = result->averageExscore;
+			return true;
+		}
+		*oName = result->displayName.c_str();
+		oData->fillzero();
+		if (!result->ghostData.empty()) oData->add(result->ghostData.c_str());
+		switch (result->gauge) {
+		case openlr2::Gauge::Groove: *oDigit1 = 0; break;
+		case openlr2::Gauge::Survival: *oDigit1 = 1; break;
+		case openlr2::Gauge::Death: *oDigit1 = 2; break;
+		case openlr2::Gauge::Easy: *oDigit1 = 3; break;
+		case openlr2::Gauge::PAttack: *oDigit1 = 4; break;
+		case openlr2::Gauge::GAttack: *oDigit1 = 5; break;
+		default: *oDigit1 = 0; break;
+		}
+		switch (result->randomOption[0]) {
+		case openlr2::Random::No: *oDigit2 = 0; break;
+		case openlr2::Random::Mirror: *oDigit2 = 1; break;
+		case openlr2::Random::Random: *oDigit2 = 2; break;
+		case openlr2::Random::SRandom: *oDigit2 = 3; break;
+		case openlr2::Random::Scatter: *oDigit2 = 4; break;
+		case openlr2::Random::Converge: *oDigit2 = 5; break;
+		default: *oDigit2 = 0; break;
+		}
+		switch (result->randomOption[1]) {
+		case openlr2::Random::No: *oDigit3 = 0; break;
+		case openlr2::Random::Mirror: *oDigit3 = 1; break;
+		case openlr2::Random::Random: *oDigit3 = 2; break;
+		case openlr2::Random::SRandom: *oDigit3 = 3; break;
+		case openlr2::Random::Scatter: *oDigit3 = 4; break;
+		case openlr2::Random::Converge: *oDigit3 = 5; break;
+		default: *oDigit3 = 0; break;
+		}
+		*oDigit4 = result->dpflip ? 1 : 0;
+		*oSeed = result->rseed >= 0 ? result->rseed : 0; //TOFIX: 0 is a valid seed
+		return true;
+	}
+	if (isOnline) {
+		this->rankingData.Init();
+		return LR2IR_GetTargetInfo(mode, songmd5, oData, oName, oDigit1, oDigit2, oDigit3, oDigit4, oSeed, oExscore) != 0;
+	}
+	return false;
+}
+
+static void ThreadProc_IRsendScore(NETWORK *ir, std::string ghostString) {
 	ErrorLogAdd("LR2IRにスコアを送信します。\n");
 	CSTR scorehash;
 	cstrSprintf(&scorehash, "%s%s%d%d", ir->IR_passMD5.body, ir->myRanking.songMD5.body,ir->myRanking.exscore, ir->myRanking.clear);
@@ -727,7 +781,7 @@ static void ThreadProc_IRsendScore(NETWORK *ir) {
 			ir->myRanking.clearcount, ir->myRanking.rate, ir->myRanking.minbp,
 			ir->myRanking.totalnotes, ir->myRanking.opt_history,
 			ir->myRanking.opt_this, ir->myRanking.line, ir->myRanking.judge,
-			ir->myRanking.inputtype, ir->myRanking.ghost.body,
+			ir->myRanking.inputtype, ghostString.c_str(),
 			ir->myRanking.rseed, ir->myRanking.clear_db, ir->myRanking.clear_ex,
 			ir->myRanking.clear_sd, scorehash.body);
 	ir->target_URL = "http://www.dream-pro.info/~lavalse/LR2IR/2/score.cgi";
@@ -744,7 +798,7 @@ static void ThreadProc_IRsendScore(NETWORK *ir) {
 	ir->hHandle.detach(); // Detach ourselves TODO: refactor surrounding code to avoid this
 }
 
-int NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, int *oDigit1, int *oDigit2, int *oDigit3, int *oDigit4, int *oSeed, int *oExscore) {
+int NETWORK::LR2IR_GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, int *oDigit1, int *oDigit2, int *oDigit3, int *oDigit4, int *oSeed, int *oExscore) {
 
 	CSTR search("top");
 
@@ -930,7 +984,7 @@ int NETWORK::Login(int isDirectPlay) {
 	return -3;
 }
 
-int NETWORK::MakeIRsendScoreThread() {
+int NETWORK::MakeIRsendScoreThread(std::string ghostString) {
 	GetTimeWrap();
 	this->waitForHandle = true;
 	if (hHandle.joinable()) {
@@ -939,7 +993,7 @@ int NETWORK::MakeIRsendScoreThread() {
 	this->waitForHandle = false;
 	this->rankingData.Init();
 	this->IRstatus = 1;
-	this->hHandle = std::jthread(ThreadProc_IRsendScore, this);
+	this->hHandle = std::jthread(ThreadProc_IRsendScore, this, ghostString);
 	return 0;
 }
 

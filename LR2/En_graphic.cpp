@@ -14,6 +14,16 @@ int SetBackground(int hImage) {
 
 int screenSizeX, screenSizeY;
 int skinSizeX, skinSizeY;
+
+// Maps the global resolution counter (config.system.resolution) to pixels.
+void GetConfigResolution(int counter, int* outX, int* outY) {
+	switch (counter) {
+		case 1:  *outX = 1280; *outY = 720;  break;  // HD
+		case 2:  *outX = 1920; *outY = 1080; break;  // UHD (experimental)
+		default: *outX = 640;  *outY = 480;  break;  // SD
+	}
+}
+
 int Resize(game* g, double skinX, double skinY, bool bit16) {
 	int oldXpos = 320, oldYpos = 240;
 

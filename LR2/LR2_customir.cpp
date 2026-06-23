@@ -80,6 +80,7 @@ public:
 	SendScoreStatus SendScore(const IRScoreV1& score);
 	openlr2::GetStatus GetResultRank(const char* songHash, openlr2::IRRankResult& out);
 	openlr2::GetStatus RestoreCachedRank(const char* songHash, openlr2::IRRankResult& out);
+	openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode, int targetPlayerId, openlr2::IRGhostResult& out);
 
 	[[nodiscard]] const std::string& Name() const { return mName; };
 private:
@@ -150,6 +151,11 @@ openlr2::GetStatus CustomIR::GetResultRank(const char* songHash, openlr2::IRRank
 openlr2::GetStatus CustomIR::RestoreCachedRank(const char* songHash, openlr2::IRRankResult& out) {
 	if (mMethods.RestoreCachedRank == nullptr) return openlr2::GetStatus::Fail;
 	return mMethods.RestoreCachedRank(songHash, -1, out);
+}
+
+openlr2::GetStatus CustomIR::GetGhost(const char* songHash, openlr2::GhostMode mode, int targetPlayerId, openlr2::IRGhostResult& out) {
+	if (mMethods.GetGhost == nullptr) return openlr2::GetStatus::Fail;
+	return mMethods.GetGhost(songHash, mode, targetPlayerId, out);
 }
 
 CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() {
@@ -251,6 +257,41 @@ void CUSTOMIR_MANAGER::Login() {
 	}
 }
 
+std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) const {
+	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
+	if (irIt == mModules.end()) { return std::nullopt; }
+
+	openlr2::GhostMode ghostMode{};
+	switch (mode) {
+	case 0: ghostMode = openlr2::GhostMode::Target; break;
+	case 6: ghostMode = openlr2::GhostMode::Top; break;
+	case 7: ghostMode = openlr2::GhostMode::Next; break;
+	case 8: ghostMode = openlr2::GhostMode::Average; break;
+	default:
+		ErrorLogFmtAdd("Invalid ghost mode: %d\n", mode);
+		return std::nullopt;
+	}
+
+	openlr2::IRGhostResult result{};
+	switch ((*irIt)->GetGhost(songmd5, ghostMode, targetPlayerId, result)) {
+	case openlr2::GetStatus::Ok:
+		if (ghostMode == openlr2::GhostMode::Average && result.averageExscore <= 0) {
+			ErrorLogAdd("CustomIR BUG: invalid averageExscore\n");
+			return std::nullopt;
+		}
+		return result;
+	case openlr2::GetStatus::Retry:
+		OverlayNotification("'%s' failed to get ghost data - ignoring retry\n", (*irIt)->Name().c_str());
+		return std::nullopt;
+	case openlr2::GetStatus::Fail:
+		OverlayNotification("'%s' failed to get ghost data\n", (*irIt)->Name().c_str());
+		return std::nullopt;
+	}
+	// TODO: remove 'abort()' from other handlers, logging an error and returning nothing instead. 
+	ErrorLogAdd("CustomIR BUG: invalid GetGhost return value\n");
+	return std::nullopt;
+}
+
 struct IRScoreInternal {
 	struct SONG {
 		std::string hash;
@@ -339,6 +380,7 @@ struct IRScoreInternal {
 	double rate{};
 	int clearType{};
 	int inputType{};
+	std::string ghostData{};
 	struct GRAPHDATA {
 		std::array<std::array<int, 1000>, 6> hp{};
 		std::array<int, 1000> combo{};
@@ -442,6 +484,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.graphs.combo = graphs.combo;
 	scoreOut.graphs.exscore = graphs.exscore;
 	scoreOut.graphs.rate = graphs.rate;
+	scoreOut.ghostData = ghostData;
 }
 
 IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
@@ -575,6 +618,10 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 		memcpy(graphs.combo.data(), statgraph.combo, graphs.combo.size());
 		memcpy(graphs.exscore.data(), statgraph.exscore, graphs.exscore.size());
 		memcpy(graphs.rate.data(), gameplay.rategraph[_player].val, graphs.rate.size());
+	}
+
+	if (!courseScore && _player == 0) {
+		ghostData = gameplay.resultGhostForIr;
 	}
 }
 

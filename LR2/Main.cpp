@@ -317,7 +317,9 @@ int main(int argc, char** argv) {
 	gs.timer1.movieFramerate = (double)gs.config.tools.movie_framerate;
 	gs.timer1.movieTimer = 0.0;
 
-	SetGraphMode(640, 480, (gs.config.system.highcolor == 0) ? 32 : 16, 60);
+	int resX, resY;
+	GetConfigResolution(gs.config.system.resolution, &resX, &resY);
+	SetGraphMode(resX, resY, (gs.config.system.highcolor == 0) ? 32 : 16, 60);
 	if (gs.rec.recMode == 3) {
 		SetGraphMode(256, 256, 32, 60);
 	}
@@ -339,7 +341,7 @@ int main(int argc, char** argv) {
 	}
 	else {
 		if ((gs.is_recordmode == '\0') && (gs.rec.recMode == 0)) {
-			SetWindowSizeExtendRate((double)gs.config.system.windowsize_x / 640.0, (double)gs.config.system.windowsize_y / 480.0); //TODO_RESOULUTION
+			SetWindowSizeExtendRate((double)gs.config.system.windowsize_x / resX, (double)gs.config.system.windowsize_y / resY);
 			if (gs.is_starter) { //unreachable duplicated code
 				if (MessageBoxA(NULL, "フルスクリーンモードで起動しますか？", "確認", 4) == 6) {
 					gs.config.system.screenmode = 0;
@@ -1958,7 +1960,7 @@ int main(int argc, char** argv) {
 					for (int i = 0; i < 10; i++) {
 						gs.skstruct.ImageFonts[i].filepath[0] = 0;
 					}
-					SetGraphMode(640, 480, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //TODO_RESOULUTION
+					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
 					SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
 					ChangeWindowMode(gs.config.system.screenmode);
@@ -2002,7 +2004,7 @@ int main(int argc, char** argv) {
 					for (int i = 0; i < 10; i++) {
 						gs.skstruct.ImageFonts[i].filepath[0] = 0;
 					}
-					SetGraphMode(640, 480, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //TODO_RESOULUTION
+					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
 					SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
 					ChangeWindowMode(gs.config.system.screenmode);
@@ -2243,7 +2245,7 @@ int main(int argc, char** argv) {
 			for (int i = 0; i < 10; i++) {
 				gs.skstruct.ImageFonts[i].filepath[0] = 0;
 			}
-			SetGraphMode(640, 480, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //TODO_RESOULUTION
+			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
 			SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
 			ApplyScreenMode(gs.config.system.screenmode);
@@ -2272,7 +2274,7 @@ int main(int argc, char** argv) {
 			for (int i = 0; i < 10; i++) {
 				gs.skstruct.ImageFonts[i].filepath[0] = 0;
 			}
-			SetGraphMode(640, 480, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //TODO_RESOULUTION
+			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
 			SetDrawScreen(DX_SCREEN_BACK);
 			LoadSceneG(&gs, &gs.skstruct, SKINTYPE_SELECT);
 			SetWaitVSyncFlag(0); //VSYNC

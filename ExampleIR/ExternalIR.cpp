@@ -43,7 +43,8 @@ static SendScoreStatus SendScore(const IRScoreV1& score) {
         "fast: {}\n"
         "slow: {}\n"
         "cb: {}\n"
-        "lamp: {}\n",
+        "lamp: {}\n"
+        "ghostData: {}\n",
         score.song.hash, score.state.keymode, score.exscore,
         score.judgements_total.epg + score.judgements_total.lpg,
         score.judgements_total.egr + score.judgements_total.lgr,
@@ -51,7 +52,8 @@ static SendScoreStatus SendScore(const IRScoreV1& score) {
         score.judgements_total.ebd + score.judgements_total.lbd,
         score.judgements_total.epr + score.judgements_total.lpr,
         score.judgements_total.fast, score.judgements_total.slow, score.judgements_total.cb,
-        lamps[score.clearType]
+        lamps[score.clearType],
+        score.ghostData
     );
     std::ofstream dump(State::path / filename);
     dump << processedScore;
@@ -87,6 +89,22 @@ static openlr2::GetStatus GetResultRank(const char* songHash, int /*reserved*/, 
     return openlr2::GetStatus::Ok;
 }
 
+static openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode, int /*targetPlayerId*/, openlr2::IRGhostResult& out) {
+    std::println(std::cout, "GetGhost({})", songHash);
+    out = {};
+    if (mode == openlr2::GhostMode::Average) {
+        out.averageExscore = 800;
+        return openlr2::GetStatus::Ok;
+    }
+    out.displayName = "EXAMPLE";
+    out.ghostData = "LXZ"; // this ghost will do almost perfect play.
+    out.gauge = openlr2::Gauge::Survival;
+    out.randomOption = { openlr2::Random::Random, openlr2::Random::No };
+    out.dpflip = false;
+    out.rseed = 2179; // 1357246
+    return openlr2::GetStatus::Ok;
+}
+
 extern "C" OLR2_IR_EXPORT void GetMethodTable(MethodTable& table) {
     // Fill out the pointers to methods you want to use. Leave them at nullptr if you don't want to use them.
     // As API gets updated, new methods may appear available at MethodTable, but old ones will never be removed or their
@@ -96,6 +114,7 @@ extern "C" OLR2_IR_EXPORT void GetMethodTable(MethodTable& table) {
     table.SendScoreV1 = &SendScore;
     table.GetResultRank = &GetResultRank;
     table.RestoreCachedRank = &RestoreCachedRank;
+    table.GetGhost = &GetGhost;
 }
 
 #ifdef _WIN32

@@ -44,6 +44,8 @@ https://web.archive.org/web/20190802100906/http://www.dream-pro.info/~lavalse/LR
 
 - Add the corresponding #RESOLUTION under #INFORMATION in your .lr2skin files for each of the game scenes (music select, decide, play, result, course result...) Refer to the image above as an example.
 
+- You can also set default resolution in "LR2files/Config/openlr2-config.xml" (0:SD 1:HD 2:FHD)
+
 ## Known issues
 
 - score save issue on NONSTOP MIX

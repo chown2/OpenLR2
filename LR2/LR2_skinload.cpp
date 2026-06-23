@@ -370,7 +370,7 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	sk->customfile_count = 0;
 	
 	DeleteGraph(sk->GrHandle[GrH_Preview]);
-	sk->GrHandle[GrH_Preview] = MakeGraph(skinSizeX, skinSizeY); //TODO_RESOULUTION	
+	sk->GrHandle[GrH_Preview] = MakeGraph(skinSizeX, skinSizeY); //TODO_RESOULUTION
 	DeleteGraph(sk->GrHandle[104]);
 	sk->GrHandle[104] = MakeGraph(256, 256);
 	if (sk->GrHandle[GrH_Stage] == -1) sk->GrHandle[GrH_Stage] = MakeGraph(640, 480);
@@ -1741,8 +1741,16 @@ int LoadScene(skstruct* sk, CSTR skinfile, int p5, char font) {
 int LoadSceneG(game* g, skstruct* sk, int skinNum, int font) {
 	CSTR skinfile(g->config.skin.skinFilePath[skinNum]);
 
-	Resize(g, g->skinData.Data[g->skinData.skinID[skinNum]].targetX, g->skinData.Data[g->skinData.skinID[skinNum]].targetY, 0);
-	
+	const SkinHeader& skin = g->skinData.Data[g->skinData.skinID[skinNum]];
+	if (skin.hasResolutionTag) {
+		Resize(g, skin.targetX, skin.targetY, 0);   // per-skin #RESOLUTION wins
+	}
+	else {
+		int resX, resY;
+		GetConfigResolution(g->config.system.resolution, &resX, &resY);
+		Resize(g, resX, resY, 0);                    // fallback to config global
+	}
+
 	LoadScene(sk, skinfile, g->skinData.Data[g->skinData.skinID[skinNum]].informationP5, font);
 	return 0;
 }

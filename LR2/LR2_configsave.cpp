@@ -574,6 +574,10 @@ int WriteOpenLr2ConfigXml(game *g, const char *filename){
 	fputs("<?xml version=\"1.0\" encoding=\"shift_jis\"?>\n", pFile);
 	fputs("<config>\n", pFile);
 
+	fputs("\t<system>\n", pFile);
+	WriteXML_Tab2Int(pFile, "resolution", (g->config).system.resolution);
+	fputs("\t</system>\n", pFile);
+
 	fputs("\t<play>\n", pFile);
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "gaugeautoshift", (g->config).play.m_gas, "gaugeautoshift");
 	fputs(buf, pFile);
@@ -1176,6 +1180,7 @@ int ReadOpenLr2Config(game* g, const char* filepath) {
 		delete(hXml);
 		hXml = nullptr;
 	}
+	ReadXml_Int("config", "system", "resolution", 0, &g->config.system.resolution, hXml);
 	ReadXml_PositiveIntAsBool("config", "play", "gaugeautoshift", false, &g->config.play.m_gas, hXml);
 	ReadXml_Str("config", "skin", "courseresult", "", &g->config.skin.skinFilePath[15], hXml);
 	ReadXml_Str("config", "network", "display_ir", "", &g->config.network.displayIr, hXml);

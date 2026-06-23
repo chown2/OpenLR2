@@ -2117,7 +2117,7 @@ uint SetObjectValue_Num(game *g, int op) {
 			}
 			break;
 		case 218:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4 || g->procSelecter == 5) {
 				return g->gameplay.player[0].note_current;
 			}
 			return g->net.rankingData.clearPlayers[5];

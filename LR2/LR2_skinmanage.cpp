@@ -275,6 +275,7 @@ int ParseLR2SkinCustom(SkinManage *skm, CSTR filepath) {
 				skm->Data[skm->Count - 1].targetY = (csvBuf.val[2] < 480) ? 480 : csvBuf.val[2];
 				break;
 			}
+			skm->Data[skm->Count - 1].hasResolutionTag = true;
 		}
 		else if (buffer.left(13).isSame("#CUSTOMOPTION")) {
 			SplitCSV(buffer, &csvBuf, ",");
