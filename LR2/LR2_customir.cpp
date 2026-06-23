@@ -614,10 +614,17 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 
 	if (!courseScore) {
 		::GRAPHDATA& statgraph = gameplay.statgraph[_player];
+
 		graphs.hp = statgraph.hp;
-		memcpy(graphs.combo.data(), statgraph.combo, graphs.combo.size());
-		memcpy(graphs.exscore.data(), statgraph.exscore, graphs.exscore.size());
-		memcpy(graphs.rate.data(), gameplay.rategraph[_player].val, graphs.rate.size());
+
+		static_assert(sizeof(statgraph.combo) == sizeof(graphs.combo));
+		std::ranges::copy(statgraph.combo, graphs.combo.begin());
+
+		static_assert(sizeof(statgraph.exscore) == sizeof(graphs.exscore));
+		std::ranges::copy(statgraph.exscore, graphs.exscore.begin());
+
+		static_assert(sizeof(gameplay.rategraph[_player].val) == sizeof(graphs.rate));
+		std::ranges::copy(gameplay.rategraph[_player].val, graphs.rate.begin());
 	}
 
 	if (!courseScore && _player == 0) {
