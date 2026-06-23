@@ -845,6 +845,7 @@ int ProcSinglenote(game *g, int lane, int keypress, int timing, int player) {
 			auto increment_extended = [](EXTENDEDPLAYERSTATS& stats, bool isFast, int offset) {
 				isFast ? stats.ebd++ : stats.lbd++;
 				isFast ? stats.fast++ : stats.slow++;
+				stats.cb++;
 				stats.lastFastSlow = isFast ? 1 : 2;
 				stats.noteCount++;
 				stats.lastHitOffset = offset;
