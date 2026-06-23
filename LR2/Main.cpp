@@ -1423,6 +1423,7 @@ int main(int argc, char** argv) {
 						if (gs.config.play.battle >= 1 && gs.config.play.battle != 3) gs.config.play.battle = 0;
 					}
 					gs.gameplay.flag_retry = 0;
+					SetObjectString(30, gs.sSelect.stack_searchTitle[gs.sSelect.cur], gs.txtStruct.objectStr);
 					break;
 				case 3:
 					gs.config.play.randSC[0] = 0;
