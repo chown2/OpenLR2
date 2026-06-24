@@ -82,6 +82,8 @@ static bool run_tests() {
 }
 
 #ifdef _WIN32
+static int g_exclusiveDisplayIndex = -1;
+
 static int GetWindowDisplayIndex() {
 	int wx = 0, wy = 0;
 	int ww = 0, wh = 0;
@@ -100,6 +102,14 @@ static int GetWindowDisplayIndex() {
 	return -1;
 }
 
+static int GetDisplayRefreshRate(int displayIndex) {
+	if (displayIndex < 0) return 0;
+
+	int dx = 0, dy = 0, dw = 0, dh = 0, primary = 0, refreshRate = 0;
+	if (GetDisplayInfo(displayIndex, &dx, &dy, &dw, &dh, &primary, &refreshRate) != 0) return 0;
+	return refreshRate;
+}
+
 // Applies the configured screen mode.
 //   0 = borderless fullscreen (virtual; composited by the DWM)
 //   1 = windowed
@@ -110,22 +120,38 @@ static void ApplyScreenMode(int screenmode) {
 	switch (screenmode) {
 	case 2: {
 		const int displayIndex = GetWindowDisplayIndex();
-		if (displayIndex >= 0) SetUseDisplayIndex(displayIndex);
+		if (displayIndex >= 0) {
+			SetUseDisplayIndex(displayIndex);
+			g_exclusiveDisplayIndex = displayIndex;
+		}
 		SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_DESKTOP);
 		ChangeWindowMode(0);
 		break;
 	}
 	case 1:
+		g_exclusiveDisplayIndex = -1;
 		ChangeWindowMode(1);
 		break;
 	case 0:
 	default:
+		g_exclusiveDisplayIndex = -1;
 		SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW);
 		ChangeWindowMode(0);
 		break;
 	}
 }
 #endif // _WIN32
+
+static double GetFrameLimiterRefreshRate() {
+#ifdef _WIN32
+	int refreshRate = GetDisplayRefreshRate(g_exclusiveDisplayIndex);
+	if (refreshRate <= 0) refreshRate = GetDisplayRefreshRate(GetWindowDisplayIndex());
+	if (refreshRate > 0) return (double)refreshRate;
+#endif // _WIN32
+
+	const double fallbackRefreshRate = DxLib::GetRefreshRate();
+	return fallbackRefreshRate > 0 ? fallbackRefreshRate : 60.0;
+}
 
 int main(int argc, char** argv) {
 #ifdef _WIN32
@@ -2134,10 +2160,8 @@ int main(int argc, char** argv) {
 		GetTimeWrap();
 		if (gs.isSkipDrawTick == 0) {
 			if (gs.gameplay.flag_gameinput != 0 && gs.config.system.thread == 0 && gs.config.system.vsync == 1 && gs.is_recordmode == 0) {
-				//TODO : Get appropriate device
-				double a = DxLib::GetRefreshRate();
-				if (a <= 0) a = 60.0; // device can report 0 Hz after losing exclusive fullscreen focus -> avoid div-by-zero
-				double m_lMillisecPerFrame = 1000 / a - 1.0;
+				const double a = GetFrameLimiterRefreshRate();
+				const double m_lMillisecPerFrame = 1000 / a - 1.0;
 
 				while (GetTimeWrap() - gs.timer1.vSyncTick < m_lMillisecPerFrame) {
 					ProcGame(&gs);
