@@ -104,10 +104,15 @@ static int GetWindowDisplayIndex() {
 
 static int GetDisplayRefreshRate(int displayIndex) {
 	if (displayIndex < 0) return 0;
-
-	int dx = 0, dy = 0, dw = 0, dh = 0, primary = 0, refreshRate = 0;
-	if (GetDisplayInfo(displayIndex, &dx, &dy, &dw, &dh, &primary, &refreshRate) != 0) return 0;
+	int refreshRate = 0;
+	if (GetDisplayInfo(displayIndex, nullptr, nullptr, nullptr, nullptr, nullptr, &refreshRate) != 0) return 0;
 	return refreshRate;
+}
+
+static int ApplyCurrentWindowDisplayIndex() {
+	const int displayIndex = GetWindowDisplayIndex();
+	if (displayIndex >= 0) SetUseDisplayIndex(displayIndex);
+	return displayIndex;
 }
 
 // Applies the configured screen mode.
@@ -119,11 +124,8 @@ static int GetDisplayRefreshRate(int displayIndex) {
 static void ApplyScreenMode(int screenmode) {
 	switch (screenmode) {
 	case 0: {
-		const int displayIndex = GetWindowDisplayIndex();
-		if (displayIndex >= 0) {
-			SetUseDisplayIndex(displayIndex);
-			g_exclusiveDisplayIndex = displayIndex;
-		}
+		const int displayIndex = ApplyCurrentWindowDisplayIndex();
+		if (displayIndex >= 0) g_exclusiveDisplayIndex = displayIndex;
 		SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_DESKTOP);
 		ChangeWindowMode(0);
 		break;
@@ -135,6 +137,7 @@ static void ApplyScreenMode(int screenmode) {
 	case 2:
 	default:
 		g_exclusiveDisplayIndex = -1;
+		ApplyCurrentWindowDisplayIndex();
 		SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW);
 		ChangeWindowMode(0);
 		break;
@@ -2339,7 +2342,7 @@ int main(int argc, char** argv) {
 			SetObjectStrings_SongSelect(&gs);
 		}
 #endif // _WIN32
-		SetMouseDispFlag( (gs.KeyInput.mouse_oldX < skinSizeX && gs.KeyInput.mouse_oldY < skinSizeY) ? 0:1  ); //TODO_RESOULUTION
+		SetMouseDispFlag((gs.KeyInput.mouse_oldX >= 0 && gs.KeyInput.mouse_oldX < skinSizeX && gs.KeyInput.mouse_oldY >= 0 && gs.KeyInput.mouse_oldY < skinSizeY) ? 0 : 1); //TODO_RESOULUTION
 		if ( (gs.procSelecter == 2 || gs.procSelecter == 9) && gs.KeyInput.inputID[KEY_INPUT_ESCAPE]
 				&& (GetTimeLapse(4,&gs.timer1) < 0.0 || GetTimeLapse(4, &gs.timer1) > 100.0) 
 				&& gs.txtStruct.st_text_num == -1 
