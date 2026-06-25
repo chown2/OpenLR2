@@ -1,7 +1,6 @@
 #pragma once
 
 #include "LR2_customir_api.h"
-#include "strclass.h"
 
 #include <filesystem>
 #include <future>
@@ -20,10 +19,10 @@ class CustomIR;
 class CUSTOMIR_MANAGER {
 public:
 	CUSTOMIR_MANAGER() = default;
-	CUSTOMIR_MANAGER operator=(const CUSTOMIR_MANAGER&) = delete;
 	CUSTOMIR_MANAGER(const CUSTOMIR_MANAGER&) = delete;
-	CUSTOMIR_MANAGER operator=(CUSTOMIR_MANAGER&&) = delete;
+	CUSTOMIR_MANAGER& operator=(const CUSTOMIR_MANAGER&) = delete;
 	CUSTOMIR_MANAGER(CUSTOMIR_MANAGER&&) = delete;
+	CUSTOMIR_MANAGER& operator=(CUSTOMIR_MANAGER&&) = delete;
 	~CUSTOMIR_MANAGER();
 
 	// \note Delegates to the display IR
@@ -39,7 +38,7 @@ public:
 	bool display_ir_login{false};
 	// \note Delegates to the display IR
 	// \retval nullopt - Fail
-	std::optional<openlr2::IRGhostResult> TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) const;
+	std::optional<openlr2::IRGhostResult> TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId);
 private:
 	std::vector<std::shared_ptr<CustomIR>> mModules;
 	std::vector<std::future<void>> mSendThreads;

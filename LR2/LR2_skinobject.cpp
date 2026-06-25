@@ -1418,7 +1418,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (songData.rivalRecord.stat_exscore > 0) return ret;
 			break;
 
-		case 626:
+		case 626: // Extension: OpenLR2: imported score displayed
 			if (songData.myIRbest.has_value()) return ret;
 			break;
 			
@@ -2053,18 +2053,18 @@ uint SetObjectValue_Num(game *g, int op) {
 		case 200:
 			return g->net.rankingData.rankingCount;
 		case 201:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStats.lastHitOffset;
 			}
 			return g->net.rankingData.totalPlaycount;
 
 		case 210:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStats.lastFastSlow;
 			}
 			return g->net.rankingData.clearPlayers[1];
 		case 211:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4) { // Extension: fast-slow
 				return g->gameplay.player[1].extendedStats.lastFastSlow;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
@@ -2072,15 +2072,15 @@ uint SetObjectValue_Num(game *g, int op) {
 			}
 			break;
 		case 212:
-			if (g->procSelecter == 4 || g->procSelecter == 5) {
+			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStats.fast;
 			}
-			if (g->procSelecter == 13) {
+			if (g->procSelecter == 13) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStatsCourse.fast;
 			}
 			return g->net.rankingData.clearPlayers[2];
 		case 213:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4) { // Extension: fast-slow
 				return g->gameplay.player[1].extendedStats.lastHitOffset;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
@@ -2088,10 +2088,10 @@ uint SetObjectValue_Num(game *g, int op) {
 			}
 			break;
 		case 214:
-			if (g->procSelecter == 4 || g->procSelecter == 5) {
+			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStats.slow;
 			}
-			if (g->procSelecter == 13) {
+			if (g->procSelecter == 13) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStatsCourse.slow;
 			}
 			return g->net.rankingData.clearPlayers[3];
@@ -2101,15 +2101,15 @@ uint SetObjectValue_Num(game *g, int op) {
 			}
 			break;
 		case 216:
-			if (g->procSelecter == 4 || g->procSelecter == 5) {
+			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStats.cb;
 			}
-			if (g->procSelecter == 13) {
+			if (g->procSelecter == 13) { // Extension: fast-slow
 				return g->gameplay.player[0].extendedStatsCourse.cb;
 			}
 			return g->net.rankingData.clearPlayers[4];
 		case 217:
-			if (g->procSelecter == 4) {
+			if (g->procSelecter == 4) { // Extension: fast-slow NOTE: redundant with 106
 				return g->gameplay.player[0].totalnotes;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
@@ -2117,7 +2117,7 @@ uint SetObjectValue_Num(game *g, int op) {
 			}
 			break;
 		case 218:
-			if (g->procSelecter == 4 || g->procSelecter == 5) {
+			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
 				return g->gameplay.player[0].note_current;
 			}
 			return g->net.rankingData.clearPlayers[5];
@@ -2220,8 +2220,8 @@ uint SetObjectValue_Num(game *g, int op) {
 			//293 is same 180
 		case 294: //TOFIX : IR clear rate
 			break;
-		case 295: return g->gameplay.randomLayoutForDisplay[0]; // LR2OOL SP and DP 1P random
-		case 418: return g->gameplay.randomLayoutForDisplay[1]; // LR2OOL DP 2P random
+		case 295: return g->gameplay.randomLayoutForDisplay[0]; // Extension: LR2OOL SP and DP 1P random
+		case 418: return g->gameplay.randomLayoutForDisplay[1]; // Extension: LR2OOL DP 2P random
 	}
 	return 0;
 }
@@ -2462,6 +2462,32 @@ int SetObjectValue_Bargraph(game *g) {
 				case 47:
 					max = mybest.total_notes * 2;
 					val = mybest.stat_exscore;
+					break;
+
+				case 48: // Extension: fast-slow
+					max = g->gameplay.player[0].extendedStats.slow + g->gameplay.player[0].extendedStats.fast;
+					val = g->gameplay.player[0].extendedStats.slow;
+					break;
+
+				case 49: // Extension: fast-slow
+					max = g->gameplay.player[0].extendedStats.slow + g->gameplay.player[0].extendedStats.fast;
+					val = g->gameplay.player[0].extendedStats.fast;
+					break;
+
+				case 58: // Extension: fast-slow
+					if (g->config.play.battle == 1) {
+						max = g->gameplay.player[1].extendedStats.slow + g->gameplay.player[1].extendedStats.fast;
+						val = g->gameplay.player[1].extendedStats.slow;
+					}
+					else continue;
+					break;
+
+				case 59: // Extension: fast-slow
+					if (g->config.play.battle == 1) {
+						max = g->gameplay.player[1].extendedStats.slow + g->gameplay.player[1].extendedStats.fast;
+						val = g->gameplay.player[1].extendedStats.fast;
+					}
+					else continue;
 					break;
 			}
 
@@ -3239,8 +3265,8 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 41:
 				if (g->config.play.battle == 1) {
 					isClickSuccess = g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13 ?
-						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[0].gaugeType, 0, 5, g->sSelect.panel) :
-						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[0], 0, 5, g->sSelect.panel);
+						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[1].gaugeType, 0, 5, g->sSelect.panel) :
+						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[1], 0, 5, g->sSelect.panel);
 					if (isClickSuccess == 2) {
 						PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 						SetObjectStrings_SongSelect(g);

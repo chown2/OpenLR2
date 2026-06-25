@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
-#include <cmath>
 #include <cstring>
 #include <filesystem>
 #include <future>
@@ -62,7 +61,14 @@ constexpr auto&& ARCH = ".x86";
 constexpr auto&& DLL = ".so";
 
 using HMODULE = void*;
-static HMODULE LoadLibrary(const char* fp) { return dlopen(fp, RTLD_NOW); }
+static HMODULE LoadLibrary(const char* fp) {
+	HMODULE out = dlopen(fp, RTLD_NOW);
+	if (out == nullptr) {
+		char* p = dlerror();
+		ErrorLogFmtAdd("dlopen error: %s\n", p);
+	}
+	return out;
+}
 static void* GetProcAddress(HMODULE h, const char* name) { return dlsym(h, name); }
 static void FreeLibrary(HMODULE h) { dlclose(h);}
 
@@ -75,7 +81,7 @@ class CustomIR {
 public:
 	CustomIR() = delete;
 	CustomIR(const std::filesystem::path& directory);
-	bool Initialize();
+	bool Good() const;
 	bool Login();
 	SendScoreStatus SendScore(const IRScoreV1& score);
 	openlr2::GetStatus GetResultRank(const char* songHash, openlr2::IRRankResult& out);
@@ -97,7 +103,7 @@ CustomIR::CustomIR(const std::filesystem::path& _directory) {
 		if (!file.is_regular_file()) continue;
 		if (file.path().extension().string() != DLL) continue;
 		const auto filename = file.path().filename().string();
-		ErrorLogFmtAdd("Trying to load CustomIR %s", filename.c_str());
+		ErrorLogFmtAdd("Trying to load CustomIR %s\n", filename.c_str());
 		if (auto s = file.path().stem().string(); !s.ends_with(ARCH)) {
 			ErrorLogFmtAdd("'%s' skipping per invalid file name stem (expected %s)\n", s.c_str(), ARCH);
 			continue;
@@ -117,7 +123,8 @@ CustomIR::CustomIR(const std::filesystem::path& _directory) {
 			ErrorLogFmtAdd("'%s' skipping per missing 'GetName' implementation\n", filename.c_str());
 			continue;
 		};
-		ErrorLogFmtAdd("CustomIR %s loaded: %s\n", filename.c_str(), mMethods.GetName());
+		mName = mMethods.GetName();
+		ErrorLogFmtAdd("CustomIR %s loaded: %s\n", filename.c_str(), mName.c_str());
 		break;
 	}
 }
@@ -126,11 +133,8 @@ void CustomIR::ModuleDeleter::operator()(std::remove_pointer_t<HMODULE>* handle)
 	FreeLibrary(handle);
 }
 
-bool CustomIR::Initialize() {
-	if (mMethods.GetName == nullptr) return false;
-	mName = mMethods.GetName();
-	if (mName.empty()) return false;
-	return true;
+bool CustomIR::Good() const {
+	return !mName.empty();
 }
 
 bool CustomIR::Login() {
@@ -179,14 +183,14 @@ static void SendScoreWithBlockingRetry(CustomIR& ir, const IRScoreV1& scoreV1) {
 		case SendScoreStatus::Ok:
 			return;
 		case SendScoreStatus::Retry:
-			std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(std::pow(4, tryCount))));
+			std::this_thread::sleep_for(std::chrono::seconds(2 << (2 * tryCount - 1)));
 			tryCount++;
 			break;
 		}
 	}
 	OverlayNotification("'%s' failed to submit score after %d attempts\n", ir.Name().c_str(), tryCount);
 }
-static void SendScoreMultiplexed(std::vector<std::future<void>>& mSendThreads, const IRScoreV1& scoreV1, std::vector<std::shared_ptr<CustomIR>> irs) {
+static void SendScoreMultiplexed(std::vector<std::future<void>>& mSendThreads, const IRScoreV1& scoreV1, const std::vector<std::shared_ptr<CustomIR>>& irs) {
 	std::vector<int> finishedThreads;
 	for (const auto& [i, it] : std::views::enumerate(mSendThreads)) {
 		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
@@ -217,13 +221,13 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 			continue;
 		}
 		auto& ir = *mModules.emplace_back(std::make_shared<CustomIR>(dir));
-		if (!ir.Initialize()) {
+		if (!ir.Good()) {
 			mModules.pop_back();
-			ErrorLogFmtAdd("'%s' failed to initialize as a custom IR module\n", dir.path().string().c_str());
+			ErrorLogFmtAdd("'%s' no valid CustomIR module found\n", dir.path().string().c_str());
 			continue;
 		}
 		if (std::ranges::contains(std::ranges::subrange(mModules.begin(), mModules.end() - 1), ir.Name(), &CustomIR::Name)) {
-			ErrorLogFmtAdd("'%s' IR module with such name has already been loaded\n");
+			ErrorLogFmtAdd("'%s' IR module with such name has already been loaded\n", ir.Name().c_str());
 			mModules.pop_back();
 			continue;
 		}
@@ -262,7 +266,7 @@ void CUSTOMIR_MANAGER::Login() {
 	}
 }
 
-std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) const {
+std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) {
 	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
 	if (irIt == mModules.end()) { return std::nullopt; }
 
@@ -292,7 +296,6 @@ std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const c
 		OverlayNotification("'%s' failed to get ghost data\n", (*irIt)->Name().c_str());
 		return std::nullopt;
 	}
-	// TODO: remove 'abort()' from other handlers, logging an error and returning nothing instead. 
 	ErrorLogAdd("CustomIR BUG: invalid GetGhost return value\n");
 	return std::nullopt;
 }
@@ -385,7 +388,7 @@ struct IRScoreInternal {
 	double rate{};
 	int clearType{};
 	int inputType{};
-	std::string ghostData{};
+	std::string ghostData;
 	struct GRAPHDATA {
 		std::array<std::array<int, 1000>, 6> hp{};
 		std::array<int, 1000> combo{};
@@ -619,10 +622,17 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 
 	if (!courseScore) {
 		::GRAPHDATA& statgraph = gameplay.statgraph[_player];
+
 		graphs.hp = statgraph.hp;
-		memcpy(graphs.combo.data(), statgraph.combo, graphs.combo.size());
-		memcpy(graphs.exscore.data(), statgraph.exscore, graphs.exscore.size());
-		memcpy(graphs.rate.data(), gameplay.rategraph[_player].val, graphs.rate.size());
+
+		static_assert(sizeof(statgraph.combo) == sizeof(graphs.combo));
+		std::ranges::copy(statgraph.combo, graphs.combo.begin());
+
+		static_assert(sizeof(statgraph.exscore) == sizeof(graphs.exscore));
+		std::ranges::copy(statgraph.exscore, graphs.exscore.begin());
+
+		static_assert(sizeof(gameplay.rategraph[_player].val) == sizeof(graphs.rate));
+		std::ranges::copy(gameplay.rategraph[_player].val, graphs.rate.begin());
 	}
 
 	if (!courseScore && _player == 0) {
@@ -645,7 +655,8 @@ std::optional<openlr2::IRRankResult> CUSTOMIR_MANAGER::RestoreCachedRank(const c
 		OverlayNotification("'%s' failed to get result rank\n", ir->Name().c_str());
 		return std::nullopt;
 	}
-	abort(); // unreachable
+	ErrorLogAdd("CustomIR BUG: invalid RestoreCachedRank return value\n");
+	return std::nullopt;
 }
 
 static std::optional<openlr2::IRRankResult> ResultIrAsync(std::shared_ptr<CustomIR> ir, IRScoreV1 score) {
@@ -661,7 +672,8 @@ static std::optional<openlr2::IRRankResult> ResultIrAsync(std::shared_ptr<Custom
 		OverlayNotification("'%s' failed to get result rank\n", ir->Name().c_str());
 		return std::nullopt;
 	}
-	abort(); // unreachable
+	ErrorLogAdd("CustomIR BUG: invalid GetResultRank return value\n");
+	return std::nullopt;
 }
 void CUSTOMIR_MANAGER::BeginResultIr(game& game, sqlite3* sql, int player) {
 	if (mModules.empty()) {

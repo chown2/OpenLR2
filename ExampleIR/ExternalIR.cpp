@@ -15,17 +15,17 @@ namespace State {
     static int scoresSaved = 0;
 }
 
-static const char* GetName() {
+static const char* OLR2_IR_API GetName() {
     std::println(std::cout, "GetName");
     return "ExampleIR";
 }
 
-static bool Login() {
+static bool OLR2_IR_API Login() {
     std::println(std::cout, "Login");
     return true;
 }
 
-static SendScoreStatus SendScore(const IRScoreV1& score) {
+static SendScoreStatus OLR2_IR_API SendScore(const IRScoreV1& score) {
     std::println(std::cout, "SendScore({{.song.hash={}}})", score.song.hash);
     constexpr const char* lamps[6] = { "NO PLAY", "FAIL", "EASY", "NORMAL", "HARD", "FULL COMBO" };
     if (score.settings.assist[score.state.player]) return SendScoreStatus::Fail;
@@ -60,7 +60,7 @@ static SendScoreStatus SendScore(const IRScoreV1& score) {
     return SendScoreStatus::Ok;
 }
 
-static openlr2::GetStatus RestoreCachedRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
+static openlr2::GetStatus OLR2_IR_API RestoreCachedRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
     std::println(std::cout, "RestoreCachedRank({})", songHash);
     out.ranking = {
         { .name = "name1", .comment = "comment1", .timestamp = 1262304000, .id = 70100, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 520, .pg = 980, .gr = 180, .minbp = 42 },
@@ -74,7 +74,7 @@ static openlr2::GetStatus RestoreCachedRank(const char* songHash, int /*reserved
     return openlr2::GetStatus::Ok;
 }
 
-static openlr2::GetStatus GetResultRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
+static openlr2::GetStatus OLR2_IR_API GetResultRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
     std::println(std::cout, "GetResultRank({})", songHash);
     out = {};
     out.ranking = {
@@ -89,7 +89,7 @@ static openlr2::GetStatus GetResultRank(const char* songHash, int /*reserved*/, 
     return openlr2::GetStatus::Ok;
 }
 
-static openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode, int /*targetPlayerId*/, openlr2::IRGhostResult& out) {
+static openlr2::GetStatus OLR2_IR_API GetGhost(const char* songHash, openlr2::GhostMode mode, int /*targetPlayerId*/, openlr2::IRGhostResult& out) {
     std::println(std::cout, "GetGhost({})", songHash);
     out = {};
     if (mode == openlr2::GhostMode::Average) {
@@ -105,7 +105,7 @@ static openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode
     return openlr2::GetStatus::Ok;
 }
 
-extern "C" OLR2_IR_EXPORT void GetMethodTable(MethodTable& table) {
+extern "C" OLR2_IR_EXPORT void OLR2_IR_API GetMethodTable(MethodTable& table) {
     // Fill out the pointers to methods you want to use. Leave them at nullptr if you don't want to use them.
     // As API gets updated, new methods may appear available at MethodTable, but old ones will never be removed or their
     // prototypes modified, so method indexes are stable.

@@ -599,8 +599,8 @@ int CheckMission(game *g){
 }
 
 int SaveResult(game *g, sqlite3* sql) {
-
-	g->net.WaitAndInitRanking();
+	g->net.WaitForRankingHandle();
+	g->net.rankingData.Init();
 	PlayerCheckAndSwap(&g->gameplay);
 	SetObjectString(20, g->net.IRresultMessage.fillzero(), g->txtStruct.objectStr);
 

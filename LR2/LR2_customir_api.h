@@ -107,7 +107,8 @@ struct IRScoreV1 {
 		std::array<int, 1000> exscore{};
 		std::array<int, 1000> rate{};
 	} graphs{};
-	std::string ghostData{}; // In LR2 ghost format. May not be present in some cases, e.g. course scores.
+	// In LR2 ghost format. May not be present in some cases, e.g. course scores. Example: E@3ZZ.
+	std::string ghostData;
 };
 
 enum class SendScoreStatus: int {
@@ -162,7 +163,7 @@ enum class Random : int {
 
 struct IRGhostResult {
 	std::string displayName;
-	std::string ghostData; // Example: E@3ZZ
+	std::string ghostData; // \ref IRScoreV1::ghostData
 	// P1 and P2 random layouts.
 	// Should be 0 if the layout is not known, or the corresponding \ref randomOption is not noran, mirror, or random.
 	// Examples: 1234567 54321 135792468.
@@ -216,6 +217,7 @@ struct IRRankPlayer {
 
 struct IRRankResult {
 	// The leaderboard. Top X players, usually 999.
+	// Must be sorted by exscore.
 	std::vector<IRRankPlayer> ranking;
 	std::array<int, 6> clearPlayers{};
 	// Seconds since Unix Epoch.

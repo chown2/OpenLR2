@@ -959,7 +959,12 @@ void LRDrawTextInput(int* hFont, DSTdraw *dstd, int* hInput, ImageFont *imgfont)
 				}
 				LRDrawText(hFont, dstd, &buf, imgfont);
 			}
-			GetIMEInputModeStr(buf);
+			if (GetIMEInputModeStr(buf) == -1) {
+				// DxLib bug: buffer filled with garbage.
+				// Reached both on IME errors and when IME is disabled.
+				// Especially noticeable with Wine on gamescope.
+				buf.fillzero();
+			}
 			dstd->y = 480.0 - dstd->h;
 			dstd->x = 640.0; //TODO_RESOULUTION
 			dstd->align = 2;

@@ -1806,6 +1806,7 @@ int ProcS_Select(game *g_) {
 	}
 	if (g.procSelecter == 2) {
 		if (cur.keymode >= 5 && (cur.courseStageCount < 1 || cur.courseIR)) {
+			g.net.WaitForRankingHandle();
 			if (g.sSelect.stack_query[g.sSelect.cur].findStrPos("__RIVAL__") == -1/*not LR2IR rival, matches ThreadProc_RankingAutoUpdate*/) {
 				if (auto result = g.net.customIR.RestoreCachedRank(cur.hash); result) {
 					openlr2::fill_ranking_from_customir(*result, g.net.rankingData);
@@ -1818,7 +1819,6 @@ int ProcS_Select(game *g_) {
 				}
 			}
 			if (g.net.isOnline) {
-				g.net.WaitAndInitRanking();
 				g.net.IRstatus = 1;
 				g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
 				SetObjectStrings_SongSelect(&g);
