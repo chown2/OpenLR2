@@ -392,7 +392,6 @@ int main(int argc, char** argv) {
 		gs.net.customIR.Initialize(path, gs.config.network.displayIr.body ? gs.config.network.displayIr.body : "");
 	}
 	const std::string loginResult = gs.net.customIR.Login();
-	gs.net.isOnline = gs.net.customIR.display_ir_login;
 	ErrorLogAdd(loginResult.c_str());
 
 	int loadingGrHandle = LoadGraph(fs::make_preferred("LR2files/Config/loading.bmp").data(), 0);

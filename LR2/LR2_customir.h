@@ -34,7 +34,7 @@ public:
 	void BeginResultIr(game& game, sqlite3* sql, int player);
 	void Initialize(const std::filesystem::path& directory, std::string activeProvider);
 	std::string Login();
-	bool display_ir_login{false};
+	[[nodiscard]] bool IsDisplayIrOnline() const;
 	// \note Delegates to the display IR
 	// \retval nullopt - Fail
 	std::optional<openlr2::IRGhostResult> TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId);
