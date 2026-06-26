@@ -1428,7 +1428,7 @@ struct NETWORK {
 	bool GetTargetInfo(int mode, CSTR songmd5, CSTR * oStr1, CSTR * oStr2, int * oDigit1, int * oDigit2, int * oDigit3, int * oDigit4, int * oUnk, int * oExscore);
 	NETWORK();
 	int WS_clean();
-	int LR2IR_Login(int isDirectPlay); // Legacy dream-pro LR2IR login; retained for reference.
+	int LR2IR_Login(int isDirectPlay);
 	int MakeIRsendScoreThread(std::string ghostString);
 };
 

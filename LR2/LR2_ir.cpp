@@ -854,7 +854,6 @@ int NETWORK::WS_clean() {
 	return 1;
 }
 
-// Legacy dream-pro LR2IR login; retained for reference.
 int NETWORK::LR2IR_Login(int isDirectPlay) {
 #ifdef _WIN32
 	if (WSAStartup(2, &this->wsa)) {

@@ -384,6 +384,14 @@ int main(int argc, char** argv) {
 		gs.net.IR_passMD5 = MD5str(gs.config.player.pass);
 		gs.net.getrival = gs.config.network.getrival;
 		gs.net.IR_ID = gs.gameplay.playerstat.irid;
+		if (gs.net.LR2IR_Login(gs.cmd_directplay) == 1) {
+			SaveIRID(gs.net.rankingData.myID, gs.config.player.id);
+		}
+		else {
+			gs.config.network.lr2ir = 0;
+		}
+		printfDx(gs.net.request_result);
+		ErrorLogAdd(gs.net.request_result);
 	}
 	{
 		std::error_code ec; // ignore errors
