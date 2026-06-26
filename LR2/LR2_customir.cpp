@@ -251,19 +251,20 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 	}
 }
 
-void CUSTOMIR_MANAGER::Login() {
-	login_result.clear();
+std::string CUSTOMIR_MANAGER::Login() {
+	std::string result;
 	display_ir_login = false;
 	for (auto& ir : mModules) {
 		if (ir->Login()) {
-			login_result += "[" + ir->Name() + "] Logged in\n";
+			result += "[" + ir->Name() + "] Logged in\n";
 			if (ir->Name() == mDisplayIr) {
 				display_ir_login = true;
 			}
 		} else {
-			login_result += "[" + ir->Name() + "] Failed to log in\n";
+			result += "[" + ir->Name() + "] Failed to log in\n";
 		}
 	}
+	return result;
 }
 
 std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) {

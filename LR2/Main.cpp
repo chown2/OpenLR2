@@ -391,9 +391,9 @@ int main(int argc, char** argv) {
 		std::filesystem::create_directories(path, ec);
 		gs.net.customIR.Initialize(path, gs.config.network.displayIr.body ? gs.config.network.displayIr.body : "");
 	}
-	gs.net.customIR.Login();
+	const std::string loginResult = gs.net.customIR.Login();
 	gs.net.isOnline = gs.net.customIR.display_ir_login;
-	ErrorLogAdd(gs.net.customIR.login_result.c_str());
+	ErrorLogAdd(loginResult.c_str());
 
 	int loadingGrHandle = LoadGraph(fs::make_preferred("LR2files/Config/loading.bmp").data(), 0);
 
@@ -419,7 +419,7 @@ int main(int argc, char** argv) {
 			gs.net.ApplyInsaneList();
 		}
 		if (gs.is_starter == false) {
-			printfDx(gs.net.customIR.login_result.c_str());
+			printfDx(loginResult.c_str());
 			printfDx("\n");
 			printfDx("%s\n", openlr2::versionName);
 			printfDx("PUSH ANY KEY\n");

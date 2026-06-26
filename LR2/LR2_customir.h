@@ -33,8 +33,7 @@ public:
 	// Get the result with \ref GetResult
 	void BeginResultIr(game& game, sqlite3* sql, int player);
 	void Initialize(const std::filesystem::path& directory, std::string activeProvider);
-	void Login();
-	std::string login_result;
+	std::string Login();
 	bool display_ir_login{false};
 	// \note Delegates to the display IR
 	// \retval nullopt - Fail
