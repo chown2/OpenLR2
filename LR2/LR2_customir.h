@@ -43,6 +43,7 @@ private:
 	std::vector<std::future<void>> mSendThreads;
 	std::future<std::optional<openlr2::IRRankResult>> mResultIrFuture;
 	std::string mDisplayIr;
+	std::vector<std::string> mLoggedInIrs;
 };
 
 namespace openlr2 {

@@ -254,9 +254,11 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 std::string CUSTOMIR_MANAGER::Login() {
 	std::string result;
 	display_ir_login = false;
+	mLoggedInIrs.clear();
 	for (auto& ir : mModules) {
 		if (ir->Login()) {
 			result += "[" + ir->Name() + "] Logged in\n";
+			mLoggedInIrs.push_back(ir->Name());
 			if (ir->Name() == mDisplayIr) {
 				display_ir_login = true;
 			}
