@@ -21,12 +21,10 @@
 
 void MYRANKING::InitRanking() {
 	this->songMD5.fillzero();
-	this->unused.fillzero();
 	this->passMD5.fillzero();
 	this->title.fillzero();
 	this->genre.fillzero();
 	this->artist.fillzero();
-	this->_ghost.fillzero();
 	this->maxbpm = 0;
 	this->minbpm = 0;
 	this->playlevel = 0;
@@ -90,8 +88,6 @@ void RANKING::Init() {
 	for (int i = 0; i < this->rankingMax; i++) {
 		this->ranking[i].name.fillzero();
 		this->ranking[i].id = 0;
-		this->ranking[i].sp = 0;
-		this->ranking[i].dp = 0;
 		this->ranking[i].clear = 0;
 		this->ranking[i].notes = 0;
 		this->ranking[i].combo = 0;
@@ -101,8 +97,6 @@ void RANKING::Init() {
 		this->ranking[i].bd = 0;
 		this->ranking[i].pr = 0;
 		this->ranking[i].minbp = 0;
-		this->ranking[i].option = 0;
-		this->ranking[i].sussussuspected = 0;
 		this->ranking[i].playcount = 0;
 		this->ranking[i].ranking = 0;
 		this->ranking[i].comment.fillzero();
@@ -544,7 +538,7 @@ int NETWORK::HTTPrequest() {
 		}
 
 		unsigned long argp = 1;
-		ioctlsocket(s, 0x8004667e, &argp);
+		ioctlsocket(s, FIONBIO, &argp);
 
 		request.fillzero();
 		cstrSprintf(&request, "POST %s HTTP/1.0\r\n"
@@ -626,6 +620,8 @@ int NETWORK::HTTPrequest() {
 	ErrorLogAdd(this->request_debug);
 	return 0;
 #else
+	cstrSprintf(&this->request_debug, "Linux user error\n");
+	ErrorLogAdd(this->request_debug);
 	return -1; // TODO(linux): stub
 #endif // _WIN32
 }
@@ -862,14 +858,6 @@ int NETWORK::LR2IR_Login(int isDirectPlay) {
 		this->isOnline = false;
 		ErrorLogAdd(this->request_debug);
 		WSACleanup();
-		return -99;
-	}
-#else
-	if (true) { // TODO(linux): stub
-		this->request_debug = "linux\n";
-		this->request_result = "happy with yourself?\n";
-		this->isOnline = false;
-		ErrorLogAdd(this->request_debug);
 		return -99;
 	}
 #endif // _WIN32

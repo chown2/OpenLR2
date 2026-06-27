@@ -518,11 +518,6 @@ int SOUND_normalize(AUDIO */*aud*/, SOUNDDATA *sound){
 	
 	memcpy(sound->raw.data, sound, len);
 
-	if (sound->raw.bits == 8 && sound->flag2c) { //TODO : flag2c rename
-		for (uint i = 0; i < len; i++) {
-			sound->raw.data[i] += 0x80;
-		}
-	}
 
 	FMOD_Sound_Unlock(sound->fmod_sound, ptr1, ptr2, len1, len2);
 	
@@ -634,7 +629,6 @@ int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, int /*disab
 			result = FMOD_System_CreateSound(aud->fmodSys, filepath.body, mode, nullptr, &sound->fmod_sound);
 		}
 
-		sound->flag2c = 0;
 		sound->loop = (loop != 0);
 		if (result == FMOD_OK) {
 			sound->filename.assign(&filepath);
@@ -664,7 +658,6 @@ int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, int /*disab
 	sound->length = GetSoundTotalTime(sound->soundHandle);
 	sound->load = 1;
 	sound->loop = (loop != 0);
-	sound->unused0C = 0;
 	return 1;
 }
 
@@ -1173,15 +1166,6 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 		return 0;
 	}
 	return 1;
-}
-
-RAWSOUND::RAWSOUND() {
-	channels = 0;
-	samples = 0;
-	bits = 0;
-	length = 0;
-	dataSize = 0;
-	data = NULL;
 }
 
 void RAWSOUND::ExpandBuffer(int minSize) { 

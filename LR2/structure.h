@@ -629,14 +629,13 @@ struct RANKING {
 };
 
 struct RAWSOUND {
-	int channels;
-	int samples;
-	int bits;
-	int length;
-	int dataSize;
-	byte* data;
+	int channels{};
+	int samples{};
+	int bits{};
+	int length{};
+	int dataSize{};
+	byte* data{};
 
-	RAWSOUND();
 	void ExpandBuffer(int minSize);
 	void MakeBitDepth16(void);
 	void MakeStereo(void);
@@ -644,17 +643,15 @@ struct RAWSOUND {
 };
 
 struct SOUNDDATA {
-	char load;
+	struct RAWSOUND raw{};
+	struct FMOD_SOUND * fmod_sound{};
+	struct FMOD_CHANNEL * fmod_channel{};
+	CSTR filename{};
+	unsigned int length{};
+	int soundHandle{};
+	bool load{};
+	bool loop{};
 	bool streaming = false;
-	char loop;
-	CSTR filename;
-	uint length;
-	int unused0C;
-	int soundHandle;
-	struct RAWSOUND raw;
-	char flag2c;
-	struct FMOD_SOUND * fmod_sound;
-	struct FMOD_CHANNEL * fmod_channel;
 };
 
 struct inputStructure {
@@ -774,7 +771,6 @@ struct skstruct {
 	struct DSTstruct dst_BAR_LEVEL[10]{};
 	struct SRCstruct src_BAR_LAMP[10]{};
 	struct DSTstruct dst_BAR_LAMP[10]{};
-	//undefined unused[2240];
 	struct SRCstruct src_BAR_MY_LAMP[10]{};
 	struct DSTstruct dst_BAR_MY_LAMP[10]{};
 	struct SRCstruct src_BAR_RIVAL_LAMP[10]{};
@@ -854,7 +850,6 @@ struct skstruct {
 
 struct MYRANKING {
 	CSTR songMD5; /* struct from */
-	CSTR unused; /* ID?name? but unused */
 	CSTR passMD5;
 	CSTR title;
 	CSTR genre;
@@ -884,7 +879,6 @@ struct MYRANKING {
 	int clear_sd;
 	int clear_db;
 	int rseed;
-	CSTR _ghost; // TODO: remove when we throw out memset usage
 
 	void InitRanking();
 };
@@ -1243,9 +1237,7 @@ struct gameplay {
 	CSTR keysound_filename[SLOTS];
 	CSTR BMP_filename[SLOTS];
 	struct SOUNDDATA muon;
-	char bgaUnused656b8[SLOTS];
 	int bgaHandle[SLOTS];
-	int bgaHandleHandle[SLOTS];
 	int bgaLayer1;
 	int bgaLayer2;
 	int missLayer;
@@ -1444,37 +1436,35 @@ struct game {
 	struct RECORDING rec;
 	struct TextStruct txtStruct;
 	struct AUDIO audio;
+	struct NETWORK net;
+	std::vector<std::future<std::pair<std::pair<std::string, std::string>, int>>> hThreadBanner;
 	int po4procSelecter;
-	int po4_unk23d84;
-	int po4_unk23d88;
-	char po4flagSceneStart;
-	char po4flagSceneEnd;
 	int po4nextProc;
 	int po4sceneTimerID	;
 	int po4sceneTimerIDNext;
 	int po4sceneFadeout;
 	int po4cur_song;
-	char po4_23da8;
 	int po4MainMenuCursor;
 	int procSelecter; /* 2:select 3:deciide 4:play 5:result 6:keyconfig 7:skinselect */
 	int procPhase;
-	std::vector<std::future<std::pair<std::pair<std::string, std::string>, int>>> hThreadBanner;
 	struct gameplay gameplay;
-	char is_clicked_screenModeChange;
 	int isSkipDrawTick; /* skip frame? */
-	bool flag_Screenshot{};
-	bool flag_showFPS{};
-	char cmd_nosave;
-	int cmd_directplay;
-	char cmd_auto;
-	char cmd_n;
-	char is_recordmode;
-	char auto2avi;
 	CSTR directoryPath;
 	CSTR directoryFilename;
 	CSTR baseDirectory;
 	int is_starter;
-	struct NETWORK net;
+	bool is_clicked_screenModeChange;
+	bool flag_Screenshot{};
+	bool flag_showFPS{};
+	bool cmd_nosave;
+	bool cmd_directplay;
+	bool cmd_auto;
+	bool cmd_n;
+	bool is_recordmode;
+	bool auto2avi;
+	bool po4_23da8;
+	bool po4flagSceneStart;
+	bool po4flagSceneEnd;
 };
 
 struct SkinHeader { /* SkinInfo */
@@ -1483,22 +1473,20 @@ struct SkinHeader { /* SkinInfo */
 	CSTR title;
 	CSTR maker;
 	enum SKINTYPE type;
-	int unused18;
 	int informationP5;
 	struct SkinCustom customs[100];
 	int custom_count;
 
 	//RESOLUTION
-	bool hasResolutionTag = false; // true if the skin declared #RESOLUTION; else fall back to config global
 	int targetX = 640;
 	int targetY = 480;
+	bool hasResolutionTag = false; // true if the skin declared #RESOLUTION; else fall back to config global
 };
 
 struct RANKINGPLAYER {
 	CSTR name;
+	CSTR comment;
 	int id{};
-	int sp{}; // TODO: remove when we throw out memset usage
-	int dp{}; // TODO: remove when we throw out memset usage
 	int clear{};
 	int notes{};
 	int combo{};
@@ -1508,11 +1496,8 @@ struct RANKINGPLAYER {
 	int bd{};
 	int pr{};
 	int minbp{};
-	int option{}; // TODO: remove when we throw out memset usage
-	int sussussuspected{};
 	int playcount{};
 	int ranking{};
-	CSTR comment; /* hash */
 };
 
 struct SkinUser {
@@ -1522,8 +1507,8 @@ struct SkinUser {
 };
 
 struct struct_0x14 {
-	int ID;
 	CSTR filenameHead;
+	int ID;
 	int count;
 	int side;
 	int field4_0x10;
@@ -1547,14 +1532,14 @@ struct CHARTCONVERTER {
 	int unk14428;
 	int unk1442c;
 	int unk14430;
-	char flagSplitScratch;
 	int unk14438;
 	int RealTimingSplitScratch;
-	char flagSplitUnknown;
-	char flagSplit;
 	int assist1p;
 	int assist2p;
 	int playlevel;
+	bool flagSplitScratch;
+	bool flagSplitUnknown;
+	bool flagSplit;
 };
 
 #ifdef _MSC_VER

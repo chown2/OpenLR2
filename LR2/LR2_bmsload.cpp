@@ -318,8 +318,6 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	}
 	for (int i = 0; i < SLOTS; i++) {
 		gp->bgaHandle[i] = -1;
-		gp->bgaHandleHandle[i] = -1;
-		gp->bgaUnused656b8[i] = 0;
 	}
 	gp->bgaLayer1 = -1;
 	gp->bgaLayer2 = -1;
@@ -708,7 +706,6 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 	for (int i = 0; i < SINGLESLOTS; i++) {
 		PauseMovieToGraph(gp->bgaHandle[i]);
 		SeekMovieToGraph(gp->bgaHandle[i], 0);
-		gp->bgaHandleHandle[i] = -1;
 	}
 
 	gp->BPM = gp->BPM_fix;

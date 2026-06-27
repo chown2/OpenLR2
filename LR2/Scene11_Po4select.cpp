@@ -20,8 +20,6 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 
 	if (g->po4procSelecter == 0) {
 		g->po4procSelecter = 1;
-		g->po4_unk23d84 = 0;
-		g->po4_unk23d88 = 0;
 		g->po4flagSceneStart = '\x01';
 		g->po4flagSceneEnd = '\0';
 		g->sSelect.listCalculatedBar = 0;

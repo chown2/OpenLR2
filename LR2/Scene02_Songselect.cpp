@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "LR2.h"
 #include "filesystem.h"
+#include <filesystem>
 #include <format>
 #include <functional>
 #include <stdio.h>
@@ -585,14 +586,6 @@ int LoadFontForSongs(game *gs, char flag) {
 
 
 int ShowReadmes(game *g) {
-#ifdef _WIN32
-	CSTR search;
-	HANDLE hFindFile;
-	WIN32_FIND_DATAW FindFileData;
-	CSTR fBuf(2048);
-
-	FILE *pFile;
-
 	g->txtStruct.readme.file_count = 0;
 	g->txtStruct.readme.current = 0;
 	g->txtStruct.readme.folderpath.fillzero();
@@ -608,19 +601,22 @@ int ShowReadmes(game *g) {
 	}
 
 	g->txtStruct.readme.folderpath = g->sSelect.bmsList[g->sSelect.cur_song].filepath.getDirectory();
-	cstrSprintf(&search, "%s*.txt", g->txtStruct.readme.folderpath.body);
-	hFindFile = FindFirstFileW(utf2ws(search.body).c_str(), &FindFileData);
-	if (hFindFile == (HANDLE)-1) {
-		ErrorLogFmtAdd("テキストファイルが見つからない。%s\n", search.body);
-		return -1;
+
+	CSTR fBuf(2048);
+
+	std::error_code ec{};
+
+	for (auto& entry : std::filesystem::directory_iterator(g->txtStruct.readme.folderpath.c_str(), ec)) {
+		if (entry.path().extension() != ".txt") {
+			continue;
+		}
+		g->txtStruct.readme.file_count++;
 	}
 
-	do {
-		g->txtStruct.readme.file_count++;
-	} while (FindNextFileW(hFindFile, &FindFileData));
-	FindClose(hFindFile);
-
-	if (g->txtStruct.readme.file_count == 0) return 0;
+	if (g->txtStruct.readme.file_count == 0) {
+               ErrorLogFmtAdd("テキストファイルが見つからない。%s\n", g->txtStruct.readme.folderpath.c_str());
+               return -1;
+	}
 
 	if (g->txtStruct.readme.current >= g->txtStruct.readme.file_count) 
 		g->txtStruct.readme.current = 0;
@@ -628,51 +624,46 @@ int ShowReadmes(game *g) {
 		g->txtStruct.readme.current = g->txtStruct.readme.file_count-1;
 
 	int currentFileNum = 0;
-	hFindFile = FindFirstFileW(utf2ws(search.body).c_str(), &FindFileData);
-	do {
-		std::string filename = ws2utf(FindFileData.cFileName);
+	for (auto& entry : std::filesystem::directory_iterator(g->txtStruct.readme.folderpath.c_str(), ec)) {
+		if (entry.path().extension() != ".txt") {
+			continue;
+		}
+		const std::string filename = entry.path().filename().string();
 		g->txtStruct.readme.path = g->txtStruct.readme.folderpath;
 		g->txtStruct.readme.path.add(filename.c_str());
 
-		pFile = fopen(g->txtStruct.readme.path.body, "r");
-
-		char *pFbuf = fBuf.outstr();
-		if (pFile != NULL) {
-			
-			currentFileNum++;
-			if (g->txtStruct.readme.file_count == 1) {
-				g->txtStruct.readme.body[g->txtStruct.readme.lines] = filename.c_str();
-			}
-			else {
-				std::string line = std::format("{}/{} {}", currentFileNum, g->txtStruct.readme.file_count, filename);
-				g->txtStruct.readme.body[g->txtStruct.readme.lines] = line.c_str();
-			}
-			g->txtStruct.readme.lines+=2;
-
-			g->txtStruct.readme.show = 1;
-			pFbuf = fBuf.outstr();
-			for (pFbuf = fgets(pFbuf, 2048, pFile); pFbuf; pFbuf = fgets(pFbuf, 2048, pFile)) {
-				fBuf = ansi2utf(fBuf.body, 932).c_str();
-				DealWhiteSpace(&fBuf);
-				g->txtStruct.readme.body[g->txtStruct.readme.lines] = fBuf;
-				g->txtStruct.readme.lines++;
-				int len = GetTextGraphLength(&fBuf, &g->skstruct.ImageFonts[g->skstruct.src_README[0].cycle]);
-				if (g->txtStruct.readme.x < len) g->txtStruct.readme.x = len;
-				*fBuf.atPos(0) = '\0';
-				if (g->txtStruct.readme.lines >= 900) break;
-			}
-			fclose(pFile);
-			g->txtStruct.readme.lines += 2;
+		FILE* pFile = fopen(g->txtStruct.readme.path.body, "r");
+		if (pFile == NULL) {
+			continue;
 		}
-	} while (FindNextFileW(hFindFile, &FindFileData));
-	FindClose(hFindFile);
+
+		currentFileNum++;
+		if (g->txtStruct.readme.file_count == 1) {
+			g->txtStruct.readme.body[g->txtStruct.readme.lines] = filename.c_str();
+		}
+		else {
+			g->txtStruct.readme.body[g->txtStruct.readme.lines] = std::format("{}/{} {}", currentFileNum, g->txtStruct.readme.file_count, filename).c_str();
+		}
+		g->txtStruct.readme.lines+=2;
+
+		g->txtStruct.readme.show = 1;
+		char* pFbuf = fBuf.outstr();
+		for (pFbuf = fgets(pFbuf, 2048, pFile); pFbuf; pFbuf = fgets(pFbuf, 2048, pFile)) {
+			fBuf = ansi2utf(fBuf.body, 932).c_str();
+			DealWhiteSpace(&fBuf);
+			g->txtStruct.readme.body[g->txtStruct.readme.lines] = fBuf;
+			g->txtStruct.readme.lines++;
+			int len = GetTextGraphLength(&fBuf, &g->skstruct.ImageFonts[g->skstruct.src_README[0].cycle]);
+			if (g->txtStruct.readme.x < len) g->txtStruct.readme.x = len;
+			*fBuf.atPos(0) = '\0';
+			if (g->txtStruct.readme.lines >= 900) break;
+		}
+		fclose(pFile);
+		g->txtStruct.readme.lines += 2;
+	}
 
 	g->txtStruct.readme.y = g->skstruct.src_README[0].op1 * g->txtStruct.readme.lines;
 	return 1;
-#else
-	// TODO: reimplement with std::filesystem
-	return {};
-#endif // _WIN32
 }
 
 int ShowReadme(game *g, CSTR path) {
