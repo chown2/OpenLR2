@@ -81,6 +81,9 @@ cmake --build build -j$(nproc)
 - md5.c, md5.h
   from https://github.com/Zunawe/md5-c. not in original LR2 but to save time I used this.
 
+## Ghidra archive (decompiler file)
+https://drive.google.com/file/d/1yruE-PLypH40WMsl-zNi2l6uWkoe360u/view?usp=sharing
+
 # Thanks to
 
 - .red who wrote lr2skin specification
