@@ -180,7 +180,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 51:
-			if (gs->net.customIR.IsDisplayIrOnline()) return ret;
+			if (gs->net.isOnline || gs->net.customIR.IsDisplayIrOnline()) return ret;
 			break;
 
 		case 52:
