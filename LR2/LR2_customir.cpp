@@ -383,6 +383,7 @@ struct IRScoreInternal {
 	double rate{};
 	int clearType{};
 	int inputType{};
+	int songPlayLevel{};
 	std::string ghostData;
 	struct GRAPHDATA {
 		std::array<std::array<int, 1000>, 6> hp{};
@@ -488,6 +489,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.graphs.exscore = graphs.exscore;
 	scoreOut.graphs.rate = graphs.rate;
 	scoreOut.ghostData = ghostData;
+	scoreOut.songPlayLevel = songPlayLevel;
 }
 
 IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
@@ -508,6 +510,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 		song.longnote = songData.longnote;
 		song.random = songData.random;
 		song.judge = songData.judge;
+		songPlayLevel = songData.level;
 	}
 	else {
 		song.hash = curSong.hash.body;
@@ -523,6 +526,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player) {
 		song.judge = curSong.judge;
 		song.courseStageCount = curSong.courseStageCount;
 		song.courseType = curSong.courseType;
+		songPlayLevel = curSong.level;
 	}
 	CONFIG_PLAY& cfg = game.config.play;
 	settings.gaugeOption = cfg.gaugeOption[_player];
