@@ -316,62 +316,15 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 			}
 		}
 	}
-	for (int i = 0; i < SLOTS; i++) {
-		gp->bgaHandle[i] = -1;
-	}
+	std::ranges::fill(gp->bgaHandle, -1);
 	gp->bgaLayer1 = -1;
 	gp->bgaLayer2 = -1;
 	gp->missLayer = -1;
-	gp->courseBgaLayer1[0] = -1;
-	gp->courseBgaLayer2[0] = -1;
-	gp->courseMissLayer[0] = -1;
-	gp->courseLayer1ChangeTime[0] = -1;
-	gp->courseLayer2ChangeTime[0] = -1;
-	gp->courseBgaLayer1[1] = -1;
-	gp->courseBgaLayer2[1] = -1;
-	gp->courseMissLayer[1] = -1;
-	gp->courseLayer1ChangeTime[1] = -1;
-	gp->courseLayer2ChangeTime[1] = -1;
-	gp->courseBgaLayer1[2] = -1;
-	gp->courseBgaLayer2[2] = -1;
-	gp->courseMissLayer[2] = -1;
-	gp->courseLayer1ChangeTime[2] = -1;
-	gp->courseLayer2ChangeTime[2] = -1;
-	gp->courseBgaLayer1[3] = -1;
-	gp->courseBgaLayer2[3] = -1;
-	gp->courseMissLayer[3] = -1;
-	gp->courseLayer1ChangeTime[3] = -1;
-	gp->courseLayer2ChangeTime[3] = -1;
-	gp->courseBgaLayer1[4] = -1;
-	gp->courseBgaLayer2[4] = -1;
-	gp->courseMissLayer[4] = -1;
-	gp->courseLayer1ChangeTime[4] = -1;
-	gp->courseLayer2ChangeTime[4] = -1;
-	gp->courseBgaLayer1[5] = -1;
-	gp->courseBgaLayer2[5] = -1;
-	gp->courseMissLayer[5] = -1;
-	gp->courseLayer1ChangeTime[5] = -1;
-	gp->courseLayer2ChangeTime[5] = -1;
-	gp->courseBgaLayer1[6] = -1;
-	gp->courseBgaLayer2[6] = -1;
-	gp->courseMissLayer[6] = -1;
-	gp->courseLayer1ChangeTime[6] = -1;
-	gp->courseLayer2ChangeTime[6] = -1;
-	gp->courseBgaLayer1[7] = -1;
-	gp->courseBgaLayer2[7] = -1;
-	gp->courseMissLayer[7] = -1;
-	gp->courseLayer1ChangeTime[7] = -1;
-	gp->courseLayer2ChangeTime[7] = -1;
-	gp->courseBgaLayer1[8] = -1;
-	gp->courseBgaLayer2[8] = -1;
-	gp->courseMissLayer[8] = -1;
-	gp->courseLayer1ChangeTime[8] = -1;
-	gp->courseLayer2ChangeTime[8] = -1;
-	gp->courseBgaLayer1[9] = -1;
-	gp->courseBgaLayer2[9] = -1;
-	gp->courseMissLayer[9] = -1;
-	gp->courseLayer1ChangeTime[9] = -1;
-	gp->courseLayer2ChangeTime[9] = -1;
+	std::ranges::fill(gp->courseBgaLayer1, -1);
+	std::ranges::fill(gp->courseBgaLayer2, -1);
+	std::ranges::fill(gp->courseMissLayer, -1);
+	std::ranges::fill(gp->courseLayer1ChangeTime, -1);
+	std::ranges::fill(gp->courseLayer2ChangeTime, -1);
 	gp->speedmultiplier = 1.0;
 	gp->layer2ChangeTime = -1;
 	gp->maxBPM = 0.0;
@@ -408,76 +361,14 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 		gp->keysound_filename[i].fillzero();
 		gp->BMP_filename[i].fillzero();
 	}
-	gp->fadeinSOUNDstart[0] = -1;
-	gp->fadeinSOUNDend[0] = -1;
-	gp->fadeoutSOUNDend[0] = -1;
-	gp->fadeinBGAstart[0] = -1;
-	gp->fadeinBGAend[0] = -1;
-	gp->fadeoutBGAend[0] = -1;
-	gp->fadeinSOUNDstart[1] = -1;
-	gp->fadeinSOUNDend[1] = -1;
-	gp->fadeoutSOUNDend[1] = -1;
-	gp->fadeinBGAstart[1] = -1;
-	gp->fadeinBGAend[1] = -1;
-	gp->fadeoutBGAend[1] = -1;
-	gp->fadeinSOUNDstart[2] = -1;
-	gp->fadeinSOUNDend[2] = -1;
-	gp->fadeoutSOUNDend[2] = -1;
-	gp->fadeinBGAstart[2] = -1;
-	gp->fadeinBGAend[2] = -1;
-	gp->fadeoutBGAend[2] = -1;
-	gp->fadeinSOUNDstart[3] = -1;
-	gp->fadeinSOUNDend[3] = -1;
-	gp->fadeoutSOUNDend[3] = -1;
-	gp->fadeinBGAstart[3] = -1;
-	gp->fadeinBGAend[3] = -1;
-	gp->fadeoutBGAend[3] = -1;
-	gp->fadeinSOUNDstart[4] = -1;
-	gp->fadeinSOUNDend[4] = -1;
-	gp->fadeoutSOUNDend[4] = -1;
-	gp->fadeinBGAstart[4] = -1;
-	gp->fadeinBGAend[4] = -1;
-	gp->fadeoutBGAend[4] = -1;
-	gp->fadeinSOUNDstart[5] = -1;
-	gp->fadeinSOUNDend[5] = -1;
-	gp->fadeoutSOUNDend[5] = -1;
-	gp->fadeinBGAstart[5] = -1;
-	gp->fadeinBGAend[5] = -1;
-	gp->fadeoutBGAend[5] = -1;
-	gp->fadeinSOUNDstart[6] = -1;
-	gp->fadeinSOUNDend[6] = -1;
-	gp->fadeoutSOUNDend[6] = -1;
-	gp->fadeinBGAstart[6] = -1;
-	gp->fadeinBGAend[6] = -1;
-	gp->fadeoutBGAend[6] = -1;
-	gp->fadeinSOUNDstart[7] = -1;
-	gp->fadeinSOUNDend[7] = -1;
-	gp->fadeoutSOUNDend[7] = -1;
-	gp->fadeinBGAstart[7] = -1;
-	gp->fadeinBGAend[7] = -1;
-	gp->fadeoutBGAend[7] = -1;
-	gp->fadeinSOUNDstart[8] = -1;
-	gp->fadeinSOUNDend[8] = -1;
-	gp->fadeoutSOUNDend[8] = -1;
-	gp->fadeinBGAstart[8] = -1;
-	gp->fadeinBGAend[8] = -1;
-	gp->fadeoutBGAend[8] = -1;
-	gp->fadeinSOUNDstart[9] = -1;
-	gp->fadeinSOUNDend[9] = -1;
-	gp->fadeoutSOUNDend[9] = -1;
-	gp->fadeinBGAstart[9] = -1;
-	gp->fadeinBGAend[9] = -1;
-	gp->fadeoutBGAend[9] = -1;
-	gp->bgaMixer[1] = 0;
-	gp->bgaMixer[2] = 0;
-	gp->bgaMixer[3] = 0;
-	gp->bgaMixer[4] = 0;
-	gp->bgaMixer[5] = 0;
-	gp->bgaMixer[6] = 0;
-	gp->bgaMixer[7] = 0;
-	gp->bgaMixer[8] = 0;
-	gp->bgaMixer[9] = 0;
+	std::ranges::fill(gp->fadeinSOUNDstart, -1);
+	std::ranges::fill(gp->fadeinSOUNDend, -1);
+	std::ranges::fill(gp->fadeoutSOUNDend, -1);
+	std::ranges::fill(gp->fadeinBGAstart, -1);
+	std::ranges::fill(gp->fadeinBGAend, -1);
+	std::ranges::fill(gp->fadeoutBGAend, -1);
 	gp->bgaMixer[0] = 100;
+	std::ranges::fill(std::ranges::views::drop(gp->bgaMixer, 1), 0);
 
 	return 1;
 }
@@ -623,16 +514,8 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 		AddReplayData(&gp->replay, 0, 200, gp->randomseed);
 	}
 
-	gp->bgaMixer[1] = 0;
-	gp->bgaMixer[2] = 0;
-	gp->bgaMixer[3] = 0;
-	gp->bgaMixer[4] = 0;
-	gp->bgaMixer[5] = 0;
-	gp->bgaMixer[6] = 0;
-	gp->bgaMixer[7] = 0;
-	gp->bgaMixer[8] = 0;
-	gp->bgaMixer[9] = 0;
 	gp->bgaMixer[0] = 100;
+	std::ranges::fill(std::ranges::views::drop(gp->bgaMixer, 1), 0);
 
 	gp->lanecoverDisplayP1 = true;
 	gp->lanecoverDisplayP2 = true;
@@ -744,16 +627,9 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 	gp->rategraph[0].cursor = 0;
 	gp->rategraph[1].cursor = 0;
 
-	snd->param.stageBgmVolume[1] = 0.0;
-	snd->param.stageBgmVolume[2] = 0.0;
-	snd->param.stageBgmVolume[3] = 0.0;
-	snd->param.stageBgmVolume[4] = 0.0;
 	snd->param.stageBgmVolume[0] = 1.0;
-	snd->param.stageKeyVolume[1] = 1.0;
-	snd->param.stageKeyVolume[2] = 1.0;
-	snd->param.stageKeyVolume[3] = 1.0;
-	snd->param.stageKeyVolume[4] = 1.0;
-	snd->param.stageKeyVolume[0] = 1.0;
+	std::ranges::fill(std::views::drop(snd->param.stageBgmVolume, 1), 1.0);
+	std::ranges::fill(snd->param.stageKeyVolume, 1.0);
 	ErrorLogAdd("リトライ用の初期化を行いました\n");
 	return 1;
 }
@@ -1961,43 +1837,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	ifOn = 1;
 	randomVal = -1;
 
-	aud->param.stagePitch[0] = 1.0;
-	aud->param.stageBgmVolume[0] = 0.0;
-	aud->param.stageKeyVolume[0] = 1.0;
-	gp->fadeinSOUNDstart[0] = -1;
-	gp->fadeinSOUNDend[0] = -1;
-	gp->fadeoutSOUNDstart[0] = -1;
-	gp->fadeoutSOUNDend[0] = -1;
-	aud->param.stagePitch[1] = 1.0;
-	aud->param.stageKeyVolume[1] = 1.0;
-	aud->param.stageBgmVolume[1] = 0.0;
-	gp->fadeinSOUNDstart[1] = -1;
-	gp->fadeinSOUNDend[1] = -1;
-	gp->fadeoutSOUNDstart[1] = -1;
-	gp->fadeoutSOUNDend[1] = -1;
-	aud->param.stagePitch[2] = 1.0;
-	aud->param.stageKeyVolume[2] = 1.0;
-	aud->param.stageBgmVolume[2] = 0.0;
-	gp->fadeinSOUNDstart[2] = -1;
-	gp->fadeinSOUNDend[2] = -1;
-	gp->fadeoutSOUNDstart[2] = -1;
-	gp->fadeoutSOUNDend[2] = -1;
-	aud->param.stagePitch[3] = 1.0;
-	aud->param.stageKeyVolume[3] = 1.0;
-	aud->param.stageBgmVolume[3] = 0.0;
-	gp->fadeinSOUNDstart[3] = -1;
-	gp->fadeinSOUNDend[3] = -1;
-	gp->fadeoutSOUNDstart[3] = -1;
-	gp->fadeoutSOUNDend[3] = -1;
-	aud->param.stagePitch[4] = 1.0;
-	aud->param.stageKeyVolume[4] = 1.0;
-	aud->param.stageBgmVolume[4] = 0.0;
-	gp->fadeinSOUNDstart[4] = -1;
-	gp->fadeinSOUNDend[4] = -1;
-	gp->fadeoutSOUNDstart[4] = -1;
-	gp->fadeoutSOUNDend[4] = -1;
+	std::ranges::fill(aud->param.stagePitch, 1.0);
 	aud->param.stageBgmVolume[0] = 1.0;
-	aud->param.stageKeyVolume[0] = 1.0;
+	std::ranges::fill(std::views::drop(aud->param.stageBgmVolume, 1), 0.0);
+	std::ranges::fill(aud->param.stageKeyVolume, 1.0);
+	std::ranges::fill(gp->fadeinSOUNDstart, -1);
+	std::ranges::fill(gp->fadeinSOUNDend, -1);
+	std::ranges::fill(gp->fadeoutSOUNDstart, -1);
+	std::ranges::fill(gp->fadeoutSOUNDend, -1);
 	int total[2] = { 0, 0 }; 
 	int noteCount[2] = { 0, 0 };
 	CHARTCONVERTER cc;
@@ -3381,52 +3228,27 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		if (cfg->play.random[p] == 1) { //mirror
 			if (meta->keymode == 7 || meta->keymode == 14) {
 				if (cfg->play.randSC[p] == 0) {
-					noteRandomTable[p][1] = 7 + p * 10;
-					noteRandomTable[p][2] = 6 + p * 10;
-					noteRandomTable[p][3] = 5 + p * 10;
-					noteRandomTable[p][4] = 4 + p * 10;
-					noteRandomTable[p][5] = 3 + p * 10;
-					noteRandomTable[p][6] = 2 + p * 10;
-					noteRandomTable[p][7] = 1 + p * 10;
+					for (int i = 1; i <= 7; i++)
+						noteRandomTable[p][i] = (8 - i) + p * 10;
 				}
 				else {
-					noteRandomTable[p][0] = 7 + p * 10;
-					noteRandomTable[p][1] = 6 + p * 10;
-					noteRandomTable[p][2] = 5 + p * 10;
-					noteRandomTable[p][3] = 4 + p * 10;
-					noteRandomTable[p][4] = 3 + p * 10;
-					noteRandomTable[p][5] = 2 + p * 10;
-					noteRandomTable[p][6] = 1 + p * 10;
-					noteRandomTable[p][7] = 0 + p * 10;
+					for (int i = 0; i <= 7; i++)
+						noteRandomTable[p][i] = (7 - i) + p * 10;
 				}
 			}
 			else if (meta->keymode == 5 || meta->keymode == 10) {
 				if (cfg->play.randSC[p] == 0) {
-					noteRandomTable[p][1] = 5 + p * 10;
-					noteRandomTable[p][2] = 4 + p * 10;
-					noteRandomTable[p][3] = 3 + p * 10;
-					noteRandomTable[p][4] = 2 + p * 10;
-					noteRandomTable[p][5] = 1 + p * 10;
+					for (int i = 1; i <= 5; i++)
+						noteRandomTable[p][i] = (6 - i) + p * 10;
 				}
 				else {
-					noteRandomTable[p][0] = 5 + p * 10;
-					noteRandomTable[p][1] = 4 + p * 10;
-					noteRandomTable[p][2] = 3 + p * 10;
-					noteRandomTable[p][3] = 2 + p * 10;
-					noteRandomTable[p][4] = 1 + p * 10;
-					noteRandomTable[p][5] = 0 + p * 10;
+					for (int i = 0; i <= 5; i++)
+						noteRandomTable[p][i] = (5 - i) + p * 10;
 				}
 			}
 			else if (meta->keymode == 9) {
-				noteRandomTable[0][1] = 9;
-				noteRandomTable[0][2] = 8;
-				noteRandomTable[0][3] = 7;
-				noteRandomTable[0][4] = 6;
-				noteRandomTable[0][5] = 5;
-				noteRandomTable[0][6] = 4;
-				noteRandomTable[0][7] = 3;
-				noteRandomTable[0][8] = 2;
-				noteRandomTable[0][9] = 1;
+				for (int i = 1; i <= 9; i++)
+					noteRandomTable[0][i] = 10 - i;
 			}
 		}
 		else if (cfg->play.random[p] == 2) { //random
@@ -4156,25 +3978,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	if (cfg->system.isablebmsthread == 1 && gp->isPreviewLoad == 0) {
 		LoadBmsResource(gp, filename, aud, cfg, meta, bgaFlag, scratchSide, 0);
 	}
-	if (gp->fadeinSOUNDstart[0] <= 0 || gp->fadeinSOUNDend[0] <= 0) {
-		aud->param.stageBgmVolume[0] = 1.0;
-		aud->param.stageKeyVolume[0] = 1.0;
-	}
-	if (gp->fadeinSOUNDstart[1] <= 0 || gp->fadeinSOUNDend[1] <= 0) {
-		aud->param.stageBgmVolume[1] = 1.0;
-		aud->param.stageKeyVolume[1] = 1.0;
-	}
-	if (gp->fadeinSOUNDstart[2] <= 0 || gp->fadeinSOUNDend[2] <= 0) {
-		aud->param.stageBgmVolume[2] = 1.0;
-		aud->param.stageKeyVolume[2] = 1.0;
-	}
-	if (gp->fadeinSOUNDstart[3] <= 0 || gp->fadeinSOUNDend[3] <= 0) {
-		aud->param.stageBgmVolume[3] = 1.0;
-		aud->param.stageKeyVolume[3] = 1.0;
-	}
-	if (gp->fadeinSOUNDstart[4] <= 0 || gp->fadeinSOUNDend[4] <= 0) {
-		aud->param.stageBgmVolume[4] = 1.0;
-		aud->param.stageKeyVolume[4] = 1.0;
+	for (int i = 0; i < 5; i++) {
+		if (gp->fadeinSOUNDstart[i] <= 0 || gp->fadeinSOUNDend[i] <= 0) {
+			aud->param.stageBgmVolume[i] = 1.0;
+			aud->param.stageKeyVolume[i] = 1.0;
+		}
 	}
 	ApplySoundFX(aud, 1, cfg->sound.disabledsp);
 	ErrorLogAdd("BMSを読み込みました。\n");
