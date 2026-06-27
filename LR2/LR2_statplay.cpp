@@ -820,7 +820,7 @@ int SaveResult(game *g, sqlite3* sql) {
 			}
 		}
 
-		if (g->config.play.battle != 1 || g->is_starter || g->gameplay.ghostBattle) {
+		if (g->config.play.battle != 1 || g->is_starter) {
 
 			if ((g->gameplay.freqSpeedMultiplier < 1.0 || g->config.play.m_lunaris == 1) && g->is_starter == 0) {
 				if (g->gameplay.replay.status == 2) return -1;
