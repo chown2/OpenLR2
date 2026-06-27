@@ -369,13 +369,13 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	}
 	sk->customfile_count = 0;
 	
-	DeleteGraph(sk->GrHandle[GrH_Preview]);
-	sk->GrHandle[GrH_Preview] = MakeGraph(skinSizeX, skinSizeY); //TODO_RESOULUTION
+	DeleteGraph(sk->GrHandle[GRHTYPE_PREVIEW]);
+	sk->GrHandle[GRHTYPE_PREVIEW] = MakeGraph(skinSizeX, skinSizeY); //TODO_RESOULUTION
 	DeleteGraph(sk->GrHandle[104]);
 	sk->GrHandle[104] = MakeGraph(256, 256);
-	if (sk->GrHandle[GrH_Stage] == -1) sk->GrHandle[GrH_Stage] = MakeGraph(640, 480);
-	if (sk->GrHandle[GrH_BackBMP] == -1) sk->GrHandle[GrH_BackBMP] = MakeGraph(640, 480);
-	if (sk->GrHandle[GrH_Banner] == -1) sk->GrHandle[GrH_Banner] = MakeGraph(300, 80);
+	if (sk->GrHandle[GRHTYPE_STAGE] == -1) sk->GrHandle[GRHTYPE_STAGE] = MakeGraph(640, 480);
+	if (sk->GrHandle[GRHTYPE_BACKBMP] == -1) sk->GrHandle[GRHTYPE_BACKBMP] = MakeGraph(640, 480);
+	if (sk->GrHandle[GRHTYPE_BANNER] == -1) sk->GrHandle[GRHTYPE_BANNER] = MakeGraph(300, 80);
 	DeleteGraph(sk->GrHandle[GRHTYPE_BLACK]);
 	sk->GrHandle[GRHTYPE_BLACK] = LoadGraph(fs::make_preferred("LR2files/Config/black.bmp").data());
 	DeleteGraph(sk->GrHandle[GRHTYPE_WHITE]);

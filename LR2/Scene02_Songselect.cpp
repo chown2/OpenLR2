@@ -2745,7 +2745,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = 0;
 			continue;
 		}
-		if (ReCreateGraphFromSoftImage(sihandle, g->skstruct.GrHandle[GrH_Banner]) == -1)
+		if (ReCreateGraphFromSoftImage(sihandle, g->skstruct.GrHandle[GRHTYPE_BANNER]) == -1)
 			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = 0;
 		DeleteSoftImage(sihandle);
 	}

@@ -268,8 +268,8 @@ int ProcI_SkinSelect(game *g) {
 		GetConfigResolution(g->config.system.resolution, &tx, &ty);
 	}
 	if (!(tx == skinSizeX && ty == skinSizeY)) {
-		g->skstruct.GrHandle[106] = MakeScreen(tx, ty);
-		SetDrawScreen(g->skstruct.GrHandle[106]);
+		g->skstruct.GrHandle[GRHTYPE_PREVIEW_106] = MakeScreen(tx, ty);
+		SetDrawScreen(g->skstruct.GrHandle[GRHTYPE_PREVIEW_106]);
 	}
 
 	for (int i = 0; i < g->skstruct2.drBuf.count; i++) {
@@ -278,10 +278,10 @@ int ProcI_SkinSelect(game *g) {
 
 	SetDrawScreen(DX_SCREEN_BACK); //there is a flickering in not SD skins preview
 	if (!(tx == skinSizeX && ty == skinSizeY)) {
-		DrawExtendGraph(0, 0, skinSizeX, skinSizeY, g->skstruct.GrHandle[106], 1);
-		DeleteGraph(g->skstruct.GrHandle[106]);
+		DrawExtendGraph(0, 0, skinSizeX, skinSizeY, g->skstruct.GrHandle[GRHTYPE_PREVIEW_106], 1);
+		DeleteGraph(g->skstruct.GrHandle[GRHTYPE_PREVIEW_106]);
 	}
-	ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY); //thumbnail size is fixed as SRC 105(GrH_Preview], in skin file
+	ScreenCapture(g->skstruct.GrHandle[GRHTYPE_PREVIEW], skinSizeX, skinSizeY); //thumbnail size is fixed as SRC 105(GRHTYPE_PREVIEW), in skin file
 	
 	clsDx();
 	InitDrawingBuffer(&g->skstruct2.drBuf);
@@ -294,14 +294,14 @@ int MakeSkinPreview(game* g, skstruct* sk, SkinManage* sm) {
 		int grh = LoadGraph(sm->Data[sm->previewID].thumbnail, 0);
 		if (grh != -1) {
 			DrawExtendGraph(0, 0, skinSizeX, skinSizeY, grh, 0);
-			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY);
+			ScreenCapture(g->skstruct.GrHandle[GRHTYPE_PREVIEW], skinSizeX, skinSizeY);
 			DeleteGraph(grh);
 		}
 		//TOFIX : when no thumbnail, previsous selected thumbnail remains, I don't know how to draw that "thumbnail" image)
 		//thumbnail size is fixed, in skin file. it is SRC 105
 		else {
 			DrawBox(0, 0, skinSizeX, skinSizeY, 0x00000000, 1, 1);
-			ScreenCapture(g->skstruct.GrHandle[GrH_Preview], skinSizeX, skinSizeY);
+			ScreenCapture(g->skstruct.GrHandle[GRHTYPE_PREVIEW], skinSizeX, skinSizeY);
 		}
 		return 0;
 	}
@@ -314,8 +314,8 @@ int MakeSkinPreview(game* g, skstruct* sk, SkinManage* sm) {
 		g->skstruct.op[900 + i] = 0;
 		g->skstruct2.op[900 + i] = 0;
 	}
-	DeleteGraph(sk->GrHandle[GrH_Stage]);
-	sk->GrHandle[GrH_Stage] = LoadGraph(fs::make_preferred("LR2files/Config/title.bmp").data(), 0);
+	DeleteGraph(sk->GrHandle[GRHTYPE_STAGE]);
+	sk->GrHandle[GRHTYPE_STAGE] = LoadGraph(fs::make_preferred("LR2files/Config/title.bmp").data(), 0);
 	LoadScene(sk, sm->Data[sm->previewID].skinFile, 0, 1);
 	return 0;
 }

@@ -975,10 +975,10 @@ int main(int argc, char** argv) {
 					ReadKeyConfig(&gs, (gs.config.select.control == 0)
 							? fs::make_preferred("LR2files/Config/keyconfig.xml" ).data()
 							: fs::make_preferred("LR2files/Config/keyconfig_p.xml").data());
-					DeleteGraph(gs.skstruct.GrHandle[GrH_Stage]);
-					gs.skstruct.GrHandle[GrH_Stage] = -1;
-					DeleteGraph(gs.skstruct.GrHandle[GrH_BackBMP]);
-					gs.skstruct.GrHandle[GrH_BackBMP] = -1;
+					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_STAGE]);
+					gs.skstruct.GrHandle[GRHTYPE_STAGE] = -1;
+					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_BACKBMP]);
+					gs.skstruct.GrHandle[GRHTYPE_BACKBMP] = -1;
 					gs.sSelect.is_clicked_autoplay_replay = '\0';
 					gs.sSelect.is_clicked_keyconfig = '\0';
 					gs.sSelect.is_clicked_skinselect = '\0';
@@ -1083,34 +1083,34 @@ int main(int argc, char** argv) {
 					break;
 							
 				case SCENE_DECIDE:{
-					DeleteGraph(gs.skstruct.GrHandle[GrH_Stage]);
-					gs.skstruct.GrHandle[GrH_Stage] = -1;
-					DeleteGraph(gs.skstruct.GrHandle[GrH_BackBMP]);
-					gs.skstruct.GrHandle[GrH_BackBMP] = -1;
-					DeleteGraph(gs.skstruct.GrHandle[GrH_Banner]);
-					gs.skstruct.GrHandle[GrH_Banner] = -1;
+					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_STAGE]);
+					gs.skstruct.GrHandle[GRHTYPE_STAGE] = -1;
+					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_BACKBMP]);
+					gs.skstruct.GrHandle[GRHTYPE_BACKBMP] = -1;
+					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_BANNER]);
+					gs.skstruct.GrHandle[GRHTYPE_BANNER] = -1;
 					SetTransColor(0, 255, 0);
 					CSTR dir(gs.sSelect.bmsList[gs.sSelect.cur_song].filepath.getDirectory());
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].stagefile, dir, &oBuf) != 1)
 							gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = 0;
-						gs.skstruct.GrHandle[GrH_Stage] = LoadGraph(oBuf, 0);
-						if (gs.skstruct.GrHandle[GrH_Stage] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = 0;
+						gs.skstruct.GrHandle[GRHTYPE_STAGE] = LoadGraph(oBuf, 0);
+						if (gs.skstruct.GrHandle[GRHTYPE_STAGE] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = 0;
 					}
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].backBMP, dir, &oBuf) != 1)
 							gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = 0;
-						gs.skstruct.GrHandle[GrH_BackBMP] = LoadGraph(oBuf, 0);
-						if (gs.skstruct.GrHandle[GrH_BackBMP] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = 0;
+						gs.skstruct.GrHandle[GRHTYPE_BACKBMP] = LoadGraph(oBuf, 0);
+						if (gs.skstruct.GrHandle[GRHTYPE_BACKBMP] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = 0;
 					}
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].banner, dir, &oBuf) != 1) 
 							gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = 0;
-						gs.skstruct.GrHandle[GrH_Banner] = LoadGraph(oBuf, 0); //TOFIX : when banner size is not 300 80, this will break graph size and banner is not displayed until next song
-						if (gs.skstruct.GrHandle[GrH_Banner] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = 0;
+						gs.skstruct.GrHandle[GRHTYPE_BANNER] = LoadGraph(oBuf, 0); //TOFIX : when banner size is not 300 80, this will break graph size and banner is not displayed until next song
+						if (gs.skstruct.GrHandle[GRHTYPE_BANNER] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = 0;
 					}
 					SetTransColor(0, 255, 0);
 							
