@@ -1768,7 +1768,7 @@ extern int Graphics_D3D9_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_Base_D3D9Convert == 0 )
 		{
 			DxShaderCodeBin_Base_D3D9Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Base_D3D9, DxShaderCodeBin_Base_D3D9 ) ;
+			Char128ToBin( DxShaderCodeBin_Base_D3D9, DxShaderCodeBin_Base_D3D9 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Base_D3D9, NULL ) ;
 		SCBASE->BaseShaderBinDxaImage = DXALLOC( ( size_t )Size ) ;
@@ -1830,7 +1830,7 @@ extern int Graphics_D3D9_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_RgbaMixConvert == 0 )
 		{
 			DxShaderCodeBin_RgbaMixConvert = 1 ;
-			Base64ToBin( DxShaderCodeBin_RgbaMix, DxShaderCodeBin_RgbaMix ) ;
+			Char128ToBin( DxShaderCodeBin_RgbaMix, DxShaderCodeBin_RgbaMix ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_RgbaMix, NULL ) ;
 		SCBASE->RGBAMixS_ShaderPackImage = DXALLOC( ( size_t )Size ) ;
@@ -1863,7 +1863,7 @@ extern int Graphics_D3D9_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_FilterConvert == 0 )
 		{
 			DxShaderCodeBin_FilterConvert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Filter, DxShaderCodeBin_Filter ) ;
+			Char128ToBin( DxShaderCodeBin_Filter, DxShaderCodeBin_Filter ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Filter, NULL ) ;
 		SCBASE->FilterShaderBinDxaImage = DXALLOC( ( size_t )Size ) ;
@@ -2033,7 +2033,7 @@ extern int Graphics_D3D9_ShaderCode_Base3D_Initialize( void )
 		if( DxShaderCodeBin_Base3D_D3D9Convert == 0 )
 		{
 			DxShaderCodeBin_Base3D_D3D9Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Base3D_D3D9, DxShaderCodeBin_Base3D_D3D9 ) ;
+			Char128ToBin( DxShaderCodeBin_Base3D_D3D9, DxShaderCodeBin_Base3D_D3D9 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Base3D_D3D9, NULL ) ;
 		SCBASE3D->Base3DShaderPackageImage = DXCALLOC( ( size_t )Size ) ;
@@ -2146,7 +2146,7 @@ extern int Graphics_D3D9_ShaderCode_Model_Initialize( void )
 	if( DxShaderCodeBin_ModelConvert == 0 )
 	{
 		DxShaderCodeBin_ModelConvert = 1 ;
-		Base64ToBin( DxShaderCodeBin_Model, DxShaderCodeBin_Model ) ;
+		Char128ToBin( DxShaderCodeBin_Model, DxShaderCodeBin_Model ) ;
 	}
 
 	Size = DXA_Decode( DxShaderCodeBin_Model, NULL ) ;

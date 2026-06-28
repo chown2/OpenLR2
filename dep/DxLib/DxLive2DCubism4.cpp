@@ -146,7 +146,7 @@ extern int Live2DCubism4_SetupShaderCode( int *ShaderCodeBinConvert, BYTE *Shade
 	if( ShaderCodeBinConvert != NULL && *ShaderCodeBinConvert == 0 )
 	{
 		*ShaderCodeBinConvert = 1 ;
-		Base64ToBin( ShaderCodeBin, ShaderCodeBin ) ;
+		Char128ToBin( ShaderCodeBin, ShaderCodeBin ) ;
 	}
 
 	// シェーダーオブジェクトファイルＤＸＡを圧縮したデータを解凍する

@@ -1692,7 +1692,7 @@ extern int Graphics_D3D11_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_Base_D3D11Convert == 0 )
 		{
 			DxShaderCodeBin_Base_D3D11Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Base_D3D11, DxShaderCodeBin_Base_D3D11 ) ;
+			Char128ToBin( DxShaderCodeBin_Base_D3D11, DxShaderCodeBin_Base_D3D11 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Base_D3D11, NULL ) ;
 		SCBASE->Base2DShaderPackageImage = DXALLOC( ( size_t )Size ) ;
@@ -1770,7 +1770,7 @@ extern int Graphics_D3D11_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_RgbaMix_D3D11Convert == 0 )
 		{
 			DxShaderCodeBin_RgbaMix_D3D11Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_RgbaMix_D3D11, DxShaderCodeBin_RgbaMix_D3D11 ) ;
+			Char128ToBin( DxShaderCodeBin_RgbaMix_D3D11, DxShaderCodeBin_RgbaMix_D3D11 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_RgbaMix_D3D11, NULL ) ;
 		SCBASE->RGBAMixS_ShaderPackImage = DXALLOC( ( size_t )Size ) ;
@@ -1794,7 +1794,7 @@ extern int Graphics_D3D11_ShaderCode_Base_Initialize( void )
 		if( DxShaderCodeBin_Filter_D3D11Convert == 0 )
 		{
 			DxShaderCodeBin_Filter_D3D11Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Filter_D3D11, DxShaderCodeBin_Filter_D3D11 ) ;
+			Char128ToBin( DxShaderCodeBin_Filter_D3D11, DxShaderCodeBin_Filter_D3D11 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Filter_D3D11, NULL ) ;
 		SCBASE->FilterShaderBinDxaImage = DXALLOC( ( size_t )Size ) ;
@@ -1956,7 +1956,7 @@ extern int Graphics_D3D11_ShaderCode_Base3D_Initialize( void )
 		if( DxShaderCodeBin_Base3D_D3D11Convert == 0 )
 		{
 			DxShaderCodeBin_Base3D_D3D11Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Base3D_D3D11, DxShaderCodeBin_Base3D_D3D11 ) ;
+			Char128ToBin( DxShaderCodeBin_Base3D_D3D11, DxShaderCodeBin_Base3D_D3D11 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Base3D_D3D11, NULL ) ;
 		SCBASE3D->Base3DShaderPackageImage = DXCALLOC( ( size_t )Size ) ;
@@ -2066,7 +2066,7 @@ extern	int		Graphics_D3D11_ShaderCode_Model_Initialize( void )
 		if( DxShaderCodeBin_Model_D3D11Convert == 0 )
 		{
 			DxShaderCodeBin_Model_D3D11Convert = 1 ;
-			Base64ToBin( DxShaderCodeBin_Model_D3D11, DxShaderCodeBin_Model_D3D11 ) ;
+			Char128ToBin( DxShaderCodeBin_Model_D3D11, DxShaderCodeBin_Model_D3D11 ) ;
 		}
 		Size = DXA_Decode( DxShaderCodeBin_Model_D3D11, NULL ) ;
 		SCMODEL->ModelShaderPackImage = DXCALLOC( ( size_t )Size ) ;
