@@ -30,11 +30,11 @@ int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
 			? g->gameplay.player[0].gaugeType
 			: g->config.play.gaugeOption[0]) {
-		case 1: return 3;
-		case 2: return 4;
-		case 3: return 1;
-		case 4: return 4;
-		case 5: return 3;
+		case OPTION_GAUGE_HARD: return 3;
+		case OPTION_GAUGE_DEATH: return 4;
+		case OPTION_GAUGE_EASY: return 1;
+		case OPTION_GAUGE_PATTCK: return 4;
+		case OPTION_GAUGE_GATTACK: return 3;
 		default: return 2;
 		}
 	}

@@ -710,12 +710,12 @@ bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, in
 		oData->fillzero();
 		if (!result->ghostData.empty()) oData->add(result->ghostData.c_str());
 		switch (result->gauge) {
-		case openlr2::Gauge::Groove: *oDigit1 = 0; break;
-		case openlr2::Gauge::Survival: *oDigit1 = 1; break;
-		case openlr2::Gauge::Death: *oDigit1 = 2; break;
-		case openlr2::Gauge::Easy: *oDigit1 = 3; break;
-		case openlr2::Gauge::PAttack: *oDigit1 = 4; break;
-		case openlr2::Gauge::GAttack: *oDigit1 = 5; break;
+		case openlr2::Gauge::Groove: *oDigit1 = OPTION_GAUGE_GROOVE; break;
+		case openlr2::Gauge::Survival: *oDigit1 = OPTION_GAUGE_HARD; break;
+		case openlr2::Gauge::Death: *oDigit1 = OPTION_GAUGE_DEATH; break;
+		case openlr2::Gauge::Easy: *oDigit1 = OPTION_GAUGE_EASY; break;
+		case openlr2::Gauge::PAttack: *oDigit1 = OPTION_GAUGE_PATTCK; break;
+		case openlr2::Gauge::GAttack: *oDigit1 = OPTION_GAUGE_GATTACK; break;
 		default: *oDigit1 = 0; break;
 		}
 		switch (result->randomOption[0]) {

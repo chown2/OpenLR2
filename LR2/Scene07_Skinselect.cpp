@@ -166,7 +166,7 @@ int ProcI_SkinSelect(game *g) {
 
 	if (g->skinData.select <= 4 || g->skinData.select == 12 || g->skinData.select == 13) {
 		for (int i = 0; i < 2; i++) {
-			if (g->gameplay.isCourse == 0 && (g->config.play.gaugeOption[i] == 0 || g->config.play.gaugeOption[i] == 3)) 
+			if (g->gameplay.isCourse == 0 && (g->config.play.gaugeOption[i] == OPTION_GAUGE_GROOVE || g->config.play.gaugeOption[i] == OPTION_GAUGE_EASY)) 
 				AddDrawingBuffer_Gauge(&g->skstruct2.drBuf, &g->skstruct2.src_GROOVEGAUGE[i], &g->skstruct2.dst_GROOVEGAUGE[i], &g->timer2, (int)g->gameplay.player[i].HP_print / 2, 0);
 			else
 				AddDrawingBuffer_Gauge(&g->skstruct2.drBuf, &g->skstruct2.src_GROOVEGAUGE[i], &g->skstruct2.dst_GROOVEGAUGE[i], &g->timer2, (int)g->gameplay.player[i].HP_print / 2, 1);

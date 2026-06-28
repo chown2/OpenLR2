@@ -1374,10 +1374,10 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 	if (g->KeyInput.p1_buttonInput[4] == 1 || g->KeyInput.p2_buttonInput[4] == 1) {
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 		if (g->config.play.battle == OPTION_BATTLE_BATTLE && g->KeyInput.p1_buttonInput[4] != 1) {
-			LoopInRange(0, 5, 1, &g->config.play.gaugeOption[1]);
+			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeOption[1]);
 		}
 		else {
-			LoopInRange(0, 5, 1, &g->config.play.gaugeOption[0]);
+			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeOption[0]);
 		}
 		SetObjectStrings_SongSelect(g);
 	}
