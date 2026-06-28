@@ -288,7 +288,7 @@ int main(int argc, char** argv) {
 		gs.config.system.isablebmsthread = 1;
 		gs.config.play.gaugeOption[0] = 0;
 		gs.config.play.random[0] = 0;
-		gs.config.play.hsfix = 4;
+		gs.config.play.hsfix = OPTION_HSFIX_CONSTANT;
 		gs.config.player.passMD5.assign("STARTERMODE");
 		gs.config.player.id.assign("STARTERMODE");
 		gs.config.jukebox.newsongfolder.assign("./");

@@ -24,7 +24,7 @@ int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 		return 0;
 	}
 
-	if (g->config.play.random[0] < 4 && g->config.play.random[1] < 4 && g->config.play.hsfix != 4
+	if (g->config.play.random[0] < 4 && g->config.play.random[1] < 4 && g->config.play.hsfix != OPTION_HSFIX_CONSTANT
 		&& g->config.play.autokey == 0 && (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10)) {
 		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
@@ -431,7 +431,7 @@ int CheckMission(game *g){
 			break;
 		case 15:
 			if (g->gameplay.isSpeedChanged == false && g->config.play.hiSpeed[0] == 50 &&
-				g->config.play.hsfix == 4 && g->gameplay.player[0].totalnotes >= 500) {
+				g->config.play.hsfix == OPTION_HSFIX_CONSTANT && g->gameplay.player[0].totalnotes >= 500) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -485,7 +485,7 @@ int CheckMission(game *g){
 			break;
 		case 23:
 			if ((g->config.play.m_HIDSUD1 != g->config.play.m_HIDSUD2 && 9 < g->sSelect.bmsList[g->sSelect.cur_song].keymode)
-				|| g->config.play.m_HIDSUD1 != 1 || g->config.play.hsfix != 4 || g->config.play.hiSpeed[0] != 150)
+				|| g->config.play.m_HIDSUD1 != 1 || g->config.play.hsfix != OPTION_HSFIX_CONSTANT || g->config.play.hiSpeed[0] != 150)
 				break;
 			if (g->gameplay.player[0].totalnotes >= 1000) {
 				g->gameplay.playerstat.trial = level + 1;
@@ -493,7 +493,7 @@ int CheckMission(game *g){
 			break;
 		case 24:
 			if ((g->config.play.m_HIDSUD1 != g->config.play.m_HIDSUD2 && 9 < g->sSelect.bmsList[g->sSelect.cur_song].keymode)
-				|| g->config.play.m_HIDSUD1 != 2 || g->config.play.hsfix != 4) break;
+				|| g->config.play.m_HIDSUD1 != 2 || g->config.play.hsfix != OPTION_HSFIX_CONSTANT) break;
 			if (g->config.play.hiSpeed[0] == 250) {
 				if (g->gameplay.player[0].totalnotes >= 1000) {
 					g->gameplay.playerstat.trial = level + 1;
@@ -528,7 +528,7 @@ int CheckMission(game *g){
 			}
 			break;
 		case 28:
-			if (g->gameplay.isSpeedChanged == false && g->config.play.hsfix == 4 && g->config.play.hiSpeed[0] == 600 && g->gameplay.player[0].totalnotes >= 300) {
+			if (g->gameplay.isSpeedChanged == false && g->config.play.hsfix == OPTION_HSFIX_CONSTANT && g->config.play.hiSpeed[0] == 600 && g->gameplay.player[0].totalnotes >= 300) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -558,7 +558,7 @@ int CheckMission(game *g){
 			}
 			break;
 		case 34:
-			if (g->gameplay.isSpeedChanged == false && g->gameplay.player[0].totalnotes >= 1200 && g->config.play.hsfix == 4 && g->gameplay.song_runtime < 150000.0 && g->config.play.hiSpeed[0] == 30) {
+			if (g->gameplay.isSpeedChanged == false && g->gameplay.player[0].totalnotes >= 1200 && g->config.play.hsfix == OPTION_HSFIX_CONSTANT && g->gameplay.song_runtime < 150000.0 && g->config.play.hiSpeed[0] == 30) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -586,7 +586,7 @@ int CheckMission(game *g){
 		case 39:
 			if (g->gameplay.isSpeedChanged == false && (g->config.play.m_HIDSUD1 == g->config.play.m_HIDSUD2 || g->sSelect.bmsList[g->sSelect.cur_song].keymode < 10)
 				&& g->gameplay.player[0].totalnotes >= 1500 && g->gameplay.song_runtime < 150000.0 && g->config.play.hiSpeed[0] == 100
-				&& g->config.play.m_HIDSUD1 == 1 && g->config.play.hsfix == 4) {
+				&& g->config.play.m_HIDSUD1 == 1 && g->config.play.hsfix == OPTION_HSFIX_CONSTANT) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -928,7 +928,7 @@ int SaveResult(game *g, sqlite3* sql) {
 				return 0;
 			}
 
-			else if (((g->config.play.p1_assist == 1 || g->config.play.p2_assist == 1) || g->config.play.hsfix == 4 || (g->config.play.random[0] > 3 || g->config.play.random[1] > 3)) && g->is_starter == 0) { 
+			else if (((g->config.play.p1_assist == 1 || g->config.play.p2_assist == 1) || g->config.play.hsfix == OPTION_HSFIX_CONSTANT || (g->config.play.random[0] > 3 || g->config.play.random[1] > 3)) && g->is_starter == 0) { 
 				if (g->gameplay.replay.status == 2) return -1;
 
 				if (g->gameplay.player[0].clearType > 2) g->gameplay.player[0].clearType = 2;

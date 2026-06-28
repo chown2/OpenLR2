@@ -1451,16 +1451,16 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 	}
 	if ((g->KeyInput.p1_buttonInput[5] == 1 && g->KeyInput.p1_buttonInput[7] == 2) || (g->KeyInput.p2_buttonInput[5] == 1 && g->KeyInput.p2_buttonInput[7] == 2)) {
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
-		LoopInRange(0, 5, 1, &g->config.play.hsfix);
+		LoopInRange(OPTION_HSFIX_OFF, OPTION_HSFIX_END, 1, &g->config.play.hsfix);
 		SetObjectStrings_SongSelect(g);
 	}
 	if ((g->KeyInput.p1_buttonInput[5] == 2 && g->KeyInput.p1_buttonInput[7] == 1) || (g->KeyInput.p2_buttonInput[5] == 2 && g->KeyInput.p2_buttonInput[7] == 1)) {
 		if (g->config.play.battle == 1) {
 			PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
-			LoopInRange(0, 5, -1, &g->config.play.hsfix);
+			LoopInRange(OPTION_HSFIX_OFF, OPTION_HSFIX_END, -1, &g->config.play.hsfix);
 		}
 		else {
-			LoopInRange(0, 5, 1, &g->config.play.hsfix);
+			LoopInRange(OPTION_HSFIX_OFF, OPTION_HSFIX_END, 1, &g->config.play.hsfix);
 		}
 		SetObjectStrings_SongSelect(g);
 	}

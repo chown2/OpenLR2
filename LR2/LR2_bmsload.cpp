@@ -2649,7 +2649,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				double addRealtime = (240.0 / nowBPM * meaLength * (gp->bmsobj.notes[i].bmsTiming - prevNoteBmstime) * 1000.0);
 				bpmt_realtime += addRealtime + stopRealtime;
 				
-				if (cfg->play.hsfix == 4 || (gp->isCourse && gp->courseType == 1)) {
+				if (cfg->play.hsfix == OPTION_HSFIX_CONSTANT || (gp->isCourse && gp->courseType == 1)) {
 					double delta = addRealtime * 1.2;
 					bpmt_bmstime += delta;
 					bpmt_rendertime += delta;
@@ -3247,7 +3247,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTiming);
 
 	if (gp->isCourse == 1 && gp->courseType == 1) gp->speedmultiplier = 1.0;
-	else if (cfg->play.hsfix == 5) {
+	else if (cfg->play.hsfix == OPTION_HSFIX_MAINBPM) {
 		double mainBpm = 0;
 		int highestCount = 0;
 		for (auto& [bpm, count] : notesPerBpm) {
@@ -3259,9 +3259,9 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		if (mainBpm > 0.) gp->speedmultiplier = 150. / mainBpm; // calculate speed mult against bpm with most notes.
 		else gp->speedmultiplier = 1.0;
 	}
-	else if (avgBPM_notes > 0 && cfg->play.hsfix == 3) gp->speedmultiplier = 150.0 / (avgBPM_bpmsum / avgBPM_notes); //average
-	else if (gp->maxBPM > 0.0 && cfg->play.hsfix == 1) gp->speedmultiplier = 150.0 / gp->maxBPM;
-	else if (gp->minBPM > 0.0 && cfg->play.hsfix == 2) gp->speedmultiplier = 150.0 / gp->minBPM;
+	else if (avgBPM_notes > 0 && cfg->play.hsfix == OPTION_HSFIX_AVERAGE) gp->speedmultiplier = 150.0 / (avgBPM_bpmsum / avgBPM_notes);
+	else if (gp->maxBPM > 0.0 && cfg->play.hsfix == OPTION_HSFIX_MAXBPM) gp->speedmultiplier = 150.0 / gp->maxBPM;
+	else if (gp->minBPM > 0.0 && cfg->play.hsfix == OPTION_HSFIX_MINBPM) gp->speedmultiplier = 150.0 / gp->minBPM;
 	else gp->speedmultiplier = 1.0;
 
 	if (cfg->play.m_loudness > 0 || cfg->play.is_extra > 0 || cfg->play.p1_assist > 0 || cfg->play.p2_assist > 0 || cfg->play.battle || cfg->play.m_addnote > 0)
@@ -3276,7 +3276,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		gp->isNosave = 1;
 	if (gp->replay.status == 2)
 		gp->isNosave = 1;
-	if (cfg->play.hsfix == 4 && gp->minBPM != gp->maxBPM)
+	if (cfg->play.hsfix == OPTION_HSFIX_CONSTANT && gp->minBPM != gp->maxBPM)
 		gp->isForceEasy = 1;
 	if (cfg->play.random[0] == 4 || cfg->play.random[1] == 4)
 		gp->isForceEasy = 1;
