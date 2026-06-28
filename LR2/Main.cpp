@@ -1172,10 +1172,10 @@ int main(int argc, char** argv) {
 						}
 					}
 					else if (gs.config.select.control == 1 && (gs.sSelect.metaSelected.keymode == 5 || gs.sSelect.metaSelected.keymode == 7)) {
-						if (gs.config.play.battle == 0 || gs.config.play.battle == 2) {
+						if (gs.config.play.battle == OPTION_BATTLE_OFF || gs.config.play.battle == OPTION_BATTLE_DBATTLE) {
 							LoadSceneG(&gs, &gs.skstruct, SKINTYPE_9KEYS);
 						}
-						else if (gs.config.play.battle == 1) {
+						else if (gs.config.play.battle == OPTION_BATTLE_BATTLE) {
 							LoadSceneG(&gs, &gs.skstruct, SKINTYPE_9KEYSBATTLE);
 						}
 						ReadKeyConfig(&gs,fs::make_preferred("LR2files/Config/keyconfig_p.xml").data());
@@ -1183,21 +1183,21 @@ int main(int argc, char** argv) {
 					else {
 						switch (gs.sSelect.metaSelected.keymode) {
 							case 5:
-								if (gs.config.play.battle == 0) {
+								if (gs.config.play.battle == OPTION_BATTLE_OFF) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_5KEYS);
 									if (gs.skinData.Data[gs.skinData.skinID[1]].type != SKINTYPE_5KEYS)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 									else
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_5.xml").data());
 								}
-								else if (gs.config.play.battle == 1) {
+								else if (gs.config.play.battle == OPTION_BATTLE_BATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_5KEYSBATTLE);
 									if (gs.skinData.Data[gs.skinData.skinID[13]].type != SKINTYPE_5KEYSBATTLE)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 									else
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_5.xml").data());
 								}
-								else if (gs.config.play.battle == 2 || gs.config.play.battle == 3) {
+								else if (gs.config.play.battle == OPTION_BATTLE_DBATTLE || gs.config.play.battle == OPTION_BATTLE_SP2DP) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_10KEYS);
 									if (gs.skinData.Data[gs.skinData.skinID[3]].type != SKINTYPE_10KEYS)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
@@ -1207,49 +1207,49 @@ int main(int argc, char** argv) {
 								break;
 
 							default:
-								if (gs.config.play.battle == 0) {
+								if (gs.config.play.battle == OPTION_BATTLE_OFF) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYS);
 								}
-								else if (gs.config.play.battle == 1) {
+								else if (gs.config.play.battle == OPTION_BATTLE_BATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYSBATTLE);
 								}
-								else if (gs.config.play.battle == 2 || gs.config.play.battle == 3) {
+								else if (gs.config.play.battle == OPTION_BATTLE_DBATTLE || gs.config.play.battle == OPTION_BATTLE_SP2DP) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_14KEYS);
 								}
 								ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 								break;
 
 							case 9:
-								if (gs.config.play.battle == 3) {
+								if (gs.config.play.battle == OPTION_BATTLE_SP2DP) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYS);
 									ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 									break;
 								}
-								else if (gs.config.play.battle == 0 || gs.config.play.battle == 2) {
+								else if (gs.config.play.battle == OPTION_BATTLE_OFF || gs.config.play.battle == OPTION_BATTLE_DBATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_9KEYS);
 								}
-								else if (gs.config.play.battle == 1) {
+								else if (gs.config.play.battle == OPTION_BATTLE_BATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_9KEYSBATTLE);
 								}
 								ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_p.xml").data());
 								break;
 
 							case 10:
-								if (gs.config.play.battle == 0) {
+								if (gs.config.play.battle == OPTION_BATTLE_OFF) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_10KEYS);
 									if (gs.skinData.Data[gs.skinData.skinID[3]].type == SKINTYPE_10KEYS)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_5.xml").data()); 
 									else
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 								}
-								else if (gs.config.play.battle == 1 || gs.config.play.battle == 2) {
+								else if (gs.config.play.battle == OPTION_BATTLE_BATTLE || gs.config.play.battle == OPTION_BATTLE_DBATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_5KEYSBATTLE);
 									if (gs.skinData.Data[gs.skinData.skinID[13]].type == SKINTYPE_5KEYSBATTLE)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_5.xml").data());
 									else
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 								}
-								else if (gs.config.play.battle == 3) {
+								else if (gs.config.play.battle == OPTION_BATTLE_SP2DP) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_5KEYS);
 									if (gs.skinData.Data[gs.skinData.skinID[1]].type == SKINTYPE_5KEYS)
 										ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig_5.xml").data());
@@ -1259,13 +1259,13 @@ int main(int argc, char** argv) {
 								break;
 
 							case 14:
-								if (gs.config.play.battle == 0 || gs.config.play.battle == 2) {
+								if (gs.config.play.battle == OPTION_BATTLE_OFF || gs.config.play.battle == OPTION_BATTLE_DBATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_14KEYS);
 								}
-								else if (gs.config.play.battle == 1) {
+								else if (gs.config.play.battle == OPTION_BATTLE_BATTLE) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYSBATTLE);
 								}
-								else if(gs.config.play.battle == 3) {
+								else if(gs.config.play.battle == OPTION_BATTLE_SP2DP) {
 									LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYS);
 								}
 								ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
@@ -1483,7 +1483,7 @@ int main(int argc, char** argv) {
 							gs.config.play.m_HIDSUD2 = 0;
 							gs.config.play.p1_assist = 0;
 							gs.config.play.p2_assist = 0;
-							gs.config.play.battle = 0;
+							gs.config.play.battle = OPTION_BATTLE_OFF;
 							gs.config.play.is_extra = 0;
 							gs.config.play.m_accel = 0;
 							gs.config.play.m_addnote = 0;
@@ -1520,17 +1520,17 @@ int main(int argc, char** argv) {
 						if (gs.sSelect.stack_query[gs.sSelect.cur].findStrPos("__RIVAL__") >= 0) {
 							gs.net.rankingData.target_ID = gs.sSelect.stack_rivalID[gs.sSelect.cur];
 							memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
-							if (gs.config.play.battle == 4 && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
-							gs.config.play.battle = 0;
+							if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
+							gs.config.play.battle = OPTION_BATTLE_OFF;
 						}
-						else if (gs.config.play.battle == 4) {
-							gs.config.play.battle = 0;
+						else if (gs.config.play.battle == OPTION_BATTLE_GBATTLE) {
+							gs.config.play.battle = OPTION_BATTLE_OFF;
 						}
 					}
 					else {
 						memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
-						if (gs.config.play.battle == 4 && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
-						gs.config.play.battle = 0;
+						if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
+						gs.config.play.battle = OPTION_BATTLE_OFF;
 						gs.net.rankingData.target_ID = gs.net.rankingData.ranking[gs.sSelect.cur_song].id;
 						gs.net.rankingData.target_number = gs.sSelect.cur_song;
 						ResetTimeLapse(175, &gs.timer1);
@@ -1563,10 +1563,10 @@ int main(int argc, char** argv) {
 					}
 
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].keymode == 10 || gs.sSelect.bmsList[gs.sSelect.cur_song].keymode == 14) {
-						if ( gs.config.play.battle >= 2 && gs.config.play.battle != 3) gs.config.play.battle = 0;
+						if ( gs.config.play.battle >= OPTION_BATTLE_DBATTLE && gs.config.play.battle != OPTION_BATTLE_SP2DP) gs.config.play.battle = OPTION_BATTLE_OFF;
 					}
 					else if (gs.sSelect.bmsList[gs.sSelect.cur_song].keymode == 9) {
-						if (gs.config.play.battle >= 1 && gs.config.play.battle != 3) gs.config.play.battle = 0;
+						if (gs.config.play.battle >= OPTION_BATTLE_BATTLE && gs.config.play.battle != OPTION_BATTLE_SP2DP) gs.config.play.battle = OPTION_BATTLE_OFF;
 					}
 					gs.gameplay.flag_retry = 0;
 					SetObjectString(30, gs.sSelect.stack_searchTitle[gs.sSelect.cur], gs.txtStruct.objectStr);
@@ -1637,7 +1637,7 @@ int main(int argc, char** argv) {
 					else if (gs.gameplay.player[0].judgecount[3] + gs.gameplay.player[0].judgecount[4] + gs.gameplay.player[0].judgecount[5] != 0) {
 						SaveResult(&gs, sql3);
 					}
-					else if (gs.config.play.m_lunaris == 0 && gs.config.play.battle != 1) {
+					else if (gs.config.play.m_lunaris == 0 && gs.config.play.battle != OPTION_BATTLE_BATTLE) {
 						gs.procSelecter = 2;
 						for (int i = 0; i < SLOTS; i++) {
 							StopSound(&gs.audio, &gs.gameplay.keysound[i]);
@@ -1645,7 +1645,7 @@ int main(int argc, char** argv) {
 						}
 						ErrorLogAdd("BMSの音を初期化しました\n");
 					}
-					else if ((gs.gameplay.player[1].judgecount[3] + gs.gameplay.player[1].judgecount[4] + gs.gameplay.player[1].judgecount[5] != 0) || gs.config.play.battle != 1) {
+					else if ((gs.gameplay.player[1].judgecount[3] + gs.gameplay.player[1].judgecount[4] + gs.gameplay.player[1].judgecount[5] != 0) || gs.config.play.battle != OPTION_BATTLE_BATTLE) {
 						SaveResult(&gs, sql3);
 					}
 					else {
@@ -1754,7 +1754,7 @@ int main(int argc, char** argv) {
 						gs.gameplay.player[0].gaugeType = gs.gameplay.player[0].lastCourseGaugeType;
 						gs.gameplay.player[1].gaugeType = gs.gameplay.player[1].lastCourseGaugeType;
 						if (gs.procSelecter != 4) {
-							if (gs.gameplay.courseStageNow < gs.gameplay.courseStageCount -1 && gs.gameplay.player[0].clearType != 0 && (gs.gameplay.player[1].clearType != 0 || gs.config.play.battle != 1) && gs.gameplay.player[0].HP[gs.gameplay.player[0].gaugeType] >= 2.0) {
+							if (gs.gameplay.courseStageNow < gs.gameplay.courseStageCount -1 && gs.gameplay.player[0].clearType != 0 && (gs.gameplay.player[1].clearType != 0 || gs.config.play.battle != OPTION_BATTLE_BATTLE) && gs.gameplay.player[0].HP[gs.gameplay.player[0].gaugeType] >= 2.0) {
 								gs.gameplay.courseStageNow++;
 								gs.procSelecter = 4;
 							}

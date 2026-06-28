@@ -5,7 +5,7 @@
 #include "Scene02_Songselect.h" //objstr in CheckMission()
 
 bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
-	if ( (g->config.play.battle == 0 || g->config.play.battle == 4) && g->config.play.is_extra != 1
+	if ( (g->config.play.battle == OPTION_BATTLE_OFF || g->config.play.battle == OPTION_BATTLE_GBATTLE) && g->config.play.is_extra != 1
 		&& g->config.play.m_addlong == 0 && g->config.play.m_loudness <= 0
 		&& g->config.play.m_lunaris == 0 && g->config.play.hsfix != 4 && g->config.play.m_addmine == 0 
 		&& (g->config.play.m_addnote == 0 && g->config.play.is_extra == 0) && g->config.play.autokey == 0
@@ -20,7 +20,7 @@ bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
 	if (g->config.play.m_addlong == 1 || g->config.play.m_loudness > 0
 		|| g->config.play.m_lunaris || g->config.play.m_addlong > 0
-		|| g->config.play.m_addmine || g->config.play.m_addnote || g->config.play.battle == 1) {
+		|| g->config.play.m_addmine || g->config.play.m_addnote || g->config.play.battle == OPTION_BATTLE_BATTLE) {
 		return 0;
 	}
 
@@ -786,7 +786,7 @@ int SaveResult(game *g, sqlite3* sql) {
 	else {
 		ErrorLogFmtAdd("通常のスコア保存処理を行います\n");
 		
-		if (g->config.play.battle == 1) {
+		if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
 			g->gameplay.player[1].lastCourseGaugeType = g->gameplay.player[1].gaugeType;
 			if (g->config.play.m_gas && g->gameplay.replay.status != 2) {
 				g->gameplay.player[1].gaugeType = GetBestClearedGauge(g->gameplay, 1, g->config.play, g->gameplay.courseStageNow != 0);
@@ -822,7 +822,7 @@ int SaveResult(game *g, sqlite3* sql) {
 			}
 		}
 
-		if (g->config.play.battle != 1 || g->is_starter) {
+		if (g->config.play.battle != OPTION_BATTLE_BATTLE || g->is_starter) {
 
 			if ((g->gameplay.freqSpeedMultiplier < 1.0 || g->config.play.m_lunaris == 1) && g->is_starter == 0) {
 				if (g->gameplay.replay.status == 2) return -1;
@@ -844,7 +844,7 @@ int SaveResult(game *g, sqlite3* sql) {
 				return 0;
 			}
 
-			else if (g->config.play.battle == 2 && g->is_starter == 0) {
+			else if (g->config.play.battle == OPTION_BATTLE_DBATTLE && g->is_starter == 0) {
 				if (g->gameplay.replay.status == 2) return -1;
 
 				if (g->sSelect.bmsList[g->sSelect.cur_song].mybest.clear_db < g->gameplay.player[0].clearType) {
@@ -872,7 +872,7 @@ int SaveResult(game *g, sqlite3* sql) {
 				return 0;
 			}
 
-			else if (g->config.play.battle == 3 && g->is_starter == 0) {
+			else if (g->config.play.battle == OPTION_BATTLE_SP2DP && g->is_starter == 0) {
 				if (g->gameplay.replay.status == 2) return -1;
 
 				if (g->sSelect.bmsList[g->sSelect.cur_song].mybest.clear_sd < g->gameplay.player[0].clearType) {

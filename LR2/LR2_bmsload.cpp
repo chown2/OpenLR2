@@ -2343,7 +2343,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 						|| (CHANNEL_1P_HIDDEN_SC <= channel && channel <= CHANNEL_1P_HIDDEN_END)
 						|| (CHANNEL_1P_LN_SC <= channel && channel <= CHANNEL_1P_LN_END)
 					)
-								&& (meta->keymode < 10 && ((cfg->play.battle == 1 && (cfg->play.random[0] != cfg->play.random[1])) || cfg->play.battle == 2))) {
+								&& (meta->keymode < 10 && ((cfg->play.battle == OPTION_BATTLE_BATTLE && (cfg->play.random[0] != cfg->play.random[1])) || cfg->play.battle == OPTION_BATTLE_DBATTLE))) {
 								gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 								gp->bmsobj.notes[gp->bmsobj.count].val = Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1), isBase62) + stage * SINGLESLOTS;
 								gp->bmsobj.notes[gp->bmsobj.count].op = channel + 10;
@@ -2882,8 +2882,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			_bPrevNoteTime = b2prevNoteTime;
 		}
 
-		if (cfg->play.battle == 3) {
-			if (cfg->play.battle == 3 && meta->keymode == 9 && gp->isCourse == 0 && gp->isPreviewLoad == 0) {
+		if (cfg->play.battle == OPTION_BATTLE_SP2DP) {
+			if (cfg->play.battle == OPTION_BATTLE_SP2DP && meta->keymode == 9 && gp->isCourse == 0 && gp->isPreviewLoad == 0) {
 				ErrorLogFmtAdd("PMSTOSPマージを行います");
 				for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 					gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
@@ -2892,7 +2892,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 				PMStoSP(gp);
 			}
-			if (cfg->play.battle == 3 && (meta->keymode == 10 || meta->keymode == 14) && gp->isCourse == 0 && gp->isPreviewLoad == 0) { //TOFIX: cfg->play.battle==3 duplicated
+			if (cfg->play.battle == OPTION_BATTLE_SP2DP && (meta->keymode == 10 || meta->keymode == 14) && gp->isCourse == 0 && gp->isPreviewLoad == 0) { //TOFIX: cfg->play.battle==OPTION_BATTLE_SP2DP duplicated
 				ErrorLogFmtAdd("DPTOSPマージを行います");
 				for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 					gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
@@ -3272,7 +3272,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		gp->isNosave = 1;
 	if (0 < cfg->play.m_addnote)
 		gp->isNosave = 1;
-	if (cfg->play.battle == 1 && gp->ghostBattle == 0)
+	if (cfg->play.battle == OPTION_BATTLE_BATTLE && gp->ghostBattle == 0)
 		gp->isNosave = 1;
 	if (gp->replay.status == 2)
 		gp->isNosave = 1;
@@ -3280,7 +3280,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		gp->isForceEasy = 1;
 	if (cfg->play.random[0] == 4 || cfg->play.random[1] == 4)
 		gp->isForceEasy = 1;
-	if ((cfg->play.p1_assist == 1 || cfg->play.p2_assist == 1) && (7 < meta->keymode || cfg->play.battle != 2))
+	if ((cfg->play.p1_assist == 1 || cfg->play.p2_assist == 1) && (7 < meta->keymode || cfg->play.battle != OPTION_BATTLE_DBATTLE))
 		gp->isForceEasy = 1;
 	if (cfg->play.m_lunaris)
 		gp->isNosave = 1;
@@ -3420,7 +3420,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		int optemp = gp->bmsobj.notes[i].op;
 		if (optemp < CHANNEL_1P_NOTE_SC || optemp >= CHANNEL_1P_HIDDEN_SC) {
 			if (optemp == CHANNEL_MEASURE_LENGTH) {
-				if (cfg->play.battle == 3 && (meta->keymode == 5 || meta->keymode == 7) && gp->isCourse == 0) {
+				if (cfg->play.battle == OPTION_BATTLE_SP2DP && (meta->keymode == 5 || meta->keymode == 7) && gp->isCourse == 0) {
 					SPtoDP(&gp->bmsobj, i, &cc);
 				}
 
@@ -3455,7 +3455,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 			else {
-				isBattle = (cfg->play.battle == 1);
+				isBattle = (cfg->play.battle == OPTION_BATTLE_BATTLE);
 				if (p2LastTiming < gp->bmsobj.notes[i].realTiming) {
 					p2LastTiming = gp->bmsobj.notes[i].realTiming;
 					for (int lane = 0; lane < 10; lane++) {
@@ -3586,10 +3586,10 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 
 			int lane = noteRandomTable[0][gp->bmsobj.notes[i].op - 10];
-			if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC) {
+			if (cfg->play.battle == OPTION_BATTLE_DBATTLE && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC) {
 				gp->bmsobj.notes[i].op = 1;
 			}
-			else if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_2P_NOTE_SC) {
+			else if (cfg->play.battle == OPTION_BATTLE_DBATTLE && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_2P_NOTE_SC) {
 				gp->bmsobj.notes[i].op = 1;
 			}
 			else {
@@ -3625,7 +3625,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	}
 
 	//duplicate notes for battle
-	if (cfg->play.battle == 1 && cfg->play.random[0] == cfg->play.random[1] && (meta->keymode == 5 || meta->keymode == 7 || meta->keymode == 9)) {
+	if (cfg->play.battle == OPTION_BATTLE_BATTLE && cfg->play.random[0] == cfg->play.random[1] && (meta->keymode == 5 || meta->keymode == 7 || meta->keymode == 9)) {
 
 		for (int i = 0; i < 10; i++) {
 			if (gp->bmsobj_note[0 + i].size > gp->bmsobj_note[10 + i].size) {
