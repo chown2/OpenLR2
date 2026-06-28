@@ -2477,7 +2477,6 @@ int main(int argc, char** argv) {
 		StopSound(&gs.audio, &gs.gameplay.keysound[i]);
 		ReleaseSound(&gs.audio, &gs.gameplay.keysound[i]);
 	}
-	ErrorLogAdd("BMSの音を初期化しました\n");
 	StopSysSound(&gs);
 	ReleaseSysSound(&gs);
 	EndSound(&gs.audio);
