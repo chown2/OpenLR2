@@ -272,9 +272,6 @@ int main(int argc, char** argv) {
 	int lr1ir = gs.config.network.lr1ir;
 	int lr2ir = gs.config.network.lr2ir;
 	ReadMIDI(&gs, fs::make_preferred("LR2files/Config/midi.xml").data());
-	if (gs.config.system.softwarerendering == 1) {
-		SetUse3DFlag(0);
-	}
 	gs.directoryPath.fillzero();
 	gs.cmd_directplay = false;
 	gs.cmd_auto = '\0';
@@ -287,7 +284,7 @@ int main(int argc, char** argv) {
 	gs.audio.replay2avi = false;
 	gs.skstruct.drBuf.isDisabled = '\0';
 	bool test_mode = false;
-	bool use_dx9 = false;
+	int use_dx = DX_DIRECT3D_9; // TODO: Default to dx11 when it works.
 	//commandline
 	for (int i = 1; i < argc; i++) {
 		CSTR tStr1;
@@ -352,7 +349,13 @@ int main(int argc, char** argv) {
 			gs.cmd_n = atol(tStr1.right(tStr1.length() - 2)); //TOFIX : never used
 		}
 		else if (tStr2.starts_with("-dx9")) {
-			use_dx9 = true;
+			use_dx = DX_DIRECT3D_9;
+		}
+		else if (tStr2.starts_with("-dx9ex")) {
+			use_dx = DX_DIRECT3D_9EX;
+		}
+		else if (tStr2.starts_with("-dx11")) {
+			use_dx = DX_DIRECT3D_11;
 		}
 		else if (tStr2.starts_with("-test")) {
 			test_mode = true;
@@ -479,9 +482,10 @@ int main(int argc, char** argv) {
 	SetMultiThreadFlag(1);
 	SetUseFPUPreserveFlag(1);
 	SetUseDirectInputFlag(1); //DXLIBVER: not in original, but we need it to make same reaction.
-	// NOTE(chown2): with DX9, in a virtual machine crashes on DxLib_Init
-	if (use_dx9) {
-		SetUseDirect3DVersion(DX_DIRECT3D_9); //DXLIBVER: if not set, it's DX11 (over 3.13e)
+	if (gs.config.system.softwarerendering == 1) {
+		SetUse3DFlag(0);
+	} else {
+		SetUseDirect3DVersion(use_dx);
 	}
 	SetUseDisplayIndex(-1);
 	if (DxLib_Init() == -1) return 0;
@@ -2028,7 +2032,13 @@ int main(int argc, char** argv) {
 			printfDx("maxGAP %.3f\n", gs.timer1.maxGAP);
 			printfDx("avgGAP %.3f\n", gs.timer1.avgOnlyGAP);
 			printfDx("GAP ticks %d / %d\n", gs.timer1.GAPcount, gs.timer1.GAPtick);
-			printfDx("%s ", GetUseDirect3DVersion() == 3? "DX11" : "DX9"); //none:0 DX_DIRECT3D_9:1 9EX:2 11:3 default 2? //DEBUG
+			switch (GetUseDirect3DVersion()) {
+			case DX_DIRECT3D_NONE: printfDx("NOTDX "); break;
+			case DX_DIRECT3D_9: printfDx("DX9 "); break;
+			case DX_DIRECT3D_9EX: printfDx("DX9EX "); break;
+			case DX_DIRECT3D_11: printfDx("DX11 "); break;
+			default: printfDx("UNKNOWN "); break;
+			}
 			printfDx("%s ", gs.config.system.screenmode == 1 ? "windowed" : gs.config.system.screenmode == 2 ? "borderless" : "desktop");
 			if (GetWaitVSyncFlag()) SetWaitVSyncFlag(0); //TEST
 			printfDx("%s\n", DxLib::GetWaitVSyncFlag() ? "Vsync" : "");
