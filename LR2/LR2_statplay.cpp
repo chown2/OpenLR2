@@ -63,75 +63,22 @@ uint ConvertOptionHistory(game *g){
 			return ret;
 		}
 		if (clear > 2) {
+			static_assert(OPTION_GAUGE_END < 8);
+			static_assert(OPTION_RANDOM_END < 8);
+			//static_assert(OPTION_HIDSUD_END < 8); //TODO
 			ret = 0;
-			switch (gauge) {
-				case 0:
-					ret = 1;
-					break;
-				case 1:
-					ret = 2;
-					break;
-				case 2:
-					ret = 4;
-					break;
-				case 3:
-					ret = 8;
-					break;
-				case 4:
-					ret = 0x10;
-					break;
-				case 5:
-					ret = 0x20;
-					break;
-				case 6:
-					ret = 0x40;
-					break;
-				case 7:
-					ret = 0x80;
-			}
-			switch (g->config.play.random[0]) {
-				case 0:
-					ret = ret | 0x100;
-					break;
-				case 1:
-					ret = ret | 0x200;
-					break;
-				case 2:
-					ret = ret | 0x400;
-					break;
-				case 3:
-					ret = ret | 0x800;
-					break;
-				case 4:
-					ret = ret | 0x1000;
-					break;
-				case 5:
-					ret = ret | 0x2000;
-					break;
-				case 6:
-					ret = ret | 0x4000;
-					break;
-				case 7:
-					ret = ret | 0x8000;
-			}
-			switch (g->config.play.m_HIDSUD1) {
-				case 0:
-					return ret | 0x10000;
-				case 1:
-					return ret | 0x20000;
-				case 2:
-					return ret | 0x40000;
-				case 3:
-					return ret | 0x80000;
-				case 4:
-					return ret | 0x100000;
-				case 5:
-					return ret | 0x200000;
-				case 6:
-					return ret | 0x400000;
-				case 7:
-					return ret | 0x800000;
-			}
+			if (gauge <= OPTION_GAUGE_END)
+				ret = ret | 0x1 << gauge ;
+			else
+				ErrorLogFmtAdd("BUG: invalid gauge: %d", gauge);
+			if (g->config.play.random[0] <= OPTION_RANDOM_END)
+				ret = ret | 0x100 << g->config.play.random[0];
+			else
+				ErrorLogFmtAdd("BUG: invalid random: %d", g->config.play.random);
+			if (g->config.play.m_HIDSUD1 <= 3)
+				ret = ret | 0x10000 << g->config.play.m_HIDSUD1;
+			else
+				ErrorLogFmtAdd("BUG: invalid m_HIDSUD1: %d", g->config.play.m_HIDSUD1);
 		}
 	}
 	return ret;
