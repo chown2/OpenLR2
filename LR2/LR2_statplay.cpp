@@ -11,7 +11,7 @@ bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 		&& (g->config.play.m_addnote == 0 && g->config.play.is_extra == 0) && g->config.play.autokey == 0
 		&& (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10) 
-		&& g->config.play.random[0] < 4 && g->config.play.random[1] < 4) {
+		&& g->config.play.random[0] < OPTION_RANDOM_SCATTER && g->config.play.random[1] < OPTION_RANDOM_SCATTER) {
 		return true;
 	}
 	return false;
@@ -24,7 +24,7 @@ int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 		return 0;
 	}
 
-	if (g->config.play.random[0] < 4 && g->config.play.random[1] < 4 && g->config.play.hsfix != OPTION_HSFIX_CONSTANT
+	if (g->config.play.random[0] < OPTION_RANDOM_SCATTER && g->config.play.random[1] < OPTION_RANDOM_SCATTER && g->config.play.hsfix != OPTION_HSFIX_CONSTANT
 		&& g->config.play.autokey == 0 && (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10)) {
 		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
@@ -385,7 +385,7 @@ int CheckMission(game *g){
 		case 7:
 			gauge = g->config.play.random[0];
 			if ((g->config.play.random[0] == g->config.play.random[1] || g->sSelect.bmsList[g->sSelect.cur_song].keymode < 10) 
-				&& g->gameplay.player[0].totalnotes >= 100 && g->config.play.random[0] == 5) {
+				&& g->gameplay.player[0].totalnotes >= 100 && g->config.play.random[0] == OPTION_RANDOM_CONVERGE) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -425,7 +425,7 @@ int CheckMission(game *g){
 			break;
 		case 14:
 			if ((g->config.play.random[0] == g->config.play.random[1] || g->sSelect.bmsList[g->sSelect.cur_song].keymode < 10)
-				&& g->gameplay.player[0].totalnotes >= 500 && g->config.play.random[0] == 5) {
+				&& g->gameplay.player[0].totalnotes >= 500 && g->config.play.random[0] == OPTION_RANDOM_CONVERGE) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -445,7 +445,7 @@ int CheckMission(game *g){
 				}
 				level = g->gameplay.playerstat.trial;
 			}
-			if (g->gameplay.player[0].totalnotes >= 500 && g->config.play.random[0] == 2 && g->config.play.m_HIDSUD1 == 3) {
+			if (g->gameplay.player[0].totalnotes >= 500 && g->config.play.random[0] == OPTION_RANDOM_RANDOM && g->config.play.m_HIDSUD1 == 3) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -477,7 +477,7 @@ int CheckMission(game *g){
 			break;
 		case 22:
 			if ((g->config.play.random[0] != g->config.play.random[1] && 9 < g->sSelect.bmsList[g->sSelect.cur_song].keymode) || gauge != 2) break;
-			if (g->config.play.random[0] == 3) {
+			if (g->config.play.random[0] == OPTION_RANDOM_SRANDOM) {
 				if (g->gameplay.player[0].totalnotes >= 1000) {
 					g->gameplay.playerstat.trial = level + 1;
 				}
@@ -502,7 +502,7 @@ int CheckMission(game *g){
 			break;
 		case 25:
 			if (g->config.play.random[0] != g->config.play.random[1] && 9 < g->sSelect.bmsList[g->sSelect.cur_song].keymode) break;
-			if (g->config.play.random[0] == 5) {
+			if (g->config.play.random[0] == OPTION_RANDOM_CONVERGE) {
 				if (g->gameplay.player[0].totalnotes >= 1000) {
 					g->gameplay.playerstat.trial = level + 1;
 				}
@@ -517,7 +517,7 @@ int CheckMission(game *g){
 				}
 				level = g->gameplay.playerstat.trial;
 			}
-			if (g->config.play.random[0] == 2 && g->config.play.m_HIDSUD1 == 3 && g->gameplay.player[0].totalnotes >= 1000) {
+			if (g->config.play.random[0] == OPTION_RANDOM_RANDOM && g->config.play.m_HIDSUD1 == 3 && g->gameplay.player[0].totalnotes >= 1000) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -563,7 +563,7 @@ int CheckMission(game *g){
 			}
 			break;
 		case 35:
-			if (g->gameplay.player[0].totalnotes >= 1200 && g->gameplay.song_runtime < 150000.0 && gauge == 1 && g->config.play.random[0] == 5) {
+			if (g->gameplay.player[0].totalnotes >= 1200 && g->gameplay.song_runtime < 150000.0 && gauge == 1 && g->config.play.random[0] == OPTION_RANDOM_CONVERGE) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 			break;
@@ -591,7 +591,7 @@ int CheckMission(game *g){
 			}
 			break;
 		case 40:
-			if (g->gameplay.player[0].totalnotes >= 1500 && g->gameplay.song_runtime < 150000.0 && g->config.play.random[0] == 5 && 0 < g->config.play.randFix[0]) {
+			if (g->gameplay.player[0].totalnotes >= 1500 && g->gameplay.song_runtime < 150000.0 && g->config.play.random[0] == OPTION_RANDOM_CONVERGE && 0 < g->config.play.randFix[0]) {
 				g->gameplay.playerstat.trial = level + 1;
 			}
 	}
@@ -814,7 +814,7 @@ int SaveResult(game *g, sqlite3* sql) {
 		if (g->gameplay.isNosave) return -1;
 		
 		if (g->gameplay.isForceEasy && g->gameplay.player[0].clearType > 2) {
-			if (g->gameplay.player[0].clearType == 5 && (g->config.play.p1_assist == 0 && g->config.play.p2_assist == 0) && ((g->config.play.random[0] != 4 && g->config.play.random[1] != 4) || g->gameplay.minBPM == g->gameplay.maxBPM)) {
+			if (g->gameplay.player[0].clearType == 5 && (g->config.play.p1_assist == 0 && g->config.play.p2_assist == 0) && ((g->config.play.random[0] != OPTION_RANDOM_SCATTER && g->config.play.random[1] != OPTION_RANDOM_SCATTER) || g->gameplay.minBPM == g->gameplay.maxBPM)) {
 				g->gameplay.isForceEasy = 0;
 			}
 			else {
@@ -928,7 +928,7 @@ int SaveResult(game *g, sqlite3* sql) {
 				return 0;
 			}
 
-			else if (((g->config.play.p1_assist == 1 || g->config.play.p2_assist == 1) || g->config.play.hsfix == OPTION_HSFIX_CONSTANT || (g->config.play.random[0] > 3 || g->config.play.random[1] > 3)) && g->is_starter == 0) { 
+			else if (((g->config.play.p1_assist == 1 || g->config.play.p2_assist == 1) || g->config.play.hsfix == OPTION_HSFIX_CONSTANT || (g->config.play.random[0] > OPTION_RANDOM_SRANDOM || g->config.play.random[1] > OPTION_RANDOM_SRANDOM)) && g->is_starter == 0) { 
 				if (g->gameplay.replay.status == 2) return -1;
 
 				if (g->gameplay.player[0].clearType > 2) g->gameplay.player[0].clearType = 2;

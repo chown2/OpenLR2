@@ -1349,14 +1349,14 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 		int k = g->config.select.key;
 		if (k == 4 || k == 5 || k == 6 || (g->config.play.battle && k != OPTION_BATTLE_GBATTLE)) {
 			if (g->KeyInput.p1_buttonInput[2] == 1) {
-				LoopInRange(0, 5, 1, &g->config.play.random[0]);
+				LoopInRange(OPTION_RANDOM_OFF, OPTION_RANDOM_END, 1, &g->config.play.random[0]);
 			}
 			else if (g->KeyInput.p2_buttonInput[2] == 1) {
-				LoopInRange(0, 5, 1, &g->config.play.random[1]);
+				LoopInRange(OPTION_RANDOM_OFF, OPTION_RANDOM_END, 1, &g->config.play.random[1]);
 			}
 		}
 		else {
-			LoopInRange(0, 5, 1, &g->config.play.random[0]);
+			LoopInRange(OPTION_RANDOM_OFF, OPTION_RANDOM_END, 1, &g->config.play.random[0]);
 		}
 		SetObjectStrings_SongSelect(g);
 	}

@@ -2034,10 +2034,10 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	double meaLength{};
 
 
-	if (cfg->play.random[0] == 5 && cfg->play.p1_assist == 1) {
+	if (cfg->play.random[0] == OPTION_RANDOM_CONVERGE && cfg->play.p1_assist == 1) {
 		cfg->play.p1_assist = 0;
 	}
-	if (cfg->play.random[1] == 5 && cfg->play.p2_assist == 1) {
+	if (cfg->play.random[1] == OPTION_RANDOM_CONVERGE && cfg->play.p2_assist == 1) {
 		cfg->play.p2_assist = 0;
 	}
 	gp->keymode = meta->keymode;
@@ -2067,7 +2067,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	}
 	else if (gp->replay.status != 2) {
 		gp->randomseed = 0xFFFF;
-		if (cfg->play.random[0] == 2 && gp->forceRandomLayout != 0) {
+		if (cfg->play.random[0] == OPTION_RANDOM_RANDOM && gp->forceRandomLayout != 0) {
 			ErrorLogFmtAdd("Force random layout %d for keymode %d\n", gp->forceRandomLayout, gp->keymode);
 			switch (gp->keymode) {
 			case 5: gp->randomseed = GetSeed5K(gp->forceRandomLayout); break;
@@ -3278,7 +3278,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		gp->isNosave = 1;
 	if (cfg->play.hsfix == OPTION_HSFIX_CONSTANT && gp->minBPM != gp->maxBPM)
 		gp->isForceEasy = 1;
-	if (cfg->play.random[0] == 4 || cfg->play.random[1] == 4)
+	if (cfg->play.random[0] == OPTION_RANDOM_SCATTER || cfg->play.random[1] == OPTION_RANDOM_SCATTER)
 		gp->isForceEasy = 1;
 	if ((cfg->play.p1_assist == 1 || cfg->play.p2_assist == 1) && (7 < meta->keymode || cfg->play.battle != OPTION_BATTLE_DBATTLE))
 		gp->isForceEasy = 1;
@@ -3290,7 +3290,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		noteRandomTable[1][i] = i + 10;
 	}
 	for (int p = 0; p < 2; p++) {
-		if (cfg->play.random[p] == 1) { //mirror
+		if (cfg->play.random[p] == OPTION_RANDOM_MIRROR) {
 			if (meta->keymode == 7 || meta->keymode == 14) {
 				if (cfg->play.randSC[p] == 0) {
 					for (int i = 1; i <= 7; i++)
@@ -3316,7 +3316,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					noteRandomTable[0][i] = 10 - i;
 			}
 		}
-		else if (cfg->play.random[p] == 2) { //random
+		else if (cfg->play.random[p] == OPTION_RANDOM_RANDOM) {
 			if (meta->keymode == 9) {
 				for (int c = 1; c < 9; c++) {
 					int a = c + GetRand(9 - c);
@@ -3441,7 +3441,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (p1LastTiming < gp->bmsobj.notes[i].realTiming) {
 					p1LastTiming = gp->bmsobj.notes[i].realTiming;
 					for (int lane = 0; lane < 10; lane++) {
-						if (cfg->play.random[0] == 4) {
+						if (cfg->play.random[0] == OPTION_RANDOM_SCATTER) {
 							mapAdded[0][lane] = chArr[lane];
 						}
 						else {
@@ -3459,7 +3459,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (p2LastTiming < gp->bmsobj.notes[i].realTiming) {
 					p2LastTiming = gp->bmsobj.notes[i].realTiming;
 					for (int lane = 0; lane < 10; lane++) {
-						if (cfg->play.random[1] == 4) {
+						if (cfg->play.random[1] == OPTION_RANDOM_SCATTER) {
 							mapAdded[1][lane] = chArr[10 + lane];
 						}
 						else {
@@ -3478,7 +3478,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				else gp->bmsobj.notes[i].op -= 10;
 			}
 
-			if ( (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) || (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) ) {
+			if ( (cfg->play.random[0] >= OPTION_RANDOM_SRANDOM && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) || (cfg->play.random[1] >= OPTION_RANDOM_SRANDOM && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) ) {
 				if (meta->keymode == 5 || meta->keymode == 10) {
 					if (cfg->play.randFix[0] >= 6) cfg->play.randFix[0] = 0;
 					if (cfg->play.randFix[1] >= 6) cfg->play.randFix[1] = 0;
@@ -3493,8 +3493,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 
 				int assist = 0;
-				if (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) assist = (cfg->play.randSC[0] != 0);
-				else if (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) assist = (cfg->play.randSC[1] != 0);
+				if (cfg->play.random[0] >= OPTION_RANDOM_SRANDOM && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) assist = (cfg->play.randSC[0] != 0);
+				else if (cfg->play.random[1] >= OPTION_RANDOM_SRANDOM && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) assist = (cfg->play.randSC[1] != 0);
 
 				int randLanes{};
 				switch (meta->keymode) {
@@ -3527,11 +3527,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					while(pass2){
 						lane = startlane + GetRand(randLanes);
 						if (pass) {
-							if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END && cfg->play.random[0] == 5) {
+							if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END && cfg->play.random[0] == OPTION_RANDOM_CONVERGE) {
 								lane = cfg->play.randFix[0];
 								pass = 0;
 							}
-							if (gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC && cfg->play.random[1] == 5) {
+							if (gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC && cfg->play.random[1] == OPTION_RANDOM_CONVERGE) {
 								lane = cfg->play.randFix[1] + startlane;
 								pass = 0;
 							}

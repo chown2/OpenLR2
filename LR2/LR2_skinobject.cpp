@@ -3276,7 +3276,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 42:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[0], 0, 5, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[0], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3284,7 +3284,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 43:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[1], 0, 5, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[1], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);

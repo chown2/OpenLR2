@@ -719,21 +719,21 @@ bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, in
 		default: *oDigit1 = 0; break;
 		}
 		switch (result->randomOption[0]) {
-		case openlr2::Random::No: *oDigit2 = 0; break;
-		case openlr2::Random::Mirror: *oDigit2 = 1; break;
-		case openlr2::Random::Random: *oDigit2 = 2; break;
-		case openlr2::Random::SRandom: *oDigit2 = 3; break;
-		case openlr2::Random::Scatter: *oDigit2 = 4; break;
-		case openlr2::Random::Converge: *oDigit2 = 5; break;
+		case openlr2::Random::No: *oDigit2 = OPTION_RANDOM_OFF; break;
+		case openlr2::Random::Mirror: *oDigit2 = OPTION_RANDOM_MIRROR; break;
+		case openlr2::Random::Random: *oDigit2 = OPTION_RANDOM_RANDOM; break;
+		case openlr2::Random::SRandom: *oDigit2 = OPTION_RANDOM_SRANDOM; break;
+		case openlr2::Random::Scatter: *oDigit2 = OPTION_RANDOM_SCATTER; break;
+		case openlr2::Random::Converge: *oDigit2 = OPTION_RANDOM_CONVERGE; break;
 		default: *oDigit2 = 0; break;
 		}
 		switch (result->randomOption[1]) {
-		case openlr2::Random::No: *oDigit3 = 0; break;
-		case openlr2::Random::Mirror: *oDigit3 = 1; break;
-		case openlr2::Random::Random: *oDigit3 = 2; break;
-		case openlr2::Random::SRandom: *oDigit3 = 3; break;
-		case openlr2::Random::Scatter: *oDigit3 = 4; break;
-		case openlr2::Random::Converge: *oDigit3 = 5; break;
+		case openlr2::Random::No: *oDigit3 = OPTION_RANDOM_OFF; break;
+		case openlr2::Random::Mirror: *oDigit3 = OPTION_RANDOM_MIRROR; break;
+		case openlr2::Random::Random: *oDigit3 = OPTION_RANDOM_RANDOM; break;
+		case openlr2::Random::SRandom: *oDigit3 = OPTION_RANDOM_SRANDOM; break;
+		case openlr2::Random::Scatter: *oDigit3 = OPTION_RANDOM_SCATTER; break;
+		case openlr2::Random::Converge: *oDigit3 = OPTION_RANDOM_CONVERGE; break;
 		default: *oDigit3 = 0; break;
 		}
 		*oDigit4 = result->dpflip ? 1 : 0;
