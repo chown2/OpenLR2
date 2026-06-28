@@ -81,6 +81,128 @@ static bool run_tests() {
 	return true;
 }
 
+#ifdef _WIN32
+static int g_exclusiveDisplayIndex = -1;
+
+static int FindMonitorThatContainsWindowCenter() {
+	// All of these functions return coordinates on the global plane, where all monitors are laid out consecutively.
+	int wx = 0, wy = 0;
+	GetWindowPosition(&wx, &wy);
+	int ww = 0, wh = 0;
+	GetWindowSize(&ww, &wh);
+
+	const int centerX = wx + ww / 2;
+	const int centerY = wy + wh / 2;
+	const int displayCount = GetDisplayNum();
+	for (int i = 0; i < displayCount; i++) {
+		int dx = 0, dy = 0, dw = 0, dh = 0, primary = 0;
+		if (GetDisplayInfo(i, &dx, &dy, &dw, &dh, &primary) != 0) continue;
+		if (centerX >= dx && centerX < dx + dw && centerY >= dy && centerY < dy + dh) return i;
+	}
+
+	return -1;
+}
+
+static int GetUseDisplayIndex(int displayInfoIndex) {
+	if (displayInfoIndex < 0) return -1;
+
+	int targetPrimary = 0;
+	if (GetDisplayInfo(displayInfoIndex, nullptr, nullptr, nullptr, nullptr, &targetPrimary) != 0) return -1;
+	if (targetPrimary) return 0;
+
+	int useDisplayIndex = 1;
+	const int displayCount = GetDisplayNum();
+	for (int i = 0; i < displayCount; i++) {
+		if (i == displayInfoIndex) return useDisplayIndex;
+
+		int primary = 0;
+		if (GetDisplayInfo(i, nullptr, nullptr, nullptr, nullptr, &primary) != 0) continue;
+		if (!primary) useDisplayIndex++;
+	}
+
+	return -1;
+}
+
+// After Windows changes the primary monitor at runtime, DxLib can restore the
+// windowed mode on the wrong display when leaving exclusive fullscreen. Move it
+// back to the target display while keeping the same relative offset.
+static void MoveWindowToDisplay(int targetDisplayIndex, int sourceDisplayIndex) {
+	if (targetDisplayIndex < 0 || sourceDisplayIndex < 0) return;
+
+	int targetX = 0, targetY = 0;
+	int sourceX = 0, sourceY = 0;
+	if (GetDisplayInfo(targetDisplayIndex, &targetX, &targetY, nullptr, nullptr, nullptr) != 0) return;
+	if (GetDisplayInfo(sourceDisplayIndex, &sourceX, &sourceY, nullptr, nullptr, nullptr) != 0) return;
+
+	int wx = 0, wy = 0;
+	GetWindowPosition(&wx, &wy);
+	SetWindowPosition(targetX + wx - sourceX, targetY + wy - sourceY);
+}
+
+// Applies the configured screen mode.
+//   0 = desktop fullscreen (exclusive, bypasses the DWM -> lower input latency)
+//   1 = windowed
+//   2 = borderless fullscreen (virtual; composited by the DWM)
+// DxLib picks exclusive vs borderless through SetFullScreenResolutionMode;
+// ChangeWindowMode only toggles windowed(1)/fullscreen(0).
+static void ApplyScreenMode(int screenmode) {
+	switch (screenmode) {
+		case 0: {
+			const int displayInfoIndex = FindMonitorThatContainsWindowCenter();
+			const int useDisplayIndex = GetUseDisplayIndex(displayInfoIndex);
+			if (useDisplayIndex >= 0) {
+				SetUseDisplayIndex(useDisplayIndex);
+				g_exclusiveDisplayIndex = displayInfoIndex;
+			}
+			SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_DESKTOP);
+			ChangeWindowMode(0);
+			break;
+		}
+		case 1:
+		{
+			const int displayIndex = FindMonitorThatContainsWindowCenter();
+			g_exclusiveDisplayIndex = -1;
+			ChangeWindowMode(1);
+			const int restoredDisplayIndex = FindMonitorThatContainsWindowCenter();
+			if (displayIndex >= 0 && restoredDisplayIndex >= 0 && displayIndex != restoredDisplayIndex) {
+				MoveWindowToDisplay(displayIndex, restoredDisplayIndex);
+			}
+			break;
+		}
+		case 2:
+		default: {
+			g_exclusiveDisplayIndex = -1;
+			const int displayIndex = FindMonitorThatContainsWindowCenter();
+			if (displayIndex >= 0) SetUseDisplayIndex(displayIndex);
+			SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW);
+			ChangeWindowMode(0);
+			break;
+		}
+	}
+}
+#endif // _WIN32
+
+static double GetFrameLimiterRefreshRate() {
+#ifdef _WIN32
+	int refreshRate = 0;
+	if (g_exclusiveDisplayIndex >= 0 &&
+		GetDisplayInfo(g_exclusiveDisplayIndex, nullptr, nullptr, nullptr, nullptr, nullptr, &refreshRate) == 0 &&
+		refreshRate > 0) {
+		return (double)refreshRate;
+	}
+
+	const int displayIndex = FindMonitorThatContainsWindowCenter();
+	if (displayIndex >= 0 &&
+		GetDisplayInfo(displayIndex, nullptr, nullptr, nullptr, nullptr, nullptr, &refreshRate) == 0 &&
+		refreshRate > 0) {
+		return (double)refreshRate;
+	}
+#endif // _WIN32
+
+	const double fallbackRefreshRate = DxLib::GetRefreshRate();
+	return fallbackRefreshRate > 0 ? fallbackRefreshRate : 60.0;
+}
+
 int main(int argc, char** argv) {
 #ifdef _WIN32
 #ifndef NDEBUG
@@ -283,6 +405,8 @@ int main(int argc, char** argv) {
 	gs.is_clicked_screenModeChange = 0;
 	gs.flag_Screenshot = false;
 	ReadOptionstrFile(gs.txtStruct.option_str, fs::make_preferred("LR2files/Config/optionstr.csv").data());
+	if (gs.txtStruct.option_str[12].str[2].length() == 0)
+		gs.txtStruct.option_str[12].str[2].assign("BORDERLESS");
 	gs.audio.is_fmod_disabled = gs.config.sound.disablefmod;
 	if (gs.config.sound.disablefmod != 0) {
 		gs.config.select.preview = 0;
@@ -294,7 +418,7 @@ int main(int argc, char** argv) {
 
 	int resX, resY;
 	GetConfigResolution(gs.config.system.resolution, &resX, &resY);
-	SetGraphMode(resX, resY, (gs.config.system.highcolor == 0) ? 32 : 16, 60);
+	SetGraphMode(resX, resY, (gs.config.system.highcolor == 0) ? 32 : 16, GetRefreshRate());
 	if (gs.rec.recMode == 3) {
 		SetGraphMode(256, 256, 32, 60);
 	}
@@ -307,11 +431,11 @@ int main(int argc, char** argv) {
 	if (gs.is_starter) {
 		if (MessageBoxA(NULL, "フルスクリーンモードで起動しますか？", "確認", 4) == 6) {
 			gs.config.system.screenmode = 0;
-			ChangeWindowMode(0);
+			ApplyScreenMode(gs.config.system.screenmode);
 		}
 		else {
 			gs.config.system.screenmode = 1;
-			ChangeWindowMode(1);
+			ApplyScreenMode(gs.config.system.screenmode);
 		}
 	}
 	else {
@@ -320,16 +444,16 @@ int main(int argc, char** argv) {
 			if (gs.is_starter) { //unreachable duplicated code
 				if (MessageBoxA(NULL, "フルスクリーンモードで起動しますか？", "確認", 4) == 6) {
 					gs.config.system.screenmode = 0;
-					ChangeWindowMode(0);
+					ApplyScreenMode(gs.config.system.screenmode);
 				}
 				else {
 					gs.config.system.screenmode = 1;
-					ChangeWindowMode(1);
+					ApplyScreenMode(gs.config.system.screenmode);
 				}
 			}
 		}
 		SetWaitVSyncFlag(0); //VSYNC
-		ChangeWindowMode(1);
+		ApplyScreenMode(1);
 		SetWaitVSyncFlag(0); //VSYNC
 	}
 
@@ -441,7 +565,7 @@ int main(int argc, char** argv) {
 	if ((gs.is_recordmode == '\0') && (gs.auto2avi == '\0')) {
 		SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
-		ChangeWindowMode(gs.config.system.screenmode);
+		ApplyScreenMode(gs.config.system.screenmode);
 #endif // _WIN32
 		SetWaitVSyncFlag(0); //VSYNC
 		SetDrawScreen(DX_SCREEN_BACK);
@@ -1918,7 +2042,7 @@ int main(int argc, char** argv) {
 #ifdef _WIN32
 			printfDx("%s ", GetUseDirect3DVersion() == 3? "DX11" : "DX9"); //none:0 DX_DIRECT3D_9:1 9EX:2 11:3 default 2? //DEBUG
 #endif // _WIN32
-			printfDx("%s ", gs.config.system.screenmode? "windowed":"fullscreen");
+			printfDx("%s ", gs.config.system.screenmode == 1 ? "windowed" : gs.config.system.screenmode == 2 ? "borderless" : "desktop");
 			if (GetWaitVSyncFlag()) SetWaitVSyncFlag(0); //TEST
 			printfDx("%s\n", DxLib::GetWaitVSyncFlag() ? "Vsync" : "");
 			int dx, dy;
@@ -1930,7 +2054,9 @@ int main(int argc, char** argv) {
 		gs.sSelect.flag_maniacPanel = 0;
 		if(gs.procSelecter == 2){
 			if ( (gs.KeyInput.inputID[KEY_INPUT_F5] == 1 || gs.sSelect.is_buttonIRpage != 0) && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode > 4 && gs.config.network.lr2ir == 1) {
-				if (gs.config.system.screenmode == 0) {
+				// Both desktop(0) and borderless(2) own the display: drop to windowed(1) before
+				// opening the external browser, otherwise exclusive blocks/crashes the browser show.
+				if (gs.config.system.screenmode == 0 || gs.config.system.screenmode == 2) {
 					gs.config.system.screenmode = 1;
 					SetObjectStrings_SongSelect(&gs);
 					for (int i = 0; i < 200; i++) {
@@ -1939,7 +2065,7 @@ int main(int argc, char** argv) {
 					for (int i = 0; i < 10; i++) {
 						gs.skstruct.ImageFonts[i].filepath[0] = 0;
 					}
-					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
+					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), GetRefreshRate()); //redundant?
 					SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
 					ChangeWindowMode(gs.config.system.screenmode);
@@ -1983,7 +2109,7 @@ int main(int argc, char** argv) {
 					for (int i = 0; i < 10; i++) {
 						gs.skstruct.ImageFonts[i].filepath[0] = 0;
 					}
-					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
+					SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), GetRefreshRate()); //redundant?
 					SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
 					ChangeWindowMode(gs.config.system.screenmode);
@@ -2088,9 +2214,8 @@ int main(int argc, char** argv) {
 		GetTimeWrap();
 		if (gs.isSkipDrawTick == 0) {
 			if (gs.gameplay.flag_gameinput != 0 && gs.config.system.thread == 0 && gs.config.system.vsync == 1 && gs.is_recordmode == 0) {
-				//TODO : Get appropriate device
-				double a = DxLib::GetRefreshRate();
-				double m_lMillisecPerFrame = 1000 / a - 1.0;
+				const double a = GetFrameLimiterRefreshRate();
+				const double m_lMillisecPerFrame = 1000 / a - 1.0;
 
 				while (GetTimeWrap() - gs.timer1.vSyncTick < m_lMillisecPerFrame) {
 					ProcGame(&gs);
@@ -2210,7 +2335,7 @@ int main(int argc, char** argv) {
 			SetObjectStrings_SongSelect(&gs);
 		}
 		if (gs.KeyInput.inputID[KEY_INPUT_F4] == 1 && gs.procSelecter == 2) {
-			LoopInRange(0, 1, 1, &gs.config.system.screenmode);
+			LoopInRange(0, 2, 1, &gs.config.system.screenmode); // 0=desktop 1=windowed 2=borderless
 			gs.is_clicked_screenModeChange = 1;
 		}
 		if (gs.sSelect.is_filter_changed) {
@@ -2224,10 +2349,10 @@ int main(int argc, char** argv) {
 			for (int i = 0; i < 10; i++) {
 				gs.skstruct.ImageFonts[i].filepath[0] = 0;
 			}
-			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
+			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), GetRefreshRate()); //redundant?
 			SetWaitVSyncFlag(0); //VSYNC
 #ifdef _WIN32
-			ChangeWindowMode(gs.config.system.screenmode);
+			ApplyScreenMode(gs.config.system.screenmode);
 #endif // _WIN32
 			SetWaitVSyncFlag(0); //VSYNC
 			SetDrawScreen(DX_SCREEN_BACK);
@@ -2242,18 +2367,22 @@ int main(int argc, char** argv) {
 			LoadSceneG(&gs, &gs.skstruct, SKINTYPE_SELECT);
 			SetWaitVSyncFlag(0); //VSYNC
 			SetMouseDispFlag(0);
+#ifdef _WIN32
+			SetForegroundWindow(GetMainWindowHandle()); // restore OS focus so the cursor isn't frozen after leaving exclusive
+#endif // _WIN32
+			gs.KeyInput.mouse_buttonL = 0; // consume the click so the transition can't re-trigger the screen-mode toggle
 			gs.is_clicked_screenModeChange = 0;
 			SetObjectStrings_SongSelect(&gs);
 		}
 #ifdef _WIN32
-		else if(GetWindowModeFlag() != gs.config.system.screenmode){
+		else if(GetWindowModeFlag() != (gs.config.system.screenmode == 1 ? 1 : 0)){ // 0 and 2 are both fullscreen
 			for (int i = 0; i < 200; i++) {
 				gs.skstruct.caption[i].fillzero();
 			}
 			for (int i = 0; i < 10; i++) {
 				gs.skstruct.ImageFonts[i].filepath[0] = 0;
 			}
-			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), 60); //redundant?
+			SetGraphMode(resX, resY, (gs.config.system.highcolor == 0 ? 32 : 16), GetRefreshRate()); //redundant?
 			SetDrawScreen(DX_SCREEN_BACK);
 			LoadSceneG(&gs, &gs.skstruct, SKINTYPE_SELECT);
 			SetWaitVSyncFlag(0); //VSYNC
@@ -2263,7 +2392,7 @@ int main(int argc, char** argv) {
 			SetObjectStrings_SongSelect(&gs);
 		}
 #endif // _WIN32
-		SetMouseDispFlag( (gs.KeyInput.mouse_oldX < skinSizeX && gs.KeyInput.mouse_oldY < skinSizeY) ? 0:1  ); //TODO_RESOULUTION
+		SetMouseDispFlag((gs.KeyInput.mouse_oldX >= 0 && gs.KeyInput.mouse_oldX < skinSizeX && gs.KeyInput.mouse_oldY >= 0 && gs.KeyInput.mouse_oldY < skinSizeY) ? 0 : 1); //TODO_RESOULUTION
 		if ( (gs.procSelecter == 2 || gs.procSelecter == 9) && gs.KeyInput.inputID[KEY_INPUT_ESCAPE]
 				&& (GetTimeLapse(4,&gs.timer1) < 0.0 || GetTimeLapse(4, &gs.timer1) > 100.0) 
 				&& gs.txtStruct.st_text_num == -1 

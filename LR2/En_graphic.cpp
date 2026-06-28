@@ -30,7 +30,7 @@ int Resize(game* g, double skinX, double skinY, bool bit16) {
 #ifdef _WIN32
 	GetWindowPosition(&oldXpos, &oldYpos);
 #endif // _WIN32
-	SetGraphMode(skinX, skinY, bit16? 16 : 32, 60);
+	SetGraphMode(skinX, skinY, bit16? 16 : 32, GetRefreshRate());
 #ifdef _WIN32
 	SetWindowSizeExtendRate((double)g->config.system.windowsize_x / skinX, (double)g->config.system.windowsize_y / skinY);
 #endif // _WIN32

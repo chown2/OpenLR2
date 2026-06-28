@@ -980,6 +980,7 @@ int ReadConfig(game* g, const char* filepath) {
 	}
 
 	ReadXml_Int("config", "system", "screenmode", 0, &g->config.system.screenmode, hXml);
+	if ((unsigned)g->config.system.screenmode > 2) g->config.system.screenmode = 1;
 	ReadXml_Int("config", "system", "vsync", 0, &g->config.system.vsync, hXml);
 	ReadXml_Int("config", "system", "directdraw", 0, &g->config.system.directdraw, hXml);
 	ReadXml_Int("config", "system", "maindisplay", 0, &g->config.system.maindisplay, hXml);

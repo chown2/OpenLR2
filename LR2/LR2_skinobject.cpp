@@ -3444,7 +3444,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 
 			//Option etc
 			case 80:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.system.screenmode, 0, 1, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.system.screenmode, 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					g->is_clicked_screenModeChange = 1;
@@ -4257,7 +4257,7 @@ int DefineOptionStrNum(OptionString *arrOpStr){
 	arrOpStr[0].count = 8;
 	arrOpStr[4].count = 6;
 	arrOpStr[16].count = 2;
-	arrOpStr[12].count = 2;
+	arrOpStr[12].count = 3;
 	arrOpStr[10].count = 5;
 	arrOpStr[1].count = 6;
 	arrOpStr[11].count = 2;

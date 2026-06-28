@@ -1,6 +1,6 @@
 ﻿#include "En_input.h"
 #include "En_timer.h"
-
+#include "En_graphic.h"
 #include <DxLib/DxLib.h>
 
 #ifndef _WIN32
@@ -32,6 +32,33 @@ static MIDI midi;
 #define LOWORD(l) ((WORD)(((DWORD_PTR)(l)) & 0xffff))
 #define HIWORD(l) ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
 #endif
+
+#ifdef _WIN32
+static void FixMousePointWithClientPosition(int* mouseX, int* mouseY) {
+	if (GetUseFullScreenResolutionMode() != DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW) return;
+
+	const HWND hWnd = GetMainWindowHandle();
+	if (hWnd == nullptr) return;
+
+	RECT clientRect{};
+	if (GetClientRect(hWnd, &clientRect) == 0) return;
+	const int clientWidth = clientRect.right - clientRect.left;
+	const int clientHeight = clientRect.bottom - clientRect.top;
+
+	POINT cursorPoint{};
+	if (GetCursorPos(&cursorPoint) == 0) return;
+	if (ScreenToClient(hWnd, &cursorPoint) == 0) return;
+
+	auto scaleClientPointToSkin = [](int point, int clientSize, int skinSize) {
+		if (clientSize <= 0 || skinSize <= 0) return point;
+		if (point >= 0) return point * skinSize / clientSize;
+		return -((-point * skinSize + clientSize - 1) / clientSize);
+	};
+
+	*mouseX = scaleClientPointToSkin(cursorPoint.x, clientWidth, skinSizeX);
+	*mouseY = scaleClientPointToSkin(cursorPoint.y, clientHeight, skinSizeY);
+}
+#endif // _WIN32
 
 // TODO structure array rework
 int InitInputStructure2(inputStructure *is){
@@ -151,6 +178,9 @@ static void ProcessInput(inputStructure *is, int interval) {
 	if (GetWindowActiveFlag() == 0) return;
 
 	GetMousePoint(&mouseX, &mouseY);
+#ifdef _WIN32
+	FixMousePointWithClientPosition(&mouseX, &mouseY);
+#endif // _WIN32
 	is->mouse_moveX = mouseX - is->mouse_oldX;
 	is->mouse_moveY = mouseY - is->mouse_oldY;
 	is->mouse_moveflag = 0;
@@ -327,7 +357,7 @@ int WaitInput(inputStructure *is){
 }
 
 int InputToButton(inputStructure *is, CONFIG_INPUT *cfg_input, int player, int isReplay) {
-	
+
 	ProcessInput(is, cfg_input->sys_inputinterval);
 	if (midi.controller_n > 0) {
 		is->midi_n = midi.controller_n;
