@@ -84,7 +84,7 @@ void RANKING::Init() {
 	this->totalPlaycount = 0;
 	this->rankingCount = 0;
 	this->myRanking = 0;
-	this->showRanking = '\0';
+	this->showRanking = 0;
 	for (int i = 0; i < this->rankingMax; i++) {
 		this->ranking[i].name.fillzero();
 		this->ranking[i].id = 0;

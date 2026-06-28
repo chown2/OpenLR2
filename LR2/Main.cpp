@@ -303,15 +303,15 @@ int main(int argc, char** argv) {
 	ReadMIDI(&gs, fs::make_preferred("LR2files/Config/midi.xml").data());
 	gs.directoryPath.fillzero();
 	gs.cmd_directplay = false;
-	gs.cmd_auto = '\0';
-	gs.cmd_nosave = '\0';
-	gs.is_recordmode = '\0';
-	gs.auto2avi = '\0';
+	gs.cmd_auto = 0;
+	gs.cmd_nosave = 0;
+	gs.is_recordmode = 0;
+	gs.auto2avi = 0;
 	gs.directoryFilename.fillzero();
 	gs.audio.cmd_mediaOut = false;
 	gs.rec.recMode = 0;
 	gs.audio.replay2avi = false;
-	gs.skstruct.drBuf.isDisabled = '\0';
+	gs.skstruct.drBuf.isDisabled = 0;
 	bool test_mode = false;
 	int use_dx = DX_DIRECT3D_9; // TODO: Default to dx11 when it works.
 	//commandline
@@ -331,17 +331,17 @@ int main(int argc, char** argv) {
 			gs.config.system.screenexrate = 100;
 			gs.config.play.autojudge = 0;
 			if (IsSndFile(tStr1)) {
-				gs.cmd_nosave = '\x01';
-				gs.auto2avi = '\x01';
-				gs.cmd_auto = '\x01';
+				gs.cmd_nosave = 1;
+				gs.auto2avi = 1;
+				gs.cmd_auto = 1;
 				gs.config.system.isablebmsthread = 1;
 				gs.audio.cmd_mediaOut = true;
 			}
 			else if (IsAviFile(tStr1)) {
-				gs.cmd_nosave = '\x01';
-				gs.cmd_auto = '\x01';
+				gs.cmd_nosave = 1;
+				gs.cmd_auto = 1;
 				gs.config.system.isablebmsthread = 1;
-				gs.gameplay.isPreviewLoad = '\0';
+				gs.gameplay.isPreviewLoad = 0;
 				gs.config.play.bga = 1;
 				gs.audio.cmd_mediaOut = true;
 				gs.config.system.vsync = 1;
@@ -349,30 +349,30 @@ int main(int argc, char** argv) {
 		}
 		else if (tStr2.isSame("-auto2avi")) {
 			gs.rec.recMode = 1;
-			gs.is_recordmode = '\x01';
+			gs.is_recordmode = 1;
 			gs.config.select.preview = 0;
 		}
 		else if (tStr2.isSame("-replay2avi")) {
 			gs.rec.recMode = 2;
 			gs.audio.replay2avi = true;
-			gs.is_recordmode = '\x01';
+			gs.is_recordmode = 1;
 			gs.config.select.preview = 0;
 		}
 		else if (tStr2.isSame("-bga2avi")) {
 			gs.rec.recMode = 3;
-			gs.skstruct.drBuf.isDisabled = '\x01';
-			gs.is_recordmode = '\x01';
+			gs.skstruct.drBuf.isDisabled = 1;
+			gs.is_recordmode = 1;
 			gs.config.select.preview = 0;
 		}
 		else if (tStr2.isSame("-movie")) {
 			gs.rec.recMode = 4;
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.isSame("-ns")) {
-			gs.cmd_nosave = '\x01';
+		else if (tStr2.starts_with("-ns")) {
+			gs.cmd_nosave = 1;
 		}
-		else if (tStr2.isSame("-a")) {
-			gs.cmd_auto = '\x01';
+		else if (tStr2.starts_with("-a")) {
+			gs.cmd_auto = 1;
 		}
 		else if (tStr2.isSame("-dx9")) {
 			use_dx = DX_DIRECT3D_9;
@@ -498,7 +498,7 @@ int main(int argc, char** argv) {
 	if constexpr (!is_linux()) { SetMainWindowText(openlr2::versionName); }
 	SetOutApplicationLogValidFlag(gs.config.system.outputlog);
 	SetMultiThreadFlag(1);
-	if ((gs.is_recordmode == '\0') && (gs.rec.recMode == 0)) {
+	if ((gs.is_recordmode == 0) && (gs.rec.recMode == 0)) {
 		SetWaitVSyncFlag(0); //VSYNC
 	}
 	else {
@@ -585,7 +585,7 @@ int main(int argc, char** argv) {
 	}
 
 	//mainphase
-	if ((gs.is_recordmode == '\0') && (gs.auto2avi == '\0')) {
+	if ((gs.is_recordmode == 0) && (gs.auto2avi == 0)) {
 		SetWaitVSyncFlag(0); //VSYNC
 		ApplyScreenMode(gs.config.system.screenmode);
 		SetWaitVSyncFlag(0); //VSYNC
@@ -598,7 +598,7 @@ int main(int argc, char** argv) {
 	gs.gameplay.flag_gameinput = false;
 	InitBmsList(&gs.sSelect);
 	gs.sSelect.maniac_cursor = 0;
-	gs.sSelect.flag_maniacPanel = '\0';
+	gs.sSelect.flag_maniacPanel = 0;
 	if (gs.cmd_directplay && !gs.is_starter) { //logic arranged
 		gs.sSelect.cur = 0;
 		cstrSprintf(&gs.sSelect.stack_query[gs.sSelect.cur], "SELECT * FROM folder WHERE parent = \'%s\'", AssignCRC32("ROOT").body);
@@ -667,7 +667,7 @@ int main(int argc, char** argv) {
 	gs.gameplay.bmsobj.autoplay = 0;
 	gs.gameplay.player[0].flag_active = 1;
 	gs.gameplay.player[1].flag_active = 0;
-	memset(gs.gameplay.bmsobj_note, '\0', sizeof(LaneStruct)*20);
+	memset(gs.gameplay.bmsobj_note, 0, sizeof(LaneStruct)*20);
 	gs.gameplay.bmsobj_line.notes = NULL;
 	gs.gameplay.bmsobj_line.count = 0;
 	gs.gameplay.bmsobj_line.size = 0;
@@ -779,7 +779,7 @@ int main(int argc, char** argv) {
 		gs.gameplay.courseType = -1;
 		gs.isSkipDrawTick = 1;
 		gs.net.rankingData.target_ID = 0;
-		gs.gameplay.ghostBattle = '\0';
+		gs.gameplay.ghostBattle = 0;
 		gs.gameplay.flag_retry = 0;
 		gs.sSelect.listCalculatedBar = 0;
 		gs.sSelect.barMoveStartTime = 0;
@@ -788,12 +788,12 @@ int main(int argc, char** argv) {
 		gs.sSelect.nowBar = 0;
 		gs.sSelect.listTopbar = 0;
 		gs.sSelect.listSelectedBarFromScreenTop = 0;
-		gs.sSelect.flag_folderlamp = '\0';
+		gs.sSelect.flag_folderlamp = 0;
 		gs.sSelect.cur_song = 0;
 		ProcS_Select(&gs);
 		gs.gameplay.replay.status = 0;
 		gs.gameplay.isAutoplay = (gs.cmd_auto != 0);
-		if ((gs.auto2avi != '\0') || (gs.is_recordmode != '\0')) {
+		if ((gs.auto2avi != 0) || (gs.is_recordmode != 0)) {
 			gs.gameplay.flag_closingPhase = 0;
 			gs.gameplay.isAutoplay = 1;
 			gs.gameplay.replay.status = 0;
@@ -971,7 +971,7 @@ int main(int argc, char** argv) {
 					if (gs.net.rankingData.target_ID != 0) {
 						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
 					}
-					gs.gameplay.ghostBattle = '\0';
+					gs.gameplay.ghostBattle = 0;
 					ReadKeyConfig(&gs, (gs.config.select.control == 0)
 							? fs::make_preferred("LR2files/Config/keyconfig.xml" ).data()
 							: fs::make_preferred("LR2files/Config/keyconfig_p.xml").data());
@@ -979,9 +979,9 @@ int main(int argc, char** argv) {
 					gs.skstruct.GrHandle[GRHTYPE_STAGE] = -1;
 					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_BACKBMP]);
 					gs.skstruct.GrHandle[GRHTYPE_BACKBMP] = -1;
-					gs.sSelect.is_clicked_autoplay_replay = '\0';
-					gs.sSelect.is_clicked_keyconfig = '\0';
-					gs.sSelect.is_clicked_skinselect = '\0';
+					gs.sSelect.is_clicked_autoplay_replay = 0;
+					gs.sSelect.is_clicked_keyconfig = 0;
+					gs.sSelect.is_clicked_skinselect = 0;
 					gs.sSelect.course.isCourseCreated = 0;
 					gs.gameplay.replay.status = 0;
 					if (gs.po4MainMenuCursor == 3) {
@@ -1057,7 +1057,7 @@ int main(int argc, char** argv) {
 							}
 						}
 						gs.sSelect.course.count = -1;
-						gs.sSelect.course.isMakingCourse = '\0';
+						gs.sSelect.course.isMakingCourse = 0;
 					}
 					gs.sSelect.toRoot = 0;
 					LoadFontForSongs(&gs, 0);
@@ -1492,7 +1492,7 @@ int main(int argc, char** argv) {
 							gs.config.play.m_earthquake = 0;
 							gs.config.play.m_extra = 0;
 							gs.config.play.dpflip = 0;
-							gs.config.play.m_lunaris = '\0';
+							gs.config.play.m_lunaris = 0;
 							gs.config.play.m_gambol = 0;
 							gs.config.play.m_sidejump = 0;
 							gs.config.play.m_nabeatsu = 0;
@@ -2040,14 +2040,14 @@ int main(int argc, char** argv) {
 					printfDx("スキン描画制限(カーソルキーで調節)\nOFF\n");
 				}
 			}
-			else if (gs.KeyInput.inputID[KEY_INPUT_6] == '\x02') {
+			else if (gs.KeyInput.inputID[KEY_INPUT_6] == 2) {
 				printfDx("ノート位置(1P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_1p_x, gs.skstruct.adjust.note_1p_y);
 			}
-			else if (gs.KeyInput.inputID[KEY_INPUT_7] == '\x02'){
+			else if (gs.KeyInput.inputID[KEY_INPUT_7] == 2){
 				printfDx("ノート位置(2P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_2p_x, gs.skstruct.adjust.note_2p_y);
 			}
 		}
-		if ( gs.KeyInput.inputID[KEY_INPUT_F1] == '\x02' && gs.sSelect.flag_maniacPanel == '\0' && gs.is_starter == '\0') {
+		if ( gs.KeyInput.inputID[KEY_INPUT_F1] == 2 && gs.sSelect.flag_maniacPanel == 0 && gs.is_starter == 0) {
 			printfDx( (gs.sSelect.bmsList[gs.sSelect.cur_song].folderType == 8) ?
 						"F2 マニアックオプション F3 コースのソート変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6  スクリーンショット F7 FPS表示\nF8 フォルダのリロード\n" 
 						: "F2 マニアックオプション F3 レベルの変更\nF4 ウインドウモード切り替え F5 IRに接続\nF6 スク リーンショット F7 FPS表示\nF8 フォルダのリロード\n");

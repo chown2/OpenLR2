@@ -338,7 +338,7 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	sk->count = 0;
 	sk->num_of_struct = 0;
 	sk->num_of_ImageFont = 0;
-	if (font == '\0') {
+	if (font == 0) {
 		InitFontToHandle();
 	}
 	for (int i = 0; i < 10; i++) {
@@ -780,7 +780,7 @@ int ApplyFlipside(skstruct *sk){
 }
 
 int ClearSkinGraph(skstruct *sk){
-	InitSkin(sk, 0, '\0');
+	InitSkin(sk, 0, 0);
 	for (int i = 0; i < 200; i++) {
 		sk->caption[i].fillzero();
 		sk->GrHandle[i] = -1;
@@ -1701,7 +1701,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 		ErrorLogFmtAdd("スキンの読み込みに成功しました。 %s\n", FilePath.body);
 		ErrorLogTabSub();
 		SetTransColor(0, 0xff, 0);
-		if (flipside != '\0') {
+		if (flipside != false) {
 			ApplyFlipside(sk);
 		}
 		return 1;

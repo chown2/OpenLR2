@@ -1242,7 +1242,7 @@ int ProcGame(game *g) {
 		if (g->gameplay.bmsobj.notes[g->gameplay.bmsobj.note_count].realTiming >= t142 || g->gameplay.bpmChangedBmstime >= 0) {
 			SoundGetCurrentTime(&g->audio, &g->gameplay.muon); //anti cheat
 			t142 = GetTimeLapse(142, &g->timer1);
-			if (g->gameplay.isPreviewLoad == '\0') {
+			if (g->gameplay.isPreviewLoad == 0) {
 				ReactInput(g);
 			}
 

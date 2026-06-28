@@ -327,7 +327,7 @@ int ReleaseBGA(game *g){
 
 void ProcLoadBmsResource(game *g) {
 	g->gameplay.bmsResourceLoaded = 0;
-	g->gameplay.flag_closingPhase = '\0';
+	g->gameplay.flag_closingPhase = 0;
 	LoadBmsResource(&g->gameplay, g->sSelect.metaSelected.filepath, &g->audio, &g->config, &g->sSelect.metaSelected, g->skstruct.flag_BGA, g->skstruct.flag_flip, 0);
 	g->gameplay.bmsResourceLoaded = 1;
 }
@@ -535,7 +535,7 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	gp->delayDetectedCount = 0; 
 	gp->nabeatsu_x = 0.0;
 	gp->nabeatsu_y = 0.0;
-	gp->isNosave = '\0'; //TOFIX : ?
+	gp->isNosave = 0;
 	gp->earthquake_x = 0.0;
 	gp->earthquake_y = 0.0;
 	
@@ -618,20 +618,20 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 	gp->lastMissTime = 0;
 	gp->misslayerTime[0] = 0;
 	gp->misslayerTime[1] = 0;
-	gp->soundonly = '\x01';
-	gp->fxChangeInRecording = '\0';
+	gp->soundonly = 1;
+	gp->fxChangeInRecording = 0;
 	gp->procGameCallCount = 0;
 	gp->isSpeedChanged = false;
 	gp->lanecoverDoubleclickTimeP1 = 0;
 	gp->lanecoverDoubleclickTimeP2 = 0;
-	gp->lanecoverDisplayP1 = '\x01';
-	gp->lanecoverDisplayP2 = '\x01';
-	gp->isForceEasy = '\0';
-	gp->flag_threadDoingProcGame = '\0';
-	gp->flag_gameinput = '\0';
-	gp->flag_longsound = '\0';
-	gp->flag_0note = '\0';
-	gp->isGhostDisabled = '\0';
+	gp->lanecoverDisplayP1 = 1;
+	gp->lanecoverDisplayP2 = 1;
+	gp->isForceEasy = 0;
+	gp->flag_threadDoingProcGame = 0;
+	gp->flag_gameinput = 0;
+	gp->flag_longsound = 0;
+	gp->flag_0note = 0;
+	gp->isGhostDisabled = 0;
 	gp->bpmChangedRealtime = -1;
 	gp->bpmChangedBmstime = -1;
 	for (int i = 0; i < 1000; i++) {

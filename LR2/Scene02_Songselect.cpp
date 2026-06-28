@@ -1673,8 +1673,8 @@ static void ThreadProc_LoadPreview(game *g) {
 	meta = g->sSelect.metaSelected;
 
 	g->gameplay.bmsResourceLoaded = 0;
-	g->gameplay.flag_closingPhase = '\0';
-	g->gameplay.flag_gameinput = '\0';
+	g->gameplay.flag_closingPhase = 0;
+	g->gameplay.flag_gameinput = 0;
 	g->gameplay.isAutoplay = 1;
 	g->gameplay.courseType = -1;
 	g->gameplay.isCourse = 0;
