@@ -1,15 +1,15 @@
-// -------------------------------------------------------------------------------
+ï»¿// -------------------------------------------------------------------------------
 // 
-// 		‚c‚wƒ‰ƒCƒuƒ‰ƒŠ		WinAPIƒvƒƒOƒ‰ƒ€
+// 		ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒª		WinAPIãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 // 
 // 				Ver 3.24f
 // 
 // -------------------------------------------------------------------------------
 
-// ‚c‚wƒ‰ƒCƒuƒ‰ƒŠì¬—p’è‹`
+// ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½œæˆæ™‚ç”¨å®šç¾©
 #define DX_MAKE
 
-// ƒCƒ“ƒNƒ‹[ƒh ------------------------------------------------------------------
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ ------------------------------------------------------------------
 #include "DxWinAPI.h"
 #include <tchar.h>
 #include "../DxMemory.h"
@@ -23,11 +23,11 @@ namespace DxLib
 
 #endif // DX_NON_NAMESPACE
 
-// ƒ}ƒNƒ’è‹` --------------------------------------------------------------------
+// ãƒã‚¯ãƒ­å®šç¾© --------------------------------------------------------------------
 
-// \‘¢‘Ì’è‹` --------------------------------------------------------------------
+// æ§‹é€ ä½“å®šç¾© --------------------------------------------------------------------
 
-// “à•”‘åˆæ•Ï”éŒ¾ --------------------------------------------------------------
+// å†…éƒ¨å¤§åŸŸå¤‰æ•°å®£è¨€ --------------------------------------------------------------
 
 WINAPIDATA WinAPIData ;
 
@@ -83,21 +83,21 @@ static const char *D3DCompiler_DllNameTable[] =
 	NULL,
 } ;
 
-// ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾-----------------------------------------------------------
+// é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€-----------------------------------------------------------
 
-// ƒvƒƒOƒ‰ƒ€ --------------------------------------------------------------------
+// ãƒ—ãƒ­ã‚°ãƒ©ãƒ  --------------------------------------------------------------------
 
-// WindowsOS ‚Ì DLL ‚ğ“Ç‚İ‚Ş
+// WindowsOS ã® DLL ã‚’èª­ã¿è¾¼ã‚€
 extern int LoadWinAPI( void )
 {
-	// ‰Šú‰»Ï‚İ‚Ìê‡‚Í‰½‚à‚µ‚È‚¢
+	// åˆæœŸåŒ–æ¸ˆã¿ã®å ´åˆã¯ä½•ã‚‚ã—ãªã„
 	if( WinAPIData.InitializeFlag )
 	{
 		return 0 ;
 	}
 
 #ifndef DX_NON_NETWORK
-	// ws2_32.dll ‚ğƒ[ƒh‚·‚é
+	// ws2_32.dll ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.WinSockFunc.WinSockDLL == NULL )
 	{
 		WinAPIData.WinSockFunc.WinSockDLL = LoadLibraryA( "ws2_32.dll" ) ;
@@ -129,7 +129,7 @@ extern int LoadWinAPI( void )
 #endif
 
 #ifndef DX_NON_KEYEX
-	// Imm32DLL ‚ğƒ[ƒh‚·‚é
+	// Imm32DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.ImmFunc.Imm32DLL == NULL )
 	{
 		WinAPIData.ImmFunc.Imm32DLL = LoadLibraryA( "Imm32.dll" ) ;
@@ -155,7 +155,7 @@ extern int LoadWinAPI( void )
 	}
 #endif
 
-	// WinMM DLL ‚ğƒ[ƒh‚·‚é
+	// WinMM DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.WinMMDLL == NULL )
 	{
 		WinAPIData.Win32Func.WinMMDLL = LoadLibraryA( "winmm.dll" ) ;
@@ -183,7 +183,7 @@ extern int LoadWinAPI( void )
 		WinAPIData.Win32Func.waveOutResetFunc = ( MMRESULT ( WINAPI * )( HWAVEOUT ) )GetProcAddress( WinAPIData.Win32Func.WinMMDLL, "waveOutReset" ) ;
 	}
 
-	// Kernel32 DLL ‚ğƒ[ƒh‚·‚é
+	// Kernel32 DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.Kernel32DLL == NULL )
 	{
 		WinAPIData.Win32Func.Kernel32DLL = LoadLibraryA( "kernel32.dll" ) ;
@@ -279,7 +279,7 @@ extern int LoadWinAPI( void )
 		WinAPIData.Win32Func.MultiByteToWideCharFunc = ( int ( WINAPI * )( UINT, DWORD, LPCCH, int, LPWSTR, int ) )GetProcAddress( WinAPIData.Win32Func.Kernel32DLL, "MultiByteToWideChar" ) ;
 	}
 
-	// Old32 DLL ‚ğƒ[ƒh‚·‚é
+	// Old32 DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.Old32DLL == NULL )
 	{
 		WinAPIData.Win32Func.Old32DLL = LoadLibraryA( "ole32.dll" ) ;
@@ -292,7 +292,7 @@ extern int LoadWinAPI( void )
 		WinAPIData.Win32Func.CLSIDFromStringFunc = ( HRESULT ( WINAPI * )( LPCOLESTR, LPCLSID ) )GetProcAddress( WinAPIData.Win32Func.Old32DLL, "CLSIDFromString" ) ;
 	}
 
-	// OleAut32 DLL ‚ğƒ[ƒh‚·‚é
+	// OleAut32 DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.OleAut32DLL == NULL )
 	{
 		WinAPIData.Win32Func.OleAut32DLL = LoadLibraryA( "oleaut32.dll" ) ;
@@ -302,7 +302,7 @@ extern int LoadWinAPI( void )
 		WinAPIData.Win32Func.VariantInitFunc = ( void (WINAPI * )( VARIANTARG * ) )GetProcAddress( WinAPIData.Win32Func.OleAut32DLL, "VariantInit" ) ;
 	}
 
-	// Comctl32 DLL ‚ğƒ[ƒh‚·‚é
+	// Comctl32 DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.Comctl32DLL == NULL )
 	{
 		WinAPIData.Win32Func.Comctl32DLL = LoadLibraryA( "comctl32.dll" ) ;
@@ -312,7 +312,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// Ole32 DLL ‚ğƒ[ƒh‚·‚é
+	// Ole32 DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.Ole32DLL == NULL )
 	{
 		WinAPIData.Win32Func.Ole32DLL = LoadLibraryA( "Ole32.dll" ) ;
@@ -323,7 +323,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// User32DLL ‚ğƒ[ƒh‚·‚é
+	// User32DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.User32DLL == NULL )
 	{
 		WinAPIData.Win32Func.User32DLL = LoadLibraryA( "User32.dll" ) ;
@@ -471,7 +471,7 @@ extern int LoadWinAPI( void )
 		WinAPIData.Win32Func.UnregisterTouchWindowFunc = ( BOOL ( WINAPI * )( HWND) )GetProcAddress( WinAPIData.Win32Func.User32DLL, "UnregisterTouchWindow" ) ;
 	}
 
-	// Gdi32DLL ‚ğƒ[ƒh‚·‚é
+	// Gdi32DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.GDI32DLL == NULL )
 	{
 		WinAPIData.Win32Func.GDI32DLL = LoadLibraryA( "gdi32.dll" ) ;
@@ -519,7 +519,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// Advapi32DLL ‚ğƒ[ƒh‚·‚é
+	// Advapi32DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.ADVAPI32DLL == NULL )
 	{
 		WinAPIData.Win32Func.ADVAPI32DLL = LoadLibraryA( "advapi32.dll" ) ;
@@ -536,7 +536,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// Shell32DLL ‚ğƒ[ƒh‚·‚é
+	// Shell32DLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.SHELL32DLL == NULL )
 	{
 		WinAPIData.Win32Func.SHELL32DLL = LoadLibraryA( "shell32.dll" ) ;
@@ -549,7 +549,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// NTDLL ‚ğƒ[ƒh‚·‚é
+	// NTDLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.NTDLL == NULL )
 	{
 		WinAPIData.Win32Func.NTDLL = LoadLibraryA( "ntdll.dll" ) ;
@@ -559,7 +559,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// MfplatDLL ‚ğƒ[ƒh‚·‚é
+	// MfplatDLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.MFPLATDLL == NULL )
 	{
 		WinAPIData.Win32Func.MFPLATDLL = LoadLibraryA( "Mfplat.dll" ) ;
@@ -575,7 +575,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// MfreadwriteDLL ‚ğƒ[ƒh‚·‚é
+	// MfreadwriteDLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.MFREADWRITEDLL == NULL )
 	{
 		WinAPIData.Win32Func.MFREADWRITEDLL = LoadLibraryA( "Mfreadwrite.dll" ) ;
@@ -586,7 +586,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// PropsysDLL ‚ğƒ[ƒh‚·‚é
+	// PropsysDLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.PROPSYSDLL == NULL )
 	{
 		WinAPIData.Win32Func.PROPSYSDLL = LoadLibraryA( "Propsys.dll" ) ;
@@ -596,7 +596,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// usp10.dll ‚ğƒ[ƒh‚·‚é
+	// usp10.dll ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.USP10DLL == NULL )
 	{
 		WinAPIData.Win32Func.USP10DLL = LoadLibraryA( "usp10.dll" ) ;
@@ -607,7 +607,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// shcore.dll ‚ğƒ[ƒh‚·‚é
+	// shcore.dll ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.Win32Func.SHCOREDLL == NULL )
 	{
 		WinAPIData.Win32Func.SHCOREDLL = LoadLibraryA( "shcore.dll" ) ;
@@ -619,7 +619,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// DwmApiDLL ‚ğƒ[ƒh‚·‚é
+	// DwmApiDLL ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	if( WinAPIData.DwmApiDLL == NULL )
 	{
 		WinAPIData.DwmApiDLL = LoadLibraryA( "dwmapi.dll" ) ;
@@ -630,7 +630,7 @@ extern int LoadWinAPI( void )
 		}
 	}
 
-	// ƒƒCƒh•¶š‚ÌAPI‚ª—LŒø‚©‚Ç‚¤‚©‚ğ GetCurrentDirectoryW ‚ÅŠm”F‚·‚é
+	// ãƒ¯ã‚¤ãƒ‰æ–‡å­—ã®APIãŒæœ‰åŠ¹ã‹ã©ã†ã‹ã‚’ GetCurrentDirectoryW ã§ç¢ºèªã™ã‚‹
 	{
 		wchar_t TempBuffer[ 1024 ] ;
 
@@ -639,23 +639,23 @@ extern int LoadWinAPI( void )
 		WinAPIData.EnableWideCharaFunction = TempBuffer[ 0 ] != 0xffff ;
 	}
 
-	// ‰Šú‰»Š®—¹ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+	// åˆæœŸåŒ–å®Œäº†ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
 	WinAPIData.InitializeFlag = TRUE ;
 
-	// I—¹
+	// çµ‚äº†
 	return 0 ;
 }
 
-// WindowsOS ‚Ì DLL ‚ğ‰ğ•ú‚·‚é
+// WindowsOS ã® DLL ã‚’è§£æ”¾ã™ã‚‹
 extern int ReleaseWinAPI( void )
 {
-	// ‰Šú‰»‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç‰½‚à‚µ‚È‚¢
+	// åˆæœŸåŒ–ã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰ä½•ã‚‚ã—ãªã„
 	if( WinAPIData.InitializeFlag == FALSE )
 	{
 		return 0 ;
 	}
 
-	// DWMAPI.DLL ‚Ì‰ğ•ú
+	// DWMAPI.DLL ã®è§£æ”¾
 	if( WinAPIData.DwmApiDLL )
 	{
 		FreeLibrary( WinAPIData.DwmApiDLL ) ;
@@ -663,7 +663,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.DF_DwmEnableComposition = NULL ;
 	}
 
-	// WinMM DLL ‚ğ‰ğ•ú‚·‚é
+	// WinMM DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.WinMMDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.WinMMDLL ) ;
@@ -687,7 +687,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.waveOutResetFunc = NULL ;
 	}
 
-	// Kernel32 DLL ‚ğ‰ğ•ú‚·‚é
+	// Kernel32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.Kernel32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.Kernel32DLL ) ;
@@ -784,7 +784,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.MultiByteToWideCharFunc = NULL ;
 	}
 
-	// Old32 DLL ‚ğ‰ğ•ú‚·‚é
+	// Old32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.Old32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.Old32DLL ) ;
@@ -798,7 +798,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.CLSIDFromStringFunc = NULL ;
 	}
 
-	// OleAut32 DLL ‚ğ‰ğ•ú‚·‚é
+	// OleAut32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.OleAut32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.OleAut32DLL ) ;
@@ -809,7 +809,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.VariantInitFunc = NULL ;
 	}
 
-	// Comctl32 DLL ‚ğ‰ğ•ú‚·‚é
+	// Comctl32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.Comctl32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.Comctl32DLL ) ;
@@ -817,7 +817,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.InitCommonControlsFunc = NULL ;
 	}
 
-	// Ole32 DLL ‚ğ‰ğ•ú‚·‚é
+	// Ole32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.Ole32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.Ole32DLL ) ;
@@ -826,7 +826,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.PropVariantClearFunc = NULL ;
 	}
 
-	// User32.DLL ‚Ì‰ğ•ú
+	// User32.DLL ã®è§£æ”¾
 	if( WinAPIData.Win32Func.User32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.User32DLL ) ;
@@ -971,7 +971,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.GetRawInputDeviceInfoAFunc = NULL ;
 	}
 
-	// GDI32 DLL ‚ğ‰ğ•ú‚·‚é
+	// GDI32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.GDI32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.GDI32DLL ) ;
@@ -1017,7 +1017,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.GetKerningPairsFunc = NULL ;
 	}
 
-	// ADVAPI32 DLL ‚ğ‰ğ•ú‚·‚é
+	// ADVAPI32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.ADVAPI32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.ADVAPI32DLL ) ;
@@ -1032,7 +1032,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.RegQueryValueExWFunc = NULL ;
 	}
 
-	// SHELL32 DLL ‚ğ‰ğ•ú‚·‚é
+	// SHELL32 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.SHELL32DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.SHELL32DLL ) ;
@@ -1043,7 +1043,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.DragAcceptFilesFunc = NULL ;
 	}
 
-	// NT DLL ‚ğ‰ğ•ú‚·‚é
+	// NT DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.NTDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.NTDLL ) ;
@@ -1051,7 +1051,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.RtlGetVersionFunc = NULL ;
 	}
 
-	// Mfplat DLL ‚ğ‰ğ•ú‚·‚é
+	// Mfplat DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.MFPLATDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.MFPLATDLL ) ;
@@ -1065,7 +1065,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.MFInvokeCallbackFunc = NULL ;
 	}
 
-	// Mfreadwrite DLL ‚ğ‰ğ•ú‚·‚é
+	// Mfreadwrite DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.MFREADWRITEDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.MFREADWRITEDLL ) ;
@@ -1074,7 +1074,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.MFCreateSourceReaderFromByteStreamFunc = NULL ;
 	}
 
-	// Propsys DLL ‚ğ‰ğ•ú‚·‚é
+	// Propsys DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.PROPSYSDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.PROPSYSDLL ) ;
@@ -1082,7 +1082,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.PropVariantToInt64Func = NULL ;
 	}
 
-	// USP10 DLL ‚ğ‰ğ•ú‚·‚é
+	// USP10 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.USP10DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.USP10DLL ) ;
@@ -1091,7 +1091,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.ScriptShapeFunc = NULL ;
 	}
 
-	// SHCORE DLL ‚ğ‰ğ•ú‚·‚é
+	// SHCORE DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.SHCOREDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.SHCOREDLL ) ;
@@ -1101,7 +1101,7 @@ extern int ReleaseWinAPI( void )
 	}
 
 #ifndef DX_NON_NETWORK
-	// ws2_32.dll ‚Ì‰ğ•ú
+	// ws2_32.dll ã®è§£æ”¾
 	if( WinAPIData.WinSockFunc.WinSockDLL )
 	{
 		FreeLibrary( WinAPIData.WinSockFunc.WinSockDLL ) ;
@@ -1133,7 +1133,7 @@ extern int ReleaseWinAPI( void )
 #endif
 
 #ifndef DX_NON_KEYEX
-	// Imm32DLL ‚ğ‰ğ•ú‚·‚é
+	// Imm32DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.ImmFunc.Imm32DLL )
 	{
 		FreeLibrary( WinAPIData.ImmFunc.Imm32DLL ) ;
@@ -1151,7 +1151,7 @@ extern int ReleaseWinAPI( void )
 	}
 #endif
 
-	// D3DX9 DLL ‚ğ‰ğ•ú‚·‚é
+	// D3DX9 DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.D3DX9DLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.D3DX9DLL ) ;
@@ -1159,7 +1159,7 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.D3DXCompileShaderFunc = NULL ;
 	}
 
-	// D3DCompiler DLL ‚ğ‰ğ•ú‚·‚é
+	// D3DCompiler DLL ã‚’è§£æ”¾ã™ã‚‹
 	if( WinAPIData.Win32Func.D3DCOMPILERDLL )
 	{
 		FreeLibrary( WinAPIData.Win32Func.D3DCOMPILERDLL ) ;
@@ -1167,10 +1167,10 @@ extern int ReleaseWinAPI( void )
 		WinAPIData.Win32Func.D3DCompileFunc = NULL ;
 	}
 
-	// ‰Šú‰»ƒtƒ‰ƒO‚ğ“|‚·
+	// åˆæœŸåŒ–ãƒ•ãƒ©ã‚°ã‚’å€’ã™
 	WinAPIData.InitializeFlag = FALSE ;
 
-	// I—¹
+	// çµ‚äº†
 	return 0 ;
 }
 
@@ -1181,12 +1181,12 @@ extern int ReleaseWinAPI( void )
 
 
 
-// Direct3D 9 —pƒVƒF[ƒ_[ƒRƒ“ƒpƒCƒ‰[‚ğ“Ç‚İ‚Ş
+// Direct3D 9 ç”¨ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ãƒ¼ã‚’èª­ã¿è¾¼ã‚€
 extern int LoadDirect3DShaderCompiler( void )
 {
 	int i ;
 
-	// D3DX9 ‚Ì DLL ‚ğ“Ç‚İ‚Ş
+	// D3DX9 ã® DLL ã‚’èª­ã¿è¾¼ã‚€
 	if( WinAPIData.Win32Func.D3DX9DLL == NULL )
 	{
 		for( i = 0 ; WinAPIData.Win32Func.D3DX9DLL == NULL && D3DX9_DllNameTable[ i ] ; i ++ )
@@ -1199,22 +1199,22 @@ extern int LoadDirect3DShaderCompiler( void )
 		}
 	}
 
-	// D3DX9 ‚Ì DLL ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚½‚ç D3DCompiler ‚ğ“Ç‚İ‚Ş
+	// D3DX9 ã® DLL ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ãŸã‚‰ D3DCompiler ã‚’èª­ã¿è¾¼ã‚€
 	if( WinAPIData.Win32Func.D3DX9DLL == NULL )
 	{
 		return LoadDirect3D11ShaderCompiler() ;
 	}
 
-	// ³íI—¹
+	// æ­£å¸¸çµ‚äº†
 	return 0 ;
 }
 
-// Direct3D 11 —pƒVƒF[ƒ_[ƒRƒ“ƒpƒCƒ‰[‚ğ“Ç‚İ‚Ş
+// Direct3D 11 ç”¨ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ãƒ¼ã‚’èª­ã¿è¾¼ã‚€
 extern int LoadDirect3D11ShaderCompiler( void )
 {
 	int i ;
 
-	// D3DCompiler_xx.dll ‚ğ“Ç‚İ‚Ş
+	// D3DCompiler_xx.dll ã‚’èª­ã¿è¾¼ã‚€
 	if( WinAPIData.Win32Func.D3DCOMPILERDLL == NULL )
 	{
 		for( i = 0 ; WinAPIData.Win32Func.D3DCOMPILERDLL == NULL && D3DCompiler_DllNameTable[ i ] ; i ++ )
@@ -1227,7 +1227,7 @@ extern int LoadDirect3D11ShaderCompiler( void )
 		}
 	}
 
-	// ³íI—¹
+	// æ­£å¸¸çµ‚äº†
 	return 0 ;
 }
 
@@ -1357,7 +1357,7 @@ extern HRESULT WinAPI_CoCreateInstance_ASync( REFCLSID rclsid, D_IUnknown * pUnk
 
 
 
-// ƒ‰ƒbƒp[ŠÖ”
+// ãƒ©ãƒƒãƒ‘ãƒ¼é–¢æ•°
 extern HMODULE WINAPI GetModuleHandleWFunc( LPCWSTR lpModuleName )
 {
 	if( WinAPIData.EnableWideCharaFunction )
