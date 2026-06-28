@@ -100,6 +100,152 @@ typedef enum GRHANDLETYPE {
 	GRHTYPE_WHITE = 111,
 }GRHANDLETYPE;
 
+enum CHANNEL {
+    CHANNEL_BGM = 1,
+    CHANNEL_MEASURE_LENGTH,
+    CHANNEL_BPM,
+    CHANNEL_BGABASE,
+    CHANNEL_EXCHR,
+    CHANNEL_BGAPOOR,
+    CHANNEL_BGALAYER,
+    CHANNEL_EXBPM,
+    CHANNEL_STOP,
+    //CHANNEL_BGALAYER2 = 0x0A,         //from nanasigroove
+    //CHANNEL_BGABASE_OPACITY = 0x0B,   //from nanasigroove
+    //CHANNEL_BGALAYER_OPACITY = 0x0C,  //from nanasigroove
+    //CHANNEL_BGALAYER2_OPACITY = 0x0D, //from nanasigroove
+    //CHANNEL_BGAPOOR_OPACITY = 0x0E,   //from nanasigroove
+
+    //channels are converted to handle easily on LR2.
+    //Ex) 1P SC is 10, not 16, and freezone(x7) is not supported
+    CHANNEL_1P_NOTE_SC = 10,
+    CHANNEL_1P_NOTE_1,
+    CHANNEL_1P_NOTE_2,
+    CHANNEL_1P_NOTE_3,
+    CHANNEL_1P_NOTE_4,
+    CHANNEL_1P_NOTE_5,
+    CHANNEL_1P_NOTE_6,
+    CHANNEL_1P_NOTE_7,
+    CHANNEL_1P_NOTE_END = 19,//not actual channel
+    CHANNEL_2P_NOTE_SC = 20,
+    CHANNEL_2P_NOTE_1,
+    CHANNEL_2P_NOTE_2,
+    CHANNEL_2P_NOTE_3,
+    CHANNEL_2P_NOTE_4,
+    CHANNEL_2P_NOTE_5,
+    CHANNEL_2P_NOTE_6,
+    CHANNEL_2P_NOTE_7,
+    CHANNEL_2P_NOTE_END = 29,//not actual channel
+    CHANNEL_1P_HIDDEN_SC = 30,
+    CHANNEL_1P_HIDDEN_1,
+    CHANNEL_1P_HIDDEN_2,
+    CHANNEL_1P_HIDDEN_3,
+    CHANNEL_1P_HIDDEN_4,
+    CHANNEL_1P_HIDDEN_5,
+    CHANNEL_1P_HIDDEN_6,
+    CHANNEL_1P_HIDDEN_7,
+    CHANNEL_1P_HIDDEN_END = 39,//not actual channel
+    CHANNEL_2P_HIDDEN_SC = 40,
+    CHANNEL_2P_HIDDEN_1,
+    CHANNEL_2P_HIDDEN_2,
+    CHANNEL_2P_HIDDEN_3,
+    CHANNEL_2P_HIDDEN_4,
+    CHANNEL_2P_HIDDEN_5,
+    CHANNEL_2P_HIDDEN_6,
+    CHANNEL_2P_HIDDEN_7,
+    CHANNEL_2P_HIDDEN_END = 49,//not actual channel
+    CHANNEL_1P_LN_SC= 50,
+    CHANNEL_1P_LN_1,
+    CHANNEL_1P_LN_2,
+    CHANNEL_1P_LN_3,
+    CHANNEL_1P_LN_4,
+    CHANNEL_1P_LN_5,
+    CHANNEL_1P_LN_6,
+    CHANNEL_1P_LN_7,
+    CHANNEL_1P_LN_END = 59,//not actual channel
+    CHANNEL_2P_LN_SC = 60,
+    CHANNEL_2P_LN_1,
+    CHANNEL_2P_LN_2,
+    CHANNEL_2P_LN_3,
+    CHANNEL_2P_LN_4,
+    CHANNEL_2P_LN_5,
+    CHANNEL_2P_LN_6,
+    CHANNEL_2P_LN_7,
+    CHANNEL_2P_LN_END = 69,//not actual channel
+
+    CHANNEL_1P_MINE_SC = 130,
+    CHANNEL_1P_MINE_1,
+    CHANNEL_1P_MINE_2,
+    CHANNEL_1P_MINE_3,
+    CHANNEL_1P_MINE_4,
+    CHANNEL_1P_MINE_5,
+    CHANNEL_1P_MINE_6,
+    CHANNEL_1P_MINE_7,
+    CHANNEL_1P_MINE_END = 139,
+
+    CHANNEL_2P_MINE_SC = 140,
+    CHANNEL_2P_MINE_1,
+    CHANNEL_2P_MINE_2,
+    CHANNEL_2P_MINE_3,
+    CHANNEL_2P_MINE_4,
+    CHANNEL_2P_MINE_5,
+    CHANNEL_2P_MINE_6,
+    CHANNEL_2P_MINE_7,
+    CHANNEL_2P_MINE_END = 149,
+
+    //popn
+    CHANNEL_PMS_NOTE_1 = 11,    //DSC: L-SC
+    CHANNEL_PMS_NOTE_2,
+    CHANNEL_PMS_NOTE_3,
+    CHANNEL_PMS_NOTE_4,
+    CHANNEL_PMS_NOTE_5,
+    CHANNEL_PMS_NOTE_6,
+    CHANNEL_PMS_NOTE_7,
+    CHANNEL_PMS_NOTE_8,
+    CHANNEL_PMS_NOTE_9,         //DSC: R-SC
+    CHANNEL_PMS_HIDDEN_1 = 31,
+    CHANNEL_PMS_HIDDEN_2,
+    CHANNEL_PMS_HIDDEN_3,
+    CHANNEL_PMS_HIDDEN_4,
+    CHANNEL_PMS_HIDDEN_5,
+    CHANNEL_PMS_HIDDEN_6,
+    CHANNEL_PMS_HIDDEN_7,
+    CHANNEL_PMS_HIDDEN_8,
+    CHANNEL_PMS_HIDDEN_9,
+    CHANNEL_PMS_LN_1 = 51,
+    CHANNEL_PMS_LN_2,
+    CHANNEL_PMS_LN_3,
+    CHANNEL_PMS_LN_4,
+    CHANNEL_PMS_LN_5,
+    CHANNEL_PMS_LN_6,
+    CHANNEL_PMS_LN_7,
+    CHANNEL_PMS_LN_8,
+    CHANNEL_PMS_LN_9,
+    CHANNEL_PMS_MINE_1 = 131,
+    CHANNEL_PMS_MINE_2,
+    CHANNEL_PMS_MINE_3,
+    CHANNEL_PMS_MINE_4,
+    CHANNEL_PMS_MINE_5,
+    CHANNEL_PMS_MINE_6,
+    CHANNEL_PMS_MINE_7,
+    CHANNEL_PMS_MINE_8,
+    CHANNEL_PMS_MINE_9,
+
+    //CHANNEL_BGM_VOL = 97,         //from forgetalia
+    //CHANNEL_KEY_VOL = 98,         //from forgetalia
+    //CHANNEL_TEXT = 99,            //from pomu
+    //CHANNEL_EXRANK = 100,         //from nanasi
+    //CHANNEL_BGABASE_ARGB = 101,   //from nanasi
+    //CHANNEL_BGALAYER_ARGB  102,   //from nanasi
+    //CHANNEL_BGALAYER2_ARGB 103,   //from nanasi
+    //CHANNEL_BGAPOOR_ARGB = 104,   //from nanasi
+    //CHANNEL_BGABOUND = 105,       //from nanasi
+    //CHANNEL_OPTION = 106,         //from nanasi
+
+    CHANNEL_SCROLL = 2888,          //SC:out of base16 //from bemuse
+    //CHANNEL_SPEED = 2889,          //SP:out of base16 //from bemuse
+};
+
 constexpr const char* HSFIXSTRINGS[] = { "OFF", "MAXBPM", "MINBPM", "AVERAGE", "CONSTANT", "MAINBPM" };
 
 struct BMSMETA {

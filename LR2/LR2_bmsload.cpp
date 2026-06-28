@@ -334,10 +334,10 @@ void ProcLoadBmsResource(game *g) {
 
 
 bool isVisibleNote(int ch){
-	if (10 <= ch && ch < 30) {
+	if (CHANNEL_1P_NOTE_SC <= ch && ch <= CHANNEL_2P_NOTE_END) {
 		return true;
 	}
-	return (50 <= ch && ch < 70);
+	return (CHANNEL_1P_LN_SC <= ch && ch <= CHANNEL_2P_LN_END);
 }
 
 int InitNoteBuffer(LaneStruct *lane, int count){
@@ -702,7 +702,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 
 	gp->flag_0note = 1;
 	for (int i = 0; i < gp->bmsobj.count; i++) {
-		if ( (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30)
+		if ( (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END)
 			&& (0 < gp->bmsobj.notes[i].val && gp->bmsobj.notes[i].val < SLOTS)
 			&& gp->keysound[(int)gp->bmsobj.notes[i].val].load) {
 
@@ -751,7 +751,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 	if (gp->isAutoplay == 1) {
 
 		for (int i = 0; i < gp->bmsobj.count; i++) {
-			if (!(gp->bmsobj.notes[i].op >= 10 && gp->bmsobj.notes[i].op < 30)) {
+			if (!(gp->bmsobj.notes[i].op >= CHANNEL_1P_NOTE_SC && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END)) {
 				if (gp->bmsobj.notes[i].op == 1) {
 					if (0 < gp->bmsobj.notes[i].val && gp->bmsobj.notes[i].val < SLOTS) { //TODO : is it okay to delete compiler code dealing unsigned?
 						if ((gp->song_runtime < gp->keysound[(int)gp->bmsobj.notes[i].val].length + gp->bmsobj.notes[i].realTiming) && (int)gp->keysound[(int)gp->bmsobj.notes[i].val].length > 0) {
@@ -761,7 +761,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 						}
 					}
 				}
-				else if ((gp->bmsobj.notes[i].op == 4 || gp->bmsobj.notes[i].op == 7)
+				else if ((gp->bmsobj.notes[i].op == CHANNEL_BGABASE || gp->bmsobj.notes[i].op == CHANNEL_BGALAYER)
 					&& 0 < gp->bmsobj.notes[i].val && gp->bmsobj.notes[i].val < SLOTS
 					&& gp->song_runtime < gp->bmsobj.notes[i].realTiming) {
 
@@ -978,9 +978,9 @@ int CMP_CCARRbyID(const void *p1, const void *p2) {
 int SplitNotesToDP(LaneStruct *lane, int start, CHARTCONVERTER *cc, int end) {
 
 	for (int i = start; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
 
-		if (11 <= lane->notes[i].op && lane->notes[i].op <= 17) {
+		if (CHANNEL_1P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) {
 			if (cc->flagSplit) {
 				lane->notes[i].op += 10;
 			}
@@ -1004,7 +1004,7 @@ int RightLaneTo2P(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 	}
 	
 	for (int i = start; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
 		if (lane->notes[i].op == op) {
 			lane->notes[i].op += 10;
 		}
@@ -1034,7 +1034,7 @@ int Move3rdLaneTo2P(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 	}
 
 	for (int i = start; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
 		if ( (lane->notes[i].op == laneB && laneC < laneA) || lane->notes[i].op == laneD) {
 			lane->notes[i].op += 10;
 		}
@@ -1050,11 +1050,11 @@ int DPsplitLane(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 	int totalNoteCount = 0;
 
 	for (int i = start; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
-		if (10 <= lane->notes[i].op && lane->notes[i].op <= 17) {
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
+		if (CHANNEL_1P_NOTE_SC <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) {
 			laneNoteCount[lane->notes[i].op - 10]++; //maybe right
 		}
-		else if (21 <= lane->notes[i].op && lane->notes[i].op <= 27){
+		else if (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7){
 			lane->notes[i].op -= 10;
 			laneNoteCount[lane->notes[i].op - 10]++; //maybe right
 		}
@@ -1091,10 +1091,10 @@ int DPsplit(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 	int laneCount = 0;
 
 	for (int i = start; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
-		if ((11 <= lane->notes[i].op && lane->notes[i].op <= 17) || (21 <= lane->notes[i].op && lane->notes[i].op <= 27)) {
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
+		if ((CHANNEL_1P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) || (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7)) {
 			if (cc->arr3[(int)lane->notes[i].val].soundLoadID == cc->arr2[0].ID) {
-				if (21 <= lane->notes[i].op && lane->notes[i].op <= 27) {
+				if (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7) {
 					laneNoteCount[lane->notes[i].op - 20]++;
 				}
 				else {
@@ -1112,9 +1112,9 @@ int DPsplit(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 
 	if (laneCount > 3) {
 		for (int i = start; i < lane->count; i++) {
-			if (lane->notes[i].op == 2) break;
-			if ((11 <= lane->notes[i].op && lane->notes[i].op <= 17) || (21 <= lane->notes[i].op && lane->notes[i].op <= 27)) {
-				if (21 <= lane->notes[i].op && lane->notes[i].op <= 27)
+			if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
+			if ((CHANNEL_1P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) || (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7)) {
+				if (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7)
 					lane->notes[i].op -= 10;
 
 				if (cc->arr3[(int)lane->notes[i].val].soundLoadID == cc->arr2[0].ID) {
@@ -1137,17 +1137,17 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 	qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTimingOp);
 
 	for (int i = 0; i < gp->bmsobj.count; i++) {
-		if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= 30) {
+		if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_1P_HIDDEN_SC) {
 			notecount++;
 			endtime = gp->bmsobj.notes[i].bmsTiming;
 		}
 
 		if (gp->keymode >= 10) {
-			if (gp->bmsobj.notes[i].op == 10) {
-				gp->bmsobj.notes[i].op = 1;
+			if (gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC) {
+				gp->bmsobj.notes[i].op = CHANNEL_BGM;
 			}
-			if (gp->bmsobj.notes[i].op == 20) {
-				gp->bmsobj.notes[i].op = 1;
+			if (gp->bmsobj.notes[i].op == CHANNEL_2P_NOTE_SC) {
+				gp->bmsobj.notes[i].op = CHANNEL_BGM;
 			}
 		}
 	}
@@ -1173,7 +1173,7 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 		laneOfSound[i] = -1;
 
 		for (int j = 0; j < gp->bmsobj.count; j++) {
-			if (10 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 30) {
+			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_1P_HIDDEN_SC) {
 				if ((int)gp->bmsobj.notes[j].val == i) {
 					Lane[gp->bmsobj.notes[j].op-10]++;
 				}
@@ -1299,10 +1299,10 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 	double lastRealTiming = 0.0;
 	for (int i = 0; i < gp->bmsobj.count; i++) {
 		if (gp->bmsobj.notes[i].realTiming == lastRealTiming) {
-			if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
+			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 				laneA[gp->bmsobj.notes[i].op-10] = 2;
 			}
-			if (gp->bmsobj.notes[i].op == 3 || gp->bmsobj.notes[i].op == 8) {
+			if (gp->bmsobj.notes[i].op == CHANNEL_BPM || gp->bmsobj.notes[i].op == CHANNEL_EXBPM) {
 				mingap = 30000.0 / gp->bmsobj.notes[i].val;
 				if (mingap < 125) mingap = 125;
 			}
@@ -1312,7 +1312,7 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 			for (int j = cur-1; j >= 0; j--) {
 				if (mingap <= lastRealTiming - gp->bmsobj.notes[j].realTiming) break;
 
-				if (10 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op < 30 && laneA[gp->bmsobj.notes[j].op - 10] == 0) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_2P_NOTE_END && laneA[gp->bmsobj.notes[j].op - 10] == 0) {
 					laneA[gp->bmsobj.notes[j].op - 10] = 1;
 				}
 			}
@@ -1320,14 +1320,14 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 			for (int j = i; j < gp->bmsobj.count; j++) {
 				if (mingap <= gp->bmsobj.notes[j].realTiming - lastRealTiming) break;
 
-				if (10 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op < 30 && laneA[gp->bmsobj.notes[j].op - 10] == 0) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_2P_NOTE_END && laneA[gp->bmsobj.notes[j].op - 10] == 0) {
 					laneA[gp->bmsobj.notes[j].op - 10] = 1;
 				}
 			}
 
 			for (int j = cur; j <= i-1; j++) {
 
-				if (gp->bmsobj.notes[j].op == 1 && gp->bmsobj.notes[j].bmsTiming >= 0) {
+				if (gp->bmsobj.notes[j].op == CHANNEL_BGM && gp->bmsobj.notes[j].bmsTiming >= 0) {
 					
 					int newLane = laneOfSound[(int)gp->bmsobj.notes[j].val];
 
@@ -1435,18 +1435,18 @@ void DPtoSP(gameplay *gp) { //test completed
 	for (int i = 0; i < gp->bmsobj.count; i++) {
 
 		int op = gp->bmsobj.notes[i].op;
-		if (op == 3 || op == 8) {
+		if (op == CHANNEL_BPM || op == CHANNEL_EXBPM) {
 			mingap = (int)(30000.0 / gp->bmsobj.notes[i].val);
 			if (mingap < 125) mingap = 125;
 		}
-		else if (20 <= op && op <= 29) {
+		else if (CHANNEL_2P_NOTE_SC <= op && op <= CHANNEL_2P_NOTE_END) {
 
 			int newop = op - 10;
 			bool fSameLane = 0, fSameTime = 0;
 			std::ranges::fill(laneA, 0);
 
 			for (int prev = i - 1; prev >= 0; prev--) {
-				if (10 <= gp->bmsobj.notes[prev].op && gp->bmsobj.notes[prev].op <= 19) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[prev].op && gp->bmsobj.notes[prev].op <= CHANNEL_1P_NOTE_END) {
 					laneA[gp->bmsobj.notes[prev].op - 10] = 1;
 					if (gp->bmsobj.notes[prev].bmsTiming == gp->bmsobj.notes[i].bmsTiming) {
 						laneB[gp->bmsobj.notes[prev].op - 10] = 1;
@@ -1463,7 +1463,7 @@ void DPtoSP(gameplay *gp) { //test completed
 			
 
 			for (int next = i+1; next < gp->bmsobj.count; next++) {
-				if (10 <= gp->bmsobj.notes[next].op && gp->bmsobj.notes[next].op <= 19) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[next].op && gp->bmsobj.notes[next].op <= CHANNEL_1P_NOTE_END) {
 					laneA[gp->bmsobj.notes[next].op - 10] = 1;
 					if (gp->bmsobj.notes[next].bmsTiming == gp->bmsobj.notes[i].bmsTiming) {
 						laneB[gp->bmsobj.notes[next].op - 10] = 1;
@@ -1503,7 +1503,7 @@ void DPtoSP(gameplay *gp) { //test completed
 				}
 			}
 			
-			if (20 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= 29) {
+			if (CHANNEL_2P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 				gp->bmsobj.notes[i].op = 1;
 				ErrorLogFmtAdd("しまっちゃうノート\n");
 			}
@@ -1560,7 +1560,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 			}
 			else if (right == 8 && left >= 2) {
 				for (int j = prev; j < i; j++) {
-					if (12 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+					if (CHANNEL_PMS_NOTE_2 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 						gp->bmsobj.notes[j].op--;
 					}
 				}
@@ -1568,7 +1568,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 			}
 			else if (right == 9 && left >= 3) {
 				for (int j = prev; j < i; j++) {
-					if (13 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+					if (CHANNEL_PMS_NOTE_3 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 						gp->bmsobj.notes[j].op -= 2;
 					}
 				}
@@ -1584,13 +1584,13 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 				}
 				ErrorLogFmtAdd("つめるレーンは%d\n", emptyLane);
 				for (int j = prev; j < i; j++) {
-					if (emptyLane + 10 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+					if (emptyLane + 10 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 						gp->bmsobj.notes[j].op--;
 					}
 				}
 				ErrorLogFmtAdd("さらに全体左シフト\n");
 				for (int j = prev; j < i; j++) {
-					if (11 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+					if (CHANNEL_PMS_NOTE_1 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 						gp->bmsobj.notes[j].op--;
 					}
 				}
@@ -1607,7 +1607,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 					}
 					ErrorLogFmtAdd("つめるレーンは%d\n", emptyLane);
 					for (int j = prev; j < i; j++) {
-						if (10 + emptyLane < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+						if (CHANNEL_PMS_NOTE_1 - 1 + emptyLane < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 							gp->bmsobj.notes[j].op--;
 						}
 					}
@@ -1627,12 +1627,12 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 					}
 					ErrorLogFmtAdd("つめるレーンは%dと%d\n", emptyLaneL, emptyLaneR);
 					for (int j = prev; j < i; j++) {
-						if (emptyLaneL + 10 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+						if (CHANNEL_PMS_NOTE_1 - 1 + emptyLaneL < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 							gp->bmsobj.notes[j].op--;
 						}
 					}
 					for (int j = prev; j < i; j++) {
-						if (emptyLaneR + 9 < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+						if (CHANNEL_PMS_NOTE_1 - 2 + emptyLaneR < gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 							gp->bmsobj.notes[j].op--;
 						}
 					}
@@ -1642,7 +1642,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 				ErrorLogFmtAdd("%d:89移動\n", measure);
 				if (left == 2) {
 					for (int j = prev; j < i; j++) {
-						if (12 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= 19) {
+						if (CHANNEL_PMS_NOTE_2 <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_PMS_NOTE_9) {
 							gp->bmsobj.notes[j].op--;
 						}
 					}
@@ -1650,13 +1650,13 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 
 				for (int j = prev; j < i; j++) {
 					left = gp->bmsobj.notes[j].op;
-					if (left == 18 || left == 19) {
+					if (left == CHANNEL_PMS_NOTE_8 || left == CHANNEL_PMS_NOTE_9) {
 						bool fSameLane = 0;
 						std::ranges::fill(laneB, 0);
 						newLane = 14 + (left - 18);
 
 						for (int x = j - 1; x >= 0; x--) {
-							if (10 <= gp->bmsobj.notes[x].op && gp->bmsobj.notes[x].op <= 19) {
+							if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[x].op && gp->bmsobj.notes[x].op <= CHANNEL_1P_NOTE_END) {
 								laneB[gp->bmsobj.notes[x].op - 10] = 1;
 								if (gp->bmsobj.notes[x].bmsTiming == gp->bmsobj.notes[j].bmsTiming) {
 									laneC[gp->bmsobj.notes[x].op - 10] = 1;
@@ -1670,7 +1670,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 
 
 						for (int next = j + 1; next < gp->bmsobj.count; next++) {
-							if (10 <= gp->bmsobj.notes[next].op && gp->bmsobj.notes[next].op <= 19) {
+							if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[next].op && gp->bmsobj.notes[next].op <= CHANNEL_1P_NOTE_END) {
 								laneB[gp->bmsobj.notes[next].op - 10] = 1;
 								if (gp->bmsobj.notes[next].bmsTiming == gp->bmsobj.notes[j].bmsTiming) {
 									laneC[gp->bmsobj.notes[next].op - 10] = 1;
@@ -1731,7 +1731,7 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 							gp->bmsobj.notes[j].op = newLane;
 						}
 
-						if (gp->bmsobj.notes[j].op == 18 || gp->bmsobj.notes[j].op == 19) {
+						if (gp->bmsobj.notes[j].op == CHANNEL_PMS_NOTE_8 || gp->bmsobj.notes[j].op == CHANNEL_PMS_NOTE_9) {
 							gp->bmsobj.notes[j].op = (gp->bmsobj.notes[j].mine <= 0) ? 1 : -1;
 							ErrorLogFmtAdd("しまっちゃうノート\n");
 						}
@@ -1767,13 +1767,13 @@ void PMStoSP(gameplay *gp) { //test&fix completed
 	qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTimingOp);
 	measure = 0;
 	for (int i = 0; i < gp->bmsobj.count; i++) {
-		if (gp->bmsobj.notes[i].op == 2)
+		if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH)
 			measure++;
 
-		if(gp->bmsobj.notes[i].op == 18 || gp->bmsobj.notes[i].op == 19)
+		if(gp->bmsobj.notes[i].op == CHANNEL_PMS_NOTE_8 || gp->bmsobj.notes[i].op == CHANNEL_PMS_NOTE_9)
 			ErrorLogFmtAdd("###########################################################\n移動できてな いノート 小節%d チャンネル%d\n", measure, gp->bmsobj.notes[i].op);
 
-		if(gp->bmsobj.notes[i].op == 10)
+		if(gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC)
 			ErrorLogFmtAdd("###########################################################\n空気を読まな いスクラッチ 小節%d チャンネル%d\n", measure, 10);
 	}
 
@@ -1824,15 +1824,15 @@ int DPsplitLaneScratch(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 				if (cc->flagSplitScratch == 0) {
 					if (cc->assist1p == 0) {
 						for (int j = scratchNoteID; j > 0; j--) {
-							if (lane->notes[j].op == 2) break;
+							if (lane->notes[j].op == CHANNEL_MEASURE_LENGTH) break;
 							if (cc->RealTimingSplitScratch - lane->notes[j].realTiming >= 200) break;
-							if (12 <= lane->notes[j].op && lane->notes[j].op <= 17) lane->notes[j].op += 10;
+							if (CHANNEL_1P_NOTE_2 <= lane->notes[j].op && lane->notes[j].op <= CHANNEL_1P_NOTE_7) lane->notes[j].op += 10;
 						}
 
 						for (int j = scratchNoteID; j < lane->count; j++) {
-							if (lane->notes[j].op == 2) break;
+							if (lane->notes[j].op == CHANNEL_MEASURE_LENGTH) break;
 							if (lane->notes[j].realTiming - cc->RealTimingSplitScratch >= 200) break;
-							if (12 <= lane->notes[j].op && lane->notes[j].op <= 17) lane->notes[j].op += 10;
+							if (CHANNEL_1P_NOTE_2 <= lane->notes[j].op && lane->notes[j].op <= CHANNEL_1P_NOTE_7) lane->notes[j].op += 10;
 						}
 					}
 				}
@@ -1840,15 +1840,15 @@ int DPsplitLaneScratch(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 					lane->notes[scratchNoteID].op += 10;
 					if (cc->assist2p == 0) {
 						for (int j = scratchNoteID; j > 0; j--) {
-							if (lane->notes[j].op == 2) break;
+							if (lane->notes[j].op == CHANNEL_MEASURE_LENGTH) break;
 							if (cc->RealTimingSplitScratch - lane->notes[j].realTiming >= 200) break;
-							if (21 <= lane->notes[j].op && lane->notes[j].op <= 26) lane->notes[j].op -= 10;
+							if (CHANNEL_2P_NOTE_1 <= lane->notes[j].op && lane->notes[j].op <= CHANNEL_2P_NOTE_6) lane->notes[j].op -= 10;
 						}
 
 						for (int j = scratchNoteID; j < lane->count; j++) {
-							if (lane->notes[j].op == 2) break;
+							if (lane->notes[j].op == CHANNEL_MEASURE_LENGTH) break;
 							if (lane->notes[j].realTiming - cc->RealTimingSplitScratch >= 200) break;
-							if (21 <= lane->notes[j].op && lane->notes[j].op <= 26) lane->notes[j].op -= 10;
+							if (CHANNEL_2P_NOTE_1 <= lane->notes[j].op && lane->notes[j].op <= CHANNEL_2P_NOTE_6) lane->notes[j].op -= 10;
 						}
 					}
 				}
@@ -1859,13 +1859,13 @@ int DPsplitLaneScratch(LaneStruct *lane, int start, CHARTCONVERTER *cc) {
 
 		if (i >= lane->count) break;
 
-		if (lane->notes[i].op == 2) break;
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
 
-		if (lane->notes[i].op == 10) {
+		if (lane->notes[i].op == CHANNEL_1P_NOTE_SC) {
 			scratchNoteID = i;
 			oldScratchNoteID = i;
 		}
-		if ( (11 <= lane->notes[i].op && lane->notes[i].op <=17) || (21 <= lane->notes[i].op && lane->notes[i].op <= 27)) {
+		if ( (CHANNEL_1P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) || (CHANNEL_2P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_2P_NOTE_7)) {
 			LaneA[lane->notes[i].op - 10] = i;
 			scratchNoteID = oldScratchNoteID;
 		}
@@ -1885,10 +1885,10 @@ int SPtoDP(LaneStruct *lane, int baseNoteID, CHARTCONVERTER *cc) {
 		cc->arr3[i].field3_0xc = -1;
 	}
 	for (int i = baseNoteID + 1; i < lane->count; i++) {
-		if (lane->notes[i].op == 2) break;
-		if (10 <= lane->notes[i].op && lane->notes[i].op <= 17) {
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
+		if (CHANNEL_1P_NOTE_SC <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) {
 			cc->noteCountPerLane[lane->notes[i].op - 10]++;
-			if (lane->notes[i].op != 10) {
+			if (lane->notes[i].op != CHANNEL_1P_NOTE_SC) {
 				cc->arr1[cc->arr3[(int)lane->notes[i].val].soundLoadID].count++;
 				cc->arr1[cc->arr3[(int)lane->notes[i].val].soundLoadID].side = 0;
 			}
@@ -1974,8 +1974,8 @@ int SPtoDP(LaneStruct *lane, int baseNoteID, CHARTCONVERTER *cc) {
 	qsort(&cc->arr1, SINGLESLOTS, sizeof(struct_0x14), CMP_CCARRbyID);
 	for (int i = baseNoteID + 1; i < lane->count; i++) {
 
-		if (lane->notes[i].op == 2) break;
-		if (11 <= lane->notes[i].op && lane->notes[i].op <= 17) {
+		if (lane->notes[i].op == CHANNEL_MEASURE_LENGTH) break;
+		if (CHANNEL_1P_NOTE_1 <= lane->notes[i].op && lane->notes[i].op <= CHANNEL_1P_NOTE_7) {
 			int t = cc->arr1[cc->arr3[(int)lane->notes[i].val].soundLoadID].side;
 			
 			if (t == 0) {}
@@ -2003,7 +2003,6 @@ int SPtoDP(LaneStruct *lane, int baseNoteID, CHARTCONVERTER *cc) {
 //TODO : rename variables
 //TOFIX : freq +12 autoplay endtime doesn't match (#STOP?)
 //TOFIX : nonstop mix retry volume issue
-#define SC_CHANNEL 888 //NOTE: channelConvert[] cannot handle SC channel unless make it use base36
 int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMSMETA *meta, int bgaFlag, int scratchSide) {
 	ErrorLogFmtAdd("ParseBmsFile(%s)\n", filename.c_str());
 
@@ -2272,23 +2271,23 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				uint thisMeasure = atol(fBuf.getSliced(1, 3)) + stageStartMeasure;
 				
 				if (*fBuf.atPos(4) == 'S' && *fBuf.atPos(5) == 'C') {
-					channel = SC_CHANNEL;
+					channel = CHANNEL_SCROLL;
 				} else {
 					channel = *fBuf.atPos(5) - 0x30 + HEXcharToInt('0', *fBuf.atPos(4)) * 10;
 				}
-				if (channel == 4 || channel == 7) gp->soundonly = 0;
+				if (channel == CHANNEL_BGABASE || channel == CHANNEL_BGALAYER) gp->soundonly = 0;
 				channel = channelConvert(channel, isDSC, isPMS);
 
 				if (gp->lastMeasure < thisMeasure) {
 					gp->lastMeasure = thisMeasure;
 				}
 
-				if (channel == 2) { //Length of #xxx 	(1 corresponds to 4/4 meter) // specify integer or decimal fraction
+				if (channel == CHANNEL_MEASURE_LENGTH) { //Length of #xxx 	(1 corresponds to 4/4 meter) // specify integer or decimal fraction
 					if (atof(fBuf.getSliced(7, fBuf.length() - 7)) > 0.0 && thisMeasure <= 4999) {
 						measureLength[thisMeasure] = atof(fBuf.getSliced(7, fBuf.length() - 7));
 					}
 				}
-				else if (channel == 3) { //Change of BPM 	BPM 1 ? [01-FF] ? BPM 255
+				else if (channel == CHANNEL_BPM) { //Change of BPM 	BPM 1 ? [01-FF] ? BPM 255
 					int div = (fBuf.length() - 7) / 2;
 					for (int i = 0; i < div; i++) {
 						int ii = i * 2 + 7;
@@ -2296,7 +2295,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							double notepos = i / (double)div;
 							gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 							gp->bmsobj.notes[gp->bmsobj.count].val = HEXcharToInt(*fBuf.atPos(ii), *fBuf.atPos(ii + 1)) * gp->freqSpeedMultiplier;
-							gp->bmsobj.notes[gp->bmsobj.count].op = 3;
+							gp->bmsobj.notes[gp->bmsobj.count].op = CHANNEL_BPM;
 							gp->bmsobj.count++;
 							if (gp->bmsobj.count == gp->bmsobj.size) {
 								ExpandNoteBuffer(&gp->bmsobj, 1000);
@@ -2328,7 +2327,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 								lastNoteTime = gp->bmsobj.notes[gp->bmsobj.count].bmsTiming;
 							}
 
-							if (channel == 8 || channel == 9 || channel == SC_CHANNEL) { //BPM, STOP, SCROLL
+							if (channel == CHANNEL_EXBPM || channel == CHANNEL_STOP || channel == CHANNEL_SCROLL) {
 								gp->bmsobj.notes[gp->bmsobj.count].val = Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1), isBase62);
 							}
 							else {
@@ -2338,7 +2337,13 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 							gp->bmsobj.count++;
 							if (gp->bmsobj.count == gp->bmsobj.size) ExpandNoteBuffer(&gp->bmsobj, 1000);
 
-							if (((10 <= channel && channel < 20) || (30 <= channel && channel < 40) || (50 <= channel && channel < 60)) && (meta->keymode < 10 && ((cfg->play.battle == 1 && (cfg->play.random[0] != cfg->play.random[1])) || cfg->play.battle == 2))) {
+							if (
+					(
+					 (CHANNEL_1P_NOTE_SC <= channel && channel <= CHANNEL_1P_NOTE_END)
+						|| (CHANNEL_1P_HIDDEN_SC <= channel && channel <= CHANNEL_1P_HIDDEN_END)
+						|| (CHANNEL_1P_LN_SC <= channel && channel <= CHANNEL_1P_LN_END)
+					)
+								&& (meta->keymode < 10 && ((cfg->play.battle == 1 && (cfg->play.random[0] != cfg->play.random[1])) || cfg->play.battle == 2))) {
 								gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (int)thisMeasure + notepos;
 								gp->bmsobj.notes[gp->bmsobj.count].val = Base36or62ToInt(*fBufOrg.atPos(ii), *fBufOrg.atPos(ii + 1), isBase62) + stage * SINGLESLOTS;
 								gp->bmsobj.notes[gp->bmsobj.count].op = channel + 10;
@@ -2365,7 +2370,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				if (stage > 0) {
 					gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = (double)stageStartMeasure;
 					gp->bmsobj.notes[gp->bmsobj.count].val = val * gp->freqSpeedMultiplier;
-					gp->bmsobj.notes[gp->bmsobj.count].op = 3;
+					gp->bmsobj.notes[gp->bmsobj.count].op = CHANNEL_BPM;
 					gp->bmsobj.count++;
 				}
 				if (stage == 0) {
@@ -2492,14 +2497,14 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		if (gp->soundonly && gp->isCourse == 0) {
 			gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = stageStartMeasure;
 			gp->bmsobj.notes[gp->bmsobj.count].val = 1295.0;
-			gp->bmsobj.notes[gp->bmsobj.count].op = 4;
+			gp->bmsobj.notes[gp->bmsobj.count].op = CHANNEL_BGABASE;
 			gp->bmsobj.count++;
 			if (gp->bmsobj.count == gp->bmsobj.size) ExpandNoteBuffer(&gp->bmsobj, 1000);
 		}
 		for (int i = stageStartMeasure; i < stageStartMeasure + 1000; i++) {
 			gp->bmsobj.notes[gp->bmsobj.count].bmsTiming = i;
 			gp->bmsobj.notes[gp->bmsobj.count].val = measureLength[i];
-			gp->bmsobj.notes[gp->bmsobj.count].op = 2;
+			gp->bmsobj.notes[gp->bmsobj.count].op = CHANNEL_MEASURE_LENGTH;
 			gp->bmsobj.count++;
 			if (gp->bmsobj.count == gp->bmsobj.size) ExpandNoteBuffer(&gp->bmsobj, 1000);
 		}
@@ -2509,7 +2514,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		}
 
 		for (int i = 0; i < gp->bmsobj.count && gp->bmsobj.notes[i].bmsTiming == 0; i++) {
-			if ((10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 29) || (30 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 49)) {
+			if ((CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < CHANNEL_2P_NOTE_END) || (CHANNEL_1P_HIDDEN_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < CHANNEL_2P_HIDDEN_END)) { //TOFIX: <CHANNEL_2P_HIDDEN_END instead of <=?
 				for (int j = 0; j < gp->bmsobj.count; j++) {
 					gp->bmsobj.notes[j].bmsTiming += 1.0;
 				}
@@ -2540,21 +2545,21 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 		int objNumLastNote = 0;
 		for (int i = gp->bmsobj.count - 1; bmsobj_stageFirst <= i; i--) {
-			if ((10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) || (50 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 70)) {
+			if ((CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) || (CHANNEL_1P_LN_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_LN_END)) {
 				objNumLastNote = i;
 				break;//i = 0;
 			}
 		}
 		int objNumLastMeasureLate = -1;
 		for (int i = objNumLastNote; bmsobj_stageFirst <= i; i--) {
-			if (gp->bmsobj.notes[i].op == 2) {
+			if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH) {
 				objNumLastMeasureLate = i;
 				break; //i = 0;
 			}
 		}
 		int objNumLastMeasureEarly = -1;
 		for (int i = objNumLastNote; i < gp->bmsobj.count; i++) {
-			if (gp->bmsobj.notes[i].op == 2) {
+			if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH) {
 				objNumLastMeasureEarly = i;
 				break; //i = gp->bmsobj.count;
 			}
@@ -2571,21 +2576,21 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 		int objNumFirstNote = bmsobj_stageFirst;
 		for (int i = bmsobj_stageFirst; i < gp->bmsobj.count; i++) {
-			if ((10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) || (50 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 70)) {
+			if ((CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) || (CHANNEL_1P_LN_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_LN_END)) {
 				objNumFirstNote = i;
 				break;//i = 0;
 			}
 		}
 		int objNumFirstMeasureLate = -1;
 		for (int i = objNumFirstNote; bmsobj_stageFirst <= i; i--) {
-			if (gp->bmsobj.notes[i].op == 2) {
+			if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH) {
 				objNumFirstMeasureLate = i;
 				break; //i = 0;
 			}
 		}
 		int objNumFirstMeasureEarly = -1;
 		for (int i = objNumFirstNote; i < gp->bmsobj.count; i++) {
-			if (gp->bmsobj.notes[i].op == 2) {
+			if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH) {
 				objNumFirstMeasureEarly = i;
 				break; //i = gp->bmsobj.count;
 			}
@@ -2668,7 +2673,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				bpmt_count = gp->bpmt_count - 1;
 				ErrorLogFmtAdd("リミット%d , %d\n", (int)bpmt_bmstime, (int)bpmt_realtime);
 			}
-			else if (unk23538_objNum == -1 && 0 < (int)unk23484_bmstime && gp->bmsobj.notes[i].op == 2 && unk2346c_realtime + 5000.0 < bpmt_realtime && gp->courseConnection[stage] == 5) { //BALNK2
+			else if (unk23538_objNum == -1 && 0 < (int)unk23484_bmstime && gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH && unk2346c_realtime + 5000.0 < bpmt_realtime && gp->courseConnection[stage] == 5) { //BALNK2
 				b2lastMeasure = gp->bmsobj.notes[i].bmsTiming;
 				b2bmsTime = bpmt_bmstime;
 				b2realTime = bpmt_realtime;
@@ -2682,7 +2687,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			gp->bmsobj.notes[i].renderTiming = bpmt_rendertime;
 			gp->bmsobj.notes[i].realTiming = bpmt_realtime;
 			gp->bmsobj.notes[i].active = 0;
-			if (50 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 70) {
+			if (CHANNEL_1P_LN_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_LN_END) {
 				if (intArr2[gp->bmsobj.notes[i].op - 40] == -1) {
 					gp->bmsobj.notes[i].op -= 40;
 					intArr2[gp->bmsobj.notes[i].op] = i;
@@ -2694,7 +2699,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					intArr2[gp->bmsobj.notes[i].op - 40] = -1;
 				}
 			}
-			else if (lnobj != -1 && (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30)) {
+			else if (lnobj != -1 && (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END)) {
 				if (gp->bmsobj.notes[i].val != lnobj || intArr2[gp->bmsobj.notes[i].op] == -1) { //CHECK: haha
 					intArr2[gp->bmsobj.notes[i].op] = i;
 				}
@@ -2707,7 +2712,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 
-			if (130 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 150) {//mine
+			if (CHANNEL_1P_MINE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < CHANNEL_2P_MINE_END) {//mine
 				gp->bmsobj.notes[i].op -= 120;
 				gp->bmsobj.notes[i].mine = gp->bmsobj.notes[i].val;
 				gp->bmsobj.notes[i].val = 0.0;
@@ -2802,7 +2807,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					stopRealtime = stopVal / 192.0 * 240000.0 / nowBPM;
 					gp->bmsobj.notes[i].val = (240000.0 / nowBPM) * STOPslot[(int)gp->bmsobj.notes[i].val] / 192.0;
 					break;
-				case SC_CHANNEL: { // SCROLL
+				case CHANNEL_SCROLL: {
 					bpmt_scMultiplier = SCROLLslot[(int)gp->bmsobj.notes[i].val];
 
 					if (gp->bpmt_count == gp->bpmt_buffersize) {
@@ -2826,7 +2831,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 
-			if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 29) {
+			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < CHANNEL_2P_NOTE_END) {
 				notesPerBpm[nowBPM] += 1;
 				avgBPM_notes += 1;
 				avgBPM_bpmsum += nowBPM;
@@ -2975,11 +2980,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					addNoteCount[1] = 0;
 				}
 
-				if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 20) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) {
 					addNoteCount[0]++;
 					mapAdded[0][gp->bmsobj.notes[i].op - 10] = 1;
 				}
-				else if (20 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
+				else if (CHANNEL_2P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 					addNoteCount[1]++;
 					mapAdded[1][gp->bmsobj.notes[i].op - 20] = 1;
 				}
@@ -3039,11 +3044,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					addNoteCount[1] = 0;
 				}
 
-				if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 20) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) {
 					addNoteCount[0] = 1;
 					mapAdded[0][gp->bmsobj.notes[i].op - 10] = 1;
 				}
-				else if (20 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
+				else if (CHANNEL_2P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 					addNoteCount[1] = 1;
 					mapAdded[1][gp->bmsobj.notes[i].op - 20] = 1;
 				}
@@ -3103,7 +3108,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 			*/
 			while (true) {
-				if (gp->bmsobj.notes[k].op == 2) {
+				if (gp->bmsobj.notes[k].op == CHANNEL_MEASURE_LENGTH) {
 					if (unk_start == 0) break; 					
 					else unk_start--;
 				}
@@ -3147,7 +3152,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			if (stage != stages - 1) {
 				if (objNumLastMeasure > 0) {
 					for (int i = objNumLastMeasure; i < gp->bmsobj.count; i++) {
-						if (gp->bmsobj.notes[i].op == 2 || gp->bmsobj.notes[i].op == 3 || gp->bmsobj.notes[i].op == 8) {
+						if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH || gp->bmsobj.notes[i].op == CHANNEL_BPM || gp->bmsobj.notes[i].op == CHANNEL_EXBPM ) {
 							gp->bmsobj.notes[i].op = -1;
 						}
 					}
@@ -3156,7 +3161,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 			if (gp->isCourse && stage && objNumFirstMeasure > 0) {
 				for (int i = bmsobj_stageFirst; i < objNumFirstMeasure; i++) {
-					if (gp->bmsobj.notes[i].op == 2) {
+					if (gp->bmsobj.notes[i].op == CHANNEL_MEASURE_LENGTH) {
 						gp->bmsobj.notes[i].op = -1;
 					}
 				}
@@ -3166,7 +3171,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			double t = 100.0 + prevStageTime;
 			for (int i = bmsobj_stageFirst; gp->bmsobj.notes[i].realTiming <= t; i++) {
 				if (i == gp->bmsobj.count) break;
-				if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
+				if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 					if (abs((int)gp->bmsobj.notes[i].realTiming - (int)prevStageTime) < 100) {
 						for (int j = bmsobj_stageFirst - 1; j >= 0; j--) {
 							if (gp->bmsobj.notes[j].realTiming < prevStageTime - 100.0) break; //need check float calc
@@ -3192,7 +3197,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 
 		prevStageTime = -1.0;
 		for (int i = gp->bmsobj.count - 1; i != bmsobj_stageFirst; i--) {
-			if (10 <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op < 30) {
+			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 				prevStageTime = gp->bmsobj.notes[i].realTiming;
 				break;
 			}
@@ -3413,8 +3418,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	//shuffle notes
 	for (int i = 0; i < gp->bmsobj.count; i++) {
 		int optemp = gp->bmsobj.notes[i].op;
-		if (optemp < 10 || optemp >= 30) {
-			if (optemp == 2) {
+		if (optemp < CHANNEL_1P_NOTE_SC || optemp >= CHANNEL_1P_HIDDEN_SC) {
+			if (optemp == CHANNEL_MEASURE_LENGTH) {
 				if (cfg->play.battle == 3 && (meta->keymode == 5 || meta->keymode == 7) && gp->isCourse == 0) {
 					SPtoDP(&gp->bmsobj, i, &cc);
 				}
@@ -3426,12 +3431,12 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					ExpandNoteBuffer(&gp->bmsobj_line, 100);
 				}
 			}
-			else if (optemp == 1 && gp->bmsobj.notes[i].realTiming > endtime) {
+			else if (optemp == CHANNEL_BGM && gp->bmsobj.notes[i].realTiming > endtime) {
 				endtime = gp->bmsobj.notes[i].realTiming;
 			}
 		}
 		else {
-			if (optemp < 20) {
+			if (optemp <= CHANNEL_1P_NOTE_END) {
 				isBattle = 0;
 				if (p1LastTiming < gp->bmsobj.notes[i].realTiming) {
 					p1LastTiming = gp->bmsobj.notes[i].realTiming;
@@ -3469,11 +3474,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 
 			if ((meta->keymode == 10 || meta->keymode == 14) && cfg->play.dpflip == 1) {
-				if (gp->bmsobj.notes[i].op < 20) gp->bmsobj.notes[i].op += 10;
+				if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) gp->bmsobj.notes[i].op += 10;
 				else gp->bmsobj.notes[i].op -= 10;
 			}
 
-			if ( (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op < 20) || (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= 20) ) {
+			if ( (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) || (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) ) {
 				if (meta->keymode == 5 || meta->keymode == 10) {
 					if (cfg->play.randFix[0] >= 6) cfg->play.randFix[0] = 0;
 					if (cfg->play.randFix[1] >= 6) cfg->play.randFix[1] = 0;
@@ -3488,8 +3493,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 
 				int assist = 0;
-				if (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op < 20) assist = (cfg->play.randSC[0] != 0);
-				else if (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= 20) assist = (cfg->play.randSC[1] != 0);
+				if (cfg->play.random[0] >= 3 && gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) assist = (cfg->play.randSC[0] != 0);
+				else if (cfg->play.random[1] >= 3 && gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC) assist = (cfg->play.randSC[1] != 0);
 
 				int randLanes{};
 				switch (meta->keymode) {
@@ -3509,7 +3514,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 
 				int startlane;
-				if (gp->bmsobj.notes[i].op < 20) {
+				if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) {
 					startlane = 1 - assist;
 				}
 				else {
@@ -3522,11 +3527,11 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					while(pass2){
 						lane = startlane + GetRand(randLanes);
 						if (pass) {
-							if (gp->bmsobj.notes[i].op < 20 && cfg->play.random[0] == 5) {
+							if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END && cfg->play.random[0] == 5) {
 								lane = cfg->play.randFix[0];
 								pass = 0;
 							}
-							if (gp->bmsobj.notes[i].op >= 20 && cfg->play.random[1] == 5) {
+							if (gp->bmsobj.notes[i].op >= CHANNEL_2P_NOTE_SC && cfg->play.random[1] == 5) {
 								lane = cfg->play.randFix[1] + startlane;
 								pass = 0;
 							}
@@ -3559,13 +3564,13 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			
 			chArr[gp->bmsobj.notes[i].op - 10] = 1;
 			if (meta->keymode == 14) {
-				if (gp->bmsobj.notes[i].op == 10) {
+				if (gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC) {
 					mapAdded[0][4] = 1;
 					mapAdded[0][5] = 1;
 					mapAdded[0][6] = 1;
 					mapAdded[0][7] = 1;
 				}
-				else if (gp->bmsobj.notes[i].op == 20) {
+				else if (gp->bmsobj.notes[i].op == CHANNEL_2P_NOTE_SC) {
 					mapAdded[1][1] = 1;
 					mapAdded[1][2] = 1;
 					mapAdded[1][3] = 1;
@@ -3581,10 +3586,10 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			}
 
 			int lane = noteRandomTable[0][gp->bmsobj.notes[i].op - 10];
-			if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == 10) {
+			if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_1P_NOTE_SC) {
 				gp->bmsobj.notes[i].op = 1;
 			}
-			else if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == 20) {
+			else if (cfg->play.battle == 2 && cfg->play.randSC[0] == 0 && cfg->play.randSC[1] == 0 && gp->bmsobj.notes[i].op == CHANNEL_2P_NOTE_SC) {
 				gp->bmsobj.notes[i].op = 1;
 			}
 			else {

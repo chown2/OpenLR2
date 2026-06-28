@@ -2978,12 +2978,13 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 			}
 			else if (lineLen > 5 && IsDigitAscii(line[1]) && IsDigitAscii(line[2]) && IsDigitAscii(line[3]) && IsDigitAscii(line[4]) && IsDigitAscii(line[5])) {
 				//TOFIX : There is no need to decrease variable data, still it does. it makes karinote include invisible and longnote(0.5 to 1)
+				//TODO : This part can't use CHANNEL directly because they are not converted to LR2's inner channel
 				int data = (line[4] - '0') * 10 + line[5] - '0';
-				if (51 <= data && data <= 69) {
+				if (CHANNEL_1P_LN_1 <= data && data <= CHANNEL_2P_LN_END) {
 					data -= 40;
 					meta->longnote = 1;
 				}
-				if (31 <= data && data <= 49) {
+				if (CHANNEL_1P_HIDDEN_1 <= data && data <= CHANNEL_2P_HIDDEN_END) {
 					data -= 20;
 				}
 				if (meta->keymode != 9) {
@@ -2994,19 +2995,21 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 					else if (data == 28 || data == 29 || data == 48 || data == 49 || data == 68 || data == 69) {
 						meta->keymode = 14;
 					}
-					else if ((data > 20 && data < 30) || (data > 40 && data < 50) || (61 <= data && data < 70)) {
+					else if ((data > CHANNEL_2P_NOTE_SC && data <= CHANNEL_2P_NOTE_END)
+						|| (data > CHANNEL_2P_HIDDEN_SC && data <= CHANNEL_2P_HIDDEN_END)
+						|| (CHANNEL_2P_LN_SC + 1 <= data && data <= CHANNEL_2P_LN_END)) {//TODO: inconsitency
 						if (meta->keymode == 5) meta->keymode = 10;
 						else if(meta->keymode == 7) meta->keymode = 14;	
 					}
 				}
 				
-				if (data == 3) {
+				if (data == CHANNEL_BPM) {
 					int c = (lineLen - 7) / 2;
 					for (int cur = 7, i = 0; i < c; cur += 2, i++) {
 						UpdateBpmRange(*meta, HEXcharToInt(line[cur], line[cur + 1]));
 					}
 				}
-				else if (11 <= data && data <= 29) {
+				else if (CHANNEL_1P_NOTE_1 <= data && data <= CHANNEL_2P_NOTE_END) {
 					int c = (lineLen - 7) / 2;
 					for (int cur = 7, i = 0; i < c; cur += 2, i++) {
 						const int obj = Base36ToInt(line[cur], line[cur + 1]);
@@ -3015,7 +3018,7 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 						}
 					}
 				}
-				else if (51 <= data && data <= 69) {
+				else if (CHANNEL_1P_LN_1 <= data && data <= CHANNEL_2P_LN_END) {
 					int c = (lineLen - 7) / 2;
 					for (int cur = 7, i = 0; i < c; cur += 2, i++) {
 						const int obj = Base36ToInt(line[cur], line[cur + 1]);
