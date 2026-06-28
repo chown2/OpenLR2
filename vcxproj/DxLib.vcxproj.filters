@@ -1,17 +1,330 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{d16f5c1b-401c-41aa-869c-c29257f95a0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\dep\DxLib\DxThread.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxArchive_.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxASyncLoad.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxBaseFunc.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxBaseImage.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxChar.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxCharCodeTable.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxFile.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxFont.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxGateway.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxGraphics.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxGraphicsFilter.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxHandle.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxHeap.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxInput.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxInputString.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxLog.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMask.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMath.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemImg.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemory.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModel.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoader0.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoader1.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoader2.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoader3.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoader4.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelLoaderVMD.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxModelRead.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMovie.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxNetwork.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxRingBuffer.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxSoftImage.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxSound.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxSoundConvert.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxSystem.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxKeyHookBinary.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxLogWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxMaskD3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxMaskD3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxMaskWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxMemoryWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxModelD3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxModelD3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxModelWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxMovieWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxNetworkWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Base_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Base_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Base3D_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Filter_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Filter_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Model_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Model_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_RgbaMix_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_RgbaMix_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxSoundConvertWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxSoundWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxSystemWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxThreadWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxWinAPI.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxBaseFuncWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxFileWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxFontWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsAPIWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsD3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsD3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsFilterD3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsFilterD3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsFilterWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGraphicsWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxGuid.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxInputWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxBaseImageWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Base3D_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeTxt_D3D9.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeTxt_D3D11.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxLive2DCubism4.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Live2D_Cubism4_D3D9.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxShaderCodeBin_Live2D_Cubism4_D3D11.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\DxLib\Windows\DxLive2DCubism4Win.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\dep\DxLib\DxArchive_.h" />
+    <ClInclude Include="..\dep\DxLib\DxASyncLoad.h" />
+    <ClInclude Include="..\dep\DxLib\DxBaseFunc.h" />
+    <ClInclude Include="..\dep\DxLib\DxBaseImage.h" />
+    <ClInclude Include="..\dep\DxLib\DxChar.h" />
+    <ClInclude Include="..\dep\DxLib\DxCompileConfig.h" />
+    <ClInclude Include="..\dep\DxLib\DxDataType.h" />
+    <ClInclude Include="..\dep\DxLib\DxDataTypeWin.h" />
+    <ClInclude Include="..\dep\DxLib\DxFile.h" />
+    <ClInclude Include="..\dep\DxLib\DxFont.h" />
+    <ClInclude Include="..\dep\DxLib\DxFunctionWin.h" />
+    <ClInclude Include="..\dep\DxLib\DxGraphics.h" />
+    <ClInclude Include="..\dep\DxLib\DxGraphicsFilter.h" />
+    <ClInclude Include="..\dep\DxLib\DxHandle.h" />
+    <ClInclude Include="..\dep\DxLib\DxHeap.h" />
+    <ClInclude Include="..\dep\DxLib\DxInput.h" />
+    <ClInclude Include="..\dep\DxLib\DxInputString.h" />
+    <ClInclude Include="..\dep\DxLib\DxLog.h" />
+    <ClInclude Include="..\dep\DxLib\DxMask.h" />
+    <ClInclude Include="..\dep\DxLib\DxMath.h" />
+    <ClInclude Include="..\dep\DxLib\DxMemImg.h" />
+    <ClInclude Include="..\dep\DxLib\DxMemory.h" />
+    <ClInclude Include="..\dep\DxLib\DxModel.h" />
+    <ClInclude Include="..\dep\DxLib\DxModelFile.h" />
+    <ClInclude Include="..\dep\DxLib\DxModelLoader3.h" />
+    <ClInclude Include="..\dep\DxLib\DxModelLoader4.h" />
+    <ClInclude Include="..\dep\DxLib\DxModelLoaderVMD.h" />
+    <ClInclude Include="..\dep\DxLib\DxModelRead.h" />
+    <ClInclude Include="..\dep\DxLib\DxMovie.h" />
+    <ClInclude Include="..\dep\DxLib\DxNetwork.h" />
+    <ClInclude Include="..\dep\DxLib\DxRingBuffer.h" />
+    <ClInclude Include="..\dep\DxLib\DxSoftImage.h" />
+    <ClInclude Include="..\dep\DxLib\DxSound.h" />
+    <ClInclude Include="..\dep\DxLib\DxSoundConvert.h" />
+    <ClInclude Include="..\dep\DxLib\DxStatic.h" />
+    <ClInclude Include="..\dep\DxLib\DxSystem.h" />
+    <ClInclude Include="..\dep\DxLib\DxThread.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxInputWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxLogWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxMaskD3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxMaskD3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxMaskWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxMemoryWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxModelD3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxModelD3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxModelWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxMovieWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxNetworkWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_Common_D3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_DataType_D3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_PS_D3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_PS_D3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_VS_D3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxShader_VS_D3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxSoundConvertWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxSoundWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxSystemWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxThreadWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxWinAPI.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxBaseFuncWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxDirectX.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxFileWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxFontWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsAPIWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsD3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsD3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsFilterD3D9.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsFilterD3D11.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsFilterWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGraphicsWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxGuid.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\Windows\DxBaseImageWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\DxLive2DCubism4.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxLive2DCubism4Win.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\DxLib\DxLib.h" />
   </ItemGroup>
 </Project>
