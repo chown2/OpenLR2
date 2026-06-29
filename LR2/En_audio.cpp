@@ -1088,7 +1088,6 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 			return 1;
 		}
 
-#ifdef _WIN32
 		if ([&] {
 			switch (outputType) {
 			case 0:
@@ -1112,7 +1111,6 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 				return 0;
 			}
 		}
-#endif // _WIN32
 
 		FMOD_System_GetNumDrivers(aud->fmodSys, &numDrivers);
 		if (driver + 1 > numDrivers) {
