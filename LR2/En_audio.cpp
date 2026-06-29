@@ -1089,11 +1089,6 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 		FMOD_System_SetDSPBufferSize(aud->fmodSys, bufferLength, numBuffer);
 		ErrorLogAdd("\n");
 		FMOD_System_SetSoftwareChannels(aud->fmodSys, 0x100);
-		if (FMOD_System_Init(aud->fmodSys, 0x100, FMOD_INIT_NORMAL, NULL) != FMOD_OK) {
-			ErrorLogAdd("FMOD_System_Init failed!\n");
-			EndSound(aud);
-			return 1;
-		}
 
 #ifdef _WIN32
 		if ([&] {
@@ -1131,6 +1126,12 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 			ErrorLogFmtAdd("FMOD_System_GetDriverInfo failed\n");
 		}
 		FMOD_System_SetDriver(aud->fmodSys, driver);
+		if (FMOD_System_Init(aud->fmodSys, 0x100, FMOD_INIT_NORMAL, NULL) != FMOD_OK) {
+			ErrorLogAdd("FMOD_System_Init failed!\n");
+			EndSound(aud);
+			return 1;
+		}
+
 		ErrorLogAdd("バッファサイズの設定を行います...\n");
 		FMOD_System_CreateChannelGroup(aud->fmodSys, "bgm", &aud->chnBgm);
 		FMOD_System_CreateChannelGroup(aud->fmodSys, "key", &aud->chnKey);
