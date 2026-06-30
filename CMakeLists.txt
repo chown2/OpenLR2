@@ -1,13 +1,21 @@
 cmake_minimum_required(VERSION 3.29)
 project(OpenLR2 LANGUAGES C CXX)
 
-# Make sure _DLL is not defined so that we use a specific DxLib DLL.
-# @gomazk
-# > my custom dxlib was only DxLib_vs2015_x86_MT. 3.24f based, can load old dxa
+# Better compatibility with Wine. vcpkg target triplet must match this.
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # We don't use them and they cause fake errors in clangd
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
+find_package(JPEG REQUIRED)
+find_package(Ogg CONFIG REQUIRED)
+find_package(Opus CONFIG REQUIRED)
+find_package(OpusFile CONFIG REQUIRED)
+find_package(PNG REQUIRED)
+find_package(TIFF REQUIRED)
+find_package(Vorbis CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(unofficial-theora CONFIG REQUIRED)
 
 add_library(SQLite STATIC dep/sqlite/sqlite3.c)
 target_include_directories(SQLite PUBLIC dep/sqlite)
@@ -70,9 +78,131 @@ else()
 endif()
 
 if(WIN32)
-    add_library(DxLib INTERFACE IMPORTED GLOBAL)
-    target_include_directories(DxLib INTERFACE dep/DxLib)
-    target_link_directories(DxLib INTERFACE dep/DxLib)
+    add_library(
+        DxLib
+        STATIC
+        # DxUseCLib
+        dep/DxLib/DxUseCLib.cpp
+        dep/DxLib/DxUseCLibLive2DCubism4.cpp
+        dep/DxLib/DxUseCLibOgg.cpp
+        dep/DxLib/DxUseCLibPhysics.cpp
+        dep/DxLib/Windows/DxUseCLibOggD3D11.cpp
+        dep/DxLib/Windows/DxUseCLibOggD3D9.cpp
+        dep/DxLib/Windows/DxUseCLibOggWin.cpp
+        dep/DxLib/Windows/DxUseCStrmBaseFilter.cpp
+        # DxDrawLib
+        dep/DxLib/DxMemImgDrawFunction0.cpp
+        dep/DxLib/DxMemImgDrawFunction1.cpp
+        dep/DxLib/DxMemImgDrawFunction2.cpp
+        dep/DxLib/DxMemImgDrawFunction3.cpp
+        # DxLib
+        dep/DxLib/DxArchive_.cpp
+        dep/DxLib/DxASyncLoad.cpp
+        dep/DxLib/DxBaseFunc.cpp
+        dep/DxLib/DxBaseImage.cpp
+        dep/DxLib/DxChar.cpp
+        dep/DxLib/DxCharCodeTable.cpp
+        dep/DxLib/DxFile.cpp
+        dep/DxLib/DxFont.cpp
+        dep/DxLib/DxGateway.cpp
+        dep/DxLib/DxGraphics.cpp
+        dep/DxLib/DxGraphicsFilter.cpp
+        dep/DxLib/DxHandle.cpp
+        dep/DxLib/DxHeap.cpp
+        dep/DxLib/DxInput.cpp
+        dep/DxLib/DxInputString.cpp
+        dep/DxLib/DxLive2DCubism4.cpp
+        dep/DxLib/DxLog.cpp
+        dep/DxLib/DxMask.cpp
+        dep/DxLib/DxMath.cpp
+        dep/DxLib/DxMemImg.cpp
+        dep/DxLib/DxMemory.cpp
+        dep/DxLib/DxModel.cpp
+        dep/DxLib/DxModelLoader0.cpp
+        dep/DxLib/DxModelLoader1.cpp
+        dep/DxLib/DxModelLoader2.cpp
+        dep/DxLib/DxModelLoader3.cpp
+        dep/DxLib/DxModelLoader4.cpp
+        dep/DxLib/DxModelLoaderVMD.cpp
+        dep/DxLib/DxModelRead.cpp
+        dep/DxLib/DxMovie.cpp
+        dep/DxLib/DxNetwork.cpp
+        dep/DxLib/DxRingBuffer.cpp
+        dep/DxLib/DxSoftImage.cpp
+        dep/DxLib/DxSound.cpp
+        dep/DxLib/DxSoundConvert.cpp
+        dep/DxLib/DxSystem.cpp
+        dep/DxLib/DxThread.cpp
+        dep/DxLib/Windows/DxBaseFuncWin.cpp
+        dep/DxLib/Windows/DxBaseImageWin.cpp
+        dep/DxLib/Windows/DxFileWin.cpp
+        dep/DxLib/Windows/DxFontWin.cpp
+        dep/DxLib/Windows/DxGraphicsAPIWin.cpp
+        dep/DxLib/Windows/DxGraphicsD3D11.cpp
+        dep/DxLib/Windows/DxGraphicsD3D9.cpp
+        dep/DxLib/Windows/DxGraphicsFilterD3D11.cpp
+        dep/DxLib/Windows/DxGraphicsFilterD3D9.cpp
+        dep/DxLib/Windows/DxGraphicsFilterWin.cpp
+        dep/DxLib/Windows/DxGraphicsWin.cpp
+        dep/DxLib/Windows/DxGuid.cpp
+        dep/DxLib/Windows/DxInputWin.cpp
+        dep/DxLib/Windows/DxKeyHookBinary.cpp
+        dep/DxLib/Windows/DxLive2DCubism4Win.cpp
+        dep/DxLib/Windows/DxLogWin.cpp
+        dep/DxLib/Windows/DxMaskD3D11.cpp
+        dep/DxLib/Windows/DxMaskD3D9.cpp
+        dep/DxLib/Windows/DxMaskWin.cpp
+        dep/DxLib/Windows/DxMemoryWin.cpp
+        dep/DxLib/Windows/DxModelD3D11.cpp
+        dep/DxLib/Windows/DxModelD3D9.cpp
+        dep/DxLib/Windows/DxModelWin.cpp
+        dep/DxLib/Windows/DxMovieWin.cpp
+        dep/DxLib/Windows/DxNetworkWin.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Base3D_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Base3D_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Base_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Base_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Filter_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Filter_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Live2D_Cubism4_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Live2D_Cubism4_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Model_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_Model_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_RgbaMix_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeBin_RgbaMix_D3D9.cpp
+        dep/DxLib/Windows/DxShaderCodeTxt_D3D11.cpp
+        dep/DxLib/Windows/DxShaderCodeTxt_D3D9.cpp
+        dep/DxLib/Windows/DxSoundConvertWin.cpp
+        dep/DxLib/Windows/DxSoundWin.cpp
+        dep/DxLib/Windows/DxSystemWin.cpp
+        dep/DxLib/Windows/DxThreadWin.cpp
+        dep/DxLib/Windows/DxWinAPI.cpp
+        dep/DxLib/Windows/DxWindow.cpp
+    )
+    target_compile_definitions(DxLib PUBLIC DX_LIB_NOT_DEFAULTPATH)
+    target_include_directories(DxLib PUBLIC dep/DxLib)
+    target_link_libraries(
+        DxLib
+        PUBLIC
+            JPEG::JPEG
+            Ogg::ogg
+            Opus::opus
+            OpusFile::opusfile
+            PNG::PNG
+            TIFF::TIFF
+            Vorbis::vorbis
+            Vorbis::vorbisenc
+            Vorbis::vorbisfile
+            ZLIB::ZLIB
+            unofficial::theora::theora
+            unofficial::theora::theoradec
+            unofficial::theora::theoraenc
+    )
+    # DxUseCLib seems to want internal Ogg headers
+    target_include_directories(
+        DxLib
+        PUBLIC dep/dxlib-for-linux/DxLib/insufficient_include
+    )
 elseif(LINUX)
     add_library(DxLib STATIC IMPORTED GLOBAL)
     set_target_properties(
@@ -87,29 +217,25 @@ elseif(LINUX)
     target_link_libraries(
         DxLib
         INTERFACE
-            # Missing in there
-            jpeg
-            # dep/dxlib-for-linux/Dxdep/Makefile DEP_LIBS
-            EGL
-            GL
-            X11
-            ogg
-            openal
-            opus
-            opusfile
-            opusurl
-            png
-            pthread
-            theora
-            theoradec
-            theoraenc
-            tiff
-            tiffxx
-            vorbis
-            vorbisenc
-            vorbisfile
-            z
+            JPEG::JPEG
+            Ogg::ogg
+            Opus::opus
+            OpusFile::opusfile
+            PNG::PNG
+            TIFF::TIFF
+            Vorbis::vorbis
+            Vorbis::vorbisenc
+            Vorbis::vorbisfile
+            ZLIB::ZLIB
+            unofficial::theora::theora
+            unofficial::theora::theoradec
+            unofficial::theora::theoraenc
     )
+
+    # dxlib-for-linux specific
+    find_package(OpenAL REQUIRED)
+    target_link_libraries(DxLib INTERFACE OpenAL::OpenAL)
+    target_link_libraries(DxLib INTERFACE EGL GL X11 pthread)
 else()
     message(FATAL_ERROR "No DxLib for this platform")
 endif()

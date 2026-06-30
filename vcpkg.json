@@ -1,0 +1,14 @@
+{
+  "dependencies": [
+    "libjpeg-turbo",
+    "libogg",
+    "libpng",
+    "libtheora",
+    "libtheora",
+    "libvorbis",
+    "opus",
+    "opusfile",
+    "tiff",
+    "zlib"
+  ]
+}

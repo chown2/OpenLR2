@@ -8,8 +8,10 @@
         "value": "x64",
         "strategy": "set"
       },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS_INIT": "/MP /W4 /wo4244 /permissive-"
+        "CMAKE_CXX_FLAGS_INIT": "/MP /W4 /wo4244 /permissive-",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-release"
       },
       "condition": {
         "type": "equals",
@@ -31,8 +33,10 @@
         "value": "Win32",
         "strategy": "set"
       },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS_INIT": "/MP /arch:IA32 /W4 /wo4244 /permissive-"
+        "CMAKE_CXX_FLAGS_INIT": "/MP /arch:IA32 /W4 /wo4244 /permissive-",
+        "VCPKG_TARGET_TRIPLET": "x86-windows-static"
       },
       "condition": {
         "type": "equals",
