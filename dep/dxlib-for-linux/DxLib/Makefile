@@ -24,9 +24,9 @@ CXXFLAGS += -g -O2 \
 # 要不要に応じて変更してください
 DEP_LIBS := \
     EGL GL X11 \
-    jpeg ogg openal opus opusfile opusurl \
+    jpeg openal opusfile opusurl opus \
     png pthread theora theoradec theoraenc tiff tiffxx \
-    vorbis vorbisenc vorbisfile z \
+    vorbis ogg vorbisenc vorbisfile z \
 
 LDFLAG_LIBS := $(addprefix -l, $(DEP_LIBS))
 
