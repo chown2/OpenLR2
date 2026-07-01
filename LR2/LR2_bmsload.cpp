@@ -16,7 +16,290 @@
 
 #include <DxLib.h>
 
-
+// Converts into LR2's more generic internal representation
+//TOFIX: unintended result when isDSC && isPMS == true
+static int channelConvert(int channel, bool isDSC, bool isPMS)
+{
+    switch(channel)
+    {
+    case 0: channel = -1; break;
+    case 10: channel = -1; break;
+    case 11:
+        if(isDSC)
+            channel = 12;
+        break;
+    case 12:
+        if(isDSC)
+            channel = 13;
+        break;
+    case 13:
+        if(isDSC)
+            channel = 14;
+        break;
+    case 14:
+        if(isDSC)
+            channel = 15;
+        break;
+    case 15:
+        if(isDSC)
+            channel = 16;
+        break;
+    case 16:
+        if(isDSC)
+            channel = 11;
+        else if(isPMS)
+            channel = 18;
+        else
+            channel = 10;
+        break;
+    case 17:
+        if(isPMS)
+            channel = 19;
+        else
+            channel = -1;
+        break;
+    case 18:
+        if(isDSC)
+            channel = 17;
+        else
+            channel = 16;
+        break;
+    case 19:
+        if(isDSC)
+            channel = 18;
+        else
+            channel = 17;
+        break;
+    case 20: channel = -1; break;
+    case 22:
+        if(isPMS)
+            channel = 16;
+        break;
+    case 23:
+        if(isPMS)
+            channel = 17;
+        break;
+    case 24:
+        if(isPMS)
+            channel = 18;
+        break;
+    case 25:
+        if(isPMS)
+            channel = 19;
+        break;
+    case 26:
+        if(isDSC)
+            channel = 19;
+        else
+            channel = 20;
+        break;
+    case 27: channel = -1; break;
+    case 28: channel = 26; break;
+    case 29: channel = 27; break;
+    case 30: channel = -1; break;
+    case 31:
+        if(isDSC)
+            channel = 32;
+        break;
+    case 32:
+        if(isDSC)
+            channel = 33;
+        break;
+    case 33:
+        if(isDSC)
+            channel = 34;
+        break;
+    case 34:
+        if(isDSC)
+            channel = 35;
+        break;
+    case 35:
+        if(isDSC)
+            channel = 36;
+        break;
+    case 36:
+        if(isDSC)
+            channel = 31;
+        else if(isPMS)
+            channel = 38;
+        else
+            channel = 30;
+        break;
+    case 37:
+        if(isPMS)
+            channel = 39;
+        else
+            channel = -1;
+        break;
+    case 38:
+        if(isDSC)
+            channel = 37;
+        else
+            channel = 36;
+        break;
+    case 39:
+        if(isDSC)
+            channel = 38;
+        else
+            channel = 37;
+        break;
+    case 40: channel = -1; break;
+    case 42:
+        if(isPMS)
+            channel = 36;
+        break;
+    case 43:
+        if(isPMS)
+            channel = 37;
+        break;
+    case 44:
+        if(isPMS)
+            channel = 38;
+        break;
+    case 45:
+        if(isPMS)
+            channel = 39;
+        break;
+    case 46:
+        if(isDSC)
+            channel = 39;
+        else
+            channel = 40;
+        break;
+    case 47: channel = -1; break;
+    case 48: channel = 46; break;
+    case 49: channel = 47; break;
+    case 50: channel = -1; break;
+    case 51:
+        if(isDSC)
+            channel = 52;
+        break;
+    case 52:
+        if(isDSC)
+            channel = 53;
+        break;
+    case 53:
+        if(isDSC)
+            channel = 54;
+        break;
+    case 54:
+        if(isDSC)
+            channel = 55;
+        break;
+    case 55:
+        if(isDSC)
+            channel = 56;
+        break;
+    case 56:
+        if(isDSC)
+            channel = 51;
+        else if(isPMS)
+            channel = 58;
+        else
+            channel = 50;
+        break;
+    case 57:
+        if(isPMS)
+            channel = 59;
+        else
+            channel = -1;
+        break;
+    case 58:
+        if(isDSC)
+            channel = 57;
+        else
+            channel = 56;
+        break;
+    case 59:
+        if(isDSC)
+            channel = 58;
+        else
+            channel = 57;
+        break;
+    case 60: channel = -1; break;
+    case 62:
+        if(isPMS)
+            channel = 56;
+        break;
+    case 63:
+        if(isPMS)
+            channel = 57;
+        break;
+    case 64:
+        if(isPMS)
+            channel = 58;
+        break;
+    case 65:
+        if(isPMS)
+            channel = 59;
+        break;
+    case 66:
+        if(isDSC)
+            channel = 59;
+        else
+            channel = 60;
+        break;
+    case 67: channel = -1; break;
+    case 68: channel = 66; break;
+    case 69: channel = 67; break;
+    case 130: channel = -1; break;
+	//TOFIX: case 131-135 is missing, and this cause normal note and mine channel unmatching on DSC chart
+    case 136:
+        if(isDSC)
+            channel = 131;
+        else if(isPMS)
+            channel = 138;
+        else
+            channel = 130;
+        break;
+    case 137:
+        if(isPMS)
+            channel = 139;
+        else
+            channel = -1;
+        break;
+    case 138:
+        if(isDSC)
+            channel = 137;
+        else
+            channel = 136;
+        break;
+    case 139:
+        if(isDSC)
+            channel = 138;
+        else
+            channel = 137;
+        break;
+    case 140: channel = -1; break;
+    case 142:
+        if(isPMS)
+            channel = 136;
+        break;
+    case 143:
+        if(isPMS)
+            channel = 137;
+        break;
+    case 144:
+        if(isPMS)
+            channel = 138;
+        break;
+    case 145:
+        if(isPMS)
+            channel = 139;
+        break;
+    case 146:
+        if(isDSC)
+            channel = 139;
+        else
+            channel = 140;
+        break;
+    case 147: channel = -1; break;
+    case 148: channel = 146; break;
+    case 149: channel = 147; break;
+    default: break;
+    }
+    return channel;
+}
 
 int StopAllKeysound(game *g){
 	for (int i = 0; i < SLOTS; i++) {
@@ -1720,21 +2003,6 @@ int SPtoDP(LaneStruct *lane, int baseNoteID, CHARTCONVERTER *cc) {
 //TODO : rename variables
 //TOFIX : freq +12 autoplay endtime doesn't match (#STOP?)
 //TOFIX : nonstop mix retry volume issue
-unsigned char channelConvert[] = { 0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
-									0x00, 0x3c, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x00, 0x0f, 0x10,
-									0x00, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
-									0x00, 0x3c, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x00, 0x1f, 0x20,
-									0x00, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29,
-									0x00, 0x3c, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x00, 0x2f, 0x30,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c,
-									0x00, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c, 0x31, 0x32, 0x33, 0x34,
-									0x00, 0x3c, 0x35, 0x36, 0x37, 0x38, 0x39, 0x00, 0x3a, 0x3b };
 #define SC_CHANNEL 888 //NOTE: channelConvert[] cannot handle SC channel unless make it use base36
 int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMSMETA *meta, int bgaFlag, int scratchSide) {
 	ErrorLogFmtAdd("ParseBmsFile(%s)\n", filename.c_str());
@@ -2009,215 +2277,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 					channel = *fBuf.atPos(5) - 0x30 + HEXcharToInt('0', *fBuf.atPos(4)) * 10;
 				}
 				if (channel == 4 || channel == 7) gp->soundonly = 0;
-				if (channel < 150) {
-					switch (channelConvert[channel]) {
-					case 0:
-						channel = -1;
-						break;
-
-					case 1:
-						if (isDSC) channel = 12;
-						break;
-					case 2:
-						if (isDSC) channel = 13;
-						break;
-					case 3:
-						if (isDSC) channel = 14;
-						break;
-					case 4:
-						if (isDSC) channel = 15;
-						break;
-					case 5:
-						if (isDSC) channel = 16;
-						break;
-					case 6:
-						if (isDSC) channel = 11;
-						else if (isPMS) channel = 18;
-						else channel = 10;
-						break;
-					case 7:
-						if (isPMS) channel = 19;
-						else channel = -1;
-						break;
-					case 8:
-						if (isDSC) channel = 17;
-						else channel = 16;
-						break;
-					case 9:
-						if (isDSC) channel = 18;
-						else channel = 17;
-						break;
-					case 10:
-						if (isPMS) channel = 16;
-						break;
-					case 11:
-						if (isPMS) channel = 17;
-						break;
-					case 12:
-						if (isPMS) channel = 18;
-						break;
-					case 13:
-						if (isPMS) channel = 19;
-						break;
-					case 14:
-						if (isDSC) channel = 19;
-						else channel = 20;
-						break;
-					case 15:
-						channel = 26;
-						break;
-					case 16:
-						channel = 27;
-						break;
-					case 17:
-						if (isDSC) channel = 32;
-						break;
-					case 18:
-						if (isDSC) channel = 33;
-						break;
-					case 19:
-						if (isDSC) channel = 34;
-						break;
-					case 20:
-						if (isDSC) channel = 35;
-						break;
-					case 21:
-						if (isDSC) channel = 36;
-						break;
-					case 22:
-						if (isDSC) channel = 31;
-						else if (isPMS) channel = 38;
-						else channel = 30;
-						break;
-					case 23:
-						if (isPMS) channel = 39;
-						else channel = -1;
-						break;
-					case 24:
-						if (isDSC) channel = 37;
-						else channel = 36;
-						break;
-					case 25:
-						if (isDSC) channel = 38;
-						else channel = 37;
-						break;
-					case 26:
-						if (isPMS) channel = 36;
-						break;
-					case 27:
-						if (isPMS) channel = 37;
-						break;
-					case 28:
-						if (isPMS) channel = 38;
-						break;
-					case 29:
-						if (isPMS) channel = 39;
-						break;
-					case 30:
-						if (isDSC) channel = 39;
-						else channel = 40;
-						break;
-					case 31:
-						channel = 46;
-						break;
-					case 32:
-						channel = 47;
-						break;
-					case 33:
-						if (isDSC) channel = 52;
-						break;
-					case 34:
-						if (isDSC) channel = 53;
-						break;
-					case 35:
-						if (isDSC) channel = 54;
-						break;
-					case 36:
-						if (isDSC) channel = 55;
-						break;
-					case 37:
-						if (isDSC) channel = 56;
-						break;
-					case 38:
-						if (isDSC) channel = 51;
-						else if (isPMS) channel = 58;
-						else channel = 50;
-						break;
-					case 39:
-						if (isPMS) channel = 59;
-						else channel = -1;
-						break;
-					case 40:
-						if (isDSC) channel = 57;
-						else channel = 56;
-						break;
-					case 41:
-						if (isDSC) channel = 58;
-						else channel = 57;
-						break;
-					case 42:
-						if (isPMS) channel = 56;
-						break;
-					case 43:
-						if (isPMS) channel = 57;
-						break;
-					case 44:
-						if (isPMS) channel = 58;
-						break;
-					case 45:
-						if (isPMS) channel = 59;
-						break;
-					case 46:
-						if (isDSC) channel = 59;
-						else channel = 60;
-						break;
-					case 47:
-						channel = 66;
-						break;
-					case 48:
-						channel = 67;
-						break;
-					case 49:
-						if (isDSC) channel = 131;
-						else if (isPMS) channel = 138;
-						else channel = 130;
-						break;
-					case 50:
-						if (isPMS) channel = 139;
-						else channel = -1;
-						break;
-					case 51:
-						if (isDSC) channel = 137;
-						else channel = 136;
-						break;
-					case 52:
-						if (isDSC) channel = 138;
-						else channel = 137;
-						break;
-					case 53:
-						if (isPMS) channel = 136;
-						break;
-					case 54:
-						if (isPMS) channel = 137;
-						break;
-					case 55:
-						if (isPMS) channel = 138;
-						break;
-					case 56:
-						if (isPMS) channel = 139;
-						break;
-					case 57:
-						if (isDSC) channel = 139;
-						else channel = 140;
-						break;
-					case 58:
-						channel = 146;
-						break;
-					case 59:
-						channel = 147;
-						break;
-					}
-				}
+				channel = channelConvert(channel, isDSC, isPMS);
 
 				if (gp->lastMeasure < thisMeasure) {
 					gp->lastMeasure = thisMeasure;
@@ -2328,7 +2388,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 			else if (fBuf.left(7).isSame("#FP/DSC")) {
-				isDSC = 1;
+				isDSC = 1; //TOFIX: isDSC and isPMS are not interlocked
 				is9key = 1;
 			}
 			else if (fBuf.left(7).isSame("#LNOBJ ")) {
