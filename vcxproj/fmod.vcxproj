@@ -99,9 +99,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
       <Command>xcopy "$(SolutionDir)dep\FMOD\bin86\fmod_vc.lib" "$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\" /Y /I /E
 xcopy "$(SolutionDir)dep\FMOD\bin86\fmod.dll" "$(SolutionDir)out\$(PlatformTarget)\$(Configuration)\" /Y /I /E</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -117,9 +121,13 @@ xcopy "$(SolutionDir)dep\FMOD\bin86\fmod.dll" "$(SolutionDir)out\$(PlatformTarge
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
       <Command>xcopy "$(SolutionDir)dep\FMOD\bin86\fmod_vc.lib" "$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\" /Y /I /E
 xcopy "$(SolutionDir)dep\FMOD\bin86\fmod.dll" "$(SolutionDir)out\$(PlatformTarget)\$(Configuration)\" /Y /I /E</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -133,9 +141,13 @@ xcopy "$(SolutionDir)dep\FMOD\bin86\fmod.dll" "$(SolutionDir)out\$(PlatformTarge
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
       <Command>xcopy "$(SolutionDir)dep\FMOD\bin64\fmod_vc.lib" "$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\" /Y /I /E
 xcopy "$(SolutionDir)dep\FMOD\bin64\fmod.dll" "$(SolutionDir)out\$(PlatformTarget)\$(Configuration)\" /Y /I /E</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -151,9 +163,13 @@ xcopy "$(SolutionDir)dep\FMOD\bin64\fmod.dll" "$(SolutionDir)out\$(PlatformTarge
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
       <Command>xcopy "$(SolutionDir)dep\FMOD\bin64\fmod_vc.lib" "$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\" /Y /I /E
 xcopy "$(SolutionDir)dep\FMOD\bin64\fmod.dll" "$(SolutionDir)out\$(PlatformTarget)\$(Configuration)\" /Y /I /E</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
   </ItemGroup>
