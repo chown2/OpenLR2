@@ -39,6 +39,10 @@
     <ClCompile Include="..\dep\DxLib\DxMask.cpp" />
     <ClCompile Include="..\dep\DxLib\DxMath.cpp" />
     <ClCompile Include="..\dep\DxLib\DxMemImg.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemImgDrawFunction0.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemImgDrawFunction1.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemImgDrawFunction2.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxMemImgDrawFunction3.cpp" />
     <ClCompile Include="..\dep\DxLib\DxMemory.cpp" />
     <ClCompile Include="..\dep\DxLib\DxModel.cpp" />
     <ClCompile Include="..\dep\DxLib\DxModelLoader0.cpp" />
@@ -56,6 +60,10 @@
     <ClCompile Include="..\dep\DxLib\DxSoundConvert.cpp" />
     <ClCompile Include="..\dep\DxLib\DxSystem.cpp" />
     <ClCompile Include="..\dep\DxLib\DxThread.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxUseCLib.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxUseCLibLive2DCubism4.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxUseCLibOgg.cpp" />
+    <ClCompile Include="..\dep\DxLib\DxUseCLibPhysics.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxBaseFuncWin.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxBaseImageWin.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxFileWin.cpp" />
@@ -99,6 +107,10 @@
     <ClCompile Include="..\dep\DxLib\Windows\DxSoundWin.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxSystemWin.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxThreadWin.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxUseCLibOggD3D11.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxUseCLibOggD3D9.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxUseCLibOggWin.cpp" />
+    <ClCompile Include="..\dep\DxLib\Windows\DxUseCStrmBaseFilter.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxWinAPI.cpp" />
     <ClCompile Include="..\dep\DxLib\Windows\DxWindow.cpp" />
   </ItemGroup>
@@ -142,6 +154,9 @@
     <ClInclude Include="..\dep\DxLib\DxSystem.h" />
     <ClInclude Include="..\dep\DxLib\DxThread.h" />
     <ClInclude Include="..\dep\DxLib\DxLib.h" />
+    <ClInclude Include="..\dep\DxLib\DxUseCLib.h" />
+    <ClInclude Include="..\dep\DxLib\DxUseCLibLive2DCubism4.h" />
+    <ClInclude Include="..\dep\DxLib\DxUseCLibOgg.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxBaseFuncWin.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxBaseImageWin.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxDirectX.h" />
@@ -177,6 +192,10 @@
     <ClInclude Include="..\dep\DxLib\Windows\DxSoundWin.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxSystemWin.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxThreadWin.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxUseCLibOggD3D11.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxUseCLibOggD3D9.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxUseCLibOggWin.h" />
+    <ClInclude Include="..\dep\DxLib\Windows\DxUseCStrmBaseFilter.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxWinAPI.h" />
     <ClInclude Include="..\dep\DxLib\Windows\DxWindow.h" />
   </ItemGroup>
@@ -190,21 +209,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -223,24 +242,24 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)build\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)build\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DxLib_vs2015_x86_MTd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">DxLib_vs2015_x86_MT</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DxLib</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">DxLib</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>DxLib_vs2015_x64_MTd</TargetName>
+    <TargetName>DxLib</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>DxLib_vs2015_x64_MT</TargetName>
+    <TargetName>DxLib</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DX_LIB_NOT_DEFAULTPATH;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -250,8 +269,10 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;$(SolutionDir)dep\DxLib\insufficient_include\;$(_ZVcpkgCurrentInstalledDir)include\opus\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -264,14 +285,19 @@
       </PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dep\DxLib\lib\*_vs2015_x86_MTd.lib" "$(OutDir)" /Y /I /E</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>
+      </LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DX_LIB_NOT_DEFAULTPATH;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StructMemberAlignment>Default</StructMemberAlignment>
@@ -281,8 +307,10 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;$(SolutionDir)dep\DxLib\insufficient_include\;$(_ZVcpkgCurrentInstalledDir)include\opus\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -293,52 +321,105 @@
       </ResourceOutputFileName>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dep\DxLib\lib\*_vs2015_x86_MT.lib" "$(OutDir)" /Y /I /E</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>
+      </LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;$(SolutionDir)dep\DxLib\insufficient_include\;$(_ZVcpkgCurrentInstalledDir)include\opus\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>false</OmitFramePointers>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DX_LIB_NOT_DEFAULTPATH;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dep\DxLib\lib\*_vs2015_x64_MTd.lib" "$(OutDir)" /Y /I /E</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>
+      </LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep\DxLib\;$(SolutionDir)dep\DxLib\insufficient_include\;$(_ZVcpkgCurrentInstalledDir)include\opus\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WarningLevel>Level3</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DX_LIB_NOT_DEFAULTPATH;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp23</LanguageStandard>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)dep\DxLib\lib\*_vs2015_x64_MT.lib" "$(OutDir)" /Y /I /E</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>
+      </LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+    <VcpkgAdditionalInstallOptions>
+    </VcpkgAdditionalInstallOptions>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <PropertyGroup>
-    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
-  </PropertyGroup>
 </Project>
