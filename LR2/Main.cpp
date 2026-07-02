@@ -318,46 +318,43 @@ int main(int argc, char** argv) {
 				gs.config.system.vsync = 1;
 			}
 		}
-		else if (tStr2.starts_with("-auto2avi")) {
+		else if (tStr2.isSame("-auto2avi")) {
 			gs.rec.recMode = 1;
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.starts_with("-replay2avi")) {
+		else if (tStr2.isSame("-replay2avi")) {
 			gs.rec.recMode = 2;
 			gs.audio.replay2avi = true;
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.starts_with("-bga2avi")) {
+		else if (tStr2.isSame("-bga2avi")) {
 			gs.rec.recMode = 3;
 			gs.skstruct.drBuf.isDisabled = '\x01';
 			gs.is_recordmode = '\x01';
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.starts_with("-movie")) {
+		else if (tStr2.isSame("-movie")) {
 			gs.rec.recMode = 4;
 			gs.config.select.preview = 0;
 		}
-		else if (tStr2.starts_with("-ns")) {
+		else if (tStr2.isSame("-ns")) {
 			gs.cmd_nosave = '\x01';
 		}
-		else if (tStr2.starts_with("-a")) {
+		else if (tStr2.isSame("-a")) {
 			gs.cmd_auto = '\x01';
 		}
-		else if (tStr2.starts_with("-n")) {
-			gs.cmd_n = atol(tStr1.right(tStr1.length() - 2)); //TOFIX : never used
-		}
-		else if (tStr2.starts_with("-dx9")) {
+		else if (tStr2.isSame("-dx9")) {
 			use_dx = DX_DIRECT3D_9;
 		}
-		else if (tStr2.starts_with("-dx9ex")) {
+		else if (tStr2.isSame("-dx9ex")) {
 			use_dx = DX_DIRECT3D_9EX;
 		}
-		else if (tStr2.starts_with("-dx11")) {
+		else if (tStr2.isSame("-dx11")) {
 			use_dx = DX_DIRECT3D_11;
 		}
-		else if (tStr2.starts_with("-test")) {
+		else if (tStr2.isSame("-test")) {
 			test_mode = true;
 		}
 	}

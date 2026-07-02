@@ -1459,7 +1459,6 @@ struct game {
 	bool cmd_nosave;
 	bool cmd_directplay;
 	bool cmd_auto;
-	bool cmd_n;
 	bool is_recordmode;
 	bool auto2avi;
 	bool po4_23da8;
