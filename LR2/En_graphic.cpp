@@ -1,5 +1,5 @@
 ﻿#include "En_graphic.h"
-#include "DxLib/DxLib.h"
+#include <DxLib.h>
 
 #include "En_dxlibstub.h"
 

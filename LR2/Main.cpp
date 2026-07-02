@@ -12,9 +12,9 @@
 #include <fstream>
 #include <thread>
 
-#include <DxLib/DxLib.h>
+#include <DxLib.h>
 extern "C" {
-#include <sqlite/sqlite3.h>
+#include <sqlite3.h>
 }
 
 #ifdef _WIN32
