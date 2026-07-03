@@ -44,6 +44,7 @@ public:
 private:
 	std::vector<std::shared_ptr<CustomIR>> mModules;
 	std::vector<std::future<void>> mSendThreads;
+	std::vector<std::future<std::optional<openlr2::IRRankResult>>> mDiscardedResultIrFutures;
 	std::future<std::optional<openlr2::IRRankResult>> mResultIrFuture;
 	std::string mDisplayIr;
 	std::vector<std::string> mLoggedInIrs;

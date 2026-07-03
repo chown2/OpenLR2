@@ -1,11 +1,13 @@
 #include <LR2_customir_api.h>
 
+#include <chrono>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
 #include <print>
 #include <string>
+#include <thread>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -77,6 +79,7 @@ static openlr2::GetStatus OLR2_IR_API RestoreCachedRank(const char* songHash, in
 
 static openlr2::GetStatus OLR2_IR_API GetResultRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
     std::println(std::cout, "GetResultRank({})", songHash);
+    std::this_thread::sleep_for(std::chrono::seconds(5)); // Show how asynchronous song result is
     out = {};
     out.ranking = {
         { .name = "name1", .comment = "comment1", .timestamp = 1262304000, .id = 70200, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 520, .pg = 980, .gr = 180, .minbp = 42 },

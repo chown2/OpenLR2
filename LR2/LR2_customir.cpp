@@ -15,6 +15,7 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include <vector>
 
 #include <DxLib.h>
 
@@ -168,13 +169,21 @@ std::string CustomIR::GetWebRankingUrl(const char* songHash) {
 	return mMethods.GetWebRankingUrl(songHash);
 }
 
-CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() {
-	// Make sure all scores are sent before exiting out of the process. (Can hang for up to ~15 minutes...)
-	for (auto& thread : mSendThreads) {
-		thread.get();
+// All held std::future are automatically awaited on.
+// Can hang for up to 15 minutes if score sending fails time and time again...
+CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() = default;
+
+template<class T>
+static void cleanUpOldFutures(std::vector<T>& futures) {
+	std::vector<int> finishedThreads;
+	for (const auto& [i, it] : std::views::enumerate(futures)) {
+		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+			finishedThreads.push_back(static_cast<int>(i));
+		}
 	}
-	if (mResultIrFuture.valid()) {
-		mResultIrFuture.get();
+	std::ranges::reverse(finishedThreads);
+	for (auto i : finishedThreads) {
+		futures.erase(futures.begin() + i);
 	}
 }
 
@@ -197,18 +206,7 @@ static void SendScoreWithBlockingRetry(CustomIR& ir, const IRScoreV1& scoreV1) {
 	OverlayNotification("'%s' failed to submit score after %d attempts\n", ir.Name().c_str(), tryCount);
 }
 static void SendScoreMultiplexed(std::vector<std::future<void>>& mSendThreads, const IRScoreV1& scoreV1, const std::vector<std::shared_ptr<CustomIR>>& irs) {
-	std::vector<int> finishedThreads;
-	for (const auto& [i, it] : std::views::enumerate(mSendThreads)) {
-		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-			finishedThreads.push_back(static_cast<int>(i));
-		}
-	}
-	// Deferred deletion because we need to keep the std::future for whatever reason
-	std::ranges::reverse(finishedThreads);
-	for (auto i : finishedThreads) {
-		mSendThreads.erase(mSendThreads.begin() + i);
-	}
-
+	cleanUpOldFutures(mSendThreads);
 	mSendThreads.reserve(mSendThreads.size() + irs.size());
 	for (const auto& ir : irs) {
 		mSendThreads.push_back(std::async(
@@ -715,9 +713,9 @@ void CUSTOMIR_MANAGER::BeginResultIr(game& game, sqlite3* sql, int player, std::
 		return;
 	}
 	if (mResultIrFuture.valid()) {
-		ErrorLogAdd("BUG: we have an unexpected mResultIrFuture");
-		mResultIrFuture.get();
+		mDiscardedResultIrFutures.push_back(std::move(mResultIrFuture));
 	}
+	cleanUpOldFutures(mDiscardedResultIrFutures);
 	mResultIrFuture = std::async(std::launch::async, &ResultIrAsync, *irIt, scoreV1);
 }
 
