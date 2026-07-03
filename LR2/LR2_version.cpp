@@ -2,6 +2,6 @@
 
 namespace openlr2 {
 const char* clientName = "OpenLR2";
-const char* versionName = "OpenLR2 version 260627";
-const int versionCode = 260627;
+const char* versionName = "OpenLR2 version 260703";
+const int versionCode = 260703;
 } // namespace openlr2
