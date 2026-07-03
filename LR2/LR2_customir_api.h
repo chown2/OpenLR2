@@ -270,8 +270,10 @@ struct MethodTable {
 	openlr2::GetStatus(OLR2_IR_API* RestoreCachedRank)(const char* songHash, int reserved, openlr2::IRRankResult& out) = nullptr;
 	// This is called synchronously when play is entered to retrieve the ghost data for the play.
 	openlr2::GetStatus(OLR2_IR_API* GetGhost)(const char* songHash, openlr2::GhostMode mode, int targetPlayerId, openlr2::IRGhostResult& out) = nullptr;
-	// Song-select F5 web ranking URL template; `{hash}` is chart or course hash (same as LR2IR bmsmd5).
-	const char* webRankingUrlTemplate = nullptr;
+	[[deprecated("Use GetWebRankingUrl instead")]] const char* webRankingUrlTemplate = nullptr;
+	// This is called synchronously when F5 or the IR button is pressed in song-select.
+	// \retval "" - error or inapplicable.
+	std::string(OLR2_IR_API* GetWebRankingUrl)(char const* songHash) = nullptr;
 	// Forward compatibility.
 	// These fields will always be moved to the end of the struct when new fields are added.
 	// Thanks to this CustomIR module designed for newer game version won't write out-of-bounds memory when assigning fields of older MethodTable.
