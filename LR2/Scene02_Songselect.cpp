@@ -1592,7 +1592,7 @@ static void ThreadProc_RankingAutoUpdate(game* g) {
 			SetObjectStrings_SongSelect(g);
 		}
 
-		if (GetNowUnixtime() - GetFileUnixtime(path) < 86400 || g->config.network.autoupdate == 0) { //86400 is 24hours
+		if (GetNowUnixtime() - GetFileUnixtime(path) < 86400 || !g->config.network.isAutoUpdate) { //86400 is 24hours
 			return;
 		}
 	}
@@ -1603,7 +1603,7 @@ static void ThreadProc_RankingAutoUpdate(game* g) {
 		return;
 	}
 
-	if (!g->config.network.autoupdate) {
+	if (!g->config.network.isAutoUpdate) {
 		if (!isIR2) g->net.IRstatus = 0;
 		return;
 	}

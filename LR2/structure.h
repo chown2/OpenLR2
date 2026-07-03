@@ -353,7 +353,7 @@ struct CONFIG_NETWORK {
 	CSTR lr1pass;
 	int lr2ir{};
 	CSTR mail;
-	int autoupdate{};
+	bool isAutoUpdate{};
 	int getrival{};
 	CSTR displayIr;
 };
