@@ -275,12 +275,7 @@ struct MethodTable {
 	// \retval "" - error or inapplicable.
 	std::string(OLR2_IR_API* GetWebRankingUrl)(char const* songHash) = nullptr;
 	// Forward compatibility.
-	// These fields will always be moved to the end of the struct when new fields are added.
+	// This field will always be moved to the end of the struct when new fields are added.
 	// Thanks to this CustomIR module designed for newer game version won't write out-of-bounds memory when assigning fields of older MethodTable.
-	void* reserved1 = nullptr;
-	void* reserved2 = nullptr;
-	void* reserved3 = nullptr;
-	void* reserved4 = nullptr;
-	void* reserved5 = nullptr;
-	void* reserved6 = nullptr;
+	void* _trailing_field_to_increase_struct_size[6]{};
 };
