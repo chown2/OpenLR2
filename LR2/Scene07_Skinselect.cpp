@@ -241,7 +241,7 @@ int ProcI_SkinSelect(game *g) {
 					else if (g->config.play.battle == OPTION_BATTLE_SP2DP) {
 						AddDrawingBuffer_Object(&g->skstruct2.drBuf, &g->skstruct2.src_BAR_LAMP[g->sSelect.bmsList[sBar].mybest.clear_sd], &g->skstruct2.dst_BAR_LAMP[g->sSelect.bmsList[sBar].mybest.clear_sd], &g->timer2, dstd3.x, dstd3.y);
 					}
-					else if (g->config.play.is_extra == 1) {
+					else if (g->config.play.m_isExtra) {
 						AddDrawingBuffer_Object(&g->skstruct2.drBuf, &g->skstruct2.src_BAR_LAMP[g->sSelect.bmsList[sBar].mybest.clear_ex], &g->skstruct2.dst_BAR_LAMP[g->sSelect.bmsList[sBar].mybest.clear_ex], &g->timer2, dstd3.x, dstd3.y);
 					}
 					else {

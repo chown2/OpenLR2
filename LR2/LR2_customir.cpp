@@ -350,7 +350,7 @@ struct IRScoreInternal {
 		int m_wave{};
 		int m_spiral{};
 		int m_sidejump{};
-		int is_extra{};
+		bool m_isExtra{};
 		int m_extra{};
 		char m_lunaris{};
 		bool m_gas{};
@@ -449,7 +449,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.settings.m_wave = settings.m_wave;
 	scoreOut.settings.m_spiral = settings.m_spiral;
 	scoreOut.settings.m_sidejump = settings.m_sidejump;
-	scoreOut.settings.is_extra = settings.is_extra;
+	scoreOut.settings.is_extra = (int)settings.m_isExtra;
 	scoreOut.settings.m_extra = settings.m_extra;
 	scoreOut.settings.m_lunaris = settings.m_lunaris;
 	scoreOut.settings.m_gas = settings.m_gas;
@@ -571,7 +571,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 	settings.m_wave = cfg.m_wave;
 	settings.m_spiral = cfg.m_spiral;
 	settings.m_sidejump = cfg.m_sidejump;
-	settings.is_extra = cfg.is_extra;
+	settings.m_isExtra = cfg.m_isExtra;
 	settings.m_extra = cfg.m_extra;
 	settings.m_lunaris = cfg.m_lunaris;
 	settings.m_gas = cfg.m_gas;

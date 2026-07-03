@@ -2902,7 +2902,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				DPtoSP(gp);
 			}
 		}
-		if (cfg->play.is_extra > 0 && gp->isCourse == 0 && gp->isPreviewLoad == 0) {
+		if (cfg->play.m_isExtra && gp->isCourse == 0 && gp->isPreviewLoad == 0) {
 			gp->extramode_level = cfg->play.m_extra;
 			for (int cur = 0; cur < gp->bmsobj.count; cur++) {
 				gp->bmsobj.notes[cur].bmsTiming_ln = gp->bmsobj.notes[cur].bmsTiming;
@@ -3264,7 +3264,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	else if (gp->minBPM > 0.0 && cfg->play.hsfix == OPTION_HSFIX_MINBPM) gp->speedmultiplier = 150.0 / gp->minBPM;
 	else gp->speedmultiplier = 1.0;
 
-	if (cfg->play.m_loudness > 0 || cfg->play.is_extra > 0 || cfg->play.p1_assist > 0 || cfg->play.p2_assist > 0 || cfg->play.battle || cfg->play.m_addnote > 0)
+	if (cfg->play.m_loudness > 0 || cfg->play.m_isExtra || cfg->play.p1_assist > 0 || cfg->play.p2_assist > 0 || cfg->play.battle || cfg->play.m_addnote > 0)
 		gp->isGhostDisabled = 1;
 	if (0 < cfg->play.m_loudness)
 		gp->isNosave = 1;

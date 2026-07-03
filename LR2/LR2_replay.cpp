@@ -205,7 +205,7 @@ int AddReplayDataHeader(CONFIG_PLAY *cfg, REPLAY *rp, AUDIO *snd, gameplay *gp){
 	AddReplayData(rp, 0, 0xc9, static_cast<short>(cfg->battle));
 	AddReplayData(rp, 0, 0xca, static_cast<short>(gp->isAutoplay));
 	AddReplayData(rp, 0, 0xcb, static_cast<short>(cfg->hsfix));
-	AddReplayData(rp, 0, 0xcc, static_cast<short>(cfg->is_extra));
+	AddReplayData(rp, 0, 0xcc, static_cast<short>(cfg->m_isExtra));
 	AddReplayData(rp, 0, 0xcd, static_cast<short>(cfg->m_extra));
 	AddReplayData(rp, 0, 0xce, static_cast<short>(cfg->dpflip));
 	AddReplayData(rp, 0, 0x28, static_cast<short>(snd->param.fx_volume_on));
@@ -695,7 +695,7 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 			g->config.play.hsfix = data->value;
 			break;
 		case 0xcc:
-			g->config.play.is_extra = data->value;
+			g->config.play.m_isExtra = (data->value > 0);
 			break;
 		case 0xcd:
 			g->config.play.m_extra = data->value;

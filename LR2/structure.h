@@ -408,7 +408,7 @@ struct CONFIG_PLAY {
 	int m_wave{};
 	int m_spiral{};
 	int m_sidejump{};
-	int is_extra{};
+	bool m_isExtra{};//TOFIX?: Not bug, but whynot use m_extra=0 as OFF like m_gambol
 	int m_extra{};
 	char m_lunaris{};
 	bool m_gas{};

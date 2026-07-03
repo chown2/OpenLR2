@@ -1085,7 +1085,7 @@ int main(int argc, char** argv) {
 
 					gs.sSelect.panel_unk = -1;
 					ReadLR2SoundSet(&gs, gs.config.skin.skinFilePath[10], 0);
-					if (gs.config.play.is_extra && gs.audio.sysSound.exselect.load)
+					if (gs.config.play.m_isExtra && gs.audio.sysSound.exselect.load)
 						PlaySound(&gs.audio, &gs.audio.sysSound.exselect, gs.audio.chnBgm, -1);
 					else
 						PlaySound(&gs.audio, &gs.audio.sysSound.select, gs.audio.chnBgm, -1);
@@ -1128,7 +1128,7 @@ int main(int argc, char** argv) {
 					LoadSceneG(&gs, &gs.skstruct, SKINTYPE_DECIDE);
 							
 					StopSysSound(&gs);
-					if (gs.config.play.is_extra && gs.audio.sysSound.exdecide.load)
+					if (gs.config.play.m_isExtra && gs.audio.sysSound.exdecide.load)
 						PlaySound(&gs.audio, &gs.audio.sysSound.exdecide, gs.audio.chnBgm, -1);
 					else
 						PlaySound(&gs.audio, &gs.audio.sysSound.decide, gs.audio.chnBgm, -1);
@@ -1495,7 +1495,7 @@ int main(int argc, char** argv) {
 							gs.config.play.p1_assist = 0;
 							gs.config.play.p2_assist = 0;
 							gs.config.play.battle = OPTION_BATTLE_OFF;
-							gs.config.play.is_extra = 0;
+							gs.config.play.m_isExtra = false;
 							gs.config.play.m_accel = 0;
 							gs.config.play.m_addnote = 0;
 							gs.config.play.autokey = 0;

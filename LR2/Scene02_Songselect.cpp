@@ -1325,12 +1325,12 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 	if (g->sSelect.fExtraCmdDone == 0 && (g->KeyInput.p1_buttonInput[2] == 2 || g->KeyInput.p2_buttonInput[2] == 2)) {
 		if (GetTimeLapse(102, &g->timer1) >= 1000 || GetTimeLapse(112, &g->timer1) >= 1000) {
 
-			LoopInRange(0, 1, 1, &g->config.play.is_extra);
+			g->config.play.m_isExtra = !g->config.play.m_isExtra;
 			PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 			g->sSelect.fExtraCmdDone = 1;
 
 			if (g->audio.sysSound.exselect.load) {
-				if (g->config.play.is_extra) {
+				if (g->config.play.m_isExtra) {
 					StopSound(&g->audio, &g->audio.sysSound.select);
 					PlaySound(&g->audio, &g->audio.sysSound.exselect, g->audio.chnBgm, -1);
 				}
@@ -2646,7 +2646,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 						else if (g->config.play.battle == OPTION_BATTLE_DBATTLE) {
 							t = mybest.clear_db;
 						}
-						else if (g->config.play.is_extra == 1) {
+						else if (g->config.play.m_isExtra) {
 							t = mybest.clear_ex;
 						}
 						else {
@@ -2664,7 +2664,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 					else if (g->config.play.battle == OPTION_BATTLE_DBATTLE) {
 						t = mybest.clear_db;
 					}
-					else if (g->config.play.is_extra == 1) {
+					else if (g->config.play.m_isExtra) {
 						t = mybest.clear_ex;
 					}
 					else {

@@ -184,11 +184,11 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 52:
-			if (gs->config.play.is_extra == 0) return ret;
+			if (!gs->config.play.m_isExtra) return ret;
 			break;
 
 		case 53:
-			if (gs->config.play.is_extra == 1) return ret;
+			if (gs->config.play.m_isExtra) return ret;
 			break;
 
 		case 54:
@@ -295,7 +295,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 0) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 0) return ret;
 			}
@@ -313,7 +313,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 1) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 1) return ret;
 			}
@@ -331,7 +331,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 2) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 2) return ret;
 			}
@@ -349,7 +349,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 3) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 3) return ret;
 			}
@@ -367,7 +367,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 4) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 4) return ret;
 			}
@@ -385,7 +385,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_db == 5) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode <= 0) return !ret;
 				if (mybest.clear_ex == 5) return ret;
 			}
@@ -1267,7 +1267,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 		case 523:
 		case 524:
 		case 525:
-			if ((songData.folderType == 0 || songData.folderType == 5) && gs->config.play.is_extra != 1 && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
+			if ((songData.folderType == 0 || songData.folderType == 5) && !gs->config.play.m_isExtra && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
 				&& songData.difficultyLevelBarLamp[0] == option - 520)
 				return ret;
 			break;
@@ -1277,7 +1277,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 		case 533:
 		case 534:
 		case 535:
-			if ((songData.folderType == 0 || songData.folderType == 5) && gs->config.play.is_extra != 1 && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
+			if ((songData.folderType == 0 || songData.folderType == 5) && !gs->config.play.m_isExtra && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
 				&& songData.difficultyLevelBarLamp[1] == option - 530)
 				return ret;
 			break;
@@ -1287,7 +1287,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 		case 543:
 		case 544:
 		case 545:
-			if ((songData.folderType == 0 || songData.folderType == 5) && gs->config.play.is_extra != 1 && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
+			if ((songData.folderType == 0 || songData.folderType == 5) && !gs->config.play.m_isExtra && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
 				&& songData.difficultyLevelBarLamp[2] == option - 540)
 				return ret;
 			break;
@@ -1297,7 +1297,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 		case 553:
 		case 554:
 		case 555:
-			if ((songData.folderType == 0 || songData.folderType == 5) && gs->config.play.is_extra != 1 && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
+			if ((songData.folderType == 0 || songData.folderType == 5) && !gs->config.play.m_isExtra && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
 				&& songData.difficultyLevelBarLamp[3] == option - 550)
 				return ret;
 			break;
@@ -1307,7 +1307,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 		case 563:
 		case 564:
 		case 565:
-			if ((songData.folderType == 0 || songData.folderType == 5) && gs->config.play.is_extra != 1 && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
+			if ((songData.folderType == 0 || songData.folderType == 5) && !gs->config.play.m_isExtra && gs->config.play.battle != OPTION_BATTLE_DBATTLE && gs->config.play.battle != OPTION_BATTLE_SP2DP
 				&& songData.difficultyLevelBarLamp[4] == option - 560)
 				return ret;
 			break;
@@ -1426,7 +1426,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 0) return ret;
 			}
-			else if (gs->config.play.is_extra == OPTION_BATTLE_BATTLE) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 0) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
@@ -1440,7 +1440,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 1) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 1) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
@@ -1454,7 +1454,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 2) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 2) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
@@ -1468,7 +1468,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 3) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 3) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
@@ -1482,7 +1482,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 4) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 4) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
@@ -1496,7 +1496,7 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.battle == OPTION_BATTLE_DBATTLE) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_db == 5) return ret;
 			}
-			else if (gs->config.play.is_extra == 1) {
+			else if (gs->config.play.m_isExtra) {
 				if (songData.keymode > 0 && songData.rivalRecord.clear_ex == 5) return ret;
 			}
 			else if (gs->config.play.battle == OPTION_BATTLE_SP2DP) {
