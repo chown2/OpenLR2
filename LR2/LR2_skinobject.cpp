@@ -648,23 +648,23 @@ bool GetOptionFlag_dst(game *gs, int option) {
 
 		case 190:
 			if (gs->procSelecter == 7) return !ret;
-			if (songData.isStagefile == 0)return ret;
+			if (!songData.isStagefile)return ret;
 			break;
 		case 191:
 			if (gs->procSelecter == 7) return !ret;
-			if (songData.isStagefile == 1)return ret;
+			if (songData.isStagefile)return ret;
 			break;
 		case 192:
-			if (songData.isBanner == 0)return ret;
+			if (!songData.isBanner)return ret;
 			break;
 		case 193:
-			if (songData.isBanner == 1)return ret;
+			if (songData.isBanner)return ret;
 			break;
 		case 194:
-			if (songData.isBackBMP == 0)return ret;
+			if (!songData.isBackBMP)return ret;
 			break;
 		case 195:
-			if (songData.isBackBMP == 1) return ret;
+			if (songData.isBackBMP) return ret;
 			break;
 		case 196:
 			if (songData.replayExist == 0) return ret;

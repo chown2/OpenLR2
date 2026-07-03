@@ -259,17 +259,17 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 					for (int i = 0; i < g->sSelect.bmsListCount; i++) {
 						SetTransColor(0, 255, 0);
 						CSTR dir = g->sSelect.bmsList[i].filepath.getDirectory();
-						if (g->sSelect.bmsList[i].isStagefile == 0) {
+						if (!g->sSelect.bmsList[i].isStagefile) {
 							g->sSelect.bmsList[i].stagefile = "_title.png";
 						}
 						CSTR alt;
 						if (FindAltImage(g->sSelect.bmsList[i].stagefile, dir, &alt) != 1) {
-							g->sSelect.bmsList[i].isStagefile = 0;
+							g->sSelect.bmsList[i].isStagefile = false;
 						}
 
 						g->sSelect.bmsList[i].grHandle = LoadGraph(alt, 0);
 						if (g->sSelect.bmsList[i].grHandle == -1) {
-							g->sSelect.bmsList[i].isStagefile = 0;
+							g->sSelect.bmsList[i].isStagefile = false;
 						}
 					}
 

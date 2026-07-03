@@ -603,8 +603,8 @@ struct SONGDATA { /* 712bytes */
 	CSTR stagefile;
 	CSTR banner;
 	CSTR backBMP;
-	int isStagefile{};
-	int isBanner{};
+	bool isStagefile{};
+	bool isBanner{};
 	int isBackBMP{};
 	uint difficulty{};
 	int level{};

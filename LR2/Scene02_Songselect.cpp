@@ -2746,11 +2746,11 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 		}
 		if (sihandle == -1)
 		{
-			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = 0;
+			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = false;
 			continue;
 		}
 		if (ReCreateGraphFromSoftImage(sihandle, g->skstruct.GrHandle[GRHTYPE_BANNER]) == -1)
-			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = 0;
+			g->sSelect.bmsList[g->sSelect.cur_song].isBanner = false;
 		DeleteSoftImage(sihandle);
 	}
 	std::erase_if(g->hThreadBanner, std::not_fn(&std::future<std::pair<std::pair<std::string, std::string>, int>>::valid));

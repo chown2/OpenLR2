@@ -403,9 +403,9 @@ int InitSongData(SONGDATA *song){
 	song->longnote = 0;
 	song->random = 0;
 	song->judge = 0;
-	song->isStagefile = 0;
-	song->isBanner = 0;
-	song->isBackBMP = 0;
+	song->isStagefile = false;
+	song->isBanner = false;
+	song->isBackBMP = false;
 	song->replayExist = 0;
 	song->favorite = 0;
 	song->adddate = 0;
@@ -1060,13 +1060,13 @@ int GetSongData(CSTR songMD5, SONGDATA *song, sqlite3 *sql, SONGSELECT *ss) {
 		
 		song->stagefile = SQL_GetColumn(10, stmt);
 		if (song->stagefile.isDiff("(null)") && song->stagefile.length() > 4)
-			song->isStagefile = 1;
+			song->isStagefile = true;
 		song->banner = SQL_GetColumn(11, stmt);
 		if (song->banner.isDiff("(null)") && song->banner.length() > 4)
-			song->isBanner = 1;
+			song->isBanner = true;
 		song->backBMP = SQL_GetColumn(12, stmt);
 		if (song->backBMP.isDiff("(null)") && song->backBMP.length() > 4)
-			song->isBackBMP = 1;
+			song->isBackBMP = true;
 
 		if(song->subtitle.isDiff("(null)"))
 			cstrSprintf(&song->fulltitle,"%s %s", song->title.body, song->subtitle.body);
@@ -2255,11 +2255,11 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 					song.adddate = sqlite3_column_int(pStmt, 27);
 					song.exlevel = sqlite3_column_int(pStmt, 28);
 					song.stagefile = SQL_GetColumn(10, pStmt);
-					if (song.stagefile.isDiff("(null)") && song.stagefile.length() > 4) song.isStagefile = 1;
+					if (song.stagefile.isDiff("(null)") && song.stagefile.length() > 4) song.isStagefile = true;
 					song.banner = SQL_GetColumn(11, pStmt);
-					if (song.banner.isDiff("(null)") && song.banner.length() > 4) song.isBanner = 1;
+					if (song.banner.isDiff("(null)") && song.banner.length() > 4) song.isBanner = true;
 					song.backBMP = SQL_GetColumn(12, pStmt);
-					if (song.backBMP.isDiff("(null)") && song.backBMP.length() > 4) song.isBackBMP = 1;
+					if (song.backBMP.isDiff("(null)") && song.backBMP.length() > 4) song.isBackBMP = true;
 
 					if (song.subtitle.isDiff("(null)"))
 						cstrSprintf(&song.fulltitle, "%s %s", song.title.body, song.subtitle.body);

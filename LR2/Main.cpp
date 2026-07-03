@@ -1105,23 +1105,23 @@ int main(int argc, char** argv) {
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].stagefile, dir, &oBuf) != 1)
-							gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = 0;
+							gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = false;
 						gs.skstruct.GrHandle[GRHTYPE_STAGE] = LoadGraph(oBuf, 0);
-						if (gs.skstruct.GrHandle[GRHTYPE_STAGE] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = 0;
+						if (gs.skstruct.GrHandle[GRHTYPE_STAGE] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isStagefile = false;
 					}
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].backBMP, dir, &oBuf) != 1)
-							gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = 0;
+							gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = false;
 						gs.skstruct.GrHandle[GRHTYPE_BACKBMP] = LoadGraph(oBuf, 0);
-						if (gs.skstruct.GrHandle[GRHTYPE_BACKBMP] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = 0;
+						if (gs.skstruct.GrHandle[GRHTYPE_BACKBMP] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBackBMP = false;
 					}
 					if (gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner) {
 						CSTR oBuf;
 						if (FindAltImage(gs.sSelect.bmsList[gs.sSelect.cur_song].banner, dir, &oBuf) != 1) 
-							gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = 0;
+							gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = false;
 						gs.skstruct.GrHandle[GRHTYPE_BANNER] = LoadGraph(oBuf, 0); //TOFIX : when banner size is not 300 80, this will break graph size and banner is not displayed until next song
-						if (gs.skstruct.GrHandle[GRHTYPE_BANNER] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = 0;
+						if (gs.skstruct.GrHandle[GRHTYPE_BANNER] == -1) gs.sSelect.bmsList[gs.sSelect.cur_song].isBanner = false;
 					}
 					SetTransColor(0, 255, 0);
 							
