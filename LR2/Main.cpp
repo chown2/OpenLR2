@@ -471,16 +471,6 @@ int main(int argc, char** argv) {
 	else {
 		if ((gs.is_recordmode == '\0') && (gs.rec.recMode == 0)) {
 			SetWindowSizeExtendRate((double)gs.config.system.windowsize_x / resX, (double)gs.config.system.windowsize_y / resY);
-			if (gs.is_starter) { //unreachable duplicated code
-				if (MessageBoxA(NULL, "フルスクリーンモードで起動しますか？", "確認", 4) == 6) {
-					gs.config.system.screenmode = 0;
-					ApplyScreenMode(gs.config.system.screenmode);
-				}
-				else {
-					gs.config.system.screenmode = 1;
-					ApplyScreenMode(gs.config.system.screenmode);
-				}
-			}
 		}
 		SetWaitVSyncFlag(0); //VSYNC
 		ApplyScreenMode(1);
@@ -564,7 +554,7 @@ int main(int argc, char** argv) {
 	LoadLR2CustomFolder(sql3, &gs.config.jukebox, pathScoreDB, gs.is_starter, gs.cmd_directplay);
 	if (gs.cmd_directplay == false) {
 		if (loadingGrHandle > 0) {
-			DrawGraph(0, 0, loadingGrHandle, 0);
+			DrawExtendGraph(0, 0, resX, resY, loadingGrHandle, 0);
 		}
 		if (((unsigned char)gs.config.jukebox.customfolder & 0x80) != 0) {
 			if (gs.config.network.lr2ir == 1) {
