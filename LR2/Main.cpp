@@ -2104,7 +2104,6 @@ int main(int argc, char** argv) {
 #endif // _WIN32
 						ErrorLogAdd("成功\n");
 					}
-#endif // _WIN32
 					const CSTR& songHash = gs.sSelect.bmsList[gs.sSelect.cur_song].hash;
 					if (gs.net.customIR.IsDisplayIrOnline()) {
 						ErrorLogAdd("IRを出します\n");
