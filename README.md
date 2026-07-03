@@ -58,7 +58,7 @@ https://web.archive.org/web/20190802100906/http://www.dream-pro.info/~lavalse/LR
 Open the project folder in Visual Studio.
 It will automatically pick up the CMake project.
 
-Alternatively, use the .sln build. Open the `OpenLR2.sln` file in Visual Studio.
+Alternatively, use the .sln build. Open the `OpenLR2.sln` file in Visual Studio. (you need vcpkg installed)
 
 ### Linux
 
