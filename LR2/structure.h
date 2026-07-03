@@ -1535,7 +1535,7 @@ struct Timer {
 	double FPSclock;
 	double rhythmTick;
 	double Rhythm; /* //1beat=1000,reset on line */
-	char flagMovieTimer; /* //char,bool */
+	bool flagMovieTimer;
 	double movieTimer;
 	double movieFramerate;
 

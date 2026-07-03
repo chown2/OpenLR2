@@ -1891,7 +1891,7 @@ int ProcS_Play(game *g, sqlite3* sql) {
 	
 	if (g->is_recordmode && g->rec.writeSamplePos <= 0) {
 		g->rec.PrepareAVIRecord(g->config.tools.movie_framerate, 24, g->directoryFilename, (g->skstruct.fadeout + g->gameplay.song_runtime + g->skstruct.loadstart + g->skstruct.loadend + g->skstruct.playstart + 500.0) * g->config.tools.movie_framerate / 1000.0, GetMainWindowHandle());
-		g->timer1.flagMovieTimer = 1;
+		g->timer1.flagMovieTimer = true;
 		g->timer1.movieFramerate = g->config.tools.movie_framerate;
 		g->timer1.movieTimer = 0.0;
 		if (g->is_recordmode) SetManualTimerFlag(&g->timer1, 1);
