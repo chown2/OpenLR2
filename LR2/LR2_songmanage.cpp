@@ -659,7 +659,7 @@ int EditTag(SONGDATA *song, sqlite3 *sql) {
 		SQL_Run(query, sql);
 
 		sqlite3_snprintf(1024, query, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-			meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, wtime, song->filepath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body,meta.bannerpath.body,meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm,meta.minbpm, meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,temp,meta.exlevel);
+			meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, wtime, song->filepath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body,meta.bannerpath.body,meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm,meta.minbpm, meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,(int)meta.hasTxt,meta.notecount,temp,meta.exlevel);
 		SQL_Run(query, sql);
 
 		if (meta.difficulty <= 0 || meta.difficulty > 5) {
@@ -1363,7 +1363,7 @@ int SearchSongsFromPath(CSTR root, sqlite3 *sql, CSTR path) {
 					ParseBMSMETA(&meta, searchPath, 1);
 					LoadBMSMETAFromDB(&meta, sql);
 					sqlite3_snprintf(2048, str, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-						meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, filetime, searchPath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, meta.hasTxt, meta.notecount, now, meta.exlevel);
+						meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, filetime, searchPath.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body, AssignCRC32(meta.parentfolderpath).body, meta.maxbpm, meta.minbpm, meta.random, meta.longnote, meta.judge, meta.keymode, meta.bga, meta.difficulty, (int)meta.hasTxt, meta.notecount, now, meta.exlevel);
 					SQL_Run(str, sql);
 					if (g_fullSongPass) g_processedSongPaths.insert(MakePathKey(searchPath));
 				}
@@ -1499,7 +1499,7 @@ int ReloadSongsByQuery(CSTR query, sqlite3 *sql, CONFIG_JUKEBOX *jb, ReloadProgr
 						ParseBMSMETA(&meta, str, 1);
 						LoadBMSMETAFromDB(&meta, sql);
 						SQL_Run(sqlite3_snprintf(1024, sBuf, "INSERT INTO song (hash,title,subtitle,genre,artist,subartist,level,date,path,folder,stagefile,banner,backbmp,parent,maxbpm,minbpm,random,longnote,judge,mode,bga,difficulty,favorite,type,txt,karinotes,adddate,exlevel) VALUES(\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',\'%q\',%d,%d,%d,%d,%d,%d,%d,%d,0,0,%d,%d,%d,%d)",
-							meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, newTime, str.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body,AssignCRC32(meta.parentfolderpath).body,meta.maxbpm,meta.minbpm,meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,meta.hasTxt,meta.notecount,now,meta.exlevel), sql);
+							meta.hash.body, meta.title.body, meta.subtitle.body, meta.genre.body, meta.artist.body, meta.subartist.body, meta.selLevel, newTime, str.body, AssignCRC32(meta.folderpath).body, meta.stagefilepath.body, meta.bannerpath.body, meta.backBMPpath.body,AssignCRC32(meta.parentfolderpath).body,meta.maxbpm,meta.minbpm,meta.random,meta.longnote,meta.judge,meta.keymode,meta.bga,meta.difficulty,(int)meta.hasTxt,meta.notecount,now,meta.exlevel), sql);
 						if (g_fullSongPass) g_processedSongPaths.insert(MakePathKey(str));
 					}
 					else if (is_lr2folder) {
@@ -2896,7 +2896,7 @@ int InitBMSMETA(BMSMETA *meta_) {
 	meta.difficulty = -1;
 	meta.random = 0;
 	meta.bga = 0;
-	meta.hasTxt = 0;
+	meta.hasTxt = false;
 	return 1;
 }
 
@@ -3038,7 +3038,7 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 	meta->filename = filepath.getFilename();
 	meta->folderpath = filepath.getDirectory();
 	dir.add("*.txt");
-	if (IsFileExist(dir)) meta->hasTxt = 1;
+	if (IsFileExist(dir)) meta->hasTxt = true;
 	meta->notecount = notes;
 	return 1;
 }

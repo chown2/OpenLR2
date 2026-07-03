@@ -305,7 +305,7 @@ struct BMSMETA {
 	int difficulty;
 	int random;
 	int bga;
-	int hasTxt;
+	bool hasTxt;
 };
 
 struct BPMtiming {
