@@ -498,7 +498,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "autoupdate", (g->config).network.isAutoUpdate, "autoupdate");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "getrival", (g->config).network.getrival, "getrival");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "getrival", (g->config).network.getRival, "getrival");
 	fputs(buf, pFile);
 	fputs("\t</network>\n", pFile);
 
@@ -1134,7 +1134,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Str("config", "network", "lr1id", "", &g->config.network.lr1id, hXml);
 	ReadXml_Str("config", "network", "lr1pass", "", &g->config.network.lr1pass, hXml);
 	ReadXml_PositiveIntAsBool("config", "network", "autoupdate", false, &g->config.network.isAutoUpdate, hXml);
-	ReadXml_Int("config", "network", "getrival", 0, &g->config.network.getrival, hXml);
+	ReadXml_PositiveIntAsBool("config", "network", "getrival", false, &g->config.network.getRival, hXml);
 	ReadXml_Int("config", "network", "lr1ir", 0, &g->config.network.lr1ir, hXml);
 	ReadXml_Int("config", "network", "lr2ir", 0, &g->config.network.lr2ir, hXml);
 	ReadXml_Str("config", "network", "mail", "", &g->config.network.mail, hXml);

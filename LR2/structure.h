@@ -354,7 +354,7 @@ struct CONFIG_NETWORK {
 	int lr2ir{};
 	CSTR mail;
 	bool isAutoUpdate{};
-	int getrival{};
+	bool getRival{};
 	CSTR displayIr;
 };
 
@@ -1566,7 +1566,7 @@ struct NETWORK {
 	int IR_ID{0};
 	int rivals[20]{};
 	int rivalcount{};
-	int getrival{};
+	bool getRival{};
 	CSTR domain = "www.dream-pro.info";
 	bool waitForHandle {false};
 	int timeout {15000};

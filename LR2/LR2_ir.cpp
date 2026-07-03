@@ -916,7 +916,7 @@ int NETWORK::LR2IR_Login(int isDirectPlay) {
 			for (int i = 0; i < 20; i++) this->rivals[i] = 0;
 			this->rivalcount = 0;
 
-			if (this->getrival == 1) {
+			if (this->getRival) {
 				for(int cur= 0 ; cur < 20; cur++) {
 					if (GetMouseInput()) {
 						printfDx("ライバルデータの取得をスキップしました。\n");
@@ -929,7 +929,7 @@ int NETWORK::LR2IR_Login(int isDirectPlay) {
 					this->rivals[cur] = csv.val[2+cur];
 					this->rivalcount++;
 					this->GetRivalInfo(this->rivals[cur]);
-					if (this->getrival != 1) break;
+					if (!this->getRival) break;
 				}
 			}
 		}
