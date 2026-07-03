@@ -422,7 +422,7 @@ int main(int argc, char** argv) {
 	gs.sSelect.titleflash = gs.config.jukebox.titleflash;
 	gs.config.select.titleflash = gs.config.jukebox.titleflash;
 	if (gs.config.play.bga == 3) gs.config.play.bga = 1;
-	if (gs.config.select.disabledifficultyfilter == 1) gs.config.select.ignoredifficultyall = 0;
+	if (gs.config.select.disabledifficultyfilter == 1) gs.config.select.ignoreDifficultyAll = false;
 	memcpy(&gs.sSelect.filter, &gs.config.select, sizeof(CONFIG_SELECT));
 	{
 		CSTR newPath;

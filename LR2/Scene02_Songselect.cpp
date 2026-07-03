@@ -2184,7 +2184,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					else if (flgB) {
 						g->config.select.difficulty = diff;
 					}
-					else if (g->config.select.ignoredifficultyall == 1) {
+					else if (g->config.select.ignoreDifficultyAll) {
 						g->config.select.difficulty = minDifficulty;
 					}
 					else {
@@ -2247,7 +2247,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					else if (flgB) {
 						g->config.select.difficulty = diff;
 					}
-					else if (g->config.select.ignoredifficultyall == 1) {
+					else if (g->config.select.ignoreDifficultyAll) {
 						g->config.select.difficulty = minDifficulty;
 					}
 					else {
@@ -2853,7 +2853,7 @@ int InitSelectBySearchResult(game *g, sqlite3 *sql) {
 		if (g->sSelect.searchType == 0) {
 			if (g->sSelect.filter_clicked == 0) {
 				LoopInRange(0, 5, 1, &g->sSelect.filterDifficulty);
-				if (g->config.select.ignoredifficultyall == 1 && g->sSelect.filterDifficulty == 0) g->sSelect.filterDifficulty = 1;
+				if (g->config.select.ignoreDifficultyAll && g->sSelect.filterDifficulty == 0) g->sSelect.filterDifficulty = 1;
 			}
 			else if (g->sSelect.filter_clicked == 1) {
 				LoopInRange(0, 4, 1, &g->sSelect.filterSort);

@@ -424,25 +424,25 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "difficultychangetype", (g->config).select.difficultychangetype, "difficultychangetype");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeyall", (g->config).select.ignorekeyall, "ignorekeyall");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeyall", (int)(g->config).select.ignoreKeyAll, "ignorekeyall");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeysingle", (g->config).select.ignorekeysingle, "ignorekeysingle");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeysingle", (int)(g->config).select.ignoreKeySingle, "ignorekeysingle");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeydouble", (g->config).select.ignorekeydouble, "ignorekeydouble");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeydouble", (int)(g->config).select.ignoreKeyDouble, "ignorekeydouble");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignoredp", (g->config).select.ignoredp, "ignoredp");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignoredp", (int)(g->config).select.ignoreDP, "ignoredp");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorepms", (g->config).select.ignorepms, "ignorepms");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorepms", (int)(g->config).select.ignorePMS, "ignorepms");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignoredifficultyall", (g->config).select.ignoredifficultyall, "ignoredifficultyall");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignoredifficultyall", (int)(g->config).select.ignoreDifficultyAll, "ignoredifficultyall");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignore5key", (g->config).select.ignore5key, "ignore5key");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignore5key", (int)(g->config).select.ignore5key, "ignore5key");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "levelbarflash_7", (g->config).select.levelbarflash_7, "levelbarflash_7");
@@ -1020,13 +1020,13 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "select", "control", 0, &g->config.select.control, hXml);
 	ReadXml_Int("config", "select", "buttonselect", 0, &g->config.select.buttonselect, hXml);
 	ReadXml_Int("config", "select", "randomclose", 0, &g->config.select.randomclose, hXml);
-	ReadXml_Int("config", "select", "ignorekeyall", 0, &g->config.select.ignorekeyall, hXml);
-	ReadXml_Int("config", "select", "ignorekeysingle", 0, &g->config.select.ignorekeysingle, hXml);
-	ReadXml_Int("config", "select", "ignorekeydouble", 0, &g->config.select.ignorekeydouble, hXml);
-	ReadXml_Int("config", "select", "ignoredp", 0, &g->config.select.ignoredp, hXml);
-	ReadXml_Int("config", "select", "ignorepms", 0, &g->config.select.ignorepms, hXml);
-	ReadXml_Int("config", "select", "ignoredifficultyall", 0, &g->config.select.ignoredifficultyall, hXml);
-	ReadXml_Int("config", "select", "ignore5key", 0, &g->config.select.ignore5key, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignorekeyall", false, &g->config.select.ignoreKeyAll, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignorekeysingle", false, &g->config.select.ignoreKeySingle, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignorekeydouble", false, &g->config.select.ignoreKeyDouble, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignoredp", false, &g->config.select.ignoreDP, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignorepms", false, &g->config.select.ignorePMS, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignoredifficultyall", false, &g->config.select.ignoreDifficultyAll, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "ignore5key", false, &g->config.select.ignore5key, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_7", 12, &g->config.select.levelbarflash_7, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_5", 9, &g->config.select.levelbarflash_5, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_9", 42, &g->config.select.levelbarflash_9, hXml);
