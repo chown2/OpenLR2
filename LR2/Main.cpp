@@ -471,16 +471,6 @@ int main(int argc, char** argv) {
 	else {
 		if ((gs.is_recordmode == '\0') && (gs.rec.recMode == 0)) {
 			SetWindowSizeExtendRate((double)gs.config.system.windowsize_x / resX, (double)gs.config.system.windowsize_y / resY);
-			if (gs.is_starter) { //unreachable duplicated code
-				if (MessageBoxA(NULL, "フルスクリーンモードで起動しますか？", "確認", 4) == 6) {
-					gs.config.system.screenmode = 0;
-					ApplyScreenMode(gs.config.system.screenmode);
-				}
-				else {
-					gs.config.system.screenmode = 1;
-					ApplyScreenMode(gs.config.system.screenmode);
-				}
-			}
 		}
 		SetWaitVSyncFlag(0); //VSYNC
 		ApplyScreenMode(1);
