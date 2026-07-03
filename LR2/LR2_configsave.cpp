@@ -1091,7 +1091,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "play", "shuttermargin", 10, &g->config.play.shuttermargin, hXml);
 	ReadXml_Int("config", "play", "replaysave", 0, &g->config.play.replay, hXml);
 	ReadXml_Int("config", "play", "autoscratch", 0, &g->config.play.p1_assist, hXml);
-	ReadXml_Int("config", "play", "autokey", 0, &g->config.play.autokey, hXml);
+	ReadXml_PositiveIntAsBool("config", "play", "autokey", false, &g->config.play.autokey, hXml);
 	ReadXml_Int("config", "play", "shutter", 0, &g->config.play.p1_lanecoverv, hXml);
 	g->config.play.p2_lanecoverv = g->config.play.p1_lanecoverv;
 	ReadXml_Int("config", "play", "autojudgeadjust", 0, &g->config.play.autojudge, hXml);

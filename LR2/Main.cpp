@@ -1498,7 +1498,7 @@ int main(int argc, char** argv) {
 							gs.config.play.m_isExtra = false;
 							gs.config.play.m_accel = 0;
 							gs.config.play.m_addnote = 0;
-							gs.config.play.autokey = 0;
+							gs.config.play.autokey = false;
 							gs.config.play.m_char = 0;
 							gs.config.play.m_earthquake = 0;
 							gs.config.play.m_extra = 0;

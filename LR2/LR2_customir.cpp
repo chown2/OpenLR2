@@ -327,7 +327,7 @@ struct IRScoreInternal {
 	struct SETTINGS {
 		int gaugeOption{};
 		std::array<int, 2> random{};
-		int autokey{};
+		bool autokey{};
 		std::array<int, 2> assist{};
 		int dpflip{};
 		int hsfix{};
@@ -426,7 +426,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 
 	scoreOut.settings.gaugeOption = settings.gaugeOption;
 	scoreOut.settings.random = settings.random;
-	scoreOut.settings.autokey = settings.autokey;
+	scoreOut.settings.autokey = (int)settings.autokey;
 	scoreOut.settings.assist = settings.assist;
 	scoreOut.settings.dpflip = settings.dpflip;
 	scoreOut.settings.hsfix = settings.hsfix;

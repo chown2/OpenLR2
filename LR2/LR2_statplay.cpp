@@ -8,7 +8,7 @@ bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 	if ( (g->config.play.battle == OPTION_BATTLE_OFF || g->config.play.battle == OPTION_BATTLE_GBATTLE) && !g->config.play.m_isExtra
 		&& g->config.play.m_addlong == 0 && g->config.play.m_loudness <= 0
 		&& !g->config.play.m_isLunaris && g->config.play.hsfix != 4 && g->config.play.m_addmine == 0 
-		&& (g->config.play.m_addnote == 0 && !g->config.play.m_isExtra) && g->config.play.autokey == 0
+		&& (g->config.play.m_addnote == 0 && !g->config.play.m_isExtra) && !g->config.play.autokey
 		&& (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10) 
 		&& g->config.play.random[0] < OPTION_RANDOM_SCATTER && g->config.play.random[1] < OPTION_RANDOM_SCATTER) {
@@ -25,7 +25,7 @@ int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 	}
 
 	if (g->config.play.random[0] < OPTION_RANDOM_SCATTER && g->config.play.random[1] < OPTION_RANDOM_SCATTER && g->config.play.hsfix != OPTION_HSFIX_CONSTANT
-		&& g->config.play.autokey == 0 && (1 || g->sSelect.metaSelected.keymode < 10)
+		&& !g->config.play.autokey && (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10)) {
 		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
 			? g->gameplay.player[0].gaugeType

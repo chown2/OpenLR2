@@ -368,7 +368,7 @@ struct CONFIG_PLAY {
 	int p2_lanecoverv{};
 	int p1_lanecover{};
 	int p2_lanecover{};
-	int autokey{};
+	bool autokey{};
 	int p1_assist{};
 	int p2_assist{};
 	int dpflip{};
