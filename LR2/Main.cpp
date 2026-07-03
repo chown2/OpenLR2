@@ -1284,7 +1284,7 @@ int main(int argc, char** argv) {
 						}
 					}
 
-					if (gs.config.play.m_lunaris) {
+					if (gs.config.play.m_isLunaris) {
 						LoadSceneG(&gs, &gs.skstruct, SKINTYPE_7KEYS);
 						ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 						gs.gameplay.isAutoplay = 0;
@@ -1503,7 +1503,7 @@ int main(int argc, char** argv) {
 							gs.config.play.m_earthquake = 0;
 							gs.config.play.m_extra = 0;
 							gs.config.play.dpflip = 0;
-							gs.config.play.m_lunaris = 0;
+							gs.config.play.m_isLunaris = false;
 							gs.config.play.m_gambol = 0;
 							gs.config.play.m_sidejump = 0;
 							gs.config.play.m_nabeatsu = 0;
@@ -1637,7 +1637,7 @@ int main(int argc, char** argv) {
 							ErrorLogAdd("BMSの音を初期化しました\n");
 						}
 					}
-					else if (gs.gameplay.player[0].note_current == 0 && gs.gameplay.player[1].note_current == 0 && gs.config.play.m_lunaris == 0) {
+					else if (gs.gameplay.player[0].note_current == 0 && gs.gameplay.player[1].note_current == 0 && !gs.config.play.m_isLunaris) {
 						gs.procSelecter = 2;
 						for (int i = 0; i < SLOTS; i++) {
 							StopSound(&gs.audio, &gs.gameplay.keysound[i]);
@@ -1648,7 +1648,7 @@ int main(int argc, char** argv) {
 					else if (gs.gameplay.player[0].judgecount[3] + gs.gameplay.player[0].judgecount[4] + gs.gameplay.player[0].judgecount[5] != 0) {
 						SaveResult(&gs, sql3);
 					}
-					else if (gs.config.play.m_lunaris == 0 && gs.config.play.battle != OPTION_BATTLE_BATTLE) {
+					else if (!gs.config.play.m_isLunaris && gs.config.play.battle != OPTION_BATTLE_BATTLE) {
 						gs.procSelecter = 2;
 						for (int i = 0; i < SLOTS; i++) {
 							StopSound(&gs.audio, &gs.gameplay.keysound[i]);

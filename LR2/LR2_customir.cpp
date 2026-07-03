@@ -352,7 +352,7 @@ struct IRScoreInternal {
 		int m_sidejump{};
 		bool m_isExtra{};
 		int m_extra{};
-		char m_lunaris{};
+		bool m_isLunaris{};
 		bool m_gas{};
 		int gomiscore{};
 		int disablecurspeedchange{};
@@ -451,7 +451,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.settings.m_sidejump = settings.m_sidejump;
 	scoreOut.settings.is_extra = (int)settings.m_isExtra;
 	scoreOut.settings.m_extra = settings.m_extra;
-	scoreOut.settings.m_lunaris = settings.m_lunaris;
+	scoreOut.settings.m_lunaris = (char)settings.m_isLunaris;
 	scoreOut.settings.m_gas = settings.m_gas;
 	scoreOut.settings.gomiscore = settings.gomiscore;
 	scoreOut.settings.disablecurspeedchange = settings.disablecurspeedchange;
@@ -573,7 +573,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 	settings.m_sidejump = cfg.m_sidejump;
 	settings.m_isExtra = cfg.m_isExtra;
 	settings.m_extra = cfg.m_extra;
-	settings.m_lunaris = cfg.m_lunaris;
+	settings.m_isLunaris = cfg.m_isLunaris;
 	settings.m_gas = cfg.m_gas;
 	settings.gomiscore = cfg.gomiscore;
 	settings.disablecurspeedchange = cfg.disablecurspeedchange;

@@ -410,7 +410,7 @@ struct CONFIG_PLAY {
 	int m_sidejump{};
 	bool m_isExtra{};//TOFIX?: Not bug, but whynot use m_extra=0 as OFF like m_gambol
 	int m_extra{};
-	char m_lunaris{};
+	bool m_isLunaris{};
 	bool m_gas{};
 	int gomiscore{};
 	int disablecurspeedchange{};

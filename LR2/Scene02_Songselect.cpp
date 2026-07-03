@@ -401,12 +401,12 @@ int Print_ManiacOptions(game *g) {
 				break;
 			case 20:
 				printfDx("LUNARIS             ");
-				if (g->config.play.m_lunaris == 0) printfDx("OFF");
-				if (g->config.play.m_lunaris == 1) printfDx("ON");
+				if (g->config.play.m_isLunaris) printfDx("ON");
+				else							printfDx("OFF");
 
 				if (g->sSelect.maniac_cursor == 20) {
-					if (g->KeyInput.inputID[KEY_INPUT_LEFT] == 1) g->config.play.m_lunaris = g->config.play.m_lunaris == 0;
-					if (g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1) g->config.play.m_lunaris = g->config.play.m_lunaris == 0;
+					if (g->KeyInput.inputID[KEY_INPUT_LEFT] == 1) g->config.play.m_isLunaris = !g->config.play.m_isLunaris;
+					if (g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1) g->config.play.m_isLunaris = !g->config.play.m_isLunaris;
 				}
 				break;
 			case 21:

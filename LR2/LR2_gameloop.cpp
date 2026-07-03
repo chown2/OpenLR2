@@ -340,10 +340,10 @@ void ReactInput(game *g) {
 		}
 	}
 
-	if(g->config.play.m_lunaris==1 && GetTimeLapse(41,&g->timer1) > 0.0 && g->procPhase == 1){
+	if(g->config.play.m_isLunaris && GetTimeLapse(41,&g->timer1) > 0.0 && g->procPhase == 1){
 		ProcI_Lunaris(g);
 	}
-	if (g->procSelecter == 4 && g->config.play.m_lunaris == 0) {
+	if (g->procSelecter == 4 && !g->config.play.m_isLunaris) {
 		
 		if (g->KeyInput.inputID[KEY_INPUT_1] == 2) {
 			if (g->KeyInput.inputID[KEY_INPUT_UP] == 1) g->skstruct.adjust.shift_y -= 10;

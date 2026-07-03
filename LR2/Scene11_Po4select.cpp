@@ -442,11 +442,11 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 			g->skstruct.dst_GROOVEGAUGE[0].timer = 410;
 			DrawHPgauge(g);
 			SoundGetCurrentTime(&g->audio, &g->gameplay.muon);
-			if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_lunaris == 0) {
+			if (GetTimeLapse(41, &g->timer1) > 0.0 && !g->config.play.m_isLunaris) {
 				DrawNotes(g, &g->skstruct, &g->timer1, &g->config.play);
 				DrawJudgeCombo(g, &g->skstruct, &g->timer1, &g->config.play);
 			}
-			else if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_lunaris != 0) {
+			else if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_isLunaris) {
 				DrawLunaris(g);
 				DrawJudgeCombo(g, &g->skstruct, &g->timer1, &g->config.play);
 			}

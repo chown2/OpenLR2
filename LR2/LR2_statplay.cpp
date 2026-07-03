@@ -7,7 +7,7 @@
 bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
 	if ( (g->config.play.battle == OPTION_BATTLE_OFF || g->config.play.battle == OPTION_BATTLE_GBATTLE) && !g->config.play.m_isExtra
 		&& g->config.play.m_addlong == 0 && g->config.play.m_loudness <= 0
-		&& g->config.play.m_lunaris == 0 && g->config.play.hsfix != 4 && g->config.play.m_addmine == 0 
+		&& !g->config.play.m_isLunaris && g->config.play.hsfix != 4 && g->config.play.m_addmine == 0 
 		&& (g->config.play.m_addnote == 0 && !g->config.play.m_isExtra) && g->config.play.autokey == 0
 		&& (1 || g->sSelect.metaSelected.keymode < 10)
 		&& g->config.play.p1_assist == 0 && (g->config.play.p2_assist == 0 || g->sSelect.metaSelected.keymode < 10) 
@@ -19,7 +19,7 @@ bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, do
 
 int CheckClearLampChallenge(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
 	if (g->config.play.m_addlong == 1 || g->config.play.m_loudness > 0
-		|| g->config.play.m_lunaris || g->config.play.m_addlong > 0
+		|| g->config.play.m_isLunaris || g->config.play.m_addlong > 0
 		|| g->config.play.m_addmine || g->config.play.m_addnote || g->config.play.battle == OPTION_BATTLE_BATTLE) {
 		return 0;
 	}
@@ -771,7 +771,7 @@ int SaveResult(game *g, sqlite3* sql) {
 
 		if (g->config.play.battle != OPTION_BATTLE_BATTLE || g->is_starter) {
 
-			if ((g->gameplay.freqSpeedMultiplier < 1.0 || g->config.play.m_lunaris == 1) && g->is_starter == 0) {
+			if ((g->gameplay.freqSpeedMultiplier < 1.0 || g->config.play.m_isLunaris) && g->is_starter == 0) {
 				if (g->gameplay.replay.status == 2) return -1;
 
 				g->gameplay.playerstat.playcount++;

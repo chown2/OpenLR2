@@ -3282,7 +3282,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 		gp->isForceEasy = 1;
 	if ((cfg->play.p1_assist == 1 || cfg->play.p2_assist == 1) && (7 < meta->keymode || cfg->play.battle != OPTION_BATTLE_DBATTLE))
 		gp->isForceEasy = 1;
-	if (cfg->play.m_lunaris)
+	if (cfg->play.m_isLunaris)
 		gp->isNosave = 1;
 
 	for (int i = 0; i < 10; i++) {

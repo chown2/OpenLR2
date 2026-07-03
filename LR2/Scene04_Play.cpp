@@ -52,7 +52,7 @@ int ApplyJudgeNote(int judge, game *g, int _player, int lane, Timer *T, char isR
 	}
 
 	auto& player = g->gameplay.player[_player];
-	if (g->gameplay.isAutoplay == 0 && g->config.play.m_lunaris == 0 && g->gameplay.replay.status != 2) {
+	if (g->gameplay.isAutoplay == 0 && !g->config.play.m_isLunaris && g->gameplay.replay.status != 2) {
 
 		switch (judge) {
 			case 0: 
@@ -1126,11 +1126,11 @@ int ProcI_Play(game *g) {
 	DrawHPgauge(g);
 	SoundGetCurrentTime(&g->audio, &g->gameplay.muon);
 
-	if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_lunaris == 0) {
+	if (GetTimeLapse(41, &g->timer1) > 0.0 && !g->config.play.m_isLunaris) {
 		DrawNotes(g, &g->skstruct, &g->timer1, &g->config.play);
 		DrawJudgeCombo(g, &g->skstruct, &g->timer1, &g->config.play);
 	}
-	else if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_lunaris) {
+	else if (GetTimeLapse(41, &g->timer1) > 0.0 && g->config.play.m_isLunaris) {
 		DrawLunaris(g);
 		DrawJudgeCombo(g, &g->skstruct, &g->timer1, &g->config.play);
 	}
@@ -1158,7 +1158,7 @@ int ProcI_Play(game *g) {
 	}
 
 	auto proc_quickrestart = [](game& game) {
-		if (game.gameplay.replay.status == 2 || game.gameplay.player[0].totalnotes <= game.gameplay.player[0].note_current || game.config.play.m_lunaris != 0) return;
+		if (game.gameplay.replay.status == 2 || game.gameplay.player[0].totalnotes <= game.gameplay.player[0].note_current || game.config.play.m_isLunaris) return;
 		if (game.KeyInput.p1_buttonInput[12] == 1 || game.KeyInput.p2_buttonInput[12] == 1) return QuickRestart(game, true);
 		if (game.KeyInput.p1_buttonInput[13] == 1 || game.KeyInput.p2_buttonInput[13] == 1) return QuickRestart(game, false);
 	};
@@ -1249,7 +1249,7 @@ int ProcGame(game *g) {
 			if (g->is_starter || (g->procSelecter == 4 && g->procPhase != 2 && g->procPhase != 3)) {
 				if ((g->gameplay.player[0].HP[gaugeType[0]] >= 2.0 || g->config.play.battle == OPTION_BATTLE_BATTLE) && (g->gameplay.player[0].HP[gaugeType[0]] >= 2.0 || g->gameplay.player[1].HP[gaugeType[1]] >= 2.0 || g->config.play.battle != OPTION_BATTLE_BATTLE) || g->gameplay.isPreviewLoad) {
 
-					if (g->gameplay.isAutoplay == 0 && g->config.play.m_lunaris == 0 && g->gameplay.isPreviewLoad == 0) {
+					if (g->gameplay.isAutoplay == 0 && !g->config.play.m_isLunaris && g->gameplay.isPreviewLoad == 0) {
 						oldt142 = t142;
 						if (g->gameplay.bpmChangedRealtime > 0) {
 							t142 = g->gameplay.bpmChangedRealtime * 2 - t142;
@@ -1268,7 +1268,7 @@ int ProcGame(game *g) {
 						}
 					}
 
-					if (g->config.play.m_lunaris == 0 && g->gameplay.isAutoplay == 0 && g->gameplay.replay.status != 2 && g->config.play.autojudge > 0 && g->config.play.battle != OPTION_BATTLE_BATTLE && g->gameplay.autojudge_midcount > 9) {
+					if (!g->config.play.m_isLunaris && g->gameplay.isAutoplay == 0 && g->gameplay.replay.status != 2 && g->config.play.autojudge > 0 && g->config.play.battle != OPTION_BATTLE_BATTLE && g->gameplay.autojudge_midcount > 9) {
 
 						if (g->gameplay.autojudge_midsum > 0) g->config.play.judgetiming++;
 						else if (g->gameplay.autojudge_midsum < 0) g->config.play.judgetiming--;
@@ -1441,7 +1441,7 @@ int ProcGame(game *g) {
 			case 27:
 			case 28:
 			case 29:
-				if ((g->gameplay.isAutoplay == 0 && g->config.play.m_lunaris == 0 && g->gameplay.isPreviewLoad == 0) || val <= 0) {
+				if ((g->gameplay.isAutoplay == 0 && !g->config.play.m_isLunaris && g->gameplay.isPreviewLoad == 0) || val <= 0) {
 					if (g->gameplay.bmsobj_note[op - 10].autoplay && val > 0) {
 						PlaySound(&g->audio, &g->gameplay.keysound[val], g->audio.chnStageKey[stage], stage);
 						g->gameplay.bmsobj_note[op - 10].noteVal = val;
@@ -1450,7 +1450,7 @@ int ProcGame(game *g) {
 				else {
 					PlaySound(&g->audio, &g->gameplay.keysound[val], g->audio.chnStageKey[stage], stage);
 					g->gameplay.bmsobj_note[op - 10].noteVal = val;
-					if (g->config.play.m_lunaris) {
+					if (g->config.play.m_isLunaris) {
 						g->gameplay.player[0].note_current++;
 						g->gameplay.player[0].note_current2++;
 					}
@@ -1558,7 +1558,7 @@ int ProcGame(game *g) {
 		}
 	}
 
-	if (g->gameplay.isAutoplay == 0 && g->config.play.m_lunaris == 0 && g->gameplay.isPreviewLoad == 0) {
+	if (g->gameplay.isAutoplay == 0 && !g->config.play.m_isLunaris && g->gameplay.isPreviewLoad == 0) {
 		oldt142 = t142;
 		if (g->gameplay.bpmChangedRealtime > 0) {
 			t142 = g->gameplay.bpmChangedRealtime * 2 - t142;
@@ -1885,7 +1885,7 @@ int ProcS_Play(game *g, sqlite3* sql) {
 		InitGameplay_retry(&g->gameplay, &g->audio, g);
 	}
 	
-	if (g->config.play.m_lunaris) {
+	if (g->config.play.m_isLunaris) {
 		LUNARIS_START(g);
 	}
 	
