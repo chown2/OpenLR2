@@ -285,7 +285,7 @@ int main(int argc, char** argv) {
 	if (gs.is_starter) {
 		gs.config.sound.disablefmod = 1;
 		gs.config.skin.fontname.assign("HG丸ｺﾞｼｯｸM-PRO");
-		gs.config.skin.disableimagefont = 1;
+		gs.config.skin.disableImageFont = true;
 		gs.config.system.isablebmsthread = 1;
 		gs.config.play.gaugeOption[0] = OPTION_GAUGE_GROOVE;
 		gs.config.play.random[0] = OPTION_RANDOM_OFF;
@@ -661,7 +661,7 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < 10; i++) gs.skstruct.helpfilePath[i].fillzero();
 	for (int i = 0; i < 10; i++) gs.skstruct.helpfilePath[i].assign("(null)");
 	gs.skstruct.skFontname.assign(&gs.config.skin.fontname);
-	gs.skstruct.disableimagefont = (gs.config.skin.disableimagefont != 0);
+	gs.skstruct.disableImageFont = gs.config.skin.disableImageFont;
 	gs.skstruct.skinMD5.fillzero();
 	gs.skstruct.skinMD5.resize2(34);
 	if(AllocDrawingBuffer(&gs.skstruct.drBuf) == -1){
@@ -669,7 +669,7 @@ int main(int argc, char** argv) {
 		MessageBoxA(NULL, "スキン描画用のメモリ取得に失敗しました。", "エラー", 0);
 		return -1;
 	}
-	gs.skstruct.drBuf.flagImageFont = (gs.config.skin.disableimagefont != 0);
+	gs.skstruct.drBuf.disableImageFont = gs.config.skin.disableImageFont;
 	gs.gameplay.bmsobj.notes = NULL;
 	gs.gameplay.bmsobj.count = 0;
 	gs.gameplay.bmsobj.size = 0;
@@ -710,7 +710,7 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < 10; i++) gs.skstruct2.helpfilePath[i].fillzero();
 	for (int i = 0; i < 10; i++) gs.skstruct2.helpfilePath[i].assign("(null)");
 	gs.skstruct2.skFontname.assign(&gs.config.skin.fontname);
-	gs.skstruct2.disableimagefont = (gs.config.skin.disableimagefont != 0);
+	gs.skstruct2.disableImageFont = gs.config.skin.disableImageFont;
 	gs.skstruct2.skinMD5.fillzero();
 	gs.skstruct2.skinMD5.resize2(34);
 	if (AllocDrawingBuffer(&gs.skstruct2.drBuf) == -1) {
@@ -718,7 +718,7 @@ int main(int argc, char** argv) {
 		MessageBoxA(NULL, "スキン描画用のメモリ取得に失敗しました。", "エラー", 0);
 		return -1;
 	}
-	gs.skstruct2.drBuf.flagImageFont = gs.config.skin.disableimagefont != 0;
+	gs.skstruct2.drBuf.disableImageFont = gs.config.skin.disableImageFont;
 	InitSkin(&gs.skstruct2, 0, 0);
 	gs.skstruct2.fontname.assign(&gs.config.skin.fontname);
 

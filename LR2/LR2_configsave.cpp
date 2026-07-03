@@ -481,7 +481,7 @@ int WriteConfigXml(game *g, const char *filename){
 	WriteXML_Tab2Str(pFile, "play_5_b", (g->config).skin.skinFilePath[13]);
 	WriteXML_Tab2Str(pFile, "play_9_b", (g->config).skin.skinFilePath[14]);
 	WriteXML_Tab2Str(pFile, "fontname", (g->config).skin.fontname);
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disableimagefont", (g->config).skin.disableimagefont, "disableimagefont");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disableimagefont", (int)(g->config).skin.disableImageFont, "disableimagefont");
 	fputs(buf, pFile);
 	fputs("\t</skin>\n", pFile);
 
@@ -1123,7 +1123,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Str("config", "skin", "play_5_b", "", &g->config.skin.skinFilePath[13], hXml);
 	ReadXml_Str("config", "skin", "play_9_b", "", &g->config.skin.skinFilePath[14], hXml);
 	ReadXml_Str("config", "skin", "fontname", "Ariel", &g->config.skin.fontname, hXml);
-	ReadXml_Int("config", "skin", "disableimagefont", 0, &g->config.skin.disableimagefont, hXml);
+	ReadXml_PositiveIntAsBool("config", "skin", "disableimagefont", false, &g->config.skin.disableImageFont, hXml);
 	ReadXml_Str("config", "player", "id", "", &g->config.player.id, hXml);
 	ReadXml_Str("config", "player", "pass", "", &g->config.player.pass, hXml);
 	g->config.player.passMD5 = MD5str(g->config.player.pass) ;

@@ -1548,7 +1548,7 @@ void CheckNewSong(glb_dbgame *glb) {
 	}
 	if (i >= glb->pGame->sSelect.queryCount) glb->pGame->sSelect.isFolder = -1;
 
-	if (glb->pGame->sSelect.isFolder != -1 && glb->pGame->config.skin.disableimagefont == 0) {
+	if (glb->pGame->sSelect.isFolder != -1 && !glb->pGame->config.skin.disableImageFont) {
 		LoadFontForSongs(glb->pGame, 1);
 	}
 	glb->pGame->sSelect.searchFocused = 4;

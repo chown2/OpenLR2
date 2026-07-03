@@ -1669,7 +1669,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						if (sk->num_of_ImageFont == 10) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上の登録はできません。\n", line, fBuf.body);
 						}
-						else if (csv.val[2] == 1 || sk->disableimagefont == 0) {
+						else if (csv.val[2] == 1 || !sk->disableImageFont) {
 							if (csv.str[1].isDiff("CONTINUE")) {
 								for (int i = 0; i < sk->customfile_count; i++) {
 									if(sk->customfileRANDOM[i].isSame(csv.str[1].left(sk->customfileRANDOM[i].length())) && sk->customfile[i].isDiff("RANDOM") && sk->customfile[i].isDiff("ERROR") && sk->customfile[i].length() > 0){

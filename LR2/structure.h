@@ -456,7 +456,7 @@ struct CONFIG_SELECT {
 };
 
 struct CONFIG_SKIN {
-	int disableimagefont{};
+	bool disableImageFont{};
 	CSTR fontname;
 	CSTR skinFilePath[30];
 };
@@ -698,7 +698,7 @@ struct DrawingBuf {
 	int isHidSud[20]; /* 40680b/49b4a5 */
 	int top[20]; /* sud */
 	int bottom[20]; /* hid */
-	char flagImageFont;
+	bool disableImageFont;
 	char isDisabled;
 	char unkFE;
 	char unkFF;
@@ -1006,7 +1006,7 @@ struct skstruct {
 	struct SkinAdjust adjust {};
 	CSTR skinMD5{};
 	CSTR skFontname{};
-	int disableimagefont{}; /* bool */
+	bool disableImageFont{};
 	CSTR customfileRANDOM[100]{};
 	CSTR customfile[100]{};
 	int customfile_count{};
