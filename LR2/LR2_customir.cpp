@@ -326,13 +326,13 @@ struct IRScoreInternal {
 	} song{};
 	struct SETTINGS {
 		int gaugeOption{};
-		std::array<int, 2> random{};
+		std::array<int, PLAYER_MAX> random{};
 		bool autokey{};
-		std::array<int, 2> assist{};
+		std::array<bool, PLAYER_MAX> assist{};
 		int dpflip{};
 		int hsfix{};
-		std::array<int, 2> randSC{};
-		std::array<int, 2> randFix{};
+		std::array<int, PLAYER_MAX> randSC{};
+		std::array<int, PLAYER_MAX> randFix{};
 		int m_softlanding{};
 		int m_addmine{};
 		int m_addlong{};
@@ -425,13 +425,17 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.song.courseType = song.courseType;
 
 	scoreOut.settings.gaugeOption = settings.gaugeOption;
-	scoreOut.settings.random = settings.random;
+	for (int p : { PLAYER_1, PLAYER_2})
+		scoreOut.settings.random[p] = settings.random[p];
 	scoreOut.settings.autokey = (int)settings.autokey;
-	scoreOut.settings.assist = settings.assist;
+	for (int p : { PLAYER_1, PLAYER_2})
+		scoreOut.settings.assist[p] = settings.assist[p];
 	scoreOut.settings.dpflip = settings.dpflip;
 	scoreOut.settings.hsfix = settings.hsfix;
-	scoreOut.settings.randSC = settings.randSC;
-	scoreOut.settings.randFix = settings.randFix;
+	for (int p : { PLAYER_1, PLAYER_2}) {
+		scoreOut.settings.randSC[p] = settings.randSC[p];
+		scoreOut.settings.randFix[p] = settings.randFix[p];
+	}
 	scoreOut.settings.m_softlanding = settings.m_softlanding;
 	scoreOut.settings.m_addmine = settings.m_addmine;
 	scoreOut.settings.m_addlong = settings.m_addlong;
@@ -543,17 +547,17 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 	}
 	CONFIG_PLAY& cfg = game.config.play;
 	settings.gaugeOption = cfg.gaugeOption[_player];
-	settings.random[0] = cfg.random[0];
-	settings.random[1] = cfg.random[1];
+	settings.random[PLAYER_1] = cfg.random[PLAYER_1];
+	settings.random[PLAYER_2] = cfg.random[PLAYER_2];
 	settings.autokey = cfg.autokey;
-	settings.assist[0] = cfg.p1_assist;
-	settings.assist[1] = cfg.p2_assist;
+	settings.assist[PLAYER_1] = cfg.assist[PLAYER_1];
+	settings.assist[PLAYER_2] = cfg.assist[PLAYER_2];
 	settings.dpflip = cfg.dpflip;
 	settings.hsfix = cfg.hsfix;
-	settings.randSC[0] = cfg.randSC[0];
-	settings.randSC[1] = cfg.randSC[1];
-	settings.randFix[0] = cfg.randFix[0];
-	settings.randFix[1] = cfg.randFix[1];
+	settings.randSC[PLAYER_1] = cfg.randSC[PLAYER_1];
+	settings.randSC[PLAYER_2] = cfg.randSC[PLAYER_2];
+	settings.randFix[PLAYER_1] = cfg.randFix[PLAYER_1];
+	settings.randFix[PLAYER_2] = cfg.randFix[PLAYER_2];
 	settings.m_softlanding = cfg.m_softlanding;
 	settings.m_addmine = cfg.m_addmine;
 	settings.m_addlong = cfg.m_addlong;

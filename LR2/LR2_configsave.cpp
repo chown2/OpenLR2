@@ -190,7 +190,7 @@ int WriteConfigXml(game *g, const char *filename){
 	fputs("\t</jukebox>\n", pFile);
 
 	fputs("\t<play>\n", pFile);
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "hs", (g->config).play.hiSpeed[0], "hs");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "hs", (g->config).play.hiSpeed[PLAYER_1], "hs");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "hstype", (g->config).play.hsfix, "hstype");
@@ -205,25 +205,25 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "hsmargin", (g->config).play.hsmargin, "hsmargin");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "shutter", (g->config).play.p1_lanecoverv, "shutter");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "shutter", (g->config).play.lanecoverv[PLAYER_1], "shutter");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "shuttertype", (g->config).play.p1_lanecover, "shuttertype");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "shuttertype", (g->config).play.lanecover[PLAYER_1], "shuttertype");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "shuttermargin", (g->config).play.shuttermargin, "shuttermargin");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "gauge", (g->config).play.gaugeOption[0], "gauge");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "gauge", (g->config).play.gaugeOption[PLAYER_1], "gauge");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "random", (g->config).play.random[0], "random");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "random", (g->config).play.random[PLAYER_1], "random");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "effect", (g->config).play.m_HIDSUD1, "effect");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "effect", (g->config).play.m_HIDSUD[PLAYER_1], "effect");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "autoscratch", (g->config).play.p1_assist, "autoscratch");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "autoscratch", (g->config).play.assist[PLAYER_1], "autoscratch");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "autokey", (g->config).play.autokey, "autokey");
@@ -747,10 +747,10 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	(sku->adjust).dark_type = 0;
 	(sku->adjust).judge_x = 0;
 	(sku->adjust).judge_y = 0;
-	(sku->adjust).note_1p_x = 0;
-	(sku->adjust).note_1p_y = 0;
-	(sku->adjust).note_2p_x = 0;
-	(sku->adjust).note_2p_y = 0;
+	(sku->adjust).note_x[PLAYER_1] = 0;
+	(sku->adjust).note_y[PLAYER_1] = 0;
+	(sku->adjust).note_x[PLAYER_2] = 0;
+	(sku->adjust).note_y[PLAYER_2] = 0;
 	(sku->adjust).size_x = 0;
 	(sku->adjust).size_y = 0;
 	sku->customize_value[0] = 0;
@@ -793,10 +793,10 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	ReadXml_Int("skincustomize", "size", "x", 0, &(sku->adjust).size_x, hXml);
 	ReadXml_Int("skincustomize", "size", "y", 0, &(sku->adjust).size_y, hXml);
 	ReadXml_Int("skincustomize", "dark", "type", 0, &(sku->adjust).dark_type, hXml);
-	ReadXml_Int("skincustomize", "note_1p", "x", 0, &(sku->adjust).note_1p_x, hXml);
-	ReadXml_Int("skincustomize", "note_1p", "y", 0, &(sku->adjust).note_1p_y, hXml);
-	ReadXml_Int("skincustomize", "note_2p", "x", 0, &(sku->adjust).note_2p_x, hXml);
-	ReadXml_Int("skincustomize", "note_2p", "y", 0, &(sku->adjust).note_2p_y, hXml);
+	ReadXml_Int("skincustomize", "note_1p", "x", 0, &(sku->adjust).note_x[PLAYER_1], hXml);
+	ReadXml_Int("skincustomize", "note_1p", "y", 0, &(sku->adjust).note_y[PLAYER_1], hXml);
+	ReadXml_Int("skincustomize", "note_2p", "x", 0, &(sku->adjust).note_x[PLAYER_2], hXml);
+	ReadXml_Int("skincustomize", "note_2p", "y", 0, &(sku->adjust).note_y[PLAYER_2], hXml);
 
 	//it's doubled code, so changed a little
 	for (int i = 0; i < 40; i++) {
@@ -859,13 +859,13 @@ int WriteSkinCustomizeXml(SkinUser *sku, char *filepath) {
 	fputs("\t</dark>\n", pFile);
 	
 	fputs("\t<note_1p>\n", pFile);
-	WriteXML_Tab2Int(pFile, "x", (sku->adjust).note_1p_x);
-	WriteXML_Tab2Int(pFile, "y", (sku->adjust).note_1p_y);
+	WriteXML_Tab2Int(pFile, "x", (sku->adjust).note_x[PLAYER_1]);
+	WriteXML_Tab2Int(pFile, "y", (sku->adjust).note_y[PLAYER_1]);
 	fputs("\t</note_1p>\n", pFile);
 	
 	fputs("\t<note_2p>\n", pFile);
-	WriteXML_Tab2Int(pFile, "x", (sku->adjust).note_2p_x);
-	WriteXML_Tab2Int(pFile, "y", (sku->adjust).note_2p_y);
+	WriteXML_Tab2Int(pFile, "x", (sku->adjust).note_x[PLAYER_2]);
+	WriteXML_Tab2Int(pFile, "y", (sku->adjust).note_y[PLAYER_2]);
 	fputs("\t</note_2p>\n", pFile);
 	
 	fputs("\t<skinconfig>\n", pFile);
@@ -964,10 +964,10 @@ int ReadConfig(game* g, const char* filepath) {
 	TiXmlDocument* hXml;
 
 	g->config.play = {};
-	g->config.play.hiSpeed[0] = 200;
-	g->config.play.hiSpeed[1] = 200;
-	g->config.play.p1_lanecoverv = 0;
-	g->config.play.p2_lanecoverv = 0;
+	g->config.play.hiSpeed[PLAYER_1] = 200;
+	g->config.play.hiSpeed[PLAYER_2] = 200;
+	g->config.play.lanecoverv[PLAYER_1] = 0;
+	g->config.play.lanecoverv[PLAYER_2] = 0;
 
 	hXml = new TiXmlDocument(filepath);
 
@@ -1077,23 +1077,23 @@ int ReadConfig(game* g, const char* filepath) {
 	if (g->config.sound.bufferlength < 16) g->config.sound.bufferlength = 16;
 	if (g->config.sound.numbuffers <= 0) g->config.sound.numbuffers = 1;
 
-	ReadXml_Int("config", "play", "hs", 100, &g->config.play.hiSpeed[0], hXml);
-	g->config.play.hiSpeed[1] = g->config.play.hiSpeed[0];
+	ReadXml_Int("config", "play", "hs", 100, &g->config.play.hiSpeed[PLAYER_1], hXml);
+	g->config.play.hiSpeed[PLAYER_2] = g->config.play.hiSpeed[PLAYER_1];
 	ReadXml_Int("config", "play", "gauge", OPTION_GAUGE_GROOVE, g->config.play.gaugeOption, hXml);
-	ReadXml_Int("config", "play", "random", OPTION_RANDOM_OFF, &g->config.play.random[0], hXml);
-	ReadXml_Int("config", "play", "effect", 0, &g->config.play.m_HIDSUD1, hXml);
+	ReadXml_Int("config", "play", "random", OPTION_RANDOM_OFF, &g->config.play.random[PLAYER_1], hXml);
+	ReadXml_Int("config", "play", "effect", 0, &g->config.play.m_HIDSUD[PLAYER_1], hXml);
 	ReadXml_Int("config", "play", "hstype", OPTION_HSFIX_OFF, &g->config.play.hsfix, hXml);
 	ReadXml_Int("config", "play", "hsmin", 10, &g->config.play.hsmin, hXml);
 	ReadXml_Int("config", "play", "hsmax", 900, &g->config.play.hsmax, hXml);
 	ReadXml_Int("config", "play", "hsmargin", 10, &g->config.play.hsmargin, hXml);
-	ReadXml_Int("config", "play", "shuttertype", 0, &g->config.play.p1_lanecover, hXml);
-	g->config.play.p2_lanecover = g->config.play.p1_lanecover;
+	ReadXml_Int("config", "play", "shuttertype", 0, &g->config.play.lanecover[PLAYER_1], hXml);
+	g->config.play.lanecover[PLAYER_2] = g->config.play.lanecover[PLAYER_1];
 	ReadXml_Int("config", "play", "shuttermargin", 10, &g->config.play.shuttermargin, hXml);
 	ReadXml_Int("config", "play", "replaysave", 0, &g->config.play.replay, hXml);
-	ReadXml_Int("config", "play", "autoscratch", 0, &g->config.play.p1_assist, hXml);
+	ReadXml_Int("config", "play", "autoscratch", 0, &g->config.play.assist[PLAYER_1], hXml);//TOFIX: no assist[PLAYER_2]?
 	ReadXml_PositiveIntAsBool("config", "play", "autokey", false, &g->config.play.autokey, hXml);
-	ReadXml_Int("config", "play", "shutter", 0, &g->config.play.p1_lanecoverv, hXml);
-	g->config.play.p2_lanecoverv = g->config.play.p1_lanecoverv;
+	ReadXml_Int("config", "play", "shutter", 0, &g->config.play.lanecoverv[PLAYER_1], hXml);
+	g->config.play.lanecoverv[PLAYER_2] = g->config.play.lanecoverv[PLAYER_1];
 	ReadXml_Int("config", "play", "autojudgeadjust", 0, &g->config.play.autojudge, hXml);
 	ReadXml_Int("config", "play", "judgetime", 0, &g->config.play.judgetiming, hXml);
 	ReadXml_Int("config", "play", "bga", 1, &g->config.play.bga, hXml);

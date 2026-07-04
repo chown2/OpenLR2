@@ -127,61 +127,61 @@ int FxByMIDI(game *g) {
 					break;
 
 				case 10:
-					g->audio.param.fxParam[0][0] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[0][PLAYER_1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 62, (short)g->audio.param.fxParam[0][0]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 62, (short)g->audio.param.fxParam[0][PLAYER_1]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
 
 				case 11:
-					g->audio.param.fxParam[0][1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[0][PLAYER_2] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 63, (short)g->audio.param.fxParam[0][1]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 63, (short)g->audio.param.fxParam[0][PLAYER_2]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
 
 				case 12:
-					g->audio.param.fxParam[1][0] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[1][PLAYER_1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 72, (short)g->audio.param.fxParam[1][0]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 72, (short)g->audio.param.fxParam[1][PLAYER_1]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
 
 				case 13:
-					g->audio.param.fxParam[1][1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[1][PLAYER_2] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 73, (short)g->audio.param.fxParam[1][1]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 73, (short)g->audio.param.fxParam[1][PLAYER_2]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
 
 				case 14:
-					g->audio.param.fxParam[2][0] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[2][PLAYER_1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 82, (short)g->audio.param.fxParam[2][0]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 82, (short)g->audio.param.fxParam[2][PLAYER_1]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
 
 				case 15:
-					g->audio.param.fxParam[2][1] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
+					g->audio.param.fxParam[2][PLAYER_2] = ChangeValueByTime(0.0, 100.0, 0.0, 127.0, g->KeyInput.midi_v, 0);
 					change = 1;
 					if (GetTimeLapse(41, &g->timer1) > 0 && g->gameplay.replay.status == 1) {
 						change = 1;
-						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 83, (short)g->audio.param.fxParam[2][1]);
+						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, &g->timer1), 83, (short)g->audio.param.fxParam[2][PLAYER_2]);
 						g->gameplay.fxChangeInRecording = 1;
 					}
 					break;
@@ -221,12 +221,12 @@ int UpdateSoundFX(game *g, int *value, int objectID, int min, int max){
 int InitFxParam(game *g, int fxNum){
 
 	if (g->audio.param.fxType[fxNum] == 8 || g->audio.param.fxType[fxNum] != 3) {
-		g->audio.param.fxParam[fxNum][1] = 0;
-		g->audio.param.fxParam[fxNum][0] = 0;
+		g->audio.param.fxParam[fxNum][PLAYER_2] = 0;
+		g->audio.param.fxParam[fxNum][PLAYER_1] = 0;
 	}
 	else {
-		g->audio.param.fxParam[fxNum][0] = 100;
-		g->audio.param.fxParam[fxNum][1] = 0;
+		g->audio.param.fxParam[fxNum][PLAYER_1] = 100;
+		g->audio.param.fxParam[fxNum][PLAYER_2] = 0;
 	}
 	ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
 	return 1;

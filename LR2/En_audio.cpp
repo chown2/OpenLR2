@@ -970,8 +970,8 @@ int ApplySoundFX(AUDIO *aud, int /*flag*/, char /*disable*/) {
 
 			float fTmp;
 			auto percentageToDecibel = [](float p) { return 10.0 * std::log10(static_cast<float>(p) / 100.f); };
-			int& p1 = aud->param.fxParam[i][0];
-			int& p2 = aud->param.fxParam[i][1];
+			int& p1 = aud->param.fxParam[i][PLAYER_1];
+			int& p2 = aud->param.fxParam[i][PLAYER_2];
 			switch (aud->param.fxType[i]) {
 			case 1:
 				// FMOD_DSP_REVERB_ROOMSIZE 0.0-1.0

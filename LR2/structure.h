@@ -279,6 +279,12 @@ enum OPTION {
 	OPTION_RANDOM_END = OPTION_RANDOM_CONVERGE,
 };
 
+enum PLAYER {
+	PLAYER_1 = 0,
+	PLAYER_2,
+	PLAYER_MAX
+};
+
 struct BMSMETA {
 	CSTR hash;
 	CSTR title;
@@ -359,18 +365,14 @@ struct CONFIG_NETWORK {
 };
 
 struct CONFIG_PLAY {
-	int hiSpeed[2]{};
-	int gaugeOption[2]{}; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
-	int random[2]{}; // 1:mirror 2:random 3:s-random 4:scatter 5:converge
-	int m_HIDSUD1{};
-	int m_HIDSUD2{};
-	int p1_lanecoverv{};
-	int p2_lanecoverv{};
-	int p1_lanecover{};
-	int p2_lanecover{};
+	int hiSpeed[PLAYER_MAX]{};
+	int gaugeOption[PLAYER_MAX]{}; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
+	int random[PLAYER_MAX]{}; // 1:mirror 2:random 3:s-random 4:scatter 5:converge
+	int m_HIDSUD[PLAYER_MAX]{};
+	int lanecoverv[PLAYER_MAX]{};
+	int lanecover[PLAYER_MAX]{};
 	bool autokey{};
-	int p1_assist{};
-	int p2_assist{};
+	int assist[PLAYER_MAX]{};
 	int dpflip{};
 	int hsfix{}; // 1:max 2:min 3:average 4:constant 5:main
 	int battle{}; // 1:battle 2:d-battle 3:sp-to-dp 4:g-battle
@@ -383,8 +385,8 @@ struct CONFIG_PLAY {
 	int play_ghost{};
 	int target_percent{};
 	int p1_target{};
-	int randSC[2]{}; // include scratch to random by impossible command
-	int randFix[2]{}; // fix a lane by impossible command
+	int randSC[PLAYER_MAX]{}; // include scratch to random by impossible command
+	int randFix[PLAYER_MAX]{}; // fix a lane by impossible command
 	int replay{};
 	int hsmargin{};
 	int hsmax{};
@@ -866,10 +868,8 @@ struct SkinAdjust {
 	int judge_y;
 	int size_x;
 	int size_y;
-	int note_1p_x;
-	int note_1p_y;
-	int note_2p_x;
-	int note_2p_y;
+	int note_x[PLAYER_MAX];
+	int note_y[PLAYER_MAX];
 	int dark_type;
 };
 
@@ -967,26 +967,20 @@ struct skstruct {
 	struct SRCstruct src_AUTO_LN_END[20]{};
 	struct SRCstruct src_AUTO_LN_BODY[20]{};
 	struct DSTstruct dst_NOTE[20]{};
-	struct SRCstruct src_LINE[2]{};
-	struct DSTstruct dst_LINE[2]{};
-	struct SRCstruct src_JUDGELINE[2]{};
-	struct DSTstruct dst_JUDGELINE[2]{};
-	struct SRCstruct src_NOWJUDGE_1P[6]{};
-	struct DSTstruct dst_NOWJUDGE_1P[6]{};
-	struct SRCstruct src_NOWCOMBO_1P[6]{};
-	struct DSTstruct dst_NOWCOMBO_1P[6]{};
-	struct SRCstruct src_NOWJUDGE_2P[6]{};
-	struct DSTstruct dst_NOWJUDGE_2P[6]{};
-	struct SRCstruct src_NOWCOMBO_2P[6]{};
-	struct DSTstruct dst_NOWCOMBO_2P[6]{};
-	struct SRCstruct src_GROOVEGAUGE[2]{};
-	struct DSTstruct dst_GROOVEGAUGE[2]{};
+	struct SRCstruct src_LINE[PLAYER_MAX]{};
+	struct DSTstruct dst_LINE[PLAYER_MAX]{};
+	struct SRCstruct src_JUDGELINE[PLAYER_MAX]{};
+	struct DSTstruct dst_JUDGELINE[PLAYER_MAX]{};
+	struct SRCstruct src_NOWJUDGE[PLAYER_MAX][6]{};
+	struct DSTstruct dst_NOWJUDGE[PLAYER_MAX][6]{};
+	struct SRCstruct src_NOWCOMBO[PLAYER_MAX][6]{};
+	struct DSTstruct dst_NOWCOMBO[PLAYER_MAX][6]{};
+	struct SRCstruct src_GROOVEGAUGE[PLAYER_MAX]{};
+	struct DSTstruct dst_GROOVEGAUGE[PLAYER_MAX]{};
 	double scratchAngle_1{};
 	double scratchAngle_2{};
-	struct SRCstruct src_GAUGECHART_1P[2]{};
-	struct DSTstruct dst_GAUGECHART_1P[2]{};
-	struct SRCstruct src_GAUGECHART_2P[2]{};
-	struct DSTstruct dst_GAUGECHART_2P[2]{};
+	struct SRCstruct src_GAUGECHART[PLAYER_MAX][2]{};
+	struct DSTstruct dst_GAUGECHART[PLAYER_MAX][2]{};
 	struct SRCstruct src_SCORECHART[3]{};
 	struct DSTstruct dst_SCORECHART[3]{};
 	struct SRCstruct src_THUMBNAIL {};
@@ -1086,7 +1080,7 @@ struct AUDIO_PARAM {
 	int eq_on{};
 	int eq_preset{};
 	int fxType[3]{};
-	int fxParam[3][2]{};
+	int fxParam[3][PLAYER_MAX]{};
 	int fxChannel[3]{};
 	int eq_gain[7]{};
 	int pitch_amount{};
@@ -1424,13 +1418,13 @@ struct gameplay {
 	int courseLayer2ChangeTime[10]; /* not used. */
 	char isBgaPlaying;
 	int lastMissTime;
-	int misslayerTime[2]; 
+	int misslayerTime[PLAYER_MAX]; 
 	int lastMeasure;
 	double BPM_fix;
 	int loadObject_loaded;
 	int loadObject_total;
 	double BPM;
-	struct PLAYERSTATUS player[2];
+	struct PLAYERSTATUS player[PLAYER_MAX];
 	double song_runtime; 
 	char flag_threadExist;
 	char flag_closingPhase;
@@ -1439,7 +1433,7 @@ struct gameplay {
 	int autojudge_midcount;//TODO : need to init = 0;
 	int isAutoplay;
 	int flag_retry;
-	struct GRAPHDATA statgraph[2];
+	struct GRAPHDATA statgraph[PLAYER_MAX];
 	struct GRAPHDATAB rategraph[2]; /* 0:high 1:target? */
 	struct PLAYERSTATISTIC playerstat;
 	int randomseed;
@@ -1496,7 +1490,7 @@ struct gameplay {
 	int fadeoutBGAend[10];
 	int bgaMixer[10];
 	char isPreviewLoad;
-	int randomLayoutForDisplay[2]{};
+	int randomLayoutForDisplay[PLAYER_MAX]{};
 	unsigned int forceRandomLayout{0}; // 0 = disabled
 	std::future<void> hThreadPreview;
 	int previewStatus; /* 1:start 2:loaded */
@@ -1706,8 +1700,7 @@ struct CHARTCONVERTER {
 	int unk14430;
 	int unk14438;
 	int RealTimingSplitScratch;
-	int assist1p;
-	int assist2p;
+	int assist[PLAYER_MAX];
 	int playlevel;
 	bool flagSplitScratch;
 	bool flagSplitUnknown;

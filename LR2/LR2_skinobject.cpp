@@ -151,19 +151,19 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 42:
-			if (gs->gameplay.player[0].gaugeType != 0 && gs->gameplay.player[0].gaugeType != 3) return !ret;
+			if (gs->gameplay.player[PLAYER_1].gaugeType != 0 && gs->gameplay.player[PLAYER_1].gaugeType != 3) return !ret;
 			if (gs->gameplay.isCourse == 0) return ret;
 			break;
 		case 43:
-			if (gs->gameplay.player[0].gaugeType != 0 && gs->gameplay.player[0].gaugeType != 3) return ret;
+			if (gs->gameplay.player[PLAYER_1].gaugeType != 0 && gs->gameplay.player[PLAYER_1].gaugeType != 3) return ret;
 			if (gs->gameplay.isCourse == 0) return !ret;
 			return ret;
 		case 44:
-			if (gs->gameplay.player[1].gaugeType != 0 && gs->gameplay.player[1].gaugeType != 3) return !ret;
+			if (gs->gameplay.player[PLAYER_2].gaugeType != 0 && gs->gameplay.player[PLAYER_2].gaugeType != 3) return !ret;
 			if (gs->gameplay.isCourse == 0) return ret;
 			break;
 		case 45:
-			if (gs->gameplay.player[1].gaugeType != 0 && gs->gameplay.player[1].gaugeType != 3) return ret;
+			if (gs->gameplay.player[PLAYER_2].gaugeType != 0 && gs->gameplay.player[PLAYER_2].gaugeType != 3) return ret;
 			if (gs->gameplay.isCourse == 0) return !ret;
 			return ret;
 
@@ -192,19 +192,19 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 54:
-			if (gs->config.play.p1_assist == 0) return ret;
+			if (gs->config.play.assist[PLAYER_1] == 0) return ret;
 			break;
 
 		case 55:
-			if (gs->config.play.p1_assist == 1) return ret;
+			if (gs->config.play.assist[PLAYER_1] == 1) return ret;
 			break;
 
 		case 56:
-			if (gs->config.play.p2_assist == 0) return ret;
+			if (gs->config.play.assist[PLAYER_2] == 0) return ret;
 			break;
 
 		case 57:
-			if (gs->config.play.p2_assist == 1) return ret;
+			if (gs->config.play.assist[PLAYER_2] == 1) return ret;
 			break;
 
 		case 60:
@@ -282,12 +282,12 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 90:
-			if (gs->gameplay.player[0].clearType >= 2 && gs->skstruct.flag_flip == 0) return ret;
-			if (gs->gameplay.player[1].clearType >= 2 && gs->skstruct.flag_flip != 0) return ret;
+			if (gs->gameplay.player[PLAYER_1].clearType >= 2 && gs->skstruct.flag_flip == 0) return ret;
+			if (gs->gameplay.player[PLAYER_2].clearType >= 2 && gs->skstruct.flag_flip != 0) return ret;
 			break;
 		case 91:
-			if (gs->gameplay.player[0].clearType < 2 && gs->skstruct.flag_flip == 0) return ret;
-			if (gs->gameplay.player[1].clearType < 2 && gs->skstruct.flag_flip != 0) return ret;
+			if (gs->gameplay.player[PLAYER_1].clearType < 2 && gs->skstruct.flag_flip == 0) return ret;
+			if (gs->gameplay.player[PLAYER_2].clearType < 2 && gs->skstruct.flag_flip != 0) return ret;
 			break;
 			
 		case 100: //TODO : make more readable
@@ -674,263 +674,263 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 200:
-			if (gs->gameplay.player[0].note_current == 0) return !ret;
-			if ((gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 8) return !ret;
+			if (gs->gameplay.player[PLAYER_1].note_current == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 8) return !ret;
 			return ret;
 		case 201:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 8
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 6)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 8
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 6)
 				return ret;
 			break;
 		case 202:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 7
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 5)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 7
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 5)
 				return ret;
 			break;
 		case 203:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 6
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 4)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 6
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 4)
 				return ret;
 			break;
 		case 204:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 5
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 3)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 5
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 3)
 				return ret;
 			break;
 		case 205:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 4
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 2)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 4
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 2)
 				return ret;
 			break;
 		case 206:
-			if (gs->gameplay.player[0].note_current
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) < 3
-				&& (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) > 1)
+			if (gs->gameplay.player[PLAYER_1].note_current
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) < 3
+				&& (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) > 1)
 				return ret;
 			break;
 		case 207:
-			if (gs->gameplay.player[0].note_current == 0) return !ret;
-			if ((gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].note_current * 2) >= 2) return !ret;
+			if (gs->gameplay.player[PLAYER_1].note_current == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].note_current * 2) >= 2) return !ret;
 			return ret;
 
 		case 210:
-			if (gs->gameplay.player[1].note_current == 0) return !ret;
-			if ((gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 8) return !ret;
+			if (gs->gameplay.player[PLAYER_2].note_current == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 8) return !ret;
 			return ret;
 		case 211:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 8
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 6)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 8
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 6)
 				return ret;
 			break;
 		case 212:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 7
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 5)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 7
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 5)
 				return ret;
 			break;
 		case 213:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 6
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 4)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 6
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 4)
 				return ret;
 			break;
 		case 214:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 5
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 3)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 5
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 3)
 				return ret;
 			break;
 		case 215:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 4
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 2)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 4
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 2)
 				return ret;
 			break;
 		case 216:
-			if (gs->gameplay.player[1].note_current
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) < 3
-				&& (gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) > 1)
+			if (gs->gameplay.player[PLAYER_2].note_current
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) < 3
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) > 1)
 				return ret;
 			break;
 		case 217:
-			if (gs->gameplay.player[1].note_current == 0) return !ret;
-			if ((gs->gameplay.player[1].exscore * 9) / (gs->gameplay.player[1].note_current * 2) >= 2) return !ret;
+			if (gs->gameplay.player[PLAYER_2].note_current == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_2].exscore * 9) / (gs->gameplay.player[PLAYER_2].note_current * 2) >= 2) return !ret;
 			return ret;
 
 		case 220:
 		case 300:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if ((gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) < 8) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 8) return !ret;
 			return ret;
 		case 221:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 6) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 6) return ret;
 			break;
 		case 222:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 5) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 5) return ret;
 			break;
 		case 223:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 4) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 4) return ret;
 			break;
 		case 224:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 3) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 3) return ret;
 			break;
 		case 225:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 2) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 2) return ret;
 			break;
 		case 226:
-			if (gs->gameplay.player[0].totalnotes && (gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 1) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes && (gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 1) return ret;
 			break;
 		case 227:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if ((gs->gameplay.player[0].exscore * 9) / (gs->gameplay.player[0].totalnotes * 2) > 1) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if ((gs->gameplay.player[PLAYER_1].exscore * 9) / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 1) return !ret;
 			return ret;
 
 		case 230:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 0.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 10.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 0.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 10.0) return ret;
 			break;
 		case 231:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 10.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 20.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 10.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 20.0) return ret;
 			break;
 		case 232:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 20.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 30.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 20.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 30.0) return ret;
 			break;
 		case 233:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 30.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 40.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 30.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 40.0) return ret;
 			break;
 		case 234:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 40.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 50.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 40.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 50.0) return ret;
 			break;
 		case 235:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 50.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 60.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 50.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 60.0) return ret;
 			break;
 		case 236:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 60.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 70.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 60.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 70.0) return ret;
 			break;
 		case 237:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 70.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 80.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 70.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 80.0) return ret;
 			break;
 		case 238:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 80.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 90.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 80.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 90.0) return ret;
 			break;
 		case 239:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 90.0) return !ret;
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] < 100.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 90.0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] < 100.0) return ret;
 			break;
 		case 240:
-			if (gs->gameplay.player[0].HP[gs->gameplay.player[0].gaugeType] >= 100.0) return ret;
+			if (gs->gameplay.player[PLAYER_1].HP[gs->gameplay.player[PLAYER_1].gaugeType] >= 100.0) return ret;
 			break;
 		case 241:
-			if (gs->gameplay.player[0].judge_draw == 5) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 5) return ret;
 			break;
 		case 242:
-			if (gs->gameplay.player[0].judge_draw == 4) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 4) return ret;
 			break;
 		case 243:
-			if (gs->gameplay.player[0].judge_draw == 3) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 3) return ret;
 			break;
 		case 244:
-			if (gs->gameplay.player[0].judge_draw == 2) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 2) return ret;
 			break;
 		case 245:
-			if (gs->gameplay.player[0].judge_draw == 1) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 1) return ret;
 			break;
 		case 246:
-			if (gs->gameplay.player[0].judge_draw == 0) return ret;
+			if (gs->gameplay.player[PLAYER_1].judge_draw == 0) return ret;
 			break;
 		case 247:
-			if (GetTimeWrap() - gs->gameplay.misslayerTime[0] >= 1000.0) return ret;
+			if (GetTimeWrap() - gs->gameplay.misslayerTime[PLAYER_1] >= 1000.0) return ret;
 			break;
 		case 248:
-			if (!(GetTimeWrap() - gs->gameplay.misslayerTime[0] >= 1000.0)) return ret;
+			if (!(GetTimeWrap() - gs->gameplay.misslayerTime[PLAYER_1] >= 1000.0)) return ret;
 			break;
 
 		case 250:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 0.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 10.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 0.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 10.0) return ret;
 			break;
 		case 251:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 10.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 20.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 10.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 20.0) return ret;
 			break;
 		case 252:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 20.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 30.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 20.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 30.0) return ret;
 			break;
 		case 253:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 30.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 40.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 30.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 40.0) return ret;
 			break;
 		case 254:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 40.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 50.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 40.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 50.0) return ret;
 			break;
 		case 255:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 50.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 60.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 50.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 60.0) return ret;
 			break;
 		case 256:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 60.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 70.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 60.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 70.0) return ret;
 			break;
 		case 257:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 70.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 80.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 70.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 80.0) return ret;
 			break;
 		case 258:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 80.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 90.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 80.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 90.0) return ret;
 			break;
 		case 259:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 90.0) return !ret;
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] < 100.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 90.0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] < 100.0) return ret;
 			break;
 		case 260:
-			if (gs->gameplay.player[1].HP[gs->gameplay.player[1].gaugeType] >= 100.0) return ret;
+			if (gs->gameplay.player[PLAYER_2].HP[gs->gameplay.player[PLAYER_2].gaugeType] >= 100.0) return ret;
 			break;
 		case 261:
-			if (gs->gameplay.player[1].judge_draw == 5) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 5) return ret;
 			break;
 		case 262:
-			if (gs->gameplay.player[1].judge_draw == 4) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 4) return ret;
 			break;
 		case 263:
-			if (gs->gameplay.player[1].judge_draw == 3) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 3) return ret;
 			break;
 		case 264:
-			if (gs->gameplay.player[1].judge_draw == 2) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 2) return ret;
 			break;
 		case 265:
-			if (gs->gameplay.player[1].judge_draw == 1) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 1) return ret;
 			break;
 		case 266:
-			if (gs->gameplay.player[1].judge_draw == 0) return ret;
+			if (gs->gameplay.player[PLAYER_2].judge_draw == 0) return ret;
 			break;
 		case 267:
-			if (GetTimeWrap() - gs->gameplay.misslayerTime[1] >= 1000.0) return ret;
+			if (GetTimeWrap() - gs->gameplay.misslayerTime[PLAYER_2] >= 1000.0) return ret;
 			break;
 		case 268:
-			if (!(GetTimeWrap() - gs->gameplay.misslayerTime[1] >= 1000.0)) return ret;
+			if (!(GetTimeWrap() - gs->gameplay.misslayerTime[PLAYER_2] >= 1000.0)) return ret;
 			break;
 
 		case 270:
 			if (gs->procSelecter == 4) {
-				if ((gs->KeyInput.p1_buttonInput[12] == 2 || gs->KeyInput.p1_buttonInput[13] == 2) && gs->config.play.p1_lanecover && gs->gameplay.lanecoverDisplayP1) return ret;
-				if ((gs->KeyInput.p2_buttonInput[12] == 2 || gs->KeyInput.p2_buttonInput[13] == 2) && gs->config.play.p1_lanecover && gs->gameplay.lanecoverDisplayP1 && gs->config.play.battle != OPTION_BATTLE_BATTLE && gs->config.play.battle != OPTION_BATTLE_GBATTLE) return ret;
+				if ((gs->KeyInput.p1_buttonInput[12] == 2 || gs->KeyInput.p1_buttonInput[13] == 2) && gs->config.play.lanecover[PLAYER_1] && gs->gameplay.lanecoverDisplayP1) return ret;
+				if ((gs->KeyInput.p2_buttonInput[12] == 2 || gs->KeyInput.p2_buttonInput[13] == 2) && gs->config.play.lanecover[PLAYER_1] && gs->gameplay.lanecoverDisplayP1 && gs->config.play.battle != OPTION_BATTLE_BATTLE && gs->config.play.battle != OPTION_BATTLE_GBATTLE) return ret;
 			}
 			break;
 		case 271:
@@ -985,95 +985,95 @@ bool GetOptionFlag_dst(game *gs, int option) {
 
 			//300 is smae 220
 		case 301:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 7) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 7) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 7) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 7) return !ret;
 			return ret;
 			break;
 		case 302:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 6) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 6) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 6) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 6) return !ret;
 			return ret;
 			break;
 		case 303:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 5) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 5) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 5) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 5) return !ret;
 			return ret;
 			break;
 		case 304:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 4) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 4) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 4) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 4) return !ret;
 			return ret;
 			break;
 		case 305:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 3) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 3) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 3) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 3) return !ret;
 			return ret;
 			break;
 		case 306:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 2) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) < 2) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 2) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) < 2) return !ret;
 			return ret;
 			break;
 		case 307:
-			if (gs->gameplay.player[0].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[0].exscore == 0) return !ret;
-			if (gs->gameplay.player[0].exscore * 9 / (gs->gameplay.player[0].totalnotes * 2) > 1) return !ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_1].exscore * 9 / (gs->gameplay.player[PLAYER_1].totalnotes * 2) > 1) return !ret;
 			return ret;
 			break;
 		case 308:
-			if (gs->gameplay.player[0].exscore == 0) return ret;
-			if (gs->gameplay.player[0].totalnotes == 0) return ret;
+			if (gs->gameplay.player[PLAYER_1].exscore == 0) return ret;
+			if (gs->gameplay.player[PLAYER_1].totalnotes == 0) return ret;
 			break;
 
 		case 310:
-			if (gs->gameplay.player[1].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2) < 8) return !ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2) < 8) return !ret;
 			return ret;
 			break;
 		case 311:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 8
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 6) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 8
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 6) return ret;
 			break;
 		case 312:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 7
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 5) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 7
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 5) return ret;
 			break;
 		case 313:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 6
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 4) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 6
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 4) return ret;
 			break;
 		case 314:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 5
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 3) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 5
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 3) return ret;
 			break;
 		case 315:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 4
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 2) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 4
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 2) return ret;
 			break;
 		case 316:
-			if (gs->gameplay.player[1].totalnotes != 0
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) < 3
-				&& (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2)) > 1) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes != 0
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) < 3
+				&& (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2)) > 1) return ret;
 			break;
 		case 317:
-			if (gs->gameplay.player[1].totalnotes == 0) return !ret;
-			if (gs->gameplay.player[1].exscore == 0) return !ret;
-			if (gs->gameplay.player[1].exscore * 9 / (gs->gameplay.player[1].totalnotes * 2) > 1) return !ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].exscore == 0) return !ret;
+			if (gs->gameplay.player[PLAYER_2].exscore * 9 / (gs->gameplay.player[PLAYER_2].totalnotes * 2) > 1) return !ret;
 			return ret;
 		case 318:
-			if (gs->gameplay.player[1].exscore == 0) return ret;
-			if (gs->gameplay.player[1].totalnotes == 0) return ret;
+			if (gs->gameplay.player[PLAYER_2].exscore == 0) return ret;
+			if (gs->gameplay.player[PLAYER_2].totalnotes == 0) return ret;
 			break;
 
 		case 320:
@@ -1119,26 +1119,26 @@ bool GetOptionFlag_dst(game *gs, int option) {
 
 		case 330:
 			if (gs->skstruct.flag_flip == 0) {
-				if (gs->gameplay.player[0].exscore <= gs->sSelect.old.stat_exscore) return !ret;
+				if (gs->gameplay.player[PLAYER_1].exscore <= gs->sSelect.old.stat_exscore) return !ret;
 				return ret;
 			}
-			if (gs->gameplay.player[1].exscore > gs->sSelect.old.stat_exscore) return ret;
+			if (gs->gameplay.player[PLAYER_2].exscore > gs->sSelect.old.stat_exscore) return ret;
 			break;
 		case 331:
 			if (gs->skstruct.flag_flip == 0) {
-				if (gs->gameplay.player[0].max_combo > gs->sSelect.old.stat_maxcombo) {
+				if (gs->gameplay.player[PLAYER_1].max_combo > gs->sSelect.old.stat_maxcombo) {
 					return ret;
 				}
 			}
-			else if (gs->gameplay.player[1].max_combo > gs->sSelect.old.stat_maxcombo) {
+			else if (gs->gameplay.player[PLAYER_2].max_combo > gs->sSelect.old.stat_maxcombo) {
 				return ret;
 			}
 			break;
 		case 332:
 			if (gs->skstruct.flag_flip == 0) {
-				if (gs->gameplay.player[0].totalnotes - gs->gameplay.player[0].note_current + gs->gameplay.player[0].judgecount[2] + gs->gameplay.player[0].judgecount[1] < gs->sSelect.old.minbp) return ret;
+				if (gs->gameplay.player[PLAYER_1].totalnotes - gs->gameplay.player[PLAYER_1].note_current + gs->gameplay.player[PLAYER_1].judgecount[2] + gs->gameplay.player[PLAYER_1].judgecount[1] < gs->sSelect.old.minbp) return ret;
 			}
-			else if (gs->gameplay.player[1].totalnotes - gs->gameplay.player[1].note_current + gs->gameplay.player[1].judgecount[2] + gs->gameplay.player[1].judgecount[1] < gs->sSelect.old.minbp) return ret;
+			else if (gs->gameplay.player[PLAYER_2].totalnotes - gs->gameplay.player[PLAYER_2].note_current + gs->gameplay.player[PLAYER_2].judgecount[2] + gs->gameplay.player[PLAYER_2].judgecount[1] < gs->sSelect.old.minbp) return ret;
 			break;
 		case 333:
 			if (gs->gameplay.trialClear) return ret;
@@ -1210,13 +1210,13 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->skstruct.flag_flip != 0) return ret;
 			break;
 		case 352:
-			if (gs->gameplay.player[0].exscore > gs->gameplay.player[1].exscore) return ret;
+			if (gs->gameplay.player[PLAYER_1].exscore > gs->gameplay.player[PLAYER_2].exscore) return ret;
 			break;
 		case 353:
-			if (gs->gameplay.player[0].exscore < gs->gameplay.player[1].exscore) return ret;
+			if (gs->gameplay.player[PLAYER_1].exscore < gs->gameplay.player[PLAYER_2].exscore) return ret;
 			break;
 		case 354:
-			if (gs->gameplay.player[0].exscore == gs->gameplay.player[1].exscore) return ret;
+			if (gs->gameplay.player[PLAYER_1].exscore == gs->gameplay.player[PLAYER_2].exscore) return ret;
 			break;
 
 		case 400:
@@ -1633,17 +1633,17 @@ uint SetObjectValue_Num(game *g, int op) {
 
 	switch (op) {
 		case 10:
-			return g->config.play.hiSpeed[0];
+			return g->config.play.hiSpeed[PLAYER_1];
 		case 11:
-			return g->config.play.hiSpeed[1];
+			return g->config.play.hiSpeed[PLAYER_2];
 		case 12:
 			return g->config.play.judgetiming;
 		case 13:
 			return g->config.play.target_percent;
 		case 14:
-			return g->config.play.p1_lanecoverv;
+			return g->config.play.lanecoverv[PLAYER_1];
 		case 15:
-			return g->config.play.p2_lanecoverv;
+			return g->config.play.lanecoverv[PLAYER_2];
 		default:
 			return -1;
 
@@ -1726,17 +1726,17 @@ uint SetObjectValue_Num(game *g, int op) {
 		case 59:
 			return g->audio.param.volume_BGM;
 		case 60:
-			return g->audio.param.fxParam[0][0];
+			return g->audio.param.fxParam[0][PLAYER_1];
 		case 61:
-			return g->audio.param.fxParam[0][1];
+			return g->audio.param.fxParam[0][PLAYER_2];
 		case 62:
-			return g->audio.param.fxParam[1][0];
+			return g->audio.param.fxParam[1][PLAYER_1];
 		case 63:
-			return g->audio.param.fxParam[1][1];
+			return g->audio.param.fxParam[1][PLAYER_2];
 		case 64:
-			return g->audio.param.fxParam[2][0];
+			return g->audio.param.fxParam[2][PLAYER_1];
 		case 65:
-			return g->audio.param.fxParam[2][1];
+			return g->audio.param.fxParam[2][PLAYER_2];
 		case 66:
 			return g->audio.param.pitch_amount;
 
@@ -1815,118 +1815,118 @@ uint SetObjectValue_Num(game *g, int op) {
 
 		case 100:
 			if (g->sSelect.metaSelected.keymode == 7 || g->sSelect.metaSelected.keymode == 14)
-				return g->gameplay.player[0].score_print;
+				return g->gameplay.player[PLAYER_1].score_print;
 			else
-				return g->gameplay.player[0].score_print / 20 * 10;
+				return g->gameplay.player[PLAYER_1].score_print / 20 * 10;
 		case 101:
-			return g->gameplay.player[0].exscore;
+			return g->gameplay.player[PLAYER_1].exscore;
 		case 102:
-			return g->gameplay.player[0].rate;
+			return g->gameplay.player[PLAYER_1].rate;
 		case 103:
-			return (int)((g->gameplay.player[0].rate) * 100.0) % 100;
+			return (int)((g->gameplay.player[PLAYER_1].rate) * 100.0) % 100;
 		case 104:
 			if ((g->gameplay.courseType == 0 || g->gameplay.courseType == 2) && g->procSelecter == 4) {
-				return g->gameplay.player[0].now_combo_course;
+				return g->gameplay.player[PLAYER_1].now_combo_course;
 			}
-			return g->gameplay.player[0].now_combo;
+			return g->gameplay.player[PLAYER_1].now_combo;
 		case 105:
 			if ((g->gameplay.courseType == 0 || g->gameplay.courseType == 2) && g->procSelecter == 4) {
-				return g->gameplay.player[0].max_combo_course;
+				return g->gameplay.player[PLAYER_1].max_combo_course;
 			}
-			return g->gameplay.player[0].max_combo;
+			return g->gameplay.player[PLAYER_1].max_combo;
 		case 106:
-			return g->gameplay.player[0].totalnotes;
+			return g->gameplay.player[PLAYER_1].totalnotes;
 		case 107:
-			return (int)g->gameplay.player[0].HP_print / 2 * 2;
+			return (int)g->gameplay.player[PLAYER_1].HP_print / 2 * 2;
 		case 108:
-			return g->gameplay.player[0].exscore - g->gameplay.player[1].exscore;
+			return g->gameplay.player[PLAYER_1].exscore - g->gameplay.player[PLAYER_2].exscore;
 		case 109:
 		case 154:{
-			if (g->gameplay.player[0].exscore == g->gameplay.player[0].totalnotes * 2) return 0;
-			if (g->gameplay.player[0].totalnotes == 0) return 0;
+			if (g->gameplay.player[PLAYER_1].exscore == g->gameplay.player[PLAYER_1].totalnotes * 2) return 0;
+			if (g->gameplay.player[PLAYER_1].totalnotes == 0) return 0;
 			
-			int rank = (g->gameplay.player[0].exscore * 9) / (g->gameplay.player[0].totalnotes * 2);
+			int rank = (g->gameplay.player[PLAYER_1].exscore * 9) / (g->gameplay.player[PLAYER_1].totalnotes * 2);
 
 			if (rank < 1) rank = 1;
 			else if (rank > 8) rank = 8;
-			return g->gameplay.player[0].exscore - (g->gameplay.player[0].totalnotes * 2 * (rank + 1) / 9);
+			return g->gameplay.player[PLAYER_1].exscore - (g->gameplay.player[PLAYER_1].totalnotes * 2 * (rank + 1) / 9);
 		}
 		case 110:
-			return g->gameplay.player[0].judgecount[5];
+			return g->gameplay.player[PLAYER_1].judgecount[5];
 		case 111:
-			return g->gameplay.player[0].judgecount[4];
+			return g->gameplay.player[PLAYER_1].judgecount[4];
 		case 112:
-			return g->gameplay.player[0].judgecount[3];
+			return g->gameplay.player[PLAYER_1].judgecount[3];
 		case 113:
-			return g->gameplay.player[0].judgecount[2];
+			return g->gameplay.player[PLAYER_1].judgecount[2];
 		case 114:
-			return g->gameplay.player[0].judgecount[0] + g->gameplay.player[0].judgecount[1];
+			return g->gameplay.player[PLAYER_1].judgecount[0] + g->gameplay.player[PLAYER_1].judgecount[1];
 		case 115:
-			if (g->gameplay.player[0].totalnotes > 0) {
-				return g->gameplay.player[0].exscore * 100 / (g->gameplay.player[0].totalnotes * 2);
+			if (g->gameplay.player[PLAYER_1].totalnotes > 0) {
+				return g->gameplay.player[PLAYER_1].exscore * 100 / (g->gameplay.player[PLAYER_1].totalnotes * 2);
 			}
 			break;
 		case 116:
-			if (g->gameplay.player[0].totalnotes > 0) {
-				return g->gameplay.player[0].exscore * 10000 / (g->gameplay.player[0].totalnotes * 2) % 100;
+			if (g->gameplay.player[PLAYER_1].totalnotes > 0) {
+				return g->gameplay.player[PLAYER_1].exscore * 10000 / (g->gameplay.player[PLAYER_1].totalnotes * 2) % 100;
 			}
 			break;
 
 		case 120:
 			if (g->sSelect.metaSelected.keymode == 7 || g->sSelect.metaSelected.keymode == 14)
-				return g->gameplay.player[1].score_print;
+				return g->gameplay.player[PLAYER_2].score_print;
 			else
-				return g->gameplay.player[1].score_print / 20 * 10;
+				return g->gameplay.player[PLAYER_2].score_print / 20 * 10;
 		case 121:
-			return g->gameplay.player[1].exscore;
+			return g->gameplay.player[PLAYER_2].exscore;
 		case 122:
-			return g->gameplay.player[1].rate;
+			return g->gameplay.player[PLAYER_2].rate;
 		case 123:
-			return (int)((g->gameplay.player[1].rate) * 100.0) % 100;
+			return (int)((g->gameplay.player[PLAYER_2].rate) * 100.0) % 100;
 		case 124:
 			if ((g->gameplay.courseType == 0 || g->gameplay.courseType == 2) && g->procSelecter == 4) {
-				return g->gameplay.player[1].now_combo_course;
+				return g->gameplay.player[PLAYER_2].now_combo_course;
 			}
-			return g->gameplay.player[1].now_combo;
+			return g->gameplay.player[PLAYER_2].now_combo;
 		case 125:
 			if ((g->gameplay.courseType == 0 || g->gameplay.courseType == 2) && g->procSelecter == 4) {
-				return g->gameplay.player[1].max_combo_course;
+				return g->gameplay.player[PLAYER_2].max_combo_course;
 			}
-			return g->gameplay.player[1].max_combo;
+			return g->gameplay.player[PLAYER_2].max_combo;
 		case 126:
-			return g->gameplay.player[1].totalnotes;
+			return g->gameplay.player[PLAYER_2].totalnotes;
 		case 127:
-			return (int)g->gameplay.player[1].HP_print / 2 * 2;
+			return (int)g->gameplay.player[PLAYER_2].HP_print / 2 * 2;
 		case 128:
-			return g->gameplay.player[1].exscore - g->gameplay.player[0].exscore;
+			return g->gameplay.player[PLAYER_2].exscore - g->gameplay.player[PLAYER_1].exscore;
 		case 129:{
-			if (g->gameplay.player[1].exscore == g->gameplay.player[1].totalnotes * 2) return 0;
-			if (g->gameplay.player[1].totalnotes == 0) return 0;
+			if (g->gameplay.player[PLAYER_2].exscore == g->gameplay.player[PLAYER_2].totalnotes * 2) return 0;
+			if (g->gameplay.player[PLAYER_2].totalnotes == 0) return 0;
 
-			int rank = (g->gameplay.player[1].exscore * 9) / (g->gameplay.player[1].totalnotes * 2);
+			int rank = (g->gameplay.player[PLAYER_2].exscore * 9) / (g->gameplay.player[PLAYER_2].totalnotes * 2);
 
 			if (rank < 1) rank = 1;
 			else if (rank > 8) rank = 8;
-			return g->gameplay.player[1].exscore - (g->gameplay.player[1].totalnotes * 2 * (rank + 1) / 9);
+			return g->gameplay.player[PLAYER_2].exscore - (g->gameplay.player[PLAYER_2].totalnotes * 2 * (rank + 1) / 9);
 		}
 		case 130:
-			return g->gameplay.player[1].judgecount[5];
+			return g->gameplay.player[PLAYER_2].judgecount[5];
 		case 131:
-			return g->gameplay.player[1].judgecount[4];
+			return g->gameplay.player[PLAYER_2].judgecount[4];
 		case 132:
-			return g->gameplay.player[1].judgecount[3];
+			return g->gameplay.player[PLAYER_2].judgecount[3];
 		case 133:
-			return g->gameplay.player[1].judgecount[2];
+			return g->gameplay.player[PLAYER_2].judgecount[2];
 		case 134:
-			return g->gameplay.player[1].judgecount[0] + g->gameplay.player[1].judgecount[1];
+			return g->gameplay.player[PLAYER_2].judgecount[0] + g->gameplay.player[PLAYER_2].judgecount[1];
 		case 135:
-			if (g->gameplay.player[1].totalnotes > 0) {
-				return g->gameplay.player[1].exscore * 100 / (g->gameplay.player[1].totalnotes * 2);
+			if (g->gameplay.player[PLAYER_2].totalnotes > 0) {
+				return g->gameplay.player[PLAYER_2].exscore * 100 / (g->gameplay.player[PLAYER_2].totalnotes * 2);
 			}
 			break;
 		case 136:
-			if (g->gameplay.player[1].totalnotes > 0) {
-				return g->gameplay.player[1].exscore * 10000 / (g->gameplay.player[1].totalnotes * 2) % 100;
+			if (g->gameplay.player[PLAYER_2].totalnotes > 0) {
+				return g->gameplay.player[PLAYER_2].exscore * 10000 / (g->gameplay.player[PLAYER_2].totalnotes * 2) % 100;
 			}
 			break;
 
@@ -1935,28 +1935,28 @@ uint SetObjectValue_Num(game *g, int op) {
 		case 151:
 			return g->gameplay.targetScore.rate;
 		case 152:
-			return g->gameplay.player[0].exscore - g->gameplay.highScore.rate;
+			return g->gameplay.player[PLAYER_1].exscore - g->gameplay.highScore.rate;
 		case 153:
-			return g->gameplay.player[0].exscore - g->gameplay.targetScore.rate;
+			return g->gameplay.player[PLAYER_1].exscore - g->gameplay.targetScore.rate;
 			// 154 is same 109
 		case 155:
-			if (g->gameplay.player[0].totalnotes) {
-				return g->gameplay.highScore.rate * 100 / (g->gameplay.player[0].totalnotes * 2);
+			if (g->gameplay.player[PLAYER_1].totalnotes) {
+				return g->gameplay.highScore.rate * 100 / (g->gameplay.player[PLAYER_1].totalnotes * 2);
 			}
 			break;
 		case 156:
-			if (g->gameplay.player[0].totalnotes) {
-				return g->gameplay.highScore.rate * 10000 / (g->gameplay.player[0].totalnotes * 2) % 100;
+			if (g->gameplay.player[PLAYER_1].totalnotes) {
+				return g->gameplay.highScore.rate * 10000 / (g->gameplay.player[PLAYER_1].totalnotes * 2) % 100;
 			}
 			break;
 		case 157:
-			if (g->gameplay.player[0].totalnotes) {
-				return g->gameplay.targetScore.rate * 100 / (g->gameplay.player[0].totalnotes * 2);
+			if (g->gameplay.player[PLAYER_1].totalnotes) {
+				return g->gameplay.targetScore.rate * 100 / (g->gameplay.player[PLAYER_1].totalnotes * 2);
 			}
 			break;
 		case 158:
-			if (g->gameplay.player[0].totalnotes) {
-				return g->gameplay.targetScore.rate * 10000 / (g->gameplay.player[0].totalnotes * 2) % 100;
+			if (g->gameplay.player[PLAYER_1].totalnotes) {
+				return g->gameplay.targetScore.rate * 10000 / (g->gameplay.player[PLAYER_1].totalnotes * 2) % 100;
 			}
 			break;
 
@@ -1991,34 +1991,34 @@ uint SetObjectValue_Num(game *g, int op) {
 		case 170:
 			return g->sSelect.old.stat_exscore;
 		case 171:
-			if (g->skstruct.flag_flip) return g->gameplay.player[1].exscore;
-			else return g->gameplay.player[0].exscore;
+			if (g->skstruct.flag_flip) return g->gameplay.player[PLAYER_2].exscore;
+			else return g->gameplay.player[PLAYER_1].exscore;
 		case 172:
-			if (g->skstruct.flag_flip) return g->gameplay.player[1].exscore - g->sSelect.old.stat_exscore;
-			else return g->gameplay.player[0].exscore - g->sSelect.old.stat_exscore;
+			if (g->skstruct.flag_flip) return g->gameplay.player[PLAYER_2].exscore - g->sSelect.old.stat_exscore;
+			else return g->gameplay.player[PLAYER_1].exscore - g->sSelect.old.stat_exscore;
 		case 173:
 			return g->sSelect.old.stat_maxcombo;
 		case 174:
-			if (g->skstruct.flag_flip) return g->gameplay.player[1].max_combo;
-			else return g->gameplay.player[0].max_combo;
+			if (g->skstruct.flag_flip) return g->gameplay.player[PLAYER_2].max_combo;
+			else return g->gameplay.player[PLAYER_1].max_combo;
 		case 175:
-			if (g->skstruct.flag_flip) return g->gameplay.player[1].max_combo- g->sSelect.old.stat_maxcombo;
-			else return g->gameplay.player[0].max_combo - g->sSelect.old.stat_maxcombo;
+			if (g->skstruct.flag_flip) return g->gameplay.player[PLAYER_2].max_combo- g->sSelect.old.stat_maxcombo;
+			else return g->gameplay.player[PLAYER_1].max_combo - g->sSelect.old.stat_maxcombo;
 		case 176:
 			if (g->sSelect.old.minbp < 0) return 0;
 			return g->sSelect.old.minbp;
 		case 177:
 			if (g->skstruct.flag_flip == 0) 
-				return g->gameplay.player[0].totalnotes - g->gameplay.player[0].note_current + g->gameplay.player[0].judgecount[2] + g->gameplay.player[0].judgecount[1];
+				return g->gameplay.player[PLAYER_1].totalnotes - g->gameplay.player[PLAYER_1].note_current + g->gameplay.player[PLAYER_1].judgecount[2] + g->gameplay.player[PLAYER_1].judgecount[1];
 			else
-				return g->gameplay.player[1].totalnotes - g->gameplay.player[1].note_current + g->gameplay.player[1].judgecount[2] + g->gameplay.player[1].judgecount[1];
+				return g->gameplay.player[PLAYER_2].totalnotes - g->gameplay.player[PLAYER_2].note_current + g->gameplay.player[PLAYER_2].judgecount[2] + g->gameplay.player[PLAYER_2].judgecount[1];
 		case 178:{
 			int oldbp = g->sSelect.old.minbp;
 			if (oldbp < 0) oldbp = 0;
 			if (g->skstruct.flag_flip == 0)
-				return g->gameplay.player[0].totalnotes - g->gameplay.player[0].note_current + g->gameplay.player[0].judgecount[2] + g->gameplay.player[0].judgecount[1] - oldbp;
+				return g->gameplay.player[PLAYER_1].totalnotes - g->gameplay.player[PLAYER_1].note_current + g->gameplay.player[PLAYER_1].judgecount[2] + g->gameplay.player[PLAYER_1].judgecount[1] - oldbp;
 			else
-				return g->gameplay.player[1].totalnotes - g->gameplay.player[1].note_current + g->gameplay.player[1].judgecount[2] + g->gameplay.player[1].judgecount[1] - oldbp;
+				return g->gameplay.player[PLAYER_2].totalnotes - g->gameplay.player[PLAYER_2].note_current + g->gameplay.player[PLAYER_2].judgecount[2] + g->gameplay.player[PLAYER_2].judgecount[1] - oldbp;
 		}
 		case 179:
 			return g->net.rankingData.myRanking;
@@ -2033,20 +2033,20 @@ uint SetObjectValue_Num(game *g, int op) {
 			return g->sSelect.oldIRrank;
 		case 183:
 			if (g->skstruct.flag_flip == 0) {
-				if (g->gameplay.player[0].totalnotes > 0) return g->sSelect.old.stat_exscore * 100 / (g->gameplay.player[0].totalnotes * 2);
+				if (g->gameplay.player[PLAYER_1].totalnotes > 0) return g->sSelect.old.stat_exscore * 100 / (g->gameplay.player[PLAYER_1].totalnotes * 2);
 				else return 0;
 			}
 			else{
-				if (g->gameplay.player[1].totalnotes > 0) return g->sSelect.old.stat_exscore * 100 / (g->gameplay.player[1].totalnotes * 2);
+				if (g->gameplay.player[PLAYER_2].totalnotes > 0) return g->sSelect.old.stat_exscore * 100 / (g->gameplay.player[PLAYER_2].totalnotes * 2);
 				else return 0;
 			}
 		case 184:
 			if (g->skstruct.flag_flip == 0) {
-				if (g->gameplay.player[0].totalnotes > 0) return g->sSelect.old.stat_exscore * 10000 / (g->gameplay.player[0].totalnotes * 2) % 100;
+				if (g->gameplay.player[PLAYER_1].totalnotes > 0) return g->sSelect.old.stat_exscore * 10000 / (g->gameplay.player[PLAYER_1].totalnotes * 2) % 100;
 				else return 0;
 			}
 			else {
-				if (g->gameplay.player[1].totalnotes > 0) return g->sSelect.old.stat_exscore * 10000 / (g->gameplay.player[1].totalnotes * 2) % 100;
+				if (g->gameplay.player[PLAYER_2].totalnotes > 0) return g->sSelect.old.stat_exscore * 10000 / (g->gameplay.player[PLAYER_2].totalnotes * 2) % 100;
 				else return 0;
 			}
 
@@ -2054,18 +2054,18 @@ uint SetObjectValue_Num(game *g, int op) {
 			return g->net.rankingData.rankingCount;
 		case 201:
 			if (g->procSelecter == 4) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStats.lastHitOffset;
+				return g->gameplay.player[PLAYER_1].extendedStats.lastHitOffset;
 			}
 			return g->net.rankingData.totalPlaycount;
 
 		case 210:
 			if (g->procSelecter == 4) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStats.lastFastSlow;
+				return g->gameplay.player[PLAYER_1].extendedStats.lastFastSlow;
 			}
 			return g->net.rankingData.clearPlayers[1];
 		case 211:
 			if (g->procSelecter == 4) { // Extension: fast-slow
-				return g->gameplay.player[1].extendedStats.lastFastSlow;
+				return g->gameplay.player[PLAYER_2].extendedStats.lastFastSlow;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
 				return (g->net.rankingData.clearPlayers[1] * 100) / g->net.rankingData.rankingCount;
@@ -2073,15 +2073,15 @@ uint SetObjectValue_Num(game *g, int op) {
 			break;
 		case 212:
 			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStats.fast;
+				return g->gameplay.player[PLAYER_1].extendedStats.fast;
 			}
 			if (g->procSelecter == 13) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStatsCourse.fast;
+				return g->gameplay.player[PLAYER_1].extendedStatsCourse.fast;
 			}
 			return g->net.rankingData.clearPlayers[2];
 		case 213:
 			if (g->procSelecter == 4) { // Extension: fast-slow
-				return g->gameplay.player[1].extendedStats.lastHitOffset;
+				return g->gameplay.player[PLAYER_2].extendedStats.lastHitOffset;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
 				return (g->net.rankingData.clearPlayers[2] * 100) / g->net.rankingData.rankingCount;
@@ -2089,10 +2089,10 @@ uint SetObjectValue_Num(game *g, int op) {
 			break;
 		case 214:
 			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStats.slow;
+				return g->gameplay.player[PLAYER_1].extendedStats.slow;
 			}
 			if (g->procSelecter == 13) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStatsCourse.slow;
+				return g->gameplay.player[PLAYER_1].extendedStatsCourse.slow;
 			}
 			return g->net.rankingData.clearPlayers[3];
 		case 215:
@@ -2102,15 +2102,15 @@ uint SetObjectValue_Num(game *g, int op) {
 			break;
 		case 216:
 			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStats.cb;
+				return g->gameplay.player[PLAYER_1].extendedStats.cb;
 			}
 			if (g->procSelecter == 13) { // Extension: fast-slow
-				return g->gameplay.player[0].extendedStatsCourse.cb;
+				return g->gameplay.player[PLAYER_1].extendedStatsCourse.cb;
 			}
 			return g->net.rankingData.clearPlayers[4];
 		case 217:
 			if (g->procSelecter == 4) { // Extension: fast-slow NOTE: redundant with 106
-				return g->gameplay.player[0].totalnotes;
+				return g->gameplay.player[PLAYER_1].totalnotes;
 			}
 			if (g->net.rankingData.rankingCount != 0) {
 				return (g->net.rankingData.clearPlayers[4] * 100) / g->net.rankingData.rankingCount;
@@ -2118,7 +2118,7 @@ uint SetObjectValue_Num(game *g, int op) {
 			break;
 		case 218:
 			if (g->procSelecter == 4 || g->procSelecter == 5) { // Extension: fast-slow
-				return g->gameplay.player[0].note_current;
+				return g->gameplay.player[PLAYER_1].note_current;
 			}
 			return g->net.rankingData.clearPlayers[5];
 		case 219:
@@ -2220,8 +2220,8 @@ uint SetObjectValue_Num(game *g, int op) {
 			//293 is same 180
 		case 294: //TOFIX : IR clear rate
 			break;
-		case 295: return g->gameplay.randomLayoutForDisplay[0]; // Extension: LR2OOL SP and DP 1P random
-		case 418: return g->gameplay.randomLayoutForDisplay[1]; // Extension: LR2OOL DP 2P random
+		case 295: return g->gameplay.randomLayoutForDisplay[PLAYER_1]; // Extension: LR2OOL SP and DP 1P random
+		case 418: return g->gameplay.randomLayoutForDisplay[PLAYER_2]; // Extension: LR2OOL DP 2P random
 	}
 	return 0;
 }
@@ -2290,132 +2290,132 @@ int SetObjectValue_Bargraph(game *g) {
 					break;
 
 				case 10:
-					max = g->gameplay.player[0].totalnotes * 2;
-					val = g->gameplay.player[0].exscore;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
+					val = g->gameplay.player[PLAYER_1].exscore;
 					break;
 
 				case 11:
-					max = g->gameplay.player[0].totalnotes * 2;
-					if (g->gameplay.player[0].note_current <= 0) continue;
-					val = g->gameplay.player[0].exscore * g->gameplay.player[0].totalnotes / g->gameplay.player[0].note_current;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
+					if (g->gameplay.player[PLAYER_1].note_current <= 0) continue;
+					val = g->gameplay.player[PLAYER_1].exscore * g->gameplay.player[PLAYER_1].totalnotes / g->gameplay.player[PLAYER_1].note_current;
 					break;
 
 				case 12:
-					max = g->gameplay.player[0].totalnotes * 2;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
 					val = g->gameplay.highScore.rate;
 					break;
 
 				case 13:
-					max = g->gameplay.player[0].totalnotes * 2;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
 					val = g->gameplay.highScore.exscore;
 					break;
 
 				case 14:
 					if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
-						max = g->gameplay.player[1].totalnotes * 2;
-						val = g->gameplay.player[1].exscore;
+						max = g->gameplay.player[PLAYER_2].totalnotes * 2;
+						val = g->gameplay.player[PLAYER_2].exscore;
 					}
 					else {
-						max = g->gameplay.player[0].totalnotes * 2;
+						max = g->gameplay.player[PLAYER_1].totalnotes * 2;
 						val = g->gameplay.targetScore.rate;
 					}
 					break;
 
 				case 15:
-					max = g->gameplay.player[0].totalnotes * 2;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
 					val = g->gameplay.targetScore.exscore;
 					break;
 
 				case 20:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].judgecount[5];
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].judgecount[5];
 					break;
 
 				case 21:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].judgecount[4];
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].judgecount[4];
 					break;
 
 				case 22:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].judgecount[3];
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].judgecount[3];
 					break;
 
 				case 23:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].judgecount[2];
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].judgecount[2];
 					break;
 
 				case 24:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].judgecount[1];
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].judgecount[1];
 					break;
 
 				case 25:
-					max = g->gameplay.player[0].totalnotes;
-					val = g->gameplay.player[0].max_combo;
+					max = g->gameplay.player[PLAYER_1].totalnotes;
+					val = g->gameplay.player[PLAYER_1].max_combo;
 					break;
 
 				case 26:
 					if (g->sSelect.metaSelected.keymode == 7 || g->sSelect.metaSelected.keymode == 14) {
 						max = 20000.0;
-						val = g->gameplay.player[0].score;
+						val = g->gameplay.player[PLAYER_1].score;
 					}
 					else {
 						max = 10000.0;
-						val = g->gameplay.player[0].score;
+						val = g->gameplay.player[PLAYER_1].score;
 					}
 					break;
 
 				case 27:
-					max = g->gameplay.player[0].totalnotes * 2;
-					val = g->gameplay.player[0].exscore;
+					max = g->gameplay.player[PLAYER_1].totalnotes * 2;
+					val = g->gameplay.player[PLAYER_1].exscore;
 					break;
 
 				case 30:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].judgecount[5];
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].judgecount[5];
 					break;
 
 				case 31:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].judgecount[4];
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].judgecount[4];
 					break;
 
 				case 32:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].judgecount[3];
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].judgecount[3];
 					break;
 
 				case 33:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].judgecount[2];
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].judgecount[2];
 					break;
 
 				case 34:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].judgecount[1];
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].judgecount[1];
 					break;
 
 				case 35:
-					max = g->gameplay.player[1].totalnotes;
-					val = g->gameplay.player[1].max_combo;
+					max = g->gameplay.player[PLAYER_2].totalnotes;
+					val = g->gameplay.player[PLAYER_2].max_combo;
 					break;
 
 				case 36:
 					if (g->sSelect.metaSelected.keymode == 7 || g->sSelect.metaSelected.keymode == 14) {
 						max = 20000.0;
-						val = g->gameplay.player[1].score;
+						val = g->gameplay.player[PLAYER_2].score;
 					}
 					else {
 						max = 10000.0;
-						val = g->gameplay.player[1].score;
+						val = g->gameplay.player[PLAYER_2].score;
 					}
 					break;
 
 				case 37:
-					max = g->gameplay.player[1].totalnotes * 2;
-					val = g->gameplay.player[1].exscore;
+					max = g->gameplay.player[PLAYER_2].totalnotes * 2;
+					val = g->gameplay.player[PLAYER_2].exscore;
 					break;
 
 				case 40:
@@ -2465,27 +2465,27 @@ int SetObjectValue_Bargraph(game *g) {
 					break;
 
 				case 48: // Extension: fast-slow
-					max = g->gameplay.player[0].extendedStats.slow + g->gameplay.player[0].extendedStats.fast;
-					val = g->gameplay.player[0].extendedStats.slow;
+					max = g->gameplay.player[PLAYER_1].extendedStats.slow + g->gameplay.player[PLAYER_1].extendedStats.fast;
+					val = g->gameplay.player[PLAYER_1].extendedStats.slow;
 					break;
 
 				case 49: // Extension: fast-slow
-					max = g->gameplay.player[0].extendedStats.slow + g->gameplay.player[0].extendedStats.fast;
-					val = g->gameplay.player[0].extendedStats.fast;
+					max = g->gameplay.player[PLAYER_1].extendedStats.slow + g->gameplay.player[PLAYER_1].extendedStats.fast;
+					val = g->gameplay.player[PLAYER_1].extendedStats.fast;
 					break;
 
 				case 58: // Extension: fast-slow
 					if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
-						max = g->gameplay.player[1].extendedStats.slow + g->gameplay.player[1].extendedStats.fast;
-						val = g->gameplay.player[1].extendedStats.slow;
+						max = g->gameplay.player[PLAYER_2].extendedStats.slow + g->gameplay.player[PLAYER_2].extendedStats.fast;
+						val = g->gameplay.player[PLAYER_2].extendedStats.slow;
 					}
 					else continue;
 					break;
 
 				case 59: // Extension: fast-slow
 					if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
-						max = g->gameplay.player[1].extendedStats.slow + g->gameplay.player[1].extendedStats.fast;
-						val = g->gameplay.player[1].extendedStats.fast;
+						max = g->gameplay.player[PLAYER_2].extendedStats.slow + g->gameplay.player[PLAYER_2].extendedStats.fast;
+						val = g->gameplay.player[PLAYER_2].extendedStats.fast;
 					}
 					else continue;
 					break;
@@ -2536,23 +2536,23 @@ int SetObjectValue_Slider(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 2:
-				SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 10, 990, &g->config.play.hiSpeed[0], &g->KeyInput, i);
+				SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 10, 990, &g->config.play.hiSpeed[PLAYER_1], &g->KeyInput, i);
 				break;
 
 			case 3:
-				SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 10, 990, &g->config.play.hiSpeed[1], &g->KeyInput, i);
+				SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 10, 990, &g->config.play.hiSpeed[PLAYER_2], &g->KeyInput, i);
 				break;
 
 			case 4:
-				if (g->config.play.p1_lanecover == 1 && g->gameplay.lanecoverDisplayP1 == 1)
-					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &g->config.play.p1_lanecoverv, &g->KeyInput, i);
+				if (g->config.play.lanecover[PLAYER_1] == 1 && g->gameplay.lanecoverDisplayP1 == 1)
+					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &g->config.play.lanecoverv[PLAYER_1], &g->KeyInput, i);
 				else
 					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &iBuf, &g->KeyInput, i);
 				break;
 
 			case 5:
-				if (g->config.play.p2_lanecover == 1 && g->gameplay.lanecoverDisplayP2 == 1)
-					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &g->config.play.p2_lanecoverv, &g->KeyInput, i);
+				if (g->config.play.lanecover[PLAYER_2] == 1 && g->gameplay.lanecoverDisplayP2 == 1)
+					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &g->config.play.lanecoverv[PLAYER_2], &g->KeyInput, i);
 				else
 					SliderByTime(&sk->drBuf, &sk->otherObject[2].src[i], &sk->otherObject[2].dst[i], T, 0, 100, &iBuf, &g->KeyInput, i);
 					
@@ -2652,38 +2652,38 @@ int SetObjectValue_Slider(game *g, skstruct *sk, Timer *T, char flag) {
 				}
 				break;
 			case 20:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[0][0], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), '>', g->audio.param.fxParam[0][0]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[0][PLAYER_1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), '>', g->audio.param.fxParam[0][PLAYER_1]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
 			case 21:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[0][1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), '?', g->audio.param.fxParam[0][1]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[0][PLAYER_2], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), '?', g->audio.param.fxParam[0][PLAYER_2]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
 			case 22:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[1][0], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'H', g->audio.param.fxParam[1][0]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[1][PLAYER_1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'H', g->audio.param.fxParam[1][PLAYER_1]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
 			case 23:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[1][1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'I', g->audio.param.fxParam[1][1]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[1][PLAYER_2], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'I', g->audio.param.fxParam[1][PLAYER_2]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
 			case 24:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[2][0], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'R', g->audio.param.fxParam[2][0]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[2][PLAYER_1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'R', g->audio.param.fxParam[2][PLAYER_1]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
 			case 25:
-				if (UpdateSoundFX(g, &g->audio.param.fxParam[2][1], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
-					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'S', g->audio.param.fxParam[2][1]);
+				if (UpdateSoundFX(g, &g->audio.param.fxParam[2][PLAYER_2], i, 0, 100) && GetTimeLapse(41, T) > 0 && g->gameplay.replay.status == 1) {
+					AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 'S', g->audio.param.fxParam[2][PLAYER_2]);
 					g->gameplay.fxChangeInRecording = 1;
 				}
 				break;
@@ -3254,8 +3254,8 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			//Option Play
 			case 40:
 				isClickSuccess = g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13 ?
-					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[0].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
-					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[0], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
+					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[PLAYER_1].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
+					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[PLAYER_1], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3265,8 +3265,8 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 41:
 				if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
 					isClickSuccess = g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13 ?
-						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[1].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
-						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[1], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
+						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[PLAYER_2].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
+						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[PLAYER_2], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
 					if (isClickSuccess == 2) {
 						PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 						SetObjectStrings_SongSelect(g);
@@ -3276,7 +3276,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 42:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[0], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[PLAYER_1], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3284,7 +3284,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 43:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[1], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.random[PLAYER_2], OPTION_RANDOM_OFF, OPTION_RANDOM_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3292,7 +3292,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 44:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.p1_assist, 0, 1, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.assist[PLAYER_1], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3300,7 +3300,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 45:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.p2_assist, 0, 1, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.assist[PLAYER_2], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3308,16 +3308,16 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break; 
 				
 			case 46:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.p1_lanecover, 0, 1, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.lanecover[PLAYER_1], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
-					g->config.play.p2_lanecover = g->config.play.p1_lanecover;
+					g->config.play.lanecover[PLAYER_2] = g->config.play.lanecover[PLAYER_1];
 					SetObjectStrings_SongSelect(g);
 				}
 				break;
 			
 			case 50:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.m_HIDSUD1, 0, 3, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.m_HIDSUD[PLAYER_1], 0, 3, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3325,7 +3325,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 51:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.m_HIDSUD2, 0, 3, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.m_HIDSUD[PLAYER_2], 0, 3, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3363,8 +3363,8 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 				}
 
-				if (iTmp == 2) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, g->config.play.hsmargin, &g->config.play.hiSpeed[0]);
-				else if(iTmp == 0) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, -g->config.play.hsmargin, &g->config.play.hiSpeed[0]);
+				if (iTmp == 2) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, g->config.play.hsmargin, &g->config.play.hiSpeed[PLAYER_1]);
+				else if(iTmp == 0) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, -g->config.play.hsmargin, &g->config.play.hiSpeed[PLAYER_1]);
 				break;
 			case 58:
 				iTmp = 1;
@@ -3373,8 +3373,8 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 				}
 
-				if (iTmp == 2) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, g->config.play.hsmargin, &g->config.play.hiSpeed[1]);
-				else if (iTmp == 0) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, -g->config.play.hsmargin, &g->config.play.hiSpeed[1]);
+				if (iTmp == 2) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, g->config.play.hsmargin, &g->config.play.hiSpeed[PLAYER_2]);
+				else if (iTmp == 0) LoopInRange(g->config.play.hsmin, g->config.play.hsmax, -g->config.play.hsmargin, &g->config.play.hiSpeed[PLAYER_2]);
 				break;
 
 			case 70:

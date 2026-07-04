@@ -287,8 +287,8 @@ int main(int argc, char** argv) {
 		gs.config.skin.fontname.assign("HG丸ｺﾞｼｯｸM-PRO");
 		gs.config.skin.disableImageFont = true;
 		gs.config.system.isablebmsthread = 1;
-		gs.config.play.gaugeOption[0] = OPTION_GAUGE_GROOVE;
-		gs.config.play.random[0] = OPTION_RANDOM_OFF;
+		gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
+		gs.config.play.random[PLAYER_1] = OPTION_RANDOM_OFF;
 		gs.config.play.hsfix = OPTION_HSFIX_CONSTANT;
 		gs.config.player.passMD5.assign("STARTERMODE");
 		gs.config.player.id.assign("STARTERMODE");
@@ -677,8 +677,8 @@ int main(int argc, char** argv) {
 	gs.gameplay.bmsobj.draw_count = 0;
 	gs.gameplay.bmsobj.noteVal = 0;
 	gs.gameplay.bmsobj.autoplay = 0;
-	gs.gameplay.player[0].flag_active = 1;
-	gs.gameplay.player[1].flag_active = 0;
+	gs.gameplay.player[PLAYER_1].flag_active = 1;
+	gs.gameplay.player[PLAYER_2].flag_active = 0;
 	memset(gs.gameplay.bmsobj_note, 0, sizeof(LaneStruct)*20);
 	gs.gameplay.bmsobj_line.notes = NULL;
 	gs.gameplay.bmsobj_line.count = 0;
@@ -749,18 +749,18 @@ int main(int argc, char** argv) {
 	gs.audio.param.fx_on[0] = gs.config.sound.fxflag_0;
 	gs.audio.param.fxType[0] = gs.config.sound.fxtype_0;
 	gs.audio.param.fxChannel[0] = gs.config.sound.fxtarget_0;
-	gs.audio.param.fxParam[0][0] = gs.config.sound.fxp1_0;
-	gs.audio.param.fxParam[0][1] = gs.config.sound.fxp2_0;
+	gs.audio.param.fxParam[0][PLAYER_1] = gs.config.sound.fxp1_0;
+	gs.audio.param.fxParam[0][PLAYER_2] = gs.config.sound.fxp2_0;
 	gs.audio.param.fx_on[1] = gs.config.sound.fxflag_1;
 	gs.audio.param.fxType[1] = gs.config.sound.fxtype_1;
 	gs.audio.param.fxChannel[1] = gs.config.sound.fxtarget_1;
-	gs.audio.param.fxParam[1][0] = gs.config.sound.fxp1_1;
-	gs.audio.param.fxParam[1][1] = gs.config.sound.fxp2_1;
+	gs.audio.param.fxParam[1][PLAYER_1] = gs.config.sound.fxp1_1;
+	gs.audio.param.fxParam[1][PLAYER_2] = gs.config.sound.fxp2_1;
 	gs.audio.param.fx_on[2] = gs.config.sound.fxflag_2;
 	gs.audio.param.fxType[2] = gs.config.sound.fxtype_2;
 	gs.audio.param.fxChannel[2] = gs.config.sound.fxtarget_2;
-	gs.audio.param.fxParam[2][0] = gs.config.sound.fxp1_2;
-	gs.audio.param.fxParam[2][1] = gs.config.sound.fxp2_2;
+	gs.audio.param.fxParam[2][PLAYER_1] = gs.config.sound.fxp1_2;
+	gs.audio.param.fxParam[2][PLAYER_2] = gs.config.sound.fxp2_2;
 	InitSound(&gs.audio,gs.config.sound.bufferlength,gs.config.sound.numbuffers,gs.config.sound.disabledsp,gs.config.sound.output,gs.config.sound.driver);
 	ReadLR2SoundSet(&gs, gs.config.skin.skinFilePath[10], 0);
 	if (gs.is_starter == false) {
@@ -1476,24 +1476,24 @@ int main(int argc, char** argv) {
 						gs.gameplay.courseConnection[7] =	gs.sSelect.bmsList[gs.sSelect.cur_song].courseKeys[7];
 						gs.gameplay.courseConnection[8] =	gs.sSelect.bmsList[gs.sSelect.cur_song].courseKeys[8];
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].courseType == 2) {
-							gs.config.play.random[0] = OPTION_RANDOM_OFF;
-							gs.config.play.random[1] = OPTION_RANDOM_OFF;
-							if (gs.config.play.gaugeOption[0] == OPTION_GAUGE_EASY) {
-								gs.config.play.gaugeOption[0] = OPTION_GAUGE_GROOVE;
+							gs.config.play.random[PLAYER_1] = OPTION_RANDOM_OFF;
+							gs.config.play.random[PLAYER_2] = OPTION_RANDOM_OFF;
+							if (gs.config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_EASY) {
+								gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[1] == OPTION_GAUGE_EASY) {
-								gs.config.play.gaugeOption[1] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_EASY) {
+								gs.config.play.gaugeOption[PLAYER_2] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[0] == OPTION_GAUGE_GATTACK) {
-								gs.config.play.gaugeOption[0] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_GATTACK) {
+								gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[1] == OPTION_GAUGE_GATTACK) {
-								gs.config.play.gaugeOption[1] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_GATTACK) {
+								gs.config.play.gaugeOption[PLAYER_2] = OPTION_GAUGE_GROOVE;
 							}
-							gs.config.play.m_HIDSUD1 = 0;
-							gs.config.play.m_HIDSUD2 = 0;
-							gs.config.play.p1_assist = 0;
-							gs.config.play.p2_assist = 0;
+							gs.config.play.m_HIDSUD[PLAYER_1] = 0;
+							gs.config.play.m_HIDSUD[PLAYER_2] = 0;
+							gs.config.play.assist[PLAYER_1] = 0;
+							gs.config.play.assist[PLAYER_2] = 0;
 							gs.config.play.battle = OPTION_BATTLE_OFF;
 							gs.config.play.m_isExtra = false;
 							gs.config.play.m_accel = 0;
@@ -1583,25 +1583,25 @@ int main(int argc, char** argv) {
 					SetObjectString(30, gs.sSelect.stack_searchTitle[gs.sSelect.cur], gs.txtStruct.objectStr);
 					break;
 				case 3:
-					gs.config.play.randSC[0] = 0;
-					gs.config.play.randSC[1] = 0;
-					gs.config.play.randFix[0] = 0;
-					gs.config.play.randFix[1] = 0;
+					gs.config.play.randSC[PLAYER_1] = 0;
+					gs.config.play.randSC[PLAYER_2] = 0;
+					gs.config.play.randFix[PLAYER_1] = 0;
+					gs.config.play.randFix[PLAYER_2] = 0;
 					InitInputStructure2(&gs.KeyInput);
 					InputToButton(&gs.KeyInput, &gs.config.input, (int)(uint)(gs.sSelect.metaSelected.keymode < 10), 0);
 					if (gs.KeyInput.p1_buttonInput[12] == 1 && gs.KeyInput.p1_buttonInput[13] == 1) {
-						gs.config.play.randSC[0] = 1;
+						gs.config.play.randSC[PLAYER_1] = 1;
 					}
 					else if (gs.KeyInput.p2_buttonInput[12] == 1 && gs.KeyInput.p2_buttonInput[13] == 1) {
-						gs.config.play.randSC[1] = 1;
+						gs.config.play.randSC[PLAYER_2] = 1;
 					}
 					else if (gs.KeyInput.p1_buttonInput[12] == 1 || gs.KeyInput.p1_buttonInput[13] == 1 || gs.KeyInput.p2_buttonInput[12] == 1 || gs.KeyInput.p2_buttonInput[13] == 1) {
 						for (int i = 1; i <= 9; i++) {
 							if (gs.KeyInput.p1_buttonInput[i] == 1) {
-								gs.config.play.randFix[0] = i;
+								gs.config.play.randFix[PLAYER_1] = i;
 							}
 							if (gs.KeyInput.p2_buttonInput[i] == 1) {
-								gs.config.play.randFix[1] = i;
+								gs.config.play.randFix[PLAYER_2] = i;
 							}
 						}
 					}
@@ -1618,12 +1618,12 @@ int main(int argc, char** argv) {
 					tmpSk.adjust.judge_x = gs.skstruct.adjust.judge_x;
 					tmpSk.adjust.rate_x = gs.skstruct.adjust.rate_x;
 					tmpSk.adjust.rate_y = gs.skstruct.adjust.rate_y;
-					tmpSk.adjust.note_1p_x = gs.skstruct.adjust.note_1p_x;
+					tmpSk.adjust.note_x[PLAYER_1] = gs.skstruct.adjust.note_x[PLAYER_1];
 					tmpSk.adjust.judge_y = gs.skstruct.adjust.judge_y;
 					tmpSk.adjust.dark_type = gs.skstruct.adjust.dark_type;
-					tmpSk.adjust.note_2p_y = gs.skstruct.adjust.note_2p_y;
-					tmpSk.adjust.note_1p_y = gs.skstruct.adjust.note_1p_y;
-					tmpSk.adjust.note_2p_x = gs.skstruct.adjust.note_2p_x;
+					tmpSk.adjust.note_y[PLAYER_2] = gs.skstruct.adjust.note_y[PLAYER_2];
+					tmpSk.adjust.note_y[PLAYER_1] = gs.skstruct.adjust.note_y[PLAYER_1];
+					tmpSk.adjust.note_x[PLAYER_2] = gs.skstruct.adjust.note_x[PLAYER_2];
 					WriteSkinCustomizeXml(&tmpSk, skinMD5);
 					SetTarget(&gs);
 
@@ -1637,7 +1637,7 @@ int main(int argc, char** argv) {
 							ErrorLogAdd("BMSの音を初期化しました\n");
 						}
 					}
-					else if (gs.gameplay.player[0].note_current == 0 && gs.gameplay.player[1].note_current == 0 && !gs.config.play.m_isLunaris) {
+					else if (gs.gameplay.player[PLAYER_1].note_current == 0 && gs.gameplay.player[PLAYER_2].note_current == 0 && !gs.config.play.m_isLunaris) {
 						gs.procSelecter = 2;
 						for (int i = 0; i < SLOTS; i++) {
 							StopSound(&gs.audio, &gs.gameplay.keysound[i]);
@@ -1645,7 +1645,7 @@ int main(int argc, char** argv) {
 						}
 						ErrorLogAdd("BMSの音を初期化しました\n");
 					}
-					else if (gs.gameplay.player[0].judgecount[3] + gs.gameplay.player[0].judgecount[4] + gs.gameplay.player[0].judgecount[5] != 0) {
+					else if (gs.gameplay.player[PLAYER_1].judgecount[3] + gs.gameplay.player[PLAYER_1].judgecount[4] + gs.gameplay.player[PLAYER_1].judgecount[5] != 0) {
 						SaveResult(&gs, sql3);
 					}
 					else if (!gs.config.play.m_isLunaris && gs.config.play.battle != OPTION_BATTLE_BATTLE) {
@@ -1656,7 +1656,7 @@ int main(int argc, char** argv) {
 						}
 						ErrorLogAdd("BMSの音を初期化しました\n");
 					}
-					else if ((gs.gameplay.player[1].judgecount[3] + gs.gameplay.player[1].judgecount[4] + gs.gameplay.player[1].judgecount[5] != 0) || gs.config.play.battle != OPTION_BATTLE_BATTLE) {
+					else if ((gs.gameplay.player[PLAYER_2].judgecount[3] + gs.gameplay.player[PLAYER_2].judgecount[4] + gs.gameplay.player[PLAYER_2].judgecount[5] != 0) || gs.config.play.battle != OPTION_BATTLE_BATTLE) {
 						SaveResult(&gs, sql3);
 					}
 					else {
@@ -1680,8 +1680,8 @@ int main(int argc, char** argv) {
 						gs.audio.param.eq_on = gs.gameplay.replay.aud.eq_on;
 						gs.audio.param.eq_gain[5] = gs.gameplay.replay.aud.eq_gain[5];
 						for (int i = 0; i < 3; i++) {
-							gs.audio.param.fxParam[i][0] = gs.gameplay.replay.aud.fxParam[i][0];
-							gs.audio.param.fxParam[i][1] = gs.gameplay.replay.aud.fxParam[i][1];
+							gs.audio.param.fxParam[i][PLAYER_1] = gs.gameplay.replay.aud.fxParam[i][PLAYER_1];
+							gs.audio.param.fxParam[i][PLAYER_2] = gs.gameplay.replay.aud.fxParam[i][PLAYER_2];
 							gs.audio.param.fxChannel[i] = gs.gameplay.replay.aud.fxChannel[i];
 							gs.audio.param.fxType[i] = gs.gameplay.replay.aud.fxType[i];
 							gs.audio.param.fx_on[i] = gs.gameplay.replay.aud.fx_on[i];
@@ -1700,36 +1700,36 @@ int main(int argc, char** argv) {
 							if (gs.sSelect.bmsList[gs.sSelect.cur_song].courseType == 2 || gs.sSelect.bmsList[gs.sSelect.cur_song].courseType == 0) {
 								CSTR tmp;
 								cstrSprintf(&tmp, "__%d", gs.gameplay.courseStageNow);
-								OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[0].clearGaugeTypeCourse));
-								OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[1].clearGaugeTypeCourse));
+								OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[PLAYER_1].clearGaugeTypeCourse));
+								OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[PLAYER_2].clearGaugeTypeCourse));
 								SaveReplay(&gs.gameplay.replay, tmp, gs.config.player.id);
 							}
 							else if (gs.config.play.replay == 1) {
-								OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[0].gaugeType));
-								OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[1].gaugeType));
+								OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[PLAYER_1].gaugeType));
+								OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[PLAYER_2].gaugeType));
 								if (SaveReplay(&gs.gameplay.replay, gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1) 
 									gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 							}
 							else if (gs.config.play.replay == 2) {
-								if (gs.sSelect.bmsList[gs.sSelect.cur_song].mybest.stat_exscore <= gs.gameplay.player[0].exscore && gs.gameplay.player[0].exscore > 0) {
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[0].gaugeType));
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[1].gaugeType));
+								if (gs.sSelect.bmsList[gs.sSelect.cur_song].mybest.stat_exscore <= gs.gameplay.player[PLAYER_1].exscore && gs.gameplay.player[PLAYER_1].exscore > 0) {
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[PLAYER_1].gaugeType));
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[PLAYER_2].gaugeType));
 									if (SaveReplay(&gs.gameplay.replay, gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 										gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 								}
 							}
 							else if (gs.config.play.replay == 3) {
-								if (gs.gameplay.player[0].clearType >= 2 && gs.gameplay.player[0].exscore > 0) {
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[0].gaugeType));
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[1].gaugeType));
+								if (gs.gameplay.player[PLAYER_1].clearType >= 2 && gs.gameplay.player[PLAYER_1].exscore > 0) {
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[PLAYER_1].gaugeType));
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[PLAYER_2].gaugeType));
 									if (SaveReplay(&gs.gameplay.replay, gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 										gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 								}
 							}
 							else if (gs.config.play.replay == 4) {
-								if (gs.gameplay.player[0].clearType == 5 && gs.gameplay.player[0].exscore > 0) {
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[0].gaugeType));
-									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[1].gaugeType));
+								if (gs.gameplay.player[PLAYER_1].clearType == 5 && gs.gameplay.player[PLAYER_1].exscore > 0) {
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x65, static_cast<short>(gs.gameplay.player[PLAYER_1].gaugeType));
+									OverwriteReplayData(&gs.gameplay.replay, 0, 0x97, static_cast<short>(gs.gameplay.player[PLAYER_2].gaugeType));
 									if (SaveReplay(&gs.gameplay.replay, gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 										gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 								}
@@ -1762,10 +1762,10 @@ int main(int argc, char** argv) {
 					}
 					StopSysSound(&gs);
 					if (gs.gameplay.courseType == 0 || gs.gameplay.courseType == 2) {
-						gs.gameplay.player[0].gaugeType = gs.gameplay.player[0].lastCourseGaugeType;
-						gs.gameplay.player[1].gaugeType = gs.gameplay.player[1].lastCourseGaugeType;
+						gs.gameplay.player[PLAYER_1].gaugeType = gs.gameplay.player[PLAYER_1].lastCourseGaugeType;
+						gs.gameplay.player[PLAYER_2].gaugeType = gs.gameplay.player[PLAYER_2].lastCourseGaugeType;
 						if (gs.procSelecter != 4) {
-							if (gs.gameplay.courseStageNow < gs.gameplay.courseStageCount -1 && gs.gameplay.player[0].clearType != 0 && (gs.gameplay.player[1].clearType != 0 || gs.config.play.battle != OPTION_BATTLE_BATTLE) && gs.gameplay.player[0].HP[gs.gameplay.player[0].gaugeType] >= 2.0) {
+							if (gs.gameplay.courseStageNow < gs.gameplay.courseStageCount -1 && gs.gameplay.player[PLAYER_1].clearType != 0 && (gs.gameplay.player[PLAYER_2].clearType != 0 || gs.config.play.battle != OPTION_BATTLE_BATTLE) && gs.gameplay.player[PLAYER_1].HP[gs.gameplay.player[PLAYER_1].gaugeType] >= 2.0) {
 								gs.gameplay.courseStageNow++;
 								gs.procSelecter = 4;
 							}
@@ -1787,19 +1787,19 @@ int main(int argc, char** argv) {
 								gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 						}
 						else if (gs.config.play.replay == 2) {
-							if (gs.sSelect.bmsList[gs.sSelect.cur_song].mybest.stat_exscore <= gs.gameplay.player[0].exscore && gs.gameplay.player[0].exscore > 0) {
+							if (gs.sSelect.bmsList[gs.sSelect.cur_song].mybest.stat_exscore <= gs.gameplay.player[PLAYER_1].exscore && gs.gameplay.player[PLAYER_1].exscore > 0) {
 								if (MoveReplayFile(gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 									gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 							}
 						}
 						else if (gs.config.play.replay == 3) {
-							if (gs.gameplay.player[0].clearType > 1 && gs.gameplay.player[0].exscore > 0) {
+							if (gs.gameplay.player[PLAYER_1].clearType > 1 && gs.gameplay.player[PLAYER_1].exscore > 0) {
 								if (MoveReplayFile(gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 									gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 							}
 						}
 						else if (gs.config.play.replay == 4) {
-							if (gs.gameplay.player[0].clearType == 5 && gs.gameplay.player[0].exscore > 0) {
+							if (gs.gameplay.player[PLAYER_1].clearType == 5 && gs.gameplay.player[PLAYER_1].exscore > 0) {
 								if (MoveReplayFile(gs.sSelect.bmsList[gs.sSelect.cur_song].hash, gs.config.player.id) == 1)
 									gs.sSelect.bmsList[gs.sSelect.cur_song].replayExist = 1;
 							}
@@ -1835,20 +1835,20 @@ int main(int argc, char** argv) {
 															|| gs.skstruct.image.dst[i].timer == 140))
 					) {
 					int objx = 0, objy = 0;
-					if ((gs.skstruct.adjust.note_1p_x || gs.skstruct.adjust.note_1p_y || gs.skstruct.adjust.note_2p_x || gs.skstruct.adjust.note_2p_y) && gs.procSelecter == 4) {
+					if ((gs.skstruct.adjust.note_x[PLAYER_1] || gs.skstruct.adjust.note_y[PLAYER_1] || gs.skstruct.adjust.note_x[PLAYER_2] || gs.skstruct.adjust.note_y[PLAYER_2]) && gs.procSelecter == 4) {
 						int t = gs.skstruct.image.dst[i].timer;
 						//refactored
 						if ((50 <= t && t < 60) || (70 <= t && t < 80) || t == 48) {
-							objx = gs.skstruct.adjust.note_1p_x;
-							objy = gs.skstruct.adjust.note_1p_y;
+							objx = gs.skstruct.adjust.note_x[PLAYER_1];
+							objy = gs.skstruct.adjust.note_y[PLAYER_1];
 						}
 						else if((60 <= t && t < 70) || (80 <= t && t < 90) || t == 49) {
-							objx = gs.skstruct.adjust.note_2p_x;
-							objy = gs.skstruct.adjust.note_2p_y;
+							objx = gs.skstruct.adjust.note_x[PLAYER_2];
+							objy = gs.skstruct.adjust.note_y[PLAYER_2];
 						}
 						else if ((100 <= t && t < 110) || (120 <= t && t < 130)) {
-							objx = gs.skstruct.adjust.note_1p_x;
-							objy = gs.skstruct.adjust.note_1p_y;
+							objx = gs.skstruct.adjust.note_x[PLAYER_1];
+							objy = gs.skstruct.adjust.note_y[PLAYER_1];
 							if (-100.0 < gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h && gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h < 100.0
 								&& -100.0 < gs.skstruct.image.dst[i].draw[0].h && gs.skstruct.image.dst[i].draw[0].h < 100.0) {
 
@@ -1857,8 +1857,8 @@ int main(int argc, char** argv) {
 							}
 						}
 						else if ((110 <= t && t < 120) || (130 <= t && t < 140)) {
-							objx = gs.skstruct.adjust.note_2p_x;
-							objy = gs.skstruct.adjust.note_2p_y;
+							objx = gs.skstruct.adjust.note_x[PLAYER_2];
+							objy = gs.skstruct.adjust.note_y[PLAYER_2];
 							if (-100.0 < gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h && gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h < 100.0
 								&& -100.0 < gs.skstruct.image.dst[i].draw[0].h && gs.skstruct.image.dst[i].draw[0].h < 100.0) {
 
@@ -1874,8 +1874,8 @@ int main(int argc, char** argv) {
 									&& abs(gs.skstruct.dst_JUDGELINE[0].draw->x - gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].x) <= 5.0
 									&& (gs.skstruct.dst_JUDGELINE[0].draw->y >= gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].y || gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h < 0.0)) {
 
-									objx = gs.skstruct.adjust.note_1p_x;
-									objy = gs.skstruct.adjust.note_1p_y;
+									objx = gs.skstruct.adjust.note_x[PLAYER_1];
+									objy = gs.skstruct.adjust.note_y[PLAYER_1];
 								}
 
 								else if (gs.skstruct.dst_JUDGELINE[1].dstCount > 0) {
@@ -1883,8 +1883,8 @@ int main(int argc, char** argv) {
 										&& abs(gs.skstruct.dst_JUDGELINE[1].draw->x - gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].x) <= 5.0
 										&& (gs.skstruct.dst_JUDGELINE[1].draw->y >= gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].y || gs.skstruct.image.dst[i].draw[gs.skstruct.image.dst[i].dstCount - 1].h < 0.0)) {
 
-										objx = gs.skstruct.adjust.note_2p_x;
-										objy = gs.skstruct.adjust.note_2p_y;
+										objx = gs.skstruct.adjust.note_x[PLAYER_2];
+										objy = gs.skstruct.adjust.note_y[PLAYER_2];
 									}
 								}
 							}
@@ -2061,10 +2061,10 @@ int main(int argc, char** argv) {
 				}
 			}
 			else if (gs.KeyInput.inputID[KEY_INPUT_6] == 2) {
-				printfDx("ノート位置(1P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_1p_x, gs.skstruct.adjust.note_1p_y);
+				printfDx("ノート位置(1P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_x[PLAYER_1], gs.skstruct.adjust.note_y[PLAYER_1]);
 			}
 			else if (gs.KeyInput.inputID[KEY_INPUT_7] == 2){
-				printfDx("ノート位置(2P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_2p_x, gs.skstruct.adjust.note_2p_y);
+				printfDx("ノート位置(2P)の変更(カーソルキーで調節)\nx:%d\ny:%d\n", gs.skstruct.adjust.note_x[PLAYER_2], gs.skstruct.adjust.note_y[PLAYER_2]);
 			}
 		}
 		if ( gs.KeyInput.inputID[KEY_INPUT_F1] == 2 && gs.sSelect.flag_maniacPanel == 0 && gs.is_starter == 0) {
@@ -2488,18 +2488,18 @@ int main(int argc, char** argv) {
 	gs.config.sound.fxflag_0 = gs.audio.param.fx_on[0];
 	gs.config.sound.fxtype_0 = gs.audio.param.fxType[0];
 	gs.config.sound.fxtarget_0 = gs.audio.param.fxChannel[0];
-	gs.config.sound.fxp1_0 = gs.audio.param.fxParam[0][0];
-	gs.config.sound.fxp2_0 = gs.audio.param.fxParam[0][1];
+	gs.config.sound.fxp1_0 = gs.audio.param.fxParam[0][PLAYER_1];
+	gs.config.sound.fxp2_0 = gs.audio.param.fxParam[0][PLAYER_2];
 	gs.config.sound.fxflag_1 = gs.audio.param.fx_on[1];
 	gs.config.sound.fxtype_1 = gs.audio.param.fxType[1];
 	gs.config.sound.fxtarget_1 = gs.audio.param.fxChannel[1];
-	gs.config.sound.fxp1_1 = gs.audio.param.fxParam[1][0];
-	gs.config.sound.fxp2_1 = gs.audio.param.fxParam[1][1];
+	gs.config.sound.fxp1_1 = gs.audio.param.fxParam[1][PLAYER_1];
+	gs.config.sound.fxp2_1 = gs.audio.param.fxParam[1][PLAYER_2];
 	gs.config.sound.fxflag_2 = gs.audio.param.fx_on[2];
 	gs.config.sound.fxtype_2 = gs.audio.param.fxType[2];
 	gs.config.sound.fxtarget_2 = gs.audio.param.fxChannel[2];
-	gs.config.sound.fxp1_2 = gs.audio.param.fxParam[2][0];
-	gs.config.sound.fxp2_2 = gs.audio.param.fxParam[2][1];
+	gs.config.sound.fxp1_2 = gs.audio.param.fxParam[2][PLAYER_1];
+	gs.config.sound.fxp2_2 = gs.audio.param.fxParam[2][PLAYER_2];
 	if (gs.auto2avi == 0 && gs.is_recordmode == 0 && gs.rec.recMode == 0) {
 		WriteConfigXml(&gs, fs::make_preferred("LR2files/Config/config.xml").data());
 		WriteOpenLr2ConfigXml(&gs, fs::make_preferred("LR2files/Config/openlr2-config.xml").data());
