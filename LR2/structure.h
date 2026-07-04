@@ -524,7 +524,7 @@ struct CONFIG_SYSTEM {
 	int windowsize_y{};
 	int maindisplay{};
 	int softwarerendering{};
-	int resolution{};   // 0=SD 640x480, 1=HD 1280x720, 2=UHD 1920x1080
+	int resolution{};   // 0=SD 640x480, 1=HD 1280x720, 2=FHD 1920x1080
 	unsigned int coreCount = 0;
 	bool fullscreenfitstretch{};
 };
