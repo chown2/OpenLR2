@@ -311,7 +311,7 @@ struct BMSMETA {
 	int difficulty;
 	int random;
 	int bga;
-	bool hasTxt;
+	bool hasTxt;//unused
 };
 
 struct BPMtiming {
@@ -354,11 +354,11 @@ struct CONFIG_JUKEBOX {
 };
 
 struct CONFIG_NETWORK {
-	int lr1ir{};
-	CSTR lr1id;
-	CSTR lr1pass;
+	int lr1ir{};//unused
+	CSTR lr1id;//unused
+	CSTR lr1pass;//unused
 	int lr2ir{};
-	CSTR mail;
+	CSTR mail;//unused
 	bool isAutoUpdate{};
 	bool getRival{};
 	CSTR displayIr;
@@ -414,7 +414,7 @@ struct CONFIG_PLAY {
 	int m_extra{};
 	bool m_isLunaris{};
 	bool m_gas{};
-	int gomiscore{};
+	int gomiscore{};//unused
 	bool disableCurSpeedChange{};
 	bool disableLeftClickExit{};
 };
@@ -434,7 +434,7 @@ struct CONFIG_SELECT {
 	int sort{}; // 0:OFF,1:TITLE,2:LEVEL,3:FOLDER,4:CLEAR,5:RANK
 	int key{}; // 0:ALL KEYS,1:SINGLE,2:7KEYS,3:5KEYS,4:DOUBLE,5:14KEYS,6:10KEYS,7:9KEYS
 	int searchmax{};
-	int randomclose{};
+	int randomclose{};//unused
 	int speedfirst{};
 	int speednext{};
 	int control{};
