@@ -541,11 +541,6 @@ int main(int argc, char** argv) {
 
 	int loadingGrHandle = LoadGraph(fs::make_preferred("LR2files/Config/loading.bmp").data(), 0);
 
-	int backgroundGrHandle = MakeScreen(640, 480, 0); //TODO_RESOULUTION
-	SetDrawScreen(backgroundGrHandle);
-	DrawBox(0, 0, 640, 480, GetColor(0, 0, 0), 1); //TODO_RESOULUTION
-	SetDrawScreen(DX_SCREEN_BACK);
-
 	memcpy(gs.config.jukebox.rival, gs.net.rivals, 4 * 20);
 	sqlite3* sql3;
 	sqlite3_open(gs.is_starter
@@ -828,7 +823,6 @@ int main(int argc, char** argv) {
 				gs.config.system.windowsize_y = wSizeY;
 			}
 		}
-		DrawGraph(0, 0, backgroundGrHandle, 0);
 		if (gs.cmd_directplay && gs.procSelecter != 4 && gs.procSelecter != 5 && gs.procSelecter != 13 && gs.procPhase != 2 && gs.procPhase != 3) {
 			ErrorLogFmtAdd("break\n");
 			break;
@@ -1995,6 +1989,15 @@ int main(int argc, char** argv) {
 			if (gs.config.system.thread == 0 && gs.gameplay.flag_gameinput != 0) {
 				//ProcGame(&gs); //why this is here
 			}
+		}
+		{
+			int oldMode, oldParam;
+			GetDrawBlendMode(&oldMode, &oldParam);
+			SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+			SetDrawZ(1.);
+			DrawBox(0, 0, resX, resY, GetColor(0, 0, 0), 1);
+			SetDrawZ(0.);
+			SetDrawBlendMode(oldMode, oldParam);
 		}
 		//TEST
 		if (gs.config.system.thread == 0 && gs.gameplay.flag_gameinput != 0) {
