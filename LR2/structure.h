@@ -437,7 +437,7 @@ struct CONFIG_SELECT {
 	int randomclose{};//unused
 	int speedfirst{};
 	int speednext{};
-	int control{};
+	bool control{};//force 9key?
 	int buttonselect{};
 	int folderlamp{};
 	int difficultychangetype{};

@@ -2095,7 +2095,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	int isDSC = 0, isPMS = 0;
 	bool is5key = 0, is7key = 0, is9key = 0;
 
-	if (cfg->select.control == 1) {
+	if (cfg->select.control) {
 		if (meta->keymode == 5) is5key = 1;
 		if (meta->keymode == 7) is7key = 1;
 	}

@@ -412,7 +412,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "speednext", (g->config).select.speednext, "speednext");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "control", (g->config).select.control, "control");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "control", (int)(g->config).select.control, "control");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "buttonselect", (g->config).select.buttonselect, "buttonselect");
@@ -1017,7 +1017,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "select", "speednext", 70, &g->config.select.speednext, hXml);
 	if (g->config.select.speednext <= 0) g->config.select.speednext = 70;
 
-	ReadXml_Int("config", "select", "control", 0, &g->config.select.control, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "control", false, &g->config.select.control, hXml);
 	ReadXml_Int("config", "select", "buttonselect", 0, &g->config.select.buttonselect, hXml);
 	ReadXml_Int("config", "select", "randomclose", 0, &g->config.select.randomclose, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "ignorekeyall", false, &g->config.select.ignoreKeyAll, hXml);

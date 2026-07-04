@@ -983,7 +983,7 @@ int main(int argc, char** argv) {
 						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
 					}
 					gs.gameplay.ghostBattle = 0;
-					ReadKeyConfig(&gs, (gs.config.select.control == 0)
+					ReadKeyConfig(&gs, (!gs.config.select.control)
 							? fs::make_preferred("LR2files/Config/keyconfig.xml" ).data()
 							: fs::make_preferred("LR2files/Config/keyconfig_p.xml").data());
 					DeleteGraph(gs.skstruct.GrHandle[GRHTYPE_STAGE]);
@@ -1182,7 +1182,7 @@ int main(int argc, char** argv) {
 							ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 						}
 					}
-					else if (gs.config.select.control == 1 && (gs.sSelect.metaSelected.keymode == 5 || gs.sSelect.metaSelected.keymode == 7)) {
+					else if (gs.config.select.control && (gs.sSelect.metaSelected.keymode == 5 || gs.sSelect.metaSelected.keymode == 7)) {
 						if (gs.config.play.battle == OPTION_BATTLE_OFF || gs.config.play.battle == OPTION_BATTLE_DBATTLE) {
 							LoadSceneG(&gs, &gs.skstruct, SKINTYPE_9KEYS);
 						}
