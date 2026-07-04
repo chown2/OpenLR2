@@ -2066,7 +2066,7 @@ int main(int argc, char** argv) {
 		}
 		gs.sSelect.flag_maniacPanel = 0;
 		if(gs.procSelecter == 2){
-			if ( (gs.KeyInput.inputID[KEY_INPUT_F5] == 1 || gs.sSelect.is_buttonIRpage != 0) && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode > 4 && (gs.config.network.lr2ir == 1 || gs.net.customIR.IsDisplayIrOnline())) {
+			if ( (gs.KeyInput.inputID[KEY_INPUT_F5] == 1 || gs.sSelect.is_buttonIRpage != 0) && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode > 4) {
 				// Both desktop(0) and borderless(2) own the display: drop to windowed(1) before
 				// opening the external browser, otherwise exclusive blocks/crashes the browser show.
 				if (gs.config.system.screenmode == 0 || gs.config.system.screenmode == 2) {
@@ -2094,26 +2094,17 @@ int main(int argc, char** argv) {
 #endif // _WIN32
 						ErrorLogAdd("成功\n");
 					}
-					const CSTR& songHash = gs.sSelect.bmsList[gs.sSelect.cur_song].hash;
-					if (gs.net.customIR.IsDisplayIrOnline()) {
-						ErrorLogAdd("IRを出します\n");
-						if (!gs.net.customIR.OpenWebRanking(songHash.body) && gs.config.network.lr2ir == 1) {
-							LR2IR_OpenWebRanking(songHash);
-						}
-					} else if (gs.config.network.lr2ir == 1) {
-						ErrorLogAdd("IRを出します\n");
-						LR2IR_OpenWebRanking(songHash);
-					}
 				}
-				else {
+
+				{
 					ErrorLogAdd("IRを出します\n");
 					const CSTR& songHash = gs.sSelect.bmsList[gs.sSelect.cur_song].hash;
-					if (gs.net.customIR.IsDisplayIrOnline()) {
-						if (!gs.net.customIR.OpenWebRanking(songHash.body) && gs.config.network.lr2ir == 1) {
-							LR2IR_OpenWebRanking(songHash);
-						}
-					} else if (gs.config.network.lr2ir == 1) {
-						LR2IR_OpenWebRanking(songHash);
+					std::string url = gs.net.customIR.GetWebRankingUrl(songHash.body);
+					if (url.empty()) {
+						url = LR2IR_GetWebRankingUrl(songHash);
+					}
+					if (!url.empty()) {
+						OpenUrl(url.c_str());
 					}
 				}
 

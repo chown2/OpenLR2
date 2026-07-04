@@ -685,17 +685,21 @@ int NETWORK::GetRivalInfo(int rivalID) {
 	return 1;
 }
 
-int LR2IR_OpenWebRanking(CSTR songmd5){
+int OpenUrl(const char* url) {
 #ifdef _WIN32
-	CSTR url;
-	cstrSprintf(&url, "\"http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=%s#status&\"", songmd5.body);
 	ShellExecuteA(NULL, "open", url, NULL, NULL, 1);
 	return 1;
 #else
-	CSTR url;
-	cstrSprintf(&url, "xdg-open \"http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=%s#status&\" &", songmd5.body);
-	return system(url.body) == 0;
+	CSTR cmd;
+	cstrSprintf(&cmd, "xdg-open \"%s\" &", url);
+	return system(cmd.body) == 0 ? 1 : 0;
 #endif
+}
+
+std::string LR2IR_GetWebRankingUrl(CSTR songmd5) {
+	CSTR url;
+	cstrSprintf(&url, "http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5=%s#status&", songmd5.body);
+	return url.body;
 }
 
 bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, int *oDigit1, int *oDigit2, int *oDigit3, int *oDigit4, int *oSeed, int *oExscore) {

@@ -15,12 +15,12 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include <vector>
 
 #include <DxLib.h>
 
 #ifdef _WIN32
 #include <libloaderapi.h>
-#include <shellapi.h>
 #include <wtypes.h>
 #else
 #include <dlfcn.h>
@@ -89,7 +89,7 @@ public:
 	openlr2::GetStatus GetResultRank(const char* songHash, openlr2::IRRankResult& out);
 	openlr2::GetStatus RestoreCachedRank(const char* songHash, openlr2::IRRankResult& out);
 	openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode, int targetPlayerId, openlr2::IRGhostResult& out);
-	[[nodiscard]] const std::string& WebRankingUrlTemplate() const { return mWebRankingUrlTemplate; }
+	[[nodiscard]] std::string GetWebRankingUrl(const char* songHash);
 	[[nodiscard]] const std::string& Name() const { return mName; };
 private:
 	struct ModuleDeleter {
@@ -97,7 +97,6 @@ private:
 	};
 	std::unique_ptr<std::remove_pointer_t<HMODULE>, ModuleDeleter> mDllHandle;
 	std::string mName;
-	std::string mWebRankingUrlTemplate;
 	MethodTable mMethods;
 };
 
@@ -127,9 +126,6 @@ CustomIR::CustomIR(const std::filesystem::path& _directory) {
 			continue;
 		};
 		mName = mMethods.GetName();
-		if (mMethods.webRankingUrlTemplate != nullptr) {
-			mWebRankingUrlTemplate = mMethods.webRankingUrlTemplate;
-		}
 		ErrorLogFmtAdd("CustomIR %s loaded: %s\n", filename.c_str(), mName.c_str());
 		break;
 	}
@@ -168,13 +164,26 @@ openlr2::GetStatus CustomIR::GetGhost(const char* songHash, openlr2::GhostMode m
 	return mMethods.GetGhost(songHash, mode, targetPlayerId, out);
 }
 
-CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() {
-	// Make sure all scores are sent before exiting out of the process. (Can hang for up to ~15 minutes...)
-	for (auto& thread : mSendThreads) {
-		thread.get();
+std::string CustomIR::GetWebRankingUrl(const char* songHash) {
+	if (mMethods.GetWebRankingUrl == nullptr) return "";
+	return mMethods.GetWebRankingUrl(songHash);
+}
+
+// All held std::future are automatically awaited on.
+// Can hang for up to 15 minutes if score sending fails time and time again...
+CUSTOMIR_MANAGER::~CUSTOMIR_MANAGER() = default;
+
+template<class T>
+static void cleanUpOldFutures(std::vector<T>& futures) {
+	std::vector<int> finishedThreads;
+	for (const auto& [i, it] : std::views::enumerate(futures)) {
+		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+			finishedThreads.push_back(static_cast<int>(i));
+		}
 	}
-	if (mResultIrFuture.valid()) {
-		mResultIrFuture.get();
+	std::ranges::reverse(finishedThreads);
+	for (auto i : finishedThreads) {
+		futures.erase(futures.begin() + i);
 	}
 }
 
@@ -197,18 +206,7 @@ static void SendScoreWithBlockingRetry(CustomIR& ir, const IRScoreV1& scoreV1) {
 	OverlayNotification("'%s' failed to submit score after %d attempts\n", ir.Name().c_str(), tryCount);
 }
 static void SendScoreMultiplexed(std::vector<std::future<void>>& mSendThreads, const IRScoreV1& scoreV1, const std::vector<std::shared_ptr<CustomIR>>& irs) {
-	std::vector<int> finishedThreads;
-	for (const auto& [i, it] : std::views::enumerate(mSendThreads)) {
-		if (it.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-			finishedThreads.push_back(static_cast<int>(i));
-		}
-	}
-	// Deferred deletion because we need to keep the std::future for whatever reason
-	std::ranges::reverse(finishedThreads);
-	for (auto i : finishedThreads) {
-		mSendThreads.erase(mSendThreads.begin() + i);
-	}
-
+	cleanUpOldFutures(mSendThreads);
 	mSendThreads.reserve(mSendThreads.size() + irs.size());
 	for (const auto& ir : irs) {
 		mSendThreads.push_back(std::async(
@@ -275,33 +273,10 @@ bool CUSTOMIR_MANAGER::IsDisplayIrOnline() const {
 	return std::ranges::contains(mLoggedInIrs, mDisplayIr);
 }
 
-int CUSTOMIR_MANAGER::OpenWebRanking(const char* songHash) const {
-	if (mDisplayIr.empty() || songHash == nullptr || songHash[0] == '\0') {
-		return 0;
-	}
-	const auto displayIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
-	if (displayIt == mModules.end()) {
-		return 0;
-	}
-	const std::string& templ = (*displayIt)->WebRankingUrlTemplate();
-	if (templ.empty()) {
-		return 0;
-	}
-	const std::string placeholder = "{hash}";
-	std::string url = templ;
-	const std::size_t pos = url.find(placeholder);
-	if (pos == std::string::npos) {
-		return 0;
-	}
-	url.replace(pos, placeholder.size(), songHash);
-#ifdef _WIN32
-	ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, 1);
-	return 1;
-#else
-	CSTR cmd;
-	cstrSprintf(&cmd, "xdg-open \"%s\" &", url.c_str());
-	return system(cmd.body) == 0 ? 1 : 0;
-#endif
+std::string CUSTOMIR_MANAGER::GetWebRankingUrl(const char* songHash) const {
+	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
+	if (irIt == mModules.end()) { return ""; }
+	return (*irIt)->GetWebRankingUrl(songHash);
 }
 
 std::optional<openlr2::IRGhostResult> CUSTOMIR_MANAGER::TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId) {
@@ -738,9 +713,9 @@ void CUSTOMIR_MANAGER::BeginResultIr(game& game, sqlite3* sql, int player, std::
 		return;
 	}
 	if (mResultIrFuture.valid()) {
-		ErrorLogAdd("BUG: we have an unexpected mResultIrFuture");
-		mResultIrFuture.get();
+		mDiscardedResultIrFutures.push_back(std::move(mResultIrFuture));
 	}
+	cleanUpOldFutures(mDiscardedResultIrFutures);
 	mResultIrFuture = std::async(std::launch::async, &ResultIrAsync, *irIt, scoreV1);
 }
 

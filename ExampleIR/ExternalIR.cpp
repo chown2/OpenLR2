@@ -1,10 +1,13 @@
 #include <LR2_customir_api.h>
 
+#include <chrono>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
 #include <print>
+#include <string>
+#include <thread>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -13,7 +16,6 @@
 namespace State {
     static std::filesystem::path path;
     static int scoresSaved = 0;
-    static std::string webRankingTemplate = "https://example.com/{hash}";
 }
 
 static const char* OLR2_IR_API GetName() {
@@ -77,6 +79,7 @@ static openlr2::GetStatus OLR2_IR_API RestoreCachedRank(const char* songHash, in
 
 static openlr2::GetStatus OLR2_IR_API GetResultRank(const char* songHash, int /*reserved*/, openlr2::IRRankResult& out) {
     std::println(std::cout, "GetResultRank({})", songHash);
+    std::this_thread::sleep_for(std::chrono::seconds(5)); // Show how asynchronous song result is
     out = {};
     out.ranking = {
         { .name = "name1", .comment = "comment1", .timestamp = 1262304000, .id = 70200, .clear = openlr2::Lamp::Easy, .notes = 1200, .maxcombo = 520, .pg = 980, .gr = 180, .minbp = 42 },
@@ -106,6 +109,10 @@ static openlr2::GetStatus OLR2_IR_API GetGhost(const char* songHash, openlr2::Gh
     return openlr2::GetStatus::Ok;
 }
 
+static std::string OLR2_IR_API GetWebRankingUrl(const char* songHash) {
+	return std::format("https://example.com/{}", songHash);
+}
+
 extern "C" OLR2_IR_EXPORT void OLR2_IR_API GetMethodTable(MethodTable& table) {
     // Fill out the pointers to methods you want to use. Leave them at nullptr if you don't want to use them.
     // As API gets updated, new methods may appear available at MethodTable, but old ones will never be removed or their
@@ -116,7 +123,7 @@ extern "C" OLR2_IR_EXPORT void OLR2_IR_API GetMethodTable(MethodTable& table) {
     table.GetResultRank = &GetResultRank;
     table.RestoreCachedRank = &RestoreCachedRank;
     table.GetGhost = &GetGhost;
-    table.webRankingUrlTemplate = State::webRankingTemplate.c_str();
+    table.GetWebRankingUrl = &GetWebRankingUrl;
 }
 
 #ifdef _WIN32

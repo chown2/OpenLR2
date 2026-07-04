@@ -35,13 +35,16 @@ public:
 	void Initialize(const std::filesystem::path& directory, std::string activeProvider);
 	std::string Login();
 	[[nodiscard]] bool IsDisplayIrOnline() const;
-	int OpenWebRanking(const char* songHash) const;
+	// \note Delegates to the display IR
+	// \retval "" - Fail
+	[[nodiscard]] std::string GetWebRankingUrl(const char* songHash) const;
 	// \note Delegates to the display IR
 	// \retval nullopt - Fail
 	std::optional<openlr2::IRGhostResult> TryGetTargetInfo(const char* songmd5, int mode, int targetPlayerId);
 private:
 	std::vector<std::shared_ptr<CustomIR>> mModules;
 	std::vector<std::future<void>> mSendThreads;
+	std::vector<std::future<std::optional<openlr2::IRRankResult>>> mDiscardedResultIrFutures;
 	std::future<std::optional<openlr2::IRRankResult>> mResultIrFuture;
 	std::string mDisplayIr;
 	std::vector<std::string> mLoggedInIrs;
