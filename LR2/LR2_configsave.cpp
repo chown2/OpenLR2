@@ -421,7 +421,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "folderlamp", (g->config).select.folderlamp, "folderlamp");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "difficultychangetype", (g->config).select.difficultychangetype, "difficultychangetype");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "difficultychangetype", (int)(g->config).select.difficultyChangeType, "difficultychangetype");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "ignorekeyall", (int)(g->config).select.ignoreKeyAll, "ignorekeyall");
@@ -1032,7 +1032,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "select", "levelbarflash_9", 42, &g->config.select.levelbarflash_9, hXml);
 	ReadXml_Int("config", "select", "preview", 1, &g->config.select.preview, hXml);
 	ReadXml_Int("config", "select", "disablesubtitle", 0, &g->config.select.disablesubtitle, hXml);
-	ReadXml_Int("config", "select", "difficultychangetype", 0, &g->config.select.difficultychangetype, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "difficultychangetype", false, &g->config.select.difficultyChangeType, hXml);
 	ReadXml_Int("config", "select", "folderlamp", 0, &g->config.select.folderlamp, hXml);
 	ReadXml_Int("config", "select", "disabledifficultyfilter", 0, &g->config.select.disabledifficultyfilter, hXml);
 	ReadXml_Int("config", "system", "thread", 0, &g->config.system.thread, hXml);

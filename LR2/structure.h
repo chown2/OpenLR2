@@ -440,7 +440,7 @@ struct CONFIG_SELECT {
 	bool control{};//force 9key?
 	bool buttonselect{};
 	int folderlamp{};
-	int difficultychangetype{};
+	bool difficultyChangeType{};
 	bool ignoreKeyAll{};
 	bool ignoreKeySingle{};
 	bool ignoreKeyDouble{};

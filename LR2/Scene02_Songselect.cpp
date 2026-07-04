@@ -2150,7 +2150,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 
 				int flgA = 0, flgB = 0;
 				int diff = 0;
-				if (g->config.select.difficultychangetype == 0) {
+				if (!g->config.select.difficultyChangeType) {
 					g->sSelect.unk5004_difficultycount = 0;
 					g->sSelect.isDifficultyFilterOn = 0;
 					if (0 < g->sSelect.bmsList[g->sSelect.cur_song].difficulty && g->sSelect.bmsList[g->sSelect.cur_song].difficulty < 6
@@ -2217,7 +2217,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 
 				int flgA = 0, flgB = 0;
 				int diff = 0;
-				if (g->config.select.difficultychangetype == 0) {
+				if (!g->config.select.difficultyChangeType) {
 					g->sSelect.unk5004_difficultycount = 0;
 					g->sSelect.isDifficultyFilterOn = 0;
 					if (g->sSelect.bmsList[g->sSelect.cur_song].difficulty > 0 && g->sSelect.bmsList[g->sSelect.cur_song].difficulty < 6
