@@ -1012,7 +1012,7 @@ int SetObjectStrings_SongSelect(game *g) {
 	}
 
 	SetObjectString(70, g->txtStruct.option_str[6].str[(int)g->config.play.dpFlip], g->txtStruct.objectStr);
-	SetObjectString(71, g->txtStruct.option_str[16].str[g->config.play.scoregraph], g->txtStruct.objectStr);
+	SetObjectString(71, g->txtStruct.option_str[16].str[(int)g->config.play.scoreGraph], g->txtStruct.objectStr);
 	SetObjectString(72, g->txtStruct.option_str[14].str[g->config.play.play_ghost], g->txtStruct.objectStr);
 	SetObjectString(73, g->txtStruct.option_str[15].str[g->config.play.lanecover[PLAYER_1]], g->txtStruct.objectStr);
 	SetObjectString(74, g->txtStruct.option_str[10].str[g->config.play.hsfix], g->txtStruct.objectStr);

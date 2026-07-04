@@ -136,10 +136,10 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			if (gs->config.play.play_ghost == 3 && gs->config.play.autojudge != 2) return ret;
 			break;
 		case 38:
-			if (gs->config.play.scoregraph == 0) return ret;
+			if (!gs->config.play.scoreGraph) return ret;
 			break;
 		case 39:
-			if (gs->config.play.scoregraph == 1) return ret;
+			if (gs->config.play.scoreGraph) return ret;
 			break;
 		case 40:
 			if(gs->config.play.bga == 0) return ret;
@@ -3380,7 +3380,9 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				break;
 
 			case 70:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.scoregraph, 0, 1, g->sSelect.panel);
+				iTmp = (int)g->config.play.scoreGraph;
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &iTmp, 0, 1, g->sSelect.panel);
+				g->config.play.scoreGraph = (iTmp > 0);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);

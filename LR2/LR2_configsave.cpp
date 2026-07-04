@@ -247,7 +247,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "ghost", (g->config).play.play_ghost, "ghost");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "scoregraph", (g->config).play.scoregraph, "scoregraph");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "scoregraph", (int)(g->config).play.scoreGraph, "scoregraph");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "target", (g->config).play.p1_target, "target");
@@ -1100,7 +1100,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "play", "poorbga", 500, &g->config.play.poorbga, hXml);
 	ReadXml_Int("config", "play", "bgasize", 0, &g->config.play.bgasize, hXml);
 	ReadXml_Int("config", "play", "ghost", 0, &g->config.play.play_ghost, hXml);
-	ReadXml_Int("config", "play", "scoregraph", 0, &g->config.play.scoregraph, hXml);
+	ReadXml_PositiveIntAsBool("config", "play", "scoregraph", false, &g->config.play.scoreGraph, hXml);
 	ReadXml_Int("config", "play", "defaulttarget", 90, &g->config.play.target_percent, hXml);
 	ReadXml_Int("config", "play", "target", 0, &g->config.play.p1_target, hXml);
 	ReadXml_Int("config", "play", "basespeed", 100, &g->config.play.basespeed, hXml);

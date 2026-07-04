@@ -381,7 +381,7 @@ struct CONFIG_PLAY {
 	int bga{};
 	int bgasize{};
 	int poorbga{};
-	int scoregraph{};
+	bool scoreGraph{};
 	int play_ghost{};
 	int target_percent{};
 	int p1_target{};
