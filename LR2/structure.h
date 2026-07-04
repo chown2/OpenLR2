@@ -266,7 +266,7 @@ enum OPTION {
 	OPTION_GAUGE_HARD,
 	OPTION_GAUGE_DEATH,
 	OPTION_GAUGE_EASY,
-	OPTION_GAUGE_PATTCK,
+	OPTION_GAUGE_PATTACK,
 	OPTION_GAUGE_GATTACK,
 	OPTION_GAUGE_END = OPTION_GAUGE_GATTACK,
 
@@ -366,7 +366,7 @@ struct CONFIG_NETWORK {
 
 struct CONFIG_PLAY {
 	int hiSpeed[PLAYER_MAX]{};
-	int gaugeOption[PLAYER_MAX]{}; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
+	int gaugeType[PLAYER_MAX]{}; /* 0:groove 1:survival 2:death 3:easy 4:pattack 5:gattack */
 	int random[PLAYER_MAX]{}; // 1:mirror 2:random 3:s-random 4:scatter 5:converge
 	int m_HIDSUD[PLAYER_MAX]{};
 	int lanecoverv[PLAYER_MAX]{};
@@ -1303,8 +1303,8 @@ struct PLAYERSTATUS {
 	uint time_newHP = 0;
 	int recent_judge = 0;
 	int judge_draw = 0;
-	int gaugeType = 0;
-	int lastCourseGaugeType = 0;
+	int gaugeType = OPTION_GAUGE_GROOVE;
+	int lastCourseGaugeType = OPTION_GAUGE_GROOVE;
 	std::array<std::array<double, 6>, 6> judge_damage = {}; 
 	int judgetime[6] = {}; /* 0unknown 1poor 2bad 3good 4great 5pgreat */
 	int totalnotes = 0;
@@ -1318,7 +1318,7 @@ struct PLAYERSTATUS {
 	int time_newScore = 0;
 	int note_current = 0;
 	int clearType = 0;
-	int clearGaugeTypeCourse = 0;
+	int clearGaugeTypeCourse = OPTION_GAUGE_GROOVE;
 	EXTENDEDPLAYERSTATS extendedStats = {};
 	std::array<EXTENDEDPLAYERSTATS, 20> extendedColumnStats = {};
 	EXTENDEDPLAYERSTATS extendedStatsCourse = {};

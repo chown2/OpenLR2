@@ -502,7 +502,7 @@ int LUNARIS_JUDGE(game *g) {
 		LUNARIS_LAND();
 		int lineclear = LUNARIS_CHECKLINE();
 		int up = LUNARIS_GETBLOCKUP();
-		int gauge = g->config.play.gaugeOption[PLAYER_1];
+		int gauge = g->config.play.gaugeType[PLAYER_1];
 
 		g->gameplay.player[PLAYER_1].judgecount[1]++;
 

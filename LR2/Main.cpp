@@ -287,7 +287,7 @@ int main(int argc, char** argv) {
 		gs.config.skin.fontname.assign("HG丸ｺﾞｼｯｸM-PRO");
 		gs.config.skin.disableImageFont = true;
 		gs.config.system.isablebmsthread = 1;
-		gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
+		gs.config.play.gaugeType[PLAYER_1] = OPTION_GAUGE_GROOVE;
 		gs.config.play.random[PLAYER_1] = OPTION_RANDOM_OFF;
 		gs.config.play.hsfix = OPTION_HSFIX_CONSTANT;
 		gs.config.player.passMD5.assign("STARTERMODE");
@@ -1478,17 +1478,17 @@ int main(int argc, char** argv) {
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].courseType == 2) {
 							gs.config.play.random[PLAYER_1] = OPTION_RANDOM_OFF;
 							gs.config.play.random[PLAYER_2] = OPTION_RANDOM_OFF;
-							if (gs.config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_EASY) {
-								gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_EASY) {
+								gs.config.play.gaugeType[PLAYER_1] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_EASY) {
-								gs.config.play.gaugeOption[PLAYER_2] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_EASY) {
+								gs.config.play.gaugeType[PLAYER_2] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_GATTACK) {
-								gs.config.play.gaugeOption[PLAYER_1] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_GATTACK) {
+								gs.config.play.gaugeType[PLAYER_1] = OPTION_GAUGE_GROOVE;
 							}
-							if (gs.config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_GATTACK) {
-								gs.config.play.gaugeOption[PLAYER_2] = OPTION_GAUGE_GROOVE;
+							if (gs.config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_GATTACK) {
+								gs.config.play.gaugeType[PLAYER_2] = OPTION_GAUGE_GROOVE;
 							}
 							gs.config.play.m_HIDSUD[PLAYER_1] = 0;
 							gs.config.play.m_HIDSUD[PLAYER_2] = 0;

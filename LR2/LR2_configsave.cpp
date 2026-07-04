@@ -214,7 +214,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "shuttermargin", (g->config).play.shuttermargin, "shuttermargin");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "gauge", (g->config).play.gaugeOption[PLAYER_1], "gauge");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "gauge", (g->config).play.gaugeType[PLAYER_1], "gauge");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "random", (g->config).play.random[PLAYER_1], "random");
@@ -1079,7 +1079,7 @@ int ReadConfig(game* g, const char* filepath) {
 
 	ReadXml_Int("config", "play", "hs", 100, &g->config.play.hiSpeed[PLAYER_1], hXml);
 	g->config.play.hiSpeed[PLAYER_2] = g->config.play.hiSpeed[PLAYER_1];
-	ReadXml_Int("config", "play", "gauge", OPTION_GAUGE_GROOVE, g->config.play.gaugeOption, hXml);
+	ReadXml_Int("config", "play", "gauge", OPTION_GAUGE_GROOVE, g->config.play.gaugeType, hXml);
 	ReadXml_Int("config", "play", "random", OPTION_RANDOM_OFF, &g->config.play.random[PLAYER_1], hXml);
 	ReadXml_Int("config", "play", "effect", 0, &g->config.play.m_HIDSUD[PLAYER_1], hXml);
 	ReadXml_Int("config", "play", "hstype", OPTION_HSFIX_OFF, &g->config.play.hsfix, hXml);

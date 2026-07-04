@@ -192,8 +192,8 @@ int AddReplayDataHeader(CONFIG_PLAY *cfg, REPLAY *rp, AUDIO *snd, gameplay *gp){
 	AddReplayData(rp, 0, 0x99, static_cast<short>(cfg->random[PLAYER_2]));
 	AddReplayData(rp, 0, 0x68, static_cast<short>(cfg->m_HIDSUD[PLAYER_1]));
 	AddReplayData(rp, 0, 0x9a, static_cast<short>(cfg->m_HIDSUD[PLAYER_2]));
-	AddReplayData(rp, 0, 0x65, static_cast<short>(cfg->gaugeOption[PLAYER_1]));
-	AddReplayData(rp, 0, 0x97, static_cast<short>(cfg->gaugeOption[PLAYER_2]));
+	AddReplayData(rp, 0, 0x65, static_cast<short>(cfg->gaugeType[PLAYER_1]));
+	AddReplayData(rp, 0, 0x97, static_cast<short>(cfg->gaugeType[PLAYER_2]));
 	AddReplayData(rp, 0, 0x66, static_cast<short>(cfg->lanecoverv[PLAYER_1]));
 	AddReplayData(rp, 0, 0x98, static_cast<short>(cfg->lanecoverv[PLAYER_2]));
 	AddReplayData(rp, 0, 0x6b, static_cast<short>(cfg->assist[PLAYER_1]));
@@ -638,7 +638,7 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 			g->config.play.hiSpeed[PLAYER_1] = data->value;
 			break;
 		case 0x65:
-			g->config.play.gaugeOption[PLAYER_1] = data->value;
+			g->config.play.gaugeType[PLAYER_1] = data->value;
 			break;
 		case 0x66:
 			g->config.play.lanecoverv[PLAYER_1] = data->value;
@@ -662,7 +662,7 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 			g->config.play.hiSpeed[PLAYER_2] = data->value;
 			break;
 		case 0x97:
-			g->config.play.gaugeOption[PLAYER_2] = data->value;
+			g->config.play.gaugeType[PLAYER_2] = data->value;
 			break;
 		case 0x98:
 			g->config.play.lanecoverv[PLAYER_2] = data->value;

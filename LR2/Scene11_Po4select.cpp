@@ -487,10 +487,10 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 					else if (GetTimeLapse(410, &g->timer1) >= g->skstruct.playstart) {
 						SetTimeLapse(41, &g->timer1);
 						SetTimeLapse(142, &g->timer1);
-						if (g->config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_HARD || g->config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_DEATH || g->config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_PATTCK || g->config.play.gaugeOption[PLAYER_1] == OPTION_GAUGE_GATTACK) {
+						if (g->config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_HARD || g->config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_DEATH || g->config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_PATTACK || g->config.play.gaugeType[PLAYER_1] == OPTION_GAUGE_GATTACK) {
 							SetTimeLapse(44, &g->timer1);
 						}
-						if (g->config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_HARD || g->config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_DEATH || g->config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_PATTCK || g->config.play.gaugeOption[PLAYER_2] == OPTION_GAUGE_GATTACK) {
+						if (g->config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_HARD || g->config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_DEATH || g->config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_PATTACK || g->config.play.gaugeType[PLAYER_2] == OPTION_GAUGE_GATTACK) {
 							SetTimeLapse(45, &g->timer1);
 						}
 						g->gameplay.flag_gameinput = 1;

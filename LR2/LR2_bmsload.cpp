@@ -556,7 +556,7 @@ int InitGameplay(gameplay *gp, CONFIG_PLAY *cfg) {
 		std::array<EXTENDEDPLAYERSTATS, 20> extendedColumnStatsCourse = gp->player[p].extendedColumnStatsCourse;
 
 		gp->player[p] = PLAYERSTATUS();
-		gp->player[p].gaugeType = cfg->gaugeOption[p];
+		gp->player[p].gaugeType = cfg->gaugeType[p];
 		gp->statgraph[p] = GRAPHDATA();
 
 		if (gp->courseStageNow > 0) {
@@ -840,7 +840,7 @@ int InitGameplay_retry(gameplay *gp, AUDIO *snd, game *g) {
 		auto tempDmg = gp->player[p].judge_damage;
 		memcpy(tempTime, &gp->player[p].judgetime, sizeof(tempTime));
 		gp->player[p] = PLAYERSTATUS();
-		gp->player[p].gaugeType = g->config.play.gaugeOption[p];
+		gp->player[p].gaugeType = g->config.play.gaugeType[p];
 		gp->player[p].judge_damage = tempDmg;
 		memcpy(&gp->player[p].judgetime, tempTime, sizeof(tempTime));
 		gp->player[p].totalnotes = tempCount;

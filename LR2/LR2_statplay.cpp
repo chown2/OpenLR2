@@ -29,11 +29,11 @@ int CheckClearLampChallenge(game *g){ //TOFIX : assist[PLAYER_2] == 1 but no bat
 		&& g->config.play.assist[PLAYER_1] == 0 && (g->config.play.assist[PLAYER_2] == 0 || g->sSelect.metaSelected.keymode < 10)) {
 		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
 			? g->gameplay.player[PLAYER_1].gaugeType
-			: g->config.play.gaugeOption[PLAYER_1]) {
+			: g->config.play.gaugeType[PLAYER_1]) {
 		case OPTION_GAUGE_HARD: return 3;
 		case OPTION_GAUGE_DEATH: return 4;
 		case OPTION_GAUGE_EASY: return 1;
-		case OPTION_GAUGE_PATTCK: return 4;
+		case OPTION_GAUGE_PATTACK: return 4;
 		case OPTION_GAUGE_GATTACK: return 3;
 		default: return 2;
 		}
@@ -152,7 +152,7 @@ int CheckClear(PLAYERSTATUS *pstat, int gaugeType, char isCourse){
 		pstat->clearType = 5;
 		return pstat->clearType;
 	}
-	if (gaugeType == 1 || gaugeType == 5 || gaugeType == 4) {
+	if (gaugeType == OPTION_GAUGE_HARD || gaugeType == OPTION_GAUGE_GATTACK || gaugeType == OPTION_GAUGE_PATTACK) {
 		if ( pstat->note_current == pstat->totalnotes && pstat->HP[gaugeType] >= 2.0) {
 			pstat->clearType = 4;
 		}
@@ -162,12 +162,12 @@ int CheckClear(PLAYERSTATUS *pstat, int gaugeType, char isCourse){
 			if (pstat->note_current != pstat->totalnotes)
 				return pstat->clearType;
 			if (pstat->HP[gaugeType] >= 2.0) {
-				pstat->clearType = (gaugeType != 3) + 2;
+				pstat->clearType = (gaugeType != OPTION_GAUGE_EASY) + 2;
 				return pstat->clearType;
 			}
 		}
 		if (pstat->note_current == pstat->totalnotes && pstat->HP[gaugeType] >= 80.0) {
-			pstat->clearType = (gaugeType != 3) + 2;
+			pstat->clearType = (gaugeType != OPTION_GAUGE_EASY) + 2;
 			return pstat->clearType;
 		}
 	}
@@ -200,8 +200,8 @@ static int GetBestClearedGauge(const gameplay& gameplay, int playerIdx, const CO
 	const PLAYERSTATUS& player = gameplay.player[playerIdx];
 	if (gameplay.isAutoplay) return player.gaugeType;
 	if (playerIdx == PLAYER_2 && gameplay.ghostBattle) return player.gaugeType;
-	if (cfg.gaugeOption[playerIdx] == 5) return 5;
-	constexpr std::array<int, 5> gaugeArr({ 4, 2, 1, 0, 3 });
+	if (cfg.gaugeType[playerIdx] == OPTION_GAUGE_GATTACK) return OPTION_GAUGE_GATTACK;
+	constexpr std::array<int, 5> gaugeArr({ OPTION_GAUGE_PATTACK, OPTION_GAUGE_DEATH, OPTION_GAUGE_HARD, OPTION_GAUGE_GROOVE, OPTION_GAUGE_EASY });
 	unsigned int i = 0;
 	if (limitToCourse)
 		for (; i < gaugeArr.size(); i++)
@@ -209,8 +209,8 @@ static int GetBestClearedGauge(const gameplay& gameplay, int playerIdx, const CO
 				break;
 	auto is_gauge_alive = [](int gaugeIdx, double hp) {
 		switch (gaugeIdx) {
-		case 0:
-		case 3:
+		case OPTION_GAUGE_GROOVE:
+		case OPTION_GAUGE_EASY:
 			return hp >= 80.;
 		default: return hp >= 2.;
 		}
@@ -218,8 +218,8 @@ static int GetBestClearedGauge(const gameplay& gameplay, int playerIdx, const CO
 	for (; i < gaugeArr.size(); i++)
 		if (is_gauge_alive(gaugeArr[i], player.HP[gaugeArr[i]]))
 			return gaugeArr[i];
-	if (gameplay.courseType == 2) return 0;
-	return 3;
+	if (gameplay.courseType == 2) return OPTION_GAUGE_GROOVE;
+	return OPTION_GAUGE_EASY;
 }
 
 int CheckCourseClear(game* g) {
@@ -246,7 +246,7 @@ int CheckCourseClear(game* g) {
 		else if (g->gameplay.player[p].total_note == g->gameplay.player[p].max_combo_course) {
 			g->gameplay.player[p].clearType = 5;
 		}
-		else if (gauge[p] == 1 || gauge[p] == 5 || gauge[p] == 4) {
+		else if (gauge[p] == OPTION_GAUGE_HARD || gauge[p] == OPTION_GAUGE_GATTACK || gauge[p] == OPTION_GAUGE_PATTACK) {
 			if (g->gameplay.player[p].note_current2 == g->gameplay.player[p].total_note && g->gameplay.player[p].HP[gauge[p]] > 2.0) {
 				g->gameplay.player[p].clearType = 4;
 			}
@@ -273,9 +273,9 @@ int CheckMission(game *g){
 
 	gauge = g->gameplay.player[PLAYER_1].gaugeType;
 
-	if (g->gameplay.player[PLAYER_1].gaugeType == 3)
+	if (g->gameplay.player[PLAYER_1].gaugeType == OPTION_GAUGE_EASY)
 		return 0;
-	if (g->gameplay.player[PLAYER_2].gaugeType == 3)
+	if (g->gameplay.player[PLAYER_2].gaugeType == OPTION_GAUGE_EASY)
 		return 0;
 
 	//converge 7 14 25 35 40

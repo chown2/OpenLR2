@@ -225,24 +225,24 @@ static bool fWaitHiScoreUpdateInput = false;
 int ProcI_Result(game *g) {
 
 	auto switch_gauge_display = [](gameplay& gameplay, int buttonVal, PLAYERSTATUS& player) {
-		if (buttonVal == 1 && player.gaugeType != 5) {
+		if (buttonVal == 1 && player.gaugeType != OPTION_GAUGE_PATTACK) {
 			int& gauge = player.gaugeType;
 			if (gameplay.courseType != 2) [[likely]] {
 				switch (gauge) {
-				case 0: gauge = 1; break;
-				case 1: gauge = 2; break;
-				case 2: gauge = 4; break;
-				case 3: gauge = 0; break;
-				case 4: gauge = 3; break;
+				case OPTION_GAUGE_EASY: gauge = OPTION_GAUGE_GROOVE; break;
+				case OPTION_GAUGE_GROOVE: gauge = OPTION_GAUGE_HARD; break;
+				case OPTION_GAUGE_HARD: gauge = OPTION_GAUGE_DEATH; break;
+				case OPTION_GAUGE_DEATH: gauge = OPTION_GAUGE_PATTACK; break;
+				case OPTION_GAUGE_PATTACK: gauge = OPTION_GAUGE_EASY; break;
 				default: break;
 				}
 			}
 			else {
 				switch (gauge) {
-				case 0: gauge = 1; break;
-				case 1: gauge = 2; break;
-				case 2: gauge = 4; break;
-				case 4: gauge = 0; break;
+				case OPTION_GAUGE_GROOVE: gauge = OPTION_GAUGE_HARD; break;
+				case OPTION_GAUGE_HARD: gauge = OPTION_GAUGE_DEATH; break;
+				case OPTION_GAUGE_DEATH: gauge = OPTION_GAUGE_PATTACK; break;
+				case OPTION_GAUGE_PATTACK: gauge = OPTION_GAUGE_GROOVE; break;
 				default: break;
 				}
 			}

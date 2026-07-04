@@ -968,8 +968,8 @@ int SetObjectStrings_SongSelect(game *g) {
 	SetObjectString(62, g->txtStruct.option_str[2].str[g->config.select.difficulty], g->txtStruct.objectStr);
 	SetObjectString(63, g->txtStruct.option_str[4].str[g->config.play.random[PLAYER_1]], g->txtStruct.objectStr);
 	SetObjectString(64, g->txtStruct.option_str[4].str[g->config.play.random[PLAYER_2]], g->txtStruct.objectStr);
-	SetObjectString(65, g->txtStruct.option_str[3].str[g->config.play.gaugeOption[PLAYER_1]], g->txtStruct.objectStr);
-	SetObjectString(66, g->txtStruct.option_str[3].str[g->config.play.gaugeOption[PLAYER_2]], g->txtStruct.objectStr);
+	SetObjectString(65, g->txtStruct.option_str[3].str[g->config.play.gaugeType[PLAYER_1]], g->txtStruct.objectStr);
+	SetObjectString(66, g->txtStruct.option_str[3].str[g->config.play.gaugeType[PLAYER_2]], g->txtStruct.objectStr);
 	SetObjectString(67, g->txtStruct.option_str[19].str[g->config.play.assist[PLAYER_1]], g->txtStruct.objectStr);
 	SetObjectString(68, g->txtStruct.option_str[19].str[g->config.play.assist[PLAYER_2]], g->txtStruct.objectStr);
 	SetObjectString(84, g->txtStruct.option_str[5].str[g->config.play.m_HIDSUD[PLAYER_1]], g->txtStruct.objectStr);
@@ -1376,10 +1376,10 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 	if (g->KeyInput.p1_buttonInput[4] == 1 || g->KeyInput.p2_buttonInput[4] == 1) {
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 		if (g->config.play.battle == OPTION_BATTLE_BATTLE && g->KeyInput.p1_buttonInput[4] != 1) {
-			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeOption[PLAYER_2]);
+			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeType[PLAYER_2]);
 		}
 		else {
-			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeOption[PLAYER_1]);
+			LoopInRange(OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, 1, &g->config.play.gaugeType[PLAYER_1]);
 		}
 		SetObjectStrings_SongSelect(g);
 	}

@@ -151,19 +151,19 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 42:
-			if (gs->gameplay.player[PLAYER_1].gaugeType != 0 && gs->gameplay.player[PLAYER_1].gaugeType != 3) return !ret;
+			if (gs->gameplay.player[PLAYER_1].gaugeType != OPTION_GAUGE_GROOVE && gs->gameplay.player[PLAYER_1].gaugeType != OPTION_GAUGE_EASY) return !ret;
 			if (gs->gameplay.isCourse == 0) return ret;
 			break;
 		case 43:
-			if (gs->gameplay.player[PLAYER_1].gaugeType != 0 && gs->gameplay.player[PLAYER_1].gaugeType != 3) return ret;
+			if (gs->gameplay.player[PLAYER_1].gaugeType != OPTION_GAUGE_GROOVE && gs->gameplay.player[PLAYER_1].gaugeType != OPTION_GAUGE_EASY) return ret;
 			if (gs->gameplay.isCourse == 0) return !ret;
 			return ret;
 		case 44:
-			if (gs->gameplay.player[PLAYER_2].gaugeType != 0 && gs->gameplay.player[PLAYER_2].gaugeType != 3) return !ret;
+			if (gs->gameplay.player[PLAYER_2].gaugeType != OPTION_GAUGE_GROOVE && gs->gameplay.player[PLAYER_2].gaugeType != OPTION_GAUGE_EASY) return !ret;
 			if (gs->gameplay.isCourse == 0) return ret;
 			break;
 		case 45:
-			if (gs->gameplay.player[PLAYER_2].gaugeType != 0 && gs->gameplay.player[PLAYER_2].gaugeType != 3) return ret;
+			if (gs->gameplay.player[PLAYER_2].gaugeType != OPTION_GAUGE_GROOVE && gs->gameplay.player[PLAYER_2].gaugeType != OPTION_GAUGE_EASY) return ret;
 			if (gs->gameplay.isCourse == 0) return !ret;
 			return ret;
 
@@ -3255,7 +3255,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 40:
 				isClickSuccess = g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13 ?
 					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[PLAYER_1].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
-					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[PLAYER_1], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
+					ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeType[PLAYER_1], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetObjectStrings_SongSelect(g);
@@ -3266,7 +3266,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				if (g->config.play.battle == OPTION_BATTLE_BATTLE) {
 					isClickSuccess = g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13 ?
 						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->gameplay.player[PLAYER_2].gaugeType, OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel) :
-						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeOption[PLAYER_2], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
+						ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.play.gaugeType[PLAYER_2], OPTION_GAUGE_GROOVE, OPTION_GAUGE_END, g->sSelect.panel);
 					if (isClickSuccess == 2) {
 						PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 						SetObjectStrings_SongSelect(g);

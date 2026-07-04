@@ -718,7 +718,7 @@ bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, in
 		case openlr2::Gauge::Survival: *oDigit1 = OPTION_GAUGE_HARD; break;
 		case openlr2::Gauge::Death: *oDigit1 = OPTION_GAUGE_DEATH; break;
 		case openlr2::Gauge::Easy: *oDigit1 = OPTION_GAUGE_EASY; break;
-		case openlr2::Gauge::PAttack: *oDigit1 = OPTION_GAUGE_PATTCK; break;
+		case openlr2::Gauge::PAttack: *oDigit1 = OPTION_GAUGE_PATTACK; break;
 		case openlr2::Gauge::GAttack: *oDigit1 = OPTION_GAUGE_GATTACK; break;
 		default: *oDigit1 = 0; break;
 		}

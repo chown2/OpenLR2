@@ -325,7 +325,7 @@ struct IRScoreInternal {
 		int courseType{};
 	} song{};
 	struct SETTINGS {
-		int gaugeOption{};
+		int gaugeType{};
 		std::array<int, PLAYER_MAX> random{};
 		bool autokey{};
 		std::array<bool, PLAYER_MAX> assist{};
@@ -424,7 +424,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.song.courseStageCount = song.courseStageCount;
 	scoreOut.song.courseType = song.courseType;
 
-	scoreOut.settings.gaugeOption = settings.gaugeOption;
+	scoreOut.settings.gaugeOption = settings.gaugeType;
 	for (int p : { PLAYER_1, PLAYER_2})
 		scoreOut.settings.random[p] = settings.random[p];
 	scoreOut.settings.autokey = (int)settings.autokey;
@@ -546,7 +546,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 		songPlayLevel = curSong.level;
 	}
 	CONFIG_PLAY& cfg = game.config.play;
-	settings.gaugeOption = cfg.gaugeOption[_player];
+	settings.gaugeType = cfg.gaugeType[_player];
 	settings.random[PLAYER_1] = cfg.random[PLAYER_1];
 	settings.random[PLAYER_2] = cfg.random[PLAYER_2];
 	settings.autokey = cfg.autokey;

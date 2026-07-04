@@ -23,16 +23,16 @@ static int PerformGAS(const gameplay& gameplay, int playerIdx, const CONFIG_PLAY
 	const PLAYERSTATUS& player = gameplay.player[playerIdx];
 	if (gameplay.isAutoplay) return player.gaugeType;
 	if (playerIdx == PLAYER_2 && gameplay.ghostBattle) return player.gaugeType;
-	if (cfg.gaugeOption[playerIdx] == 5) return 5;
-	constexpr std::array<int, 5> gaugeArr({ 4, 2, 1, 0, 3 });
+	if (cfg.gaugeType[playerIdx] == OPTION_GAUGE_GATTACK) return OPTION_GAUGE_GATTACK;
+	constexpr std::array<int, 5> gaugeArr({ OPTION_GAUGE_PATTACK, OPTION_GAUGE_DEATH, OPTION_GAUGE_HARD, OPTION_GAUGE_GROOVE, OPTION_GAUGE_EASY });
 	unsigned int i = 0;
 	for (; i < gaugeArr.size(); i++)
-		if (gaugeArr[i] == cfg.gaugeOption[playerIdx])
+		if (gaugeArr[i] == cfg.gaugeType[playerIdx])
 			break;
 	auto is_gauge_alive = [](int gaugeIdx, double hp) {
 		switch (gaugeIdx) {
-		case 0:
-		case 3:
+		case OPTION_GAUGE_GROOVE:
+		case OPTION_GAUGE_EASY:
 			return hp >= 80.;
 		default: return hp >= 2.;
 		}
@@ -40,8 +40,8 @@ static int PerformGAS(const gameplay& gameplay, int playerIdx, const CONFIG_PLAY
 	for (; i < gaugeArr.size(); i++)
 		if (is_gauge_alive(gaugeArr[i], player.HP[gaugeArr[i]]))
 			return gaugeArr[i];
-	if (gameplay.courseType == 2) return 0;
-	return 3;
+	if (gameplay.courseType == 2) return OPTION_GAUGE_GROOVE;
+	return OPTION_GAUGE_EASY;
 }
 
 int ApplyJudgeNote(int judge, game *g, int _player, int lane, Timer *T, char isReplay) {
@@ -692,7 +692,7 @@ int DrawHPgauge(game *g){
 	char survival;
 
 	for (int i = 0; i < 2; i++) {
-		if (g->gameplay.isCourse == 0 && (g->gameplay.player[i].gaugeType == 0 || g->gameplay.player[i].gaugeType == 3)) {
+		if (g->gameplay.isCourse == 0 && (g->gameplay.player[i].gaugeType == OPTION_GAUGE_GROOVE || g->gameplay.player[i].gaugeType == OPTION_GAUGE_EASY)) {
 			survival = 0;
 		}
 		else {
@@ -1813,18 +1813,18 @@ int ProcS_Play(game *g, sqlite3* sql) {
 			g->net.GetTargetInfo(0, md5, &gData, &gName, &iTemp, &iTemp, &iTemp, &iTemp, &iTemp, &iTemp);
 		}
 		else {
-			int origGauge = g->config.play.gaugeOption[PLAYER_1];
+			int origGauge = g->config.play.gaugeType[PLAYER_1];
 			//TOFIX : seed is not putted into replaydata, when use ghostbattle. (retry puts seed) (see also ParseBmsFile())
 			if(g->sSelect.bmsList[g->sSelect.cur_song].keymode > 9)
-				g->net.GetTargetInfo(0, md5, &gData, &gName, &g->config.play.gaugeOption[PLAYER_1], &g->config.play.random[PLAYER_1], &g->config.play.random[PLAYER_2], &g->config.play.dpflip, &g->gameplay.randomseed, &iTemp);
+				g->net.GetTargetInfo(0, md5, &gData, &gName, &g->config.play.gaugeType[PLAYER_1], &g->config.play.random[PLAYER_1], &g->config.play.random[PLAYER_2], &g->config.play.dpflip, &g->gameplay.randomseed, &iTemp);
 			else
-				g->net.GetTargetInfo(0, md5, &gData, &gName, &g->config.play.gaugeOption[PLAYER_1], &g->config.play.random[PLAYER_1], &g->config.play.random[PLAYER_2], &iTemp, &g->gameplay.randomseed, &iTemp);
+				g->net.GetTargetInfo(0, md5, &gData, &gName, &g->config.play.gaugeType[PLAYER_1], &g->config.play.random[PLAYER_1], &g->config.play.random[PLAYER_2], &iTemp, &g->gameplay.randomseed, &iTemp);
 			
-			g->config.play.gaugeOption[PLAYER_2] = g->config.play.gaugeOption[PLAYER_1];
+			g->config.play.gaugeType[PLAYER_2] = g->config.play.gaugeType[PLAYER_1];
 			g->config.play.random[PLAYER_2] = g->config.play.random[PLAYER_1];
 
 			if (g->config.play.m_gas && !g->gameplay.isAutoplay) {
-				g->config.play.gaugeOption[PLAYER_1] = origGauge;
+				g->config.play.gaugeType[PLAYER_1] = origGauge;
 			}
 		}
 	}
