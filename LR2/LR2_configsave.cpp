@@ -1018,7 +1018,7 @@ int ReadConfig(game* g, const char* filepath) {
 	if (g->config.select.speednext <= 0) g->config.select.speednext = 70;
 
 	ReadXml_PositiveIntAsBool("config", "select", "control", false, &g->config.select.control, hXml);
-	ReadXml_Int("config", "select", "buttonselect", 0, &g->config.select.buttonselect, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "buttonselect", false, &g->config.select.buttonselect, hXml);
 	ReadXml_Int("config", "select", "randomclose", 0, &g->config.select.randomclose, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "ignorekeyall", false, &g->config.select.ignoreKeyAll, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "ignorekeysingle", false, &g->config.select.ignoreKeySingle, hXml);

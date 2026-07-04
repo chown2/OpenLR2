@@ -438,7 +438,7 @@ struct CONFIG_SELECT {
 	int speedfirst{};
 	int speednext{};
 	bool control{};//force 9key?
-	int buttonselect{};
+	bool buttonselect{};
 	int folderlamp{};
 	int difficultychangetype{};
 	bool ignoreKeyAll{};

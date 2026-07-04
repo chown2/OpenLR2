@@ -26,7 +26,7 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 				else if (g->KeyInput.mousewheel < 0) g->sSelect.scrollDirection = 2;
 			}
 
-			if ((((g->KeyInput.p1_buttonInput[1] == 1 || g->KeyInput.p2_buttonInput[1] == 1) && g->config.select.buttonselect == 1 && !g->config.select.control)
+			if ((((g->KeyInput.p1_buttonInput[1] == 1 || g->KeyInput.p2_buttonInput[1] == 1) && g->config.select.buttonselect && !g->config.select.control)
 				|| (g->KeyInput.p1_buttonInput[4] == 1 && g->config.select.control)
 				|| g->KeyInput.p1_buttonInput[10] == 1 || g->KeyInput.p2_buttonInput[10] == 1 || g->KeyInput.inputID[KEY_INPUT_UP] == 1)
 				&& GetTimeWrap() > g->sSelect.barMoveEndTime) {
@@ -37,7 +37,7 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 				g->sSelect.scrollDirection = 1;
 				g->sSelect.barMoveEndTime = GetTimeWrap() + g->config.select.speedfirst;
 			}
-			else if ((((g->KeyInput.p1_buttonInput[3] == 1 || g->KeyInput.p2_buttonInput[3] == 1) && g->config.select.buttonselect == 1 && !g->config.select.control)
+			else if ((((g->KeyInput.p1_buttonInput[3] == 1 || g->KeyInput.p2_buttonInput[3] == 1) && g->config.select.buttonselect && !g->config.select.control)
 				|| (g->KeyInput.p1_buttonInput[6] == 1 && g->config.select.control)
 				|| g->KeyInput.p1_buttonInput[11] == 1 || g->KeyInput.p2_buttonInput[11] == 1 || g->KeyInput.inputID[KEY_INPUT_DOWN] == 1)
 				&& GetTimeWrap() > g->sSelect.barMoveEndTime) {
@@ -48,7 +48,7 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 				g->sSelect.scrollDirection = 2;
 				g->sSelect.barMoveEndTime = GetTimeWrap() + g->config.select.speedfirst;
 			}
-			else if ((((g->KeyInput.p1_buttonInput[1] == 2 || g->KeyInput.p2_buttonInput[1] == 2) && g->config.select.buttonselect == 1 && !g->config.select.control)
+			else if ((((g->KeyInput.p1_buttonInput[1] == 2 || g->KeyInput.p2_buttonInput[1] == 2) && g->config.select.buttonselect && !g->config.select.control)
 				|| (g->KeyInput.p1_buttonInput[4] == 2 && g->config.select.control)
 				|| g->KeyInput.p1_buttonInput[10] == 2 || g->KeyInput.p2_buttonInput[10] == 2 || g->KeyInput.inputID[KEY_INPUT_UP] == 2)
 				&& GetTimeWrap() > g->sSelect.barMoveEndTime - 20) {
@@ -59,7 +59,7 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 				g->sSelect.scrollDirection = 1;
 				g->sSelect.barMoveEndTime = GetTimeWrap() + g->config.select.speednext;
 			}
-			else if ((((g->KeyInput.p1_buttonInput[3] == 2 || g->KeyInput.p2_buttonInput[3] == 2) && g->config.select.buttonselect == 1 && !g->config.select.control)
+			else if ((((g->KeyInput.p1_buttonInput[3] == 2 || g->KeyInput.p2_buttonInput[3] == 2) && g->config.select.buttonselect && !g->config.select.control)
 				|| (g->KeyInput.p1_buttonInput[6] == 2 && g->config.select.control)
 				|| g->KeyInput.p1_buttonInput[11] == 2 || g->KeyInput.p2_buttonInput[11] == 2 || g->KeyInput.inputID[KEY_INPUT_DOWN] == 2)
 				&& GetTimeWrap() > g->sSelect.barMoveEndTime - 20) {
@@ -114,8 +114,8 @@ int ProcI_PO4Menu(game *g, sqlite3 */*sql*/) { //not tested
 					&& (g->KeyInput.inputID[KEY_INPUT_RETURN] != 1 || g->txtStruct.st_text_num != -1 || (GetTimeLapse(4, &g->timer1) != -1.0 && GetTimeLapse(4, &g->timer1) < 200.0))
 					&& (g->sSelect.panel == 1
 						|| ((g->config.select.control
-							|| (((g->config.select.buttonselect != 0 || (g->KeyInput.p1_buttonInput[1] != 1 && g->KeyInput.p1_buttonInput[3] != 1 && g->KeyInput.p1_buttonInput[5] != 1 && g->KeyInput.p1_buttonInput[7] != 1 && g->KeyInput.p2_buttonInput[1] != 1 && g->KeyInput.p2_buttonInput[3] != 1 && g->KeyInput.p2_buttonInput[5] != 1 && g->KeyInput.p2_buttonInput[7] != 1)))
-								&& (g->config.select.buttonselect != 1 || (g->KeyInput.p1_buttonInput[5] != 1 && g->KeyInput.p1_buttonInput[7] != 1 && g->KeyInput.p2_buttonInput[5] != 1 && g->KeyInput.p2_buttonInput[7] != 1))))
+							|| (((g->config.select.buttonselect || (g->KeyInput.p1_buttonInput[1] != 1 && g->KeyInput.p1_buttonInput[3] != 1 && g->KeyInput.p1_buttonInput[5] != 1 && g->KeyInput.p1_buttonInput[7] != 1 && g->KeyInput.p2_buttonInput[1] != 1 && g->KeyInput.p2_buttonInput[3] != 1 && g->KeyInput.p2_buttonInput[5] != 1 && g->KeyInput.p2_buttonInput[7] != 1)))
+								&& (!g->config.select.buttonselect || (g->KeyInput.p1_buttonInput[5] != 1 && g->KeyInput.p1_buttonInput[7] != 1 && g->KeyInput.p2_buttonInput[5] != 1 && g->KeyInput.p2_buttonInput[7] != 1))))
 							&& (!g->config.select.control || (g->KeyInput.p1_buttonInput[5] != 1 && g->KeyInput.p1_buttonInput[7] != 1))))) {
 
 					for (int i = 0; i < 30; i++) {

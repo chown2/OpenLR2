@@ -119,7 +119,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 			else if (g->KeyInput.mousewheel < 0) g->sSelect.scrollDirection = 2;
 		}
 		
-		if ((((g->KeyInput.p1_buttonInput[1] == 1 || g->KeyInput.p2_buttonInput[1] == 1) && g->config.select.buttonselect == 1 && !g->config.select.control)
+		if ((((g->KeyInput.p1_buttonInput[1] == 1 || g->KeyInput.p2_buttonInput[1] == 1) && g->config.select.buttonselect && !g->config.select.control)
 			|| (g->KeyInput.p1_buttonInput[4] == 1 && g->config.select.control)
 			|| g->KeyInput.p1_buttonInput[10] == 1 || g->KeyInput.p2_buttonInput[10] == 1 || g->KeyInput.inputID[KEY_INPUT_UP] == 1 || g->KeyInput.inputID[KEY_INPUT_LEFT] == 1)
 			&& GetTimeWrap() > g->sSelect.barMoveEndTime) {
@@ -130,7 +130,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 			g->sSelect.scrollDirection = 1;
 			g->sSelect.barMoveEndTime = GetTimeWrap() + g->config.select.speedfirst;
 		}
-		else if ((((g->KeyInput.p1_buttonInput[3] == 1 || g->KeyInput.p2_buttonInput[3] == 1) && g->config.select.buttonselect == 1 && !g->config.select.control)
+		else if ((((g->KeyInput.p1_buttonInput[3] == 1 || g->KeyInput.p2_buttonInput[3] == 1) && g->config.select.buttonselect && !g->config.select.control)
 			|| (g->KeyInput.p1_buttonInput[6] == 1 && g->config.select.control)
 			|| g->KeyInput.p1_buttonInput[11] == 1 || g->KeyInput.p2_buttonInput[11] == 1 || g->KeyInput.inputID[KEY_INPUT_DOWN] == 1 || g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1)
 			&& GetTimeWrap() > g->sSelect.barMoveEndTime) {
@@ -141,7 +141,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 			g->sSelect.scrollDirection = 2;
 			g->sSelect.barMoveEndTime = GetTimeWrap() + g->config.select.speedfirst;
 		}
-		else if ((((g->KeyInput.p1_buttonInput[1] == 2 || g->KeyInput.p2_buttonInput[1] == 2) && g->config.select.buttonselect == 1 && !g->config.select.control)
+		else if ((((g->KeyInput.p1_buttonInput[1] == 2 || g->KeyInput.p2_buttonInput[1] == 2) && g->config.select.buttonselect && !g->config.select.control)
 			|| (g->KeyInput.p1_buttonInput[4] == 2 && g->config.select.control)
 			|| g->KeyInput.p1_buttonInput[10] == 2 || g->KeyInput.p2_buttonInput[10] == 2 || g->KeyInput.inputID[KEY_INPUT_UP] == 2 || g->KeyInput.inputID[KEY_INPUT_LEFT] == 2)
 			&& GetTimeWrap() > g->sSelect.barMoveEndTime - 20) {
@@ -152,7 +152,7 @@ int ProcI_PO4Select(game *g, sqlite3 *sql) { //not tested
 			g->sSelect.scrollDirection = 1;
 			g->sSelect.barMoveEndTime = GetTimeWrap() + 150;
 		}
-		else if ((((g->KeyInput.p1_buttonInput[3] == 2 || g->KeyInput.p2_buttonInput[3] == 2) && g->config.select.buttonselect == 1 && !g->config.select.control)
+		else if ((((g->KeyInput.p1_buttonInput[3] == 2 || g->KeyInput.p2_buttonInput[3] == 2) && g->config.select.buttonselect && !g->config.select.control)
 			|| (g->KeyInput.p1_buttonInput[6] == 2 && g->config.select.control)
 			|| g->KeyInput.p1_buttonInput[11] == 2 || g->KeyInput.p2_buttonInput[11] == 2 || g->KeyInput.inputID[KEY_INPUT_DOWN] == 2 || g->KeyInput.inputID[KEY_INPUT_RIGHT] == 2)
 			&& GetTimeWrap() > g->sSelect.barMoveEndTime - 20) {
