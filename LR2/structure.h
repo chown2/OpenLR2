@@ -415,8 +415,8 @@ struct CONFIG_PLAY {
 	bool m_isLunaris{};
 	bool m_gas{};
 	int gomiscore{};
-	int disablecurspeedchange{};
-	int disableleftclickexit{};
+	bool disableCurSpeedChange{};
+	bool disableLeftClickExit{};
 };
 
 struct CONFIG_PLAYER {

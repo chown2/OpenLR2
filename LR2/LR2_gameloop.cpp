@@ -392,7 +392,7 @@ void ReactInput(game *g) {
 			if (g->KeyInput.inputID[KEY_INPUT_LEFT] == 1) g->skstruct.adjust.note_x[PLAYER_2] -= 10;
 			if (g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1) g->skstruct.adjust.note_x[PLAYER_2] += 10;
 		}
-		else if (g->config.play.disablecurspeedchange != 1) {
+		else if (!g->config.play.disableCurSpeedChange) {
 			if (g->KeyInput.inputID[KEY_INPUT_UP] == 1) {
 				LoopInRange(g->config.play.hsmin, g->config.play.hsmax, g->config.play.hsmargin, &g->config.play.hiSpeed[PLAYER_1]); //original code doesn't call function, but it's same...
 			}

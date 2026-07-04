@@ -355,7 +355,7 @@ struct IRScoreInternal {
 		bool m_isLunaris{};
 		bool m_gas{};
 		int gomiscore{};
-		int disablecurspeedchange{};
+		bool disableCurSpeedChange{};
 	} settings{};
 	struct STATE {
 		int player{};
@@ -458,7 +458,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.settings.m_lunaris = (char)settings.m_isLunaris;
 	scoreOut.settings.m_gas = settings.m_gas;
 	scoreOut.settings.gomiscore = settings.gomiscore;
-	scoreOut.settings.disablecurspeedchange = settings.disablecurspeedchange;
+	scoreOut.settings.disablecurspeedchange = (int)settings.disableCurSpeedChange;
 
 	scoreOut.state.player = state.player;
 	scoreOut.state.keymode = state.keymode;
@@ -580,7 +580,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 	settings.m_isLunaris = cfg.m_isLunaris;
 	settings.m_gas = cfg.m_gas;
 	settings.gomiscore = cfg.gomiscore;
-	settings.disablecurspeedchange = cfg.disablecurspeedchange;
+	settings.disableCurSpeedChange = cfg.disableCurSpeedChange;
 
 	gameplay& gameplay = game.gameplay;
 	state.player = _player;

@@ -1146,7 +1146,7 @@ int ProcI_Play(game *g) {
 			(float)g->skstruct.adjust.size_x, (float)g->skstruct.adjust.size_y, 0);
 	}
 
-	if( ((g->KeyInput.inputID[KEY_INPUT_ESCAPE] == 2 || (g->KeyInput.mouse_buttonR == 2 && g->config.play.disableleftclickexit == 0) ) 
+	if( ((g->KeyInput.inputID[KEY_INPUT_ESCAPE] == 2 || (g->KeyInput.mouse_buttonR == 2 && !g->config.play.disableLeftClickExit) ) 
 			|| (g->KeyInput.p1_buttonInput[13] == 2 && g->KeyInput.p1_buttonInput[12] == 2)
 			|| (g->KeyInput.p2_buttonInput[13] == 2 && g->KeyInput.p2_buttonInput[12] == 2)
 			|| (g->gameplay.player[PLAYER_1].totalnotes <= g->gameplay.player[PLAYER_1].note_current && (g->KeyInput.p1_buttonInput[13] == 2 || g->KeyInput.p1_buttonInput[12] == 2 || g->KeyInput.p2_buttonInput[13] == 2 || g->KeyInput.p2_buttonInput[12] == 2))) 

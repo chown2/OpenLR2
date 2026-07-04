@@ -265,10 +265,10 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "gomiscore", (g->config).play.gomiscore, "gomiscore");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disableleftclickexit", (g->config).play.disableleftclickexit, "disableleftclickexit");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disableleftclickexit", (int)(g->config).play.disableLeftClickExit, "disableleftclickexit");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablecurspeedchange", (g->config).play.disablecurspeedchange, "disablecurspeedchange");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablecurspeedchange", (int)(g->config).play.disableCurSpeedChange, "disablecurspeedchange");
 	fputs(buf, pFile);
 	fputs("\t</play>\n", pFile);
 
@@ -1105,8 +1105,8 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "play", "target", 0, &g->config.play.p1_target, hXml);
 	ReadXml_Int("config", "play", "basespeed", 100, &g->config.play.basespeed, hXml);
 	ReadXml_Int("config", "play", "gomiscore", 0, &g->config.play.gomiscore, hXml);
-	ReadXml_Int("config", "play", "disableleftclickexit", 0, &g->config.play.disableleftclickexit, hXml);
-	ReadXml_Int("config", "play", "disablecurspeedchange", 0, &g->config.play.disablecurspeedchange, hXml);
+	ReadXml_PositiveIntAsBool("config", "play", "disableleftclickexit", false, &g->config.play.disableLeftClickExit, hXml);
+	ReadXml_PositiveIntAsBool("config", "play", "disablecurspeedchange", false, &g->config.play.disableCurSpeedChange, hXml);
 	ReadXml_Str("config", "skin", "play_7", "", &g->config.skin.skinFilePath[0], hXml);
 	ReadXml_Str("config", "skin", "play_5", "", &g->config.skin.skinFilePath[1], hXml);
 	ReadXml_Str("config", "skin", "play_14", "", &g->config.skin.skinFilePath[2], hXml);
