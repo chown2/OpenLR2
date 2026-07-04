@@ -207,7 +207,7 @@ int AddReplayDataHeader(CONFIG_PLAY *cfg, REPLAY *rp, AUDIO *snd, gameplay *gp){
 	AddReplayData(rp, 0, 0xcb, static_cast<short>(cfg->hsfix));
 	AddReplayData(rp, 0, 0xcc, static_cast<short>(cfg->m_isExtra));
 	AddReplayData(rp, 0, 0xcd, static_cast<short>(cfg->m_extra));
-	AddReplayData(rp, 0, 0xce, static_cast<short>(cfg->dpflip));
+	AddReplayData(rp, 0, 0xce, static_cast<short>(cfg->dpFlip));
 	AddReplayData(rp, 0, 0x28, static_cast<short>(snd->param.fx_volume_on));
 	AddReplayData(rp, 0, 0x29, static_cast<short>(snd->param.volume_master));
 	AddReplayData(rp, 0, 0x2a, static_cast<short>(snd->param.volume_key));
@@ -701,7 +701,7 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 			g->config.play.m_extra = data->value;
 			break;
 		case 0xce:
-			g->config.play.dpflip = data->value;
+			g->config.play.dpFlip = (data->value > 0);
 			break;
 		case 0xd2:
 			REPLAY_ApplyJudgeNote(gp, T, g, data->value, 0, 0);

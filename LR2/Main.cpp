@@ -1502,7 +1502,7 @@ int main(int argc, char** argv) {
 							gs.config.play.m_char = 0;
 							gs.config.play.m_earthquake = 0;
 							gs.config.play.m_extra = 0;
-							gs.config.play.dpflip = 0;
+							gs.config.play.dpFlip = false;
 							gs.config.play.m_isLunaris = false;
 							gs.config.play.m_gambol = 0;
 							gs.config.play.m_sidejump = 0;

@@ -3473,7 +3473,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				}
 			}
 
-			if ((meta->keymode == 10 || meta->keymode == 14) && cfg->play.dpflip == 1) {
+			if ((meta->keymode == 10 || meta->keymode == 14) && cfg->play.dpFlip) {
 				if (gp->bmsobj.notes[i].op <= CHANNEL_1P_NOTE_END) gp->bmsobj.notes[i].op += 10;
 				else gp->bmsobj.notes[i].op -= 10;
 			}

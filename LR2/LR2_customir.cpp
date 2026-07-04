@@ -329,7 +329,7 @@ struct IRScoreInternal {
 		std::array<int, PLAYER_MAX> random{};
 		bool autokey{};
 		std::array<bool, PLAYER_MAX> assist{};
-		int dpflip{};
+		bool dpFlip{};
 		int hsfix{};
 		std::array<int, PLAYER_MAX> randSC{};
 		std::array<int, PLAYER_MAX> randFix{};
@@ -430,7 +430,7 @@ void IRScoreInternal::MakeScoreV1(IRScoreV1& scoreOut) const {
 	scoreOut.settings.autokey = (int)settings.autokey;
 	for (int p : { PLAYER_1, PLAYER_2})
 		scoreOut.settings.assist[p] = settings.assist[p];
-	scoreOut.settings.dpflip = settings.dpflip;
+	scoreOut.settings.dpflip = settings.dpFlip;
 	scoreOut.settings.hsfix = settings.hsfix;
 	for (int p : { PLAYER_1, PLAYER_2}) {
 		scoreOut.settings.randSC[p] = settings.randSC[p];
@@ -552,7 +552,7 @@ IRScoreInternal::IRScoreInternal(game& game, sqlite3* sql, int _player, std::str
 	settings.autokey = cfg.autokey;
 	settings.assist[PLAYER_1] = cfg.assist[PLAYER_1];
 	settings.assist[PLAYER_2] = cfg.assist[PLAYER_2];
-	settings.dpflip = cfg.dpflip;
+	settings.dpFlip = cfg.dpFlip;
 	settings.hsfix = cfg.hsfix;
 	settings.randSC[PLAYER_1] = cfg.randSC[PLAYER_1];
 	settings.randSC[PLAYER_2] = cfg.randSC[PLAYER_2];

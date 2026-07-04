@@ -1011,7 +1011,7 @@ int SetObjectStrings_SongSelect(game *g) {
 			SetObjectString(69, g->txtStruct.option_str[7].str[4], g->txtStruct.objectStr);
 	}
 
-	SetObjectString(70, g->txtStruct.option_str[6].str[g->config.play.dpflip], g->txtStruct.objectStr);
+	SetObjectString(70, g->txtStruct.option_str[6].str[(int)g->config.play.dpFlip], g->txtStruct.objectStr);
 	SetObjectString(71, g->txtStruct.option_str[16].str[g->config.play.scoregraph], g->txtStruct.objectStr);
 	SetObjectString(72, g->txtStruct.option_str[14].str[g->config.play.play_ghost], g->txtStruct.objectStr);
 	SetObjectString(73, g->txtStruct.option_str[15].str[g->config.play.lanecover[PLAYER_1]], g->txtStruct.objectStr);
@@ -1366,7 +1366,7 @@ int SetPlayOption(game *g, sqlite3 *sql) {
 		PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 		int k = g->config.select.key;
 		if (k == 4 || k == 5 || k == 6) {
-			LoopInRange(0, 1, 1, &g->config.play.dpflip);
+			g->config.play.dpFlip = !g->config.play.dpFlip;
 		}
 		else {
 			LoopInRange(0, 4, 1, &g->config.play.battle);

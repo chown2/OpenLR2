@@ -63,7 +63,7 @@ int ProcS_subCourseResult(game *g, sqlite3 *sql) {
 			g->sSelect.bmsList[g->sSelect.cur_song].mybest.op_best = g->gameplay.player[PLAYER_1].gaugeType + g->config.play.random[PLAYER_1] * 10;
 		}
 		else {
-			g->sSelect.bmsList[g->sSelect.cur_song].mybest.op_best = g->gameplay.player[PLAYER_1].gaugeType + g->config.play.random[PLAYER_1] * 10 + g->config.play.random[PLAYER_2] * 100 + g->config.play.dpflip * 1000;
+			g->sSelect.bmsList[g->sSelect.cur_song].mybest.op_best = g->gameplay.player[PLAYER_1].gaugeType + g->config.play.random[PLAYER_1] * 10 + g->config.play.random[PLAYER_2] * 100 + (int)g->config.play.dpFlip * 1000;
 		}
 	}
 

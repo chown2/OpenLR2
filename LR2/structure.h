@@ -373,7 +373,7 @@ struct CONFIG_PLAY {
 	int lanecover[PLAYER_MAX]{};
 	bool autokey{};
 	int assist[PLAYER_MAX]{};
-	int dpflip{};
+	bool dpFlip{};
 	int hsfix{}; // 1:max 2:min 3:average 4:constant 5:main
 	int battle{}; // 1:battle 2:d-battle 3:sp-to-dp 4:g-battle
 	int autojudge{};

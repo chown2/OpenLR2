@@ -740,7 +740,7 @@ bool NETWORK::GetTargetInfo(int mode, CSTR songmd5, CSTR *oData, CSTR *oName, in
 		case openlr2::Random::Converge: *oDigit3 = OPTION_RANDOM_CONVERGE; break;
 		default: *oDigit3 = 0; break;
 		}
-		*oDigit4 = result->dpflip ? 1 : 0;
+		*oDigit4 = (int)result->dpflip;
 		*oSeed = result->rseed >= 0 ? result->rseed : 0; //TOFIX: 0 is a valid seed
 		return true;
 	}
