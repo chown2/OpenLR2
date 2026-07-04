@@ -411,12 +411,13 @@ int Print_ManiacOptions(game *g) {
 				break;
 			case 21:
 				printfDx("GAUGE AUTO SHIFT    ");
-				if (g->config.play.m_gas == 0) printfDx("OFF");
-				if (g->config.play.m_gas == 1) printfDx("ON");
+				if (g->config.play.m_gas) printfDx("ON");
+				else					  printfDx("OFF");
+				
 
 				if (g->sSelect.maniac_cursor == 21) {
-					if (g->KeyInput.inputID[KEY_INPUT_LEFT] == 1) g->config.play.m_gas = g->config.play.m_gas == 0;
-					if (g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1) g->config.play.m_gas = g->config.play.m_gas == 0;
+					if (g->KeyInput.inputID[KEY_INPUT_LEFT] == 1) g->config.play.m_gas = !g->config.play.m_gas;
+					if (g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1) g->config.play.m_gas = !g->config.play.m_gas;
 				}
 				break;
 			default:
