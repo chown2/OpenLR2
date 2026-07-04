@@ -275,6 +275,15 @@ int ProcI_SkinSelect(game *g) {
 	for (int i = 0; i < g->skstruct2.drBuf.count; i++) {
 		LRDraw(&g->skstruct2.drBuf, &g->txtStruct, &g->sSelect, &g->skstruct2, i, 0, 0);
 	}
+	{
+		int oldMode, oldParam;
+		GetDrawBlendMode(&oldMode, &oldParam);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		SetDrawZ(1.);
+		DrawBox(0, 0, tx, ty, GetColor(0, 0, 0), 1);
+		SetDrawZ(0.);
+		SetDrawBlendMode(oldMode, oldParam);
+	}
 
 	SetDrawScreen(DX_SCREEN_BACK); //there is a flickering in not SD skins preview
 	if (!(tx == skinSizeX && ty == skinSizeY)) {
