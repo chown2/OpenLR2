@@ -279,7 +279,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "numbuffers", (g->config).sound.numbuffers, "numbuffers");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disabledsp", (g->config).sound.disabledsp, "disabledsp");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disabledsp", (int)(g->config).sound.disableDSP, "disabledsp");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "output", (g->config).sound.output, "output");
@@ -1072,7 +1072,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "sound", "fxtarget_2", 0, &g->config.sound.fxtarget_2, hXml);
 	ReadXml_Int("config", "sound", "fxtype_2", 0, &g->config.sound.fxtype_2, hXml);
 
-	g->config.sound.disabledsp = (uint)(g->config.sound.output != 2);
+	g->config.sound.disableDSP = (g->config.sound.output != 2);
 	if (g->config.sound.bufferlength == 0) g->config.sound.bufferlength = 256;
 	if (g->config.sound.bufferlength < 16) g->config.sound.bufferlength = 16;
 	if (g->config.sound.numbuffers <= 0) g->config.sound.numbuffers = 1;

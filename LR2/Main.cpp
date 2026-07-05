@@ -761,10 +761,10 @@ int main(int argc, char** argv) {
 	gs.audio.param.fxChannel[2] = gs.config.sound.fxtarget_2;
 	gs.audio.param.fxParam[2][PLAYER_1] = gs.config.sound.fxp1_2;
 	gs.audio.param.fxParam[2][PLAYER_2] = gs.config.sound.fxp2_2;
-	InitSound(&gs.audio,gs.config.sound.bufferlength,gs.config.sound.numbuffers,gs.config.sound.disabledsp,gs.config.sound.output,gs.config.sound.driver);
+	InitSound(&gs.audio,gs.config.sound.bufferlength,gs.config.sound.numbuffers,gs.config.sound.disableDSP,gs.config.sound.output,gs.config.sound.driver);
 	ReadLR2SoundSet(&gs, gs.config.skin.skinFilePath[10], 0);
 	if (gs.is_starter == false) {
-		if (LoadSound(&gs.audio, &gs.gameplay.muon, fs::make_preferred("LR2files/Config/muon.wav").data(), 1, gs.config.sound.disabledsp, 0) == -1) {
+		if (LoadSound(&gs.audio, &gs.gameplay.muon, fs::make_preferred("LR2files/Config/muon.wav").data(), 1, gs.config.sound.disableDSP, 0) == -1) {
 			ErrorLogAdd("muon.wavがありません\n");
 			gs.procSelecter = 0;
 		}
@@ -1516,12 +1516,12 @@ int main(int argc, char** argv) {
 							gs.config.play.m_tornado = 0;
 							gs.audio.param.pitch_amount = 0;
 							gs.audio.param.pitch_on = 0;
-							ApplySoundFX(&gs.audio, 1, 0);
+							ApplySoundFX(&gs.audio, 1, false);
 						}
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].courseType == 1) {
 							gs.audio.param.pitch_amount = 0;
 							gs.audio.param.pitch_on = 0;
-							ApplySoundFX(&gs.audio, 1, 0);
+							ApplySoundFX(&gs.audio, 1, false);
 						}
 					}
 					gs.isSkipDrawTick = 1;
@@ -1693,7 +1693,7 @@ int main(int argc, char** argv) {
 						gs.audio.param.volume_key = gs.gameplay.replay.aud.volume_key;
 						gs.audio.param.fx_volume_on = gs.gameplay.replay.aud.fx_volume_on;
 						gs.audio.param.volume_master = gs.gameplay.replay.aud.volume_master;
-						ApplySoundFX(&gs.audio, 1, gs.config.sound.disabledsp);
+						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
 					else if (gs.gameplay.replay.status == 1) {
 						if (gs.gameplay.isAutoplay == 0) {

@@ -3137,7 +3137,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 23:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fx_on[0], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 60, g->audio.param.fx_on[0]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3148,7 +3148,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 24:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fx_on[1], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 70, g->audio.param.fx_on[1]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3159,7 +3159,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 25:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fx_on[2], 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 80, g->audio.param.fx_on[2]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3170,7 +3170,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 26:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fxChannel[0], 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 64, g->audio.param.fxChannel[0]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3181,7 +3181,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 27:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fxChannel[1], 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 74, g->audio.param.fxChannel[1]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3192,7 +3192,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 28:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fxChannel[2], 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 84, g->audio.param.fxChannel[2]);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3203,7 +3203,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 29:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.eq_on, 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 50, g->audio.param.eq_on);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3214,14 +3214,14 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 30:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.eq_preset, 0, 5, g->sSelect.panel); //EQ_PRESET is not implemented yet
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 				}
 				break;
 
 			case 31:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.fx_volume_on, 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 40, g->audio.param.fx_volume_on);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3232,7 +3232,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 32:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.pitch_on, 0, 1, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 90, g->audio.param.pitch_on);
 						g->gameplay.fxChangeInRecording = 1;
@@ -3243,7 +3243,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 			case 33:
 				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->audio.param.pitch_type, 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
-					ApplySoundFX(&g->audio, 1, g->config.sound.disabledsp);
+					ApplySoundFX(&g->audio, 1, g->config.sound.disableDSP);
 					if (GetTimeLapse(41, T) > 0.0 && g->gameplay.replay.status == 1) {
 						AddReplayData(&g->gameplay.replay, GetTimeLapse(41, T), 92, g->audio.param.pitch_type);
 						g->gameplay.fxChangeInRecording = 1;

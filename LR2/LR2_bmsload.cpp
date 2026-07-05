@@ -688,7 +688,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 				if (queue_i >= keysoundLoadQueue.size())
 					break;
 				unsigned int i = keysoundLoadQueue[queue_i];
-				LoadSound(aud, &gp->keysound[i], gp->keysound_filename[i], 0, cfg->sound.disabledsp, (gp->isPreviewLoad != 0));
+				LoadSound(aud, &gp->keysound[i], gp->keysound_filename[i], 0, cfg->sound.disableDSP, (gp->isPreviewLoad != 0));
 				if (gp->keysound[i].length > 60000 && gp->keysound[i].load) gp->flag_longsound = 1;
 				gp->loadObject_loaded++;
 				if (gp->flag_closingPhase || (gp->previewStatus != 1 && noVideo)) {
@@ -4049,7 +4049,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			aud->param.stageKeyVolume[i] = 1.0;
 		}
 	}
-	ApplySoundFX(aud, 1, cfg->sound.disabledsp);
+	ApplySoundFX(aud, 1, cfg->sound.disableDSP);
 	ErrorLogAdd("BMSを読み込みました。\n");
 	return 1;
 }

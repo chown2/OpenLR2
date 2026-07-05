@@ -510,128 +510,128 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 	switch (data->op) {
 		case 0x28:
 			aud->param.fx_volume_on = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x29:
 			aud->param.volume_master = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x2a:
 			aud->param.volume_key = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x2b:
 			aud->param.volume_BGM = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x32:
 			aud->param.eq_on = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x33:
 			aud->param.eq_gain[0] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x34:
 			aud->param.eq_gain[1] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x35:
 			aud->param.eq_gain[2] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x36:
 			aud->param.eq_gain[3] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x37:
 			aud->param.eq_gain[4] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x38:
 			aud->param.eq_gain[5] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x39:
 			aud->param.eq_gain[6] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x3c:
 			aud->param.fx_on[0] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x3d:
 			aud->param.fxType[0] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x3e:
 			aud->param.fxParam[0][PLAYER_1] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x3f:
 			aud->param.fxParam[0][PLAYER_2] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x40:
 			aud->param.fxChannel[0] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x46:
 			aud->param.fx_on[1] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x47:
 			aud->param.fxType[1] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x48:
 			aud->param.fxParam[1][PLAYER_1] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x49:
 			aud->param.fxParam[1][PLAYER_2] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x4a:
 			aud->param.fxChannel[1] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x50:
 			aud->param.fx_on[2] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x51:
 			aud->param.fxType[2] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x52:
 			aud->param.fxParam[2][PLAYER_1] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x53:
 			aud->param.fxParam[2][PLAYER_2] = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x54:
 			aud->param.fxChannel[2] = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x5a:
 			aud->param.pitch_on = data->value;
-			ApplySoundFX(aud, 1, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 1, g->config.sound.disableDSP);
 			return 1;
 		case 0x5b:
 			aud->param.pitch_amount = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 		case 0x5c:
 			aud->param.pitch_type = data->value;
-			ApplySoundFX(aud, 0, g->config.sound.disabledsp);
+			ApplySoundFX(aud, 0, g->config.sound.disableDSP);
 			return 1;
 
 		case 0x64:

@@ -1226,7 +1226,7 @@ int ProcGame(game *g) {
 			}
 		}
 	}
-	if (fx) ApplySoundFX(&g->audio, 0, 0);
+	if (fx) ApplySoundFX(&g->audio, 0, false);
 
 	for (int i = 0; i < 5; i++) {
 		if (g->gameplay.fadeinBGAstart[i] > 0 && g->gameplay.fadeinBGAend[i] > 0 && g->gameplay.fadeinBGAstart[i] - 100 <= t41 && t41 <= g->gameplay.fadeinBGAend[i] + 100) {

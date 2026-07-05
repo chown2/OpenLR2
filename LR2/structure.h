@@ -464,7 +464,7 @@ struct CONFIG_SKIN {
 };
 
 struct CONFIG_SOUND {
-	int disabledsp{};
+	bool disableDSP{};
 	int bufferlength{};
 	int numbuffers{};
 	int output{};

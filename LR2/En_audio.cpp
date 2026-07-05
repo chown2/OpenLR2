@@ -585,7 +585,7 @@ int RecordFadeout(AUDIO *aud, double from, double length) {
 	return 1;
 }
 
-int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, int /*disableDSP*/, int previewFlag) {
+int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, bool /*disableDSP*/, int previewFlag) {
 
 	CSTR path;
 	path.assign(&filepath);
@@ -736,7 +736,7 @@ int SOUND_FmodToDxlib(AUDIO *aud) {
 	return 0;
 }
 
-int ApplySoundFX(AUDIO *aud, int /*flag*/, char /*disable*/) {
+int ApplySoundFX(AUDIO *aud, int /*flag*/, bool /*disableDSP*/) {
 
 	if(aud->cmd_mediaOut) return 0;
 	if (aud->is_fmod_disabled == 1) {
@@ -1019,7 +1019,7 @@ int InitFade(AUDIO *aud){
 	aud->param.time_fadeout_end = -1;
 	aud->param.time_fadePreview_start = -1;
 	aud->param.time_fadePreview_end = -1;
-	ApplySoundFX(aud, 0, '\0');
+	ApplySoundFX(aud, 0, false);
 	return 1;
 }
 
@@ -1036,7 +1036,7 @@ int SetVolumeByFade(AUDIO *aud){
 			fVar1 = 0.0;
 		}
 		aud->param.fadeout_volume = fVar1;
-		ApplySoundFX(aud, 0, '\0');
+		ApplySoundFX(aud, 0, false);
 	}
 	if (aud->param.time_fadePreview_start != -1) {
 		if (timeNow < aud->param.time_fadePreview_end) {
@@ -1059,7 +1059,7 @@ int SetVolumeByFade(AUDIO *aud){
 	return 1;
 }
 
-int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int outputType, int driver){
+int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, bool disableDSP, int outputType, int driver){
 
 	int numDrivers;
 	char driverName[256];
@@ -1146,7 +1146,7 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 		aud->param.stagePitch[2] = 1.0;
 		aud->param.stagePitch[3] = 1.0;
 		aud->param.stagePitch[4] = 1.0;
-		ApplySoundFX(aud, 1, fDisable);
+		ApplySoundFX(aud, 1, disableDSP);
 		ErrorLogFmtAdd("サウンドの初期化が成功しました。\n");
 		aud->param.fadeout_volume = 1.0;
 		aud->param.fadePreviewCurrentVolume = 1.0;
@@ -1154,7 +1154,7 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, char fDisable, int o
 		aud->param.time_fadeout_end = -1;
 		aud->param.time_fadePreview_start = -1;
 		aud->param.time_fadePreview_end = -1;
-		ApplySoundFX(aud, 0, '\0');
+		ApplySoundFX(aud, 0, false);
 		return 0;
 	}
 	return 1;
