@@ -2979,7 +2979,7 @@ int InitSelectBySearchResult(game *g, sqlite3 *sql) {
 				SetTimeLapse(11, &g->timer1);
 				ProcS_Select(g);
 				if (g->sSelect.is_coursemaking_done == 0) {
-					if (g->sSelect.is_clicked_filter == 0 || g->audio.sysSound.difficulty.load == 0) {
+					if (g->sSelect.is_clicked_filter == 0 || !g->audio.sysSound.difficulty.load) {
 						PlaySound(&g->audio, &g->audio.sysSound.folder_open, g->audio.chnKey, -1);
 					}
 					else {

@@ -18,7 +18,7 @@ int SkinSelect_SoundSet(game *g, CSTR filepath) {
 	ReleaseSound(&g->audio, &g->audio.sysSound.mine);
 	ReleaseSound(&g->audio, &g->audio.sysSound.exdecide);
 	ReleaseSound(&g->audio, &g->audio.sysSound.exselect);
-	if (g->audio.is_fmod_disabled == 0) FMOD_System_Update(g->audio.fmodSys);
+	if (!g->audio.disableFmod) FMOD_System_Update(g->audio.fmodSys);
 	
 	FILE* pFile = fopen(filepath.body, "r");
 	if (pFile == 0) return 0;

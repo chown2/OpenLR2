@@ -288,7 +288,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "driver", (g->config).sound.driver, "driver");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablefmod", (g->config).sound.disablefmod, "disablefmod");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablefmod", (int)(g->config).sound.disableFmod, "disablefmod");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "volumeflag", (g->config).sound.volumeflag, "volumeflag");
@@ -1040,7 +1040,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "sound", "numbuffers", 4, &g->config.sound.numbuffers, hXml);
 	ReadXml_Int("config", "sound", "output", 0, &g->config.sound.output, hXml);
 	ReadXml_Int("config", "sound", "driver", 0, &g->config.sound.driver, hXml);
-	ReadXml_Int("config", "sound", "disablefmod", 0, &g->config.sound.disablefmod, hXml);
+	ReadXml_PositiveIntAsBool("config", "sound", "disablefmod", false, &g->config.sound.disableFmod, hXml);
 	ReadXml_Int("config", "sound", "volumeflag", 1, &g->config.sound.volumeflag, hXml);
 	ReadXml_Int("config", "sound", "volumekey", 100, &g->config.sound.volumekey, hXml);
 	ReadXml_Int("config", "sound", "volumebgm", 100, &g->config.sound.volumebgm, hXml);

@@ -257,16 +257,16 @@ int IsAltSoundExist(CSTR *filepath){
 int ReleaseSound(AUDIO *aud, SOUNDDATA *sound){
 	CSTR &filepath = sound->filename;
 
-	if (sound->load == '\0') {
+	if (!sound->load) {
 		return -1;
 	}
 	if (filepath.length() <= 1) {
 		filepath.fillzero();
 		sound->length = 0;
-		sound->load = '\0';
+		sound->load = false;
 		return -1;
 	}
-	if (aud->is_fmod_disabled == 1) {
+	if (aud->disableFmod) {
 		StopSoundMem(sound->soundHandle);
 		DeleteSoundMem(sound->soundHandle);//DeleteSoundMem(sound->soundHandle, 0);
 	}
@@ -275,7 +275,7 @@ int ReleaseSound(AUDIO *aud, SOUNDDATA *sound){
 	}
 	filepath.fillzero();
 	sound->length = 0;
-	sound->load = '\0';
+	sound->load = false;
 	return 0;
 }
 
@@ -284,10 +284,10 @@ int ReleaseSound(AUDIO *aud, SOUNDDATA *sound){
 int StopSound(AUDIO *aud, SOUNDDATA *sound){
 	FMOD_SOUND *tmpSnd;
 
-	if (sound->load == '\0') {
+	if (!sound->load) {
 		return -1;
 	}
-	if (aud->is_fmod_disabled == 1) {
+	if (aud->disableFmod) {
 		StopSoundMem(sound->soundHandle);
 	}
 	FMOD_Channel_GetCurrentSound(sound->fmod_channel, &tmpSnd);
@@ -300,10 +300,10 @@ int StopSound(AUDIO *aud, SOUNDDATA *sound){
 int SetSoundVolume(AUDIO *aud, SOUNDDATA *sound, float volume){
 	FMOD_SOUND *tmpSnd;
 
-	if (sound->load == '\0') {
+	if (!sound->load) {
 		return -1;
 	}
-	if (aud->is_fmod_disabled == 1) {
+	if (aud->disableFmod) {
 		ChangeVolumeSoundMem(volume * 255.0, sound->soundHandle);
 	}
 	FMOD_Channel_GetCurrentSound(sound->fmod_channel, &tmpSnd);
@@ -317,10 +317,10 @@ int SoundGetCurrentTime(AUDIO *aud, SOUNDDATA *sound){
 	FMOD_SOUND *tmpSnd;
 	uint pos;
 
-	if (sound->load == '\0') {
+	if (!sound->load) {
 		return -1;
 	}
-	if (aud->is_fmod_disabled == 1) {
+	if (aud->disableFmod) {
 		return GetSoundCurrentTime(sound->soundHandle);
 	}
 	FMOD_Channel_GetCurrentSound(sound->fmod_channel, &tmpSnd);
@@ -334,7 +334,7 @@ int SoundGetCurrentTime(AUDIO *aud, SOUNDDATA *sound){
 // endsound
 int EndSound(AUDIO *aud){
 
-	if (aud->is_fmod_disabled != 1) {
+	if (!aud->disableFmod) {
 		for (int i = 0; i < 7; i++) {
 			FMOD_DSP_Release(aud->param.DSP_eq[i]);
 		}
@@ -585,29 +585,29 @@ int RecordFadeout(AUDIO *aud, double from, double length) {
 	return 1;
 }
 
-int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, bool /*disableDSP*/, int previewFlag) {
+int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, bool isLoop, bool /*disableDSP*/, bool isPreview) {
 
 	CSTR path;
 	path.assign(&filepath);
 
 	if (IsFileExist(filepath) == false && IsAltSoundExist(&filepath) == -1) {
 		ErrorLogFmtAdd("音声ファイルが見つかりません。%s...\n",path.body);
-		if (sound->load == '\0') {
+		if (!sound->load) {
 			sound->filename.fillzero();
-			sound->load = '\0';
+			sound->load = false;
 			return -2;
 		}
 		return 0;
 	}
 
-	if (sound->load == 1) {
-		if (filepath.isSame(&sound->filename) && previewFlag == sound->streaming) return 1;
+	if (sound->load) {
+		if (filepath.isSame(&sound->filename) && isPreview == sound->streaming) return 1;
 		ReleaseSound(aud, sound);
 	}
 
-	sound->streaming = previewFlag;
+	sound->streaming = isPreview;
 
-	if (aud->is_fmod_disabled != 1) {
+	if (!aud->disableFmod) {
 		FMOD_RESULT result;
 		if (aud->cmd_mediaOut) {
 			FMOD_MODE mode = FMOD_ACCURATETIME | FMOD_LOOP_OFF;
@@ -615,17 +615,17 @@ int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, bool /*disa
 			SOUND_normalize(aud, sound);
 		}
 		else {
-			FMOD_MODE mode = loop == 0 ? FMOD_LOOP_OFF : FMOD_LOOP_NORMAL;
-			if (previewFlag != 0) {
+			FMOD_MODE mode = !isLoop ? FMOD_LOOP_OFF : FMOD_LOOP_NORMAL;
+			if (isPreview) {
 				mode |= FMOD_CREATESTREAM;
 			}
 			result = FMOD_System_CreateSound(aud->fmodSys, filepath.body, mode, nullptr, &sound->fmod_sound);
 		}
 
-		sound->loop = (loop != 0);
+		sound->loop = isLoop;
 		if (result == FMOD_OK) {
 			sound->filename.assign(&filepath);
-			sound->load = 1;
+			sound->load = true;
 			FMOD_Sound_GetLength(sound->fmod_sound, &sound->length, 1);
 			if (sound->length >= 240000) {
 				sound->length = 240000;
@@ -633,39 +633,39 @@ int LoadSound(AUDIO *aud, SOUNDDATA *sound, CSTR filepath, int loop, bool /*disa
 		}
 		else {
 			sound->filename.fillzero();
-			sound->load = 0;
+			sound->load = false;
 			sound->length = -1;
 		}
 		return 1;
 	}
 
-	if (previewFlag) SetCreateSoundDataType(3);
+	if (isPreview) SetCreateSoundDataType(3);
 	sound->soundHandle = LoadSoundMem(filepath.body, 3, -1);
-	if (previewFlag) SetCreateSoundDataType(0);
+	if (isPreview) SetCreateSoundDataType(0);
 	if (sound->soundHandle == -1) {
 		sound->filename.fillzero();
-		sound->load = 0;
+		sound->load = true;
 		return -1;
 	}
 	sound->filename.assign(&filepath);
 	sound->length = GetSoundTotalTime(sound->soundHandle);
-	sound->load = 1;
-	sound->loop = (loop != 0);
+	sound->load = false;
+	sound->loop = isLoop;
 	return 1;
 }
 
 int PlaySound(AUDIO *aud, SOUNDDATA *sound, FMOD_CHANNELGROUP *channelgroup, int stage) {
 
 	if (aud->cmd_mediaOut == false) {
-		if (sound->load == 0) return -1;
-		if (aud->is_fmod_disabled == 1) {
+		if (!sound->load) return -1;
+		if (aud->disableFmod) {
 			int v_master;
 			int v_chn;
 			int pitch;
 			double freq = 1;
 
 			StopSoundMem(sound->soundHandle);
-			PlaySoundMem(sound->soundHandle, (sound->loop == 0)? 1 : 3, 1);
+			PlaySoundMem(sound->soundHandle, (!sound->loop)? 1 : 3, 1);
 
 			pitch = (aud->param.pitch_on == 0) ? 0 : aud->param.pitch_amount;
 			if (stage < 5) freq = aud->param.stagePitch[stage];
@@ -739,7 +739,7 @@ int SOUND_FmodToDxlib(AUDIO *aud) {
 int ApplySoundFX(AUDIO *aud, int /*flag*/, bool /*disableDSP*/) {
 
 	if(aud->cmd_mediaOut) return 0;
-	if (aud->is_fmod_disabled == 1) {
+	if (aud->disableFmod) {
 		aud->param.eq_on = 0;
 		aud->param.fx_on[0] = 0;
 		aud->param.fx_on[1] = 0;
@@ -1069,7 +1069,7 @@ int InitSound(AUDIO *aud, uint bufferLength, int numBuffer, bool disableDSP, int
 		FMOD_System_Init(aud->fmodSys, 1, 0, NULL);
 		return 1;
 	}
-	if (!aud->is_fmod_disabled) {
+	if (!aud->disableFmod) {
 		ErrorLogAdd("サウンドシステムの初期化を行います。\n");
 		FMOD_System_Create(&aud->fmodSys, FMOD_VERSION);
 		FMOD_System_SetDSPBufferSize(aud->fmodSys, bufferLength, numBuffer);

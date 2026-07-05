@@ -688,7 +688,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 				if (queue_i >= keysoundLoadQueue.size())
 					break;
 				unsigned int i = keysoundLoadQueue[queue_i];
-				LoadSound(aud, &gp->keysound[i], gp->keysound_filename[i], 0, cfg->sound.disableDSP, (gp->isPreviewLoad != 0));
+				LoadSound(aud, &gp->keysound[i], gp->keysound_filename[i], false, cfg->sound.disableDSP, (gp->isPreviewLoad != 0));
 				if (gp->keysound[i].length > 60000 && gp->keysound[i].load) gp->flag_longsound = 1;
 				gp->loadObject_loaded++;
 				if (gp->flag_closingPhase || (gp->previewStatus != 1 && noVideo)) {
@@ -769,7 +769,7 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 				}
 			}
 			else if (0 < gp->bmsobj.notes[i].val && gp->bmsobj.notes[i].val < SLOTS) {
-				if (gp->keysound[(int)gp->bmsobj.notes[i].val].load == 0 && gp->song_runtime < gp->bmsobj.notes[i].realTiming)
+				if (!gp->keysound[(int)gp->bmsobj.notes[i].val].load && gp->song_runtime < gp->bmsobj.notes[i].realTiming)
 					gp->song_runtime = gp->bmsobj.notes[i].realTiming;
 
 				if (gp->keysound[(int)gp->bmsobj.notes[i].val].length < 2000 && gp->keysound[(int)gp->bmsobj.notes[i].val].length > 0) {

@@ -283,7 +283,7 @@ int main(int argc, char** argv) {
 	}
 	ErrorLogAdd("成功しました\n");
 	if (gs.is_starter) {
-		gs.config.sound.disablefmod = 1;
+		gs.config.sound.disableFmod = true;
 		gs.config.skin.fontname.assign("HG丸ｺﾞｼｯｸM-PRO");
 		gs.config.skin.disableImageFont = true;
 		gs.config.system.isablebmsthread = 1;
@@ -438,8 +438,8 @@ int main(int argc, char** argv) {
 	gs.is_clicked_screenModeChange = 0;
 	gs.flag_Screenshot = false;
 	ReadOptionstrFile(gs.txtStruct, fs::make_preferred("LR2files/Config/optionstr.csv").data());
-	gs.audio.is_fmod_disabled = gs.config.sound.disablefmod;
-	if (gs.config.sound.disablefmod != 0) {
+	gs.audio.disableFmod = gs.config.sound.disableFmod;
+	if (gs.config.sound.disableFmod) {
 		gs.config.select.isPreview = false;
 	}
 	SetHPtimerFlag(gs.config.system.hptimer == 1);
@@ -454,7 +454,7 @@ int main(int argc, char** argv) {
 		SetGraphMode(256, 256, 32, 60);
 	}
 	SetWindowSizeChangeEnableFlag(1, 1);
-	if (gs.audio.is_fmod_disabled == 0) {
+	if (!gs.audio.disableFmod) {
 		SetNotSoundFlag(1);
 	}
 
@@ -764,7 +764,7 @@ int main(int argc, char** argv) {
 	InitSound(&gs.audio,gs.config.sound.bufferlength,gs.config.sound.numbuffers,gs.config.sound.disableDSP,gs.config.sound.output,gs.config.sound.driver);
 	ReadLR2SoundSet(&gs, gs.config.skin.skinFilePath[10], 0);
 	if (gs.is_starter == false) {
-		if (LoadSound(&gs.audio, &gs.gameplay.muon, fs::make_preferred("LR2files/Config/muon.wav").data(), 1, gs.config.sound.disableDSP, 0) == -1) {
+		if (LoadSound(&gs.audio, &gs.gameplay.muon, fs::make_preferred("LR2files/Config/muon.wav").data(), true, gs.config.sound.disableDSP, false) == -1) {
 			ErrorLogAdd("muon.wavがありません\n");
 			gs.procSelecter = 0;
 		}

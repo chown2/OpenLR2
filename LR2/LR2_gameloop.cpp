@@ -55,7 +55,7 @@ void ReactInput(game *g) {
 	GetTimeWrap();
 
 	GetTimeWrap();
-	if (g->audio.is_fmod_disabled== 0) FMOD_System_Update(g->audio.fmodSys);
+	if (!g->audio.disableFmod) FMOD_System_Update(g->audio.fmodSys);
 	SetVolumeByFade(&g->audio);
 	GetTimeWrap();
 

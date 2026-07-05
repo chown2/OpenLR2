@@ -469,7 +469,7 @@ struct CONFIG_SOUND {
 	int numbuffers{};
 	int output{};
 	int driver{};
-	int disablefmod{};
+	bool disableFmod{};
 	int volumemaster{};
 	int volumekey{};
 	int volumebgm{};
@@ -1116,7 +1116,7 @@ struct AUDIO {
 	int bitRate; /* Kbps */
 	struct SYSTEMSOUND sysSound;
 	struct AUDIO_PARAM param;
-	int is_fmod_disabled;
+	bool disableFmod;
 	bool cmd_mediaOut;
 	bool replay2avi;
 	double aviTimer;
