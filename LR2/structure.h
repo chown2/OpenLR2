@@ -453,7 +453,7 @@ struct CONFIG_SELECT {
 	int levelbarflash_5{};
 	int levelbarflash_9{};
 	bool disableDifficultyFilter{};
-	int preview{};
+	bool isPreview{};
 	bool disableSubtitle{};
 };
 
