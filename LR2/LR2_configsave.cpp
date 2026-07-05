@@ -457,7 +457,7 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "disabledifficultyfilter", (int)(g->config).select.disableDifficultyFilter, "disabledifficultyfilter");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "preview", (g->config).select.preview, "preview");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "preview", (int)(g->config).select.isPreview, "preview");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablesubtitle", (int)(g->config).select.disableSubtitle, "disablesubtitle");
@@ -1030,7 +1030,7 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "select", "levelbarflash_7", 12, &g->config.select.levelbarflash_7, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_5", 9, &g->config.select.levelbarflash_5, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_9", 42, &g->config.select.levelbarflash_9, hXml);
-	ReadXml_Int("config", "select", "preview", 1, &g->config.select.preview, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "preview", true, &g->config.select.isPreview, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "disablesubtitle", false, &g->config.select.disableSubtitle, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "difficultychangetype", false, &g->config.select.difficultyChangeType, hXml);
 	ReadXml_Int("config", "select", "folderlamp", 0, &g->config.select.folderlamp, hXml);

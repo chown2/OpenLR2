@@ -352,23 +352,23 @@ int main(int argc, char** argv) {
 		else if (tStr2.isSame("-auto2avi")) {
 			gs.rec.recMode = 1;
 			gs.is_recordmode = 1;
-			gs.config.select.preview = 0;
+			gs.config.select.isPreview = false;
 		}
 		else if (tStr2.isSame("-replay2avi")) {
 			gs.rec.recMode = 2;
 			gs.audio.replay2avi = true;
 			gs.is_recordmode = 1;
-			gs.config.select.preview = 0;
+			gs.config.select.isPreview = false;
 		}
 		else if (tStr2.isSame("-bga2avi")) {
 			gs.rec.recMode = 3;
 			gs.skstruct.drBuf.isDisabled = 1;
 			gs.is_recordmode = 1;
-			gs.config.select.preview = 0;
+			gs.config.select.isPreview = false;
 		}
 		else if (tStr2.isSame("-movie")) {
 			gs.rec.recMode = 4;
-			gs.config.select.preview = 0;
+			gs.config.select.isPreview = false;
 		}
 		else if (tStr2.starts_with("-ns")) {
 			gs.cmd_nosave = 1;
@@ -440,7 +440,7 @@ int main(int argc, char** argv) {
 	ReadOptionstrFile(gs.txtStruct, fs::make_preferred("LR2files/Config/optionstr.csv").data());
 	gs.audio.is_fmod_disabled = gs.config.sound.disablefmod;
 	if (gs.config.sound.disablefmod != 0) {
-		gs.config.select.preview = 0;
+		gs.config.select.isPreview = false;
 	}
 	SetHPtimerFlag(gs.config.system.hptimer == 1);
 	SetManualTimerFlag(&gs.timer1, 0);

@@ -2702,7 +2702,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 		}
 	}
 
-	if(g->config.select.preview == 1){
+	if(g->config.select.isPreview){
 		if (GetTimeLapse(11, &g->timer1) >= 500.0 && g->gameplay.previewStatus == 0 &&
 				g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5 &&
 				g->sSelect.bmsList[g->sSelect.cur_song].courseStageCount == 0 &&
