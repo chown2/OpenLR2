@@ -452,9 +452,9 @@ struct CONFIG_SELECT {
 	int levelbarflash_7{};
 	int levelbarflash_5{};
 	int levelbarflash_9{};
-	int disabledifficultyfilter{};
+	bool disableDifficultyFilter{};
 	int preview{};
-	int disablesubtitle{};
+	bool disableSubtitle{};
 };
 
 struct CONFIG_SKIN {

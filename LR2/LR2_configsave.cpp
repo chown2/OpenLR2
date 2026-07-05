@@ -454,13 +454,13 @@ int WriteConfigXml(game *g, const char *filename){
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "levelbarflash_9", (g->config).select.levelbarflash_9, "levelbarflash_9");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disabledifficultyfilter", (g->config).select.disabledifficultyfilter, "disabledifficultyfilter");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disabledifficultyfilter", (int)(g->config).select.disableDifficultyFilter, "disabledifficultyfilter");
 	fputs(buf, pFile);
 
 	sprintf(buf, "\t\t<%s>%d</%s>\n", "preview", (g->config).select.preview, "preview");
 	fputs(buf, pFile);
 
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablesubtitle", (g->config).select.disablesubtitle, "disablesubtitle");
+	sprintf(buf, "\t\t<%s>%d</%s>\n", "disablesubtitle", (int)(g->config).select.disableSubtitle, "disablesubtitle");
 	fputs(buf, pFile);
 	fputs("\t</select>\n", pFile);
 	
@@ -1031,10 +1031,10 @@ int ReadConfig(game* g, const char* filepath) {
 	ReadXml_Int("config", "select", "levelbarflash_5", 9, &g->config.select.levelbarflash_5, hXml);
 	ReadXml_Int("config", "select", "levelbarflash_9", 42, &g->config.select.levelbarflash_9, hXml);
 	ReadXml_Int("config", "select", "preview", 1, &g->config.select.preview, hXml);
-	ReadXml_Int("config", "select", "disablesubtitle", 0, &g->config.select.disablesubtitle, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "disablesubtitle", false, &g->config.select.disableSubtitle, hXml);
 	ReadXml_PositiveIntAsBool("config", "select", "difficultychangetype", false, &g->config.select.difficultyChangeType, hXml);
 	ReadXml_Int("config", "select", "folderlamp", 0, &g->config.select.folderlamp, hXml);
-	ReadXml_Int("config", "select", "disabledifficultyfilter", 0, &g->config.select.disabledifficultyfilter, hXml);
+	ReadXml_PositiveIntAsBool("config", "select", "disabledifficultyfilter", false, &g->config.select.disableDifficultyFilter, hXml);
 	ReadXml_Int("config", "system", "thread", 0, &g->config.system.thread, hXml);
 	ReadXml_Int("config", "sound", "bufferlength", 384, &g->config.sound.bufferlength, hXml);
 	ReadXml_Int("config", "sound", "numbuffers", 4, &g->config.sound.numbuffers, hXml);

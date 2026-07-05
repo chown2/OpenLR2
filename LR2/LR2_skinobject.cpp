@@ -168,11 +168,11 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			return ret;
 
 		case 46:
-			if (gs->config.select.disabledifficultyfilter == 0) return ret;
+			if (!gs->config.select.disableDifficultyFilter) return ret;
 			break;
 
 		case 47:
-			if (gs->config.select.disabledifficultyfilter == 1) return ret;
+			if (gs->config.select.disableDifficultyFilter) return ret;
 			break;
 
 		case 50:
@@ -537,27 +537,27 @@ bool GetOptionFlag_dst(game *gs, int option) {
 			break;
 
 		case 150:
-			if (gs->config.select.disabledifficultyfilter == 1) return ret;
+			if (gs->config.select.disableDifficultyFilter) return ret;
 			if (gs->sSelect.metaSelected.difficulty == 0) return ret;
 			break;
 		case 151:
-			if (gs->config.select.disabledifficultyfilter) return !ret;
+			if (gs->config.select.disableDifficultyFilter) return !ret;
 			if (gs->sSelect.metaSelected.difficulty == 1) return ret;
 			break;
 		case 152:
-			if (gs->config.select.disabledifficultyfilter) return !ret;
+			if (gs->config.select.disableDifficultyFilter) return !ret;
 			if (gs->sSelect.metaSelected.difficulty == 2) return ret;
 			break;
 		case 153:
-			if (gs->config.select.disabledifficultyfilter) return !ret;
+			if (gs->config.select.disableDifficultyFilter) return !ret;
 			if (gs->sSelect.metaSelected.difficulty == 3) return ret;
 			break;
 		case 154:
-			if (gs->config.select.disabledifficultyfilter) return !ret;
+			if (gs->config.select.disableDifficultyFilter) return !ret;
 			if (gs->sSelect.metaSelected.difficulty == 4) return ret;
 			break;
 		case 155:
-			if (gs->config.select.disabledifficultyfilter) return !ret;
+			if (gs->config.select.disableDifficultyFilter) return !ret;
 			if (gs->sSelect.metaSelected.difficulty == 5) return ret;
 			break;
 

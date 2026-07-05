@@ -422,7 +422,7 @@ int main(int argc, char** argv) {
 	gs.sSelect.titleflash = gs.config.jukebox.titleflash;
 	gs.config.select.titleflash = gs.config.jukebox.titleflash;
 	if (gs.config.play.bga == 3) gs.config.play.bga = 1;
-	if (gs.config.select.disabledifficultyfilter == 1) gs.config.select.ignoreDifficultyAll = false;
+	if (gs.config.select.disableDifficultyFilter) gs.config.select.ignoreDifficultyAll = false;
 	memcpy(&gs.sSelect.filter, &gs.config.select, sizeof(CONFIG_SELECT));
 	{
 		CSTR newPath;
@@ -2192,10 +2192,10 @@ int main(int argc, char** argv) {
 					}
 				}
 				else {
-					if (gs.config.select.disabledifficultyfilter == 0) printfDx("カーソルキー↑↓ 難度カテゴリの変更\nカーソルキー←→ レベルの変更\n");
+					if (!gs.config.select.disableDifficultyFilter) printfDx("カーソルキー↑↓ 難度カテゴリの変更\nカーソルキー←→ レベルの変更\n");
 					else printfDx("カーソルキー←→ レベルの変更\n");
 
-					if (gs.KeyInput.inputID[KEY_INPUT_UP] == 1 && gs.config.select.disabledifficultyfilter == 0) {
+					if (gs.KeyInput.inputID[KEY_INPUT_UP] == 1 && !gs.config.select.disableDifficultyFilter) {
 						gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty--;
 
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty >= 6)
@@ -2209,7 +2209,7 @@ int main(int argc, char** argv) {
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty != gs.config.select.difficulty && gs.config.select.difficulty)
 							gs.config.select.difficulty = gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty;
 					}
-					else if (gs.KeyInput.inputID[KEY_INPUT_DOWN] == 1 && gs.config.select.disabledifficultyfilter == 0) {
+					else if (gs.KeyInput.inputID[KEY_INPUT_DOWN] == 1 && !gs.config.select.disableDifficultyFilter) {
 						gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty++;
 
 						if (gs.sSelect.bmsList[gs.sSelect.cur_song].difficulty >= 6)

@@ -2645,7 +2645,7 @@ int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *dif
 				qsort(ss->prevList, ss->prevListCount, sizeof(SONGDATA), CMP_SongDataByDirectory);
 				break;
 			case 1:
-				if ((EnabledInsane == 0 || ss->filter.disabledifficultyfilter == 0) && ss->isExLevel == 0) {
+				if ((EnabledInsane == 0 || !ss->filter.disableDifficultyFilter) && ss->isExLevel == 0) {
 					qsort(ss->prevList, count, sizeof(SONGDATA), CMP_SongDataByDifficulty);
 				}
 				else {

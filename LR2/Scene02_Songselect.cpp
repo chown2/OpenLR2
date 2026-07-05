@@ -2144,7 +2144,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					}
 				}
 			}
-			else if (g->config.select.disabledifficultyfilter == 0 && g->sSelect.panel != 1
+			else if (!g->config.select.disableDifficultyFilter && g->sSelect.panel != 1
 				&& ((g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1 || g->KeyInput.p1_buttonInput[13] == 1 || g->KeyInput.p2_buttonInput[13] == 1) && !g->config.select.control)
 				&& g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5) {
 
@@ -2202,7 +2202,7 @@ void SubProcI_Select(game *g, sqlite3 *sql) {
 					SetObjectStrings_SongSelect(g);
 				}
 			}
-			else if (g->config.select.disabledifficultyfilter == 1 && g->sSelect.panel != 1
+			else if (g->config.select.disableDifficultyFilter && g->sSelect.panel != 1
 				&& ((g->KeyInput.inputID[KEY_INPUT_RIGHT] == 1 || g->KeyInput.p1_buttonInput[13] == 1 || g->KeyInput.p2_buttonInput[13] == 1) && !g->config.select.control)
 				&& g->sSelect.bmsList[g->sSelect.cur_song].keymode >= 5) {
 
@@ -2615,7 +2615,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 						if (g->net.rankingData.showRanking == 1) 
 							AddDrawingBuffer_Numbers(&g->skstruct.drBuf, &g->skstruct.src_BAR_LEVEL[6], &g->skstruct.dst_BAR_LEVEL[6], &g->timer1, g->sSelect.bmsList[bar].level, dstd3.x, dstd3.y);
 						
-						else if (g->config.select.disabledifficultyfilter == 1 && g->net.rankingData.showRanking == 0) {
+						else if (g->config.select.disableDifficultyFilter && g->net.rankingData.showRanking == 0) {
 							if (g->sSelect.bmsList[bar].exlevel > 0 && (g->config.jukebox.customfolder & 0x80) != 0) 
 								AddDrawingBuffer_Numbers(&g->skstruct.drBuf, &g->skstruct.src_BAR_LEVEL[5], &g->skstruct.dst_BAR_LEVEL[5], &g->timer1, g->sSelect.bmsList[bar].exlevel, dstd3.x, dstd3.y);
 							
@@ -2625,7 +2625,7 @@ int ProcI_Select(game *g, sqlite3 *sql) {
 						else if (g->sSelect.isExLevel != 0 && g->net.rankingData.showRanking == 0) 
 							AddDrawingBuffer_Numbers(&g->skstruct.drBuf, &g->skstruct.src_BAR_LEVEL[5], &g->skstruct.dst_BAR_LEVEL[5], &g->timer1, g->sSelect.bmsList[bar].exlevel, dstd3.x, dstd3.y);
 
-						else if (g->sSelect.bmsList[bar].difficulty >= 0 && g->sSelect.bmsList[bar].folderType <= 5 && g->config.select.disabledifficultyfilter == 0) 
+						else if (g->sSelect.bmsList[bar].difficulty >= 0 && g->sSelect.bmsList[bar].folderType <= 5 && !g->config.select.disableDifficultyFilter) 
 							AddDrawingBuffer_Numbers(&g->skstruct.drBuf, &g->skstruct.src_BAR_LEVEL[g->sSelect.bmsList[bar].difficulty], &g->skstruct.dst_BAR_LEVEL[g->sSelect.bmsList[bar].difficulty], &g->timer1, g->sSelect.bmsList[bar].level, dstd3.x, dstd3.y);
 
 						else 
@@ -2865,7 +2865,7 @@ int InitSelectBySearchResult(game *g, sqlite3 *sql) {
 			}
 		}
 
-		if (g->config.select.disabledifficultyfilter == 1) {
+		if (g->config.select.disableDifficultyFilter) {
 			g->sSelect.filterDifficulty = 0;
 			g->config.select.difficulty = 0;
 		}
