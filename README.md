@@ -36,7 +36,7 @@ https://web.archive.org/web/20190802100906/http://www.dream-pro.info/~lavalse/LR
 - UTF-8 support – Essentially means you don't need to change the locale in Windows settings to play.
 - Base62 support – support more keysounds on some newer charts that require them.
 - Frame Limiter - Replace vSync, which has a problem with tickrate.
-- Unrandomizer - Input '/random 1357246' or any number you want into search bar.
+- Unrandomizer - Input '/random 1357246' or any number you want into search bar. Input '/random 0' to reset the unrandomizer.
 
 ## How do I use HD skins with OpenLR2?
 
