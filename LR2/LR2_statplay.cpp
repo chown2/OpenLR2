@@ -268,8 +268,6 @@ int CheckMission(game *g){
 
 	if (g->config.play.assist[PLAYER_1] == 1) 
 		return 0;
-	if (g->config.play.assist[PLAYER_1] == 2) //TOFIX:assist=2 is not defined, maybe some extra feature planed
-		return 0;
 
 	gauge = g->gameplay.player[PLAYER_1].gaugeType;
 
