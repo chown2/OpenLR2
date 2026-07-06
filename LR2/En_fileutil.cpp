@@ -201,7 +201,7 @@ time_t GetUnixtimeFromFiletime(FILETIME &filetime) {
 
 // Seconds since the Unix Epoch
 time_t GetFileUnixtime(CSTR str) {
-	if (str.right(1).isSame("\\") ||  str.right(1).isSame("/")) {
+	if (str.ends_with('\\') ||  str.ends_with('/')) {
 		str.nullAtPos(str.length() - 1);
 	}
 
@@ -324,12 +324,12 @@ bool GetDifficultyFromToken(CSTR str, CSTR *oLeft, CSTR *oRight, CSTR tokenL, CS
 	//check token existence from rightside
 	for (str1.nullAtPos(str1.length() - 1); str1.length() > 1; str1.nullAtPos(str1.length() - 1)) {
 		if (posL != -1) break;
-		if (str1.right(tokenL.length()).isSame(&tokenL)) {
+		if (str1.ends_with(tokenL.body)) {
 			posL = str1.length() - tokenL.length();
 		}
 	}
 	if (posL < 1) return false;
-	if (!str.right(tokenR.length()).isSame(&tokenR)) return false;
+	if (!str.ends_with(tokenR.body)) return false;
 
 	oLeft->assign( str.left(posL).trimWhiteSpace() );
 	oRight->assign( str.right(str.length() - oLeft->length()).trimWhiteSpace() );
@@ -372,12 +372,12 @@ bool GetDifficulty(CSTR *str, CSTR head, CSTR *oLeft, CSTR *oRight, int *pDiffic
 	CSTR upstr(*str);
 	upstr.upper();
 
-	if (upstr.right(4).isSame("HARD")) *pDifficulty = 2;
-	if (upstr.right(5).isSame("HYPER")) *pDifficulty = 3;
-	if (upstr.right(7).isSame("ANOTHER")) *pDifficulty = 4;
-	if (upstr.right(4).isSame("EASY")) *pDifficulty = 1;
-	if (upstr.right(2).isSame("EX")) *pDifficulty = 4;
-	if (upstr.right(6).isSame("MANIAC")) *pDifficulty = 4;
+	if (upstr.ends_with("HARD")) *pDifficulty = 2;
+	if (upstr.ends_with("HYPER")) *pDifficulty = 3;
+	if (upstr.ends_with("ANOTHER")) *pDifficulty = 4;
+	if (upstr.ends_with("EASY")) *pDifficulty = 1;
+	if (upstr.ends_with("EX")) *pDifficulty = 4;
+	if (upstr.ends_with("MANIAC")) *pDifficulty = 4;
 
 	str->lastCut(str->length() - head.length() - 1);
 	if (GetDifficultyFromToken(*str, oLeft, oRight, CSTR("("), CSTR(")"), pDifficulty)) {} //test this method
@@ -447,7 +447,7 @@ bool IsLR2Folder(CSTR str) {
 
 // May include wildcard, like "LR2files/CustomFolder/*.txt
 bool IsFileExist(CSTR path) {
-	if (path.right(1).isSame("\\") || path.right(1).isSame("/")) {
+	if (path.ends_with('\\') || path.ends_with('/')) {
 		path.nullAtPos(path.length() - 1);
 	}
 
@@ -471,7 +471,7 @@ bool IsFileExist(CSTR path) {
 // \retval 1 not_exist
 // \retval 2 changed
 int IsFileChanged(unsigned int oldUnixtime, CSTR filepath, int *oNewtime) { 
-	if (filepath.right(1).isSame("\\") || filepath.right(1).isSame("/")) {
+	if (filepath.ends_with('\\') || filepath.ends_with('/')) {
 		filepath.nullAtPos(filepath.length() - 1);
 	}
 
@@ -492,18 +492,11 @@ int IsFileChanged(unsigned int oldUnixtime, CSTR filepath, int *oNewtime) {
 
 int DealWhiteSpace(CSTR *str) {
 	bool bFlag = false;
-	do{
-		if (str->right(1).isSame(" ")) 	bFlag = true;
-		else if (str->right(1).isSame("\t")) bFlag = true;
-		else if (str->right(1).isSame("\n")) bFlag = true;
-		else if (str->right(1).isSame("\r")) bFlag = true;
-		else bFlag = false;
-
-		if (bFlag == false) break;
+	while (str->ends_with(' ') || str->ends_with('\t') || str->ends_with('\n') || str->ends_with('\r')) {
 		str->nullAtPos(str->length() - 1);
-	} while (true);
+	}
 	while (true) {
-		if (str->left(1).isSame(",")) {
+		if (str->starts_with(',')) {
 			if (str->length() < 3) return 1;
 		}
 		else {
@@ -532,14 +525,13 @@ int SplitCSV(CSTR csvStr, CSVbuf *oBuf, const char */*splitter*/) {
 		}
 		else if (pos < 0) {
 			oBuf->str[i].assign(&csvStr);
-			oBuf->str[i].left(1).isSame("\"");
-			if (oBuf->str[i].left(1).isSame("\"")) {
-				if (oBuf->str[i].right(1).isSame("\"")) {
+			if (oBuf->str[i].starts_with('\"')) {
+				if (oBuf->str[i].ends_with("\"")) {
 					oBuf->str[i].nullAtPos(oBuf->str[i].length() - 1);
 					oBuf->str[i].lastCut(oBuf->str[i].length() - 1);
 				}
 			}
-			if (oBuf->str[i].left(1).isSame("!")) {
+			if (oBuf->str[i].starts_with('!')) {
 				oBuf->str[i].lastCut(oBuf->str[i].length() - 1);
 				oBuf->val[i] = -atol(oBuf->str[i]);
 			}
@@ -552,13 +544,13 @@ int SplitCSV(CSTR csvStr, CSVbuf *oBuf, const char */*splitter*/) {
 		else {
 			//logic arranged
 			oBuf->str[i].assign( csvStr.left(pos) );
-			if ( oBuf->str[i].left(1).isSame("\"") ){
-				if (oBuf->str[i].right(1).isSame("\"")) {
+			if ( oBuf->str[i].starts_with('\"') ){
+				if (oBuf->str[i].ends_with('\"')) {
 					oBuf->str[i].nullAtPos(oBuf->str[i].length() - 1);
 					oBuf->str[i].lastCut(oBuf->str[i].length() - 1);
 				}
 			}
-			if (oBuf->str[i].left(1).isSame("!")) {
+			if (oBuf->str[i].starts_with('!')) {
 				oBuf->str[i].lastCut(oBuf->str[i].length() - 1);
 				oBuf->val[i] = -atol(oBuf->str[i]);
 			}
@@ -871,7 +863,7 @@ CSTR GetRandomFile(CSTR path, char fOnlyName) {
 	int count;
 
 	//call function if wildcard is on directory
-	if (path.findStrPos("*/") != -1 || path.findStrPos("*\\") != -1 || path.right(1).isSame("*")) {
+	if (path.findStrPos("*/") != -1 || path.findStrPos("*\\") != -1 || path.ends_with("*")) {
 		return GetRandomFileOnDir(path, fOnlyName);
 	}
 
