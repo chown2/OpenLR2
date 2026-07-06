@@ -118,6 +118,11 @@ inline int SetUseFPUPreserveFlag(int Flag) {
   return -1;
 }
 
+inline int SetUseTSFFlag(int UseFlag) {
+  ErrorLogFmtAdd("STUB!!! SetUseTSFFlag(UseFlag=%d)", UseFlag);
+  return -1;
+}
+
 inline int SetUseDirectInputFlag(int UseFlag) {
   ErrorLogFmtAdd("STUB!!! SetUseDirectInputFlag(UseFlag=%d)", UseFlag);
   return -1;

@@ -496,6 +496,11 @@ int main(int argc, char** argv) {
 		ErrorLogFmtAdd("動画作成モードなのでVSyncを待ちます。\n");
 	}
 	SetMultiThreadFlag(1);
+	// Disable TSF (Text Services Framework) usage.
+	// Makes the game show IME suggestions using system's GUI, like LR2.
+	// chown2: updated DxLib probably expects us to draw suggestions ourselves otherwise, maybe even using something
+	// like DrawIMEInputString. For now let's just do in the LR2 way.
+	SetUseTSFFlag(FALSE);
 	SetUseFPUPreserveFlag(1);
 	SetUseDirectInputFlag(1); //DXLIBVER: not in original, but we need it to make same reaction.
 	if (gs.config.system.softwarerendering == 1) {
