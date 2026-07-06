@@ -300,7 +300,10 @@ int main(int argc, char** argv) {
 	}
 	int lr1ir = gs.config.network.lr1ir;
 	int lr2ir = gs.config.network.lr2ir;
-	ReadMIDI(&gs, fs::make_preferred("LR2files/Config/midi.xml").data());
+	if (!ReadMIDI(&gs, fs::make_preferred("LR2files/Config/midi.xml").data())) {
+		MessageBoxA(NULL, "Failed to read MIDI key config", "エラー", 0);
+		return -1;
+	}
 	gs.directoryPath.fillzero();
 	gs.cmd_directplay = false;
 	gs.cmd_auto = 0;

@@ -1,7 +1,11 @@
 #pragma once
+
 #ifdef _MSC_VER
 #pragma warning(disable:4996)
 #endif
+
+#include <string_view>
+
 #include <stdio.h>
 #include <malloc.h>
 typedef unsigned int uint;
@@ -62,10 +66,9 @@ class CSTR {
 		CSTR getFilename();
 
 		// Methods with same interface as std::string for easier transition later
-		const char* c_str() const {
-			return body;
-		};
-		bool starts_with(const char*);
+		[[nodiscard]] const char* c_str() const { return body; };
+		[[nodiscard]] bool ends_with(auto str) { return body ? std::string_view{body}.ends_with(str) : false; }
+		[[nodiscard]] bool starts_with(auto str) { return body ? std::string_view{body}.starts_with(str) : false; }
 };
 
 char *cstrSprintf(CSTR *str, const char *format, ...)

@@ -1,12 +1,15 @@
 ﻿#include "En_xml.h"
-#include <tinyxml.h>
+
 #include "En_fileutil.h"
+
+#include <filesystem>
 #include <fstream>
 #include <ios>
 #include <sstream>
 #include <string>
 
 #include <DxLib.h>
+#include <tinyxml.h>
 
 void file_utf_to_ansi(const char* filepath) {
 	std::string ansi;
@@ -24,7 +27,11 @@ void file_utf_to_ansi(const char* filepath) {
 
 bool parse_cp932_xml(TiXmlDocument* xml, const char* filepath) {
 	std::ifstream file(filepath);
-	if (!file.good()) return false;
+	if (!file.good()) {
+		if (!std::filesystem::exists(filepath)) return true;
+		ErrorLogFmtAdd("Failed to open xml file: %s\n", filepath);
+		return false;
+	}
 	std::stringstream total;
 	total << file.rdbuf();
 	std::string totalUtf = ansi2utf(total.str(), 932);
