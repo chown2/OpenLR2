@@ -1,8 +1,6 @@
 ﻿#include "LR2_configsave.h"
 #include "En_xml.h"
-#include "filesystem.h"
 #include <filesystem>
-#include <fstream>
 #include <iterator>
 
 static void adjust_input_filepath(CSTR& path)
@@ -62,7 +60,6 @@ int ReadKeyConfig(game *game, const char *FilePath) {
 	hXml = new TiXmlDocument(FilePath);
 	if (!parse_cp932_xml(hXml, FilePath)) {
 		delete(hXml);
-		hXml = NULL;
 		return 0;
 	}
 
@@ -104,7 +101,7 @@ int ReadMIDI(game *gs, const char *filepath){
 	hXml = new TiXmlDocument(filepath);
 	if (!parse_cp932_xml(hXml, filepath)) {
 		delete(hXml);
-		hXml = NULL;
+		return 0;
 	}
 	ReadXml_Int("midi", "control", "S01", 0, (gs->config).input.midi_control + 1, hXml);
 	ReadXml_Int("midi", "control", "S02", 0, (gs->config).input.midi_control + 2, hXml);
@@ -783,7 +780,7 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	hXml = new TiXmlDocument(FilePath);
 	if (!parse_cp932_xml(hXml, FilePath)) {
 		delete(hXml);
-		hXml = NULL;
+		return 0;
 	}
 
 	ReadXml_Int("skincustomize", "rate", "x", 100, &(sku->adjust).rate_x, hXml);
@@ -976,7 +973,7 @@ int ReadConfig(game* g, const char* filepath) {
 	hXml->SetCondenseWhiteSpace(false);
 	if (!parse_cp932_xml(hXml, filepath)) {
 		delete(hXml);
-		hXml = NULL;
+		return 0;
 	}
 
 	ReadXml_Int("config", "system", "screenmode", 0, &g->config.system.screenmode, hXml);
@@ -1179,7 +1176,7 @@ int ReadOpenLr2Config(game* g, const char* filepath) {
 	TiXmlDocument *hXml = new TiXmlDocument(filepath);
 	if (!parse_cp932_xml(hXml, filepath)) {
 		delete(hXml);
-		hXml = nullptr;
+		return 0;
 	}
 	ReadXml_Int("config", "system", "resolution", 0, &g->config.system.resolution, hXml);
 	ReadXml_PositiveIntAsBool("config", "play", "gaugeautoshift", false, &g->config.play.m_gas, hXml);
