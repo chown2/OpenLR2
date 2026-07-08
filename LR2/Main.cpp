@@ -1110,7 +1110,7 @@ int main(int argc, char** argv) {
 							
 					StopSysSound(&gs);
 					if (gs.config.play.is_extra && gs.audio.sysSound.exdecide.load)
-						PlaySound(&gs.audio, &gs.audio.sysSound.exselect, gs.audio.chnBgm, -1);
+						PlaySound(&gs.audio, &gs.audio.sysSound.exdecide, gs.audio.chnBgm, -1);
 					else
 						PlaySound(&gs.audio, &gs.audio.sysSound.decide, gs.audio.chnBgm, -1);
 					break; }
