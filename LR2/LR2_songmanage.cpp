@@ -621,7 +621,7 @@ int UpdateSongDataTag(SONGDATA *song, sqlite3 *sql){
 			song->hash.body, song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->difficulty, song->keymode, song->exlevel);
 		if (SQL_Run(query, sql) != 0) {
 			sqlite3_snprintf(0x400, query, "UPDATE tag SET title=\'%q\',subtitle=\'%q\',genre=\'%q\',artist=\'%q\',subartist=\'%q\',tag=\'%q\',level=%d,difficulty=%d,mode=%d WHERE hash = \'%q\'",
-				song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->filepath.body, song->keymode, song->hash.body);
+				song->title.body, song->subtitle.body, song->genre.body, song->artist.body, song->subartist.body, song->tag.body, song->level, song->difficulty, song->keymode, song->hash.body);
 			SQL_Run(query, sql);
 		}
 	}
