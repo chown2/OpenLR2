@@ -33,7 +33,10 @@ public:
 	// Get the result with \ref GetResult
 	void BeginResultIr(game& game, sqlite3* sql, int player, std::string ghost);
 	void Initialize(const std::filesystem::path& directory, std::string activeProvider);
-	std::string Login();
+	// Call Login() on each CustomIR in parallel.
+	// You must wait until all std::future are resolved.
+	// \return [{name, login_result}]
+	std::vector<std::pair<std::string_view, std::future<bool>>> Login();
 	[[nodiscard]] bool IsDisplayIrOnline() const;
 	// \note Delegates to the display IR
 	// \retval "" - Fail
@@ -47,7 +50,6 @@ private:
 	std::vector<std::future<std::optional<openlr2::IRRankResult>>> mDiscardedResultIrFutures;
 	std::future<std::optional<openlr2::IRRankResult>> mResultIrFuture;
 	std::string mDisplayIr;
-	std::vector<std::string> mLoggedInIrs;
 };
 
 namespace openlr2 {

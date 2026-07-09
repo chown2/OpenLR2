@@ -7,6 +7,7 @@
 #include "LR2_version.h"
 #include "En_dxlibstub.h"
 
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -523,6 +524,36 @@ int main(int argc, char** argv) {
 	InitInputStructure(&gs.KeyInput);
 	SetFirstSkins(&gs);
 	clsDx();
+
+	int loadingGrHandle = LoadGraph(fs::make_preferred("LR2files/Config/loading.bmp").data(), 0);
+
+	static auto isFutureReady = [](const auto& future) {
+		return future.valid() && future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
+	};
+	{
+		std::error_code ec; // ignore errors
+		std::filesystem::path path(fs::make_preferred("LR2files/CustomIRs").data());
+		std::filesystem::create_directories(path, ec);
+		gs.net.customIR.Initialize(path, gs.config.network.displayIr.body ? gs.config.network.displayIr.body : "");
+	}
+	auto ellipsis = [](size_t i, size_t count, size_t slow_down_factor) { return std::string((i / slow_down_factor % count) + 1, '.'); };
+	auto loginResult = gs.net.customIR.Login();
+	{
+		size_t i{};
+		while(!std::ranges::all_of(loginResult, isFutureReady, &std::pair<std::string_view, std::future<bool>>::second))
+		{
+			if(loadingGrHandle > 0)
+				DrawExtendGraph(0, 0, resX, resY, loadingGrHandle, 0);
+			printfDx("Logging into internet ranking:\n");
+			for(auto& [name, future] : loginResult)
+				printfDx("%.*s%s\n", static_cast<int>(name.size()), name.data(), isFutureReady(future) ? " - done!" : ellipsis(i, 3, 20).c_str());
+			ScreenFlip();
+			clsDx();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			++i;
+		}
+	}
+
 	if (gs.config.network.lr2ir == 1 && gs.is_starter == 0 && gs.cmd_nosave == 0) {
 		gs.net.IR_pass = gs.config.player.pass;
 		gs.net.IR_name = gs.config.player.id;
@@ -538,16 +569,6 @@ int main(int argc, char** argv) {
 		printfDx(gs.net.request_result);
 		ErrorLogAdd(gs.net.request_result);
 	}
-	{
-		std::error_code ec; // ignore errors
-		std::filesystem::path path(fs::make_preferred("LR2files/CustomIRs").data());
-		std::filesystem::create_directories(path, ec);
-		gs.net.customIR.Initialize(path, gs.config.network.displayIr.body ? gs.config.network.displayIr.body : "");
-	}
-	const std::string loginResult = gs.net.customIR.Login();
-	ErrorLogAdd(loginResult.c_str());
-
-	int loadingGrHandle = LoadGraph(fs::make_preferred("LR2files/Config/loading.bmp").data(), 0);
 
 	memcpy(gs.config.jukebox.rival, gs.net.rivals, 4 * 20);
 	sqlite3* sql3;
@@ -566,7 +587,9 @@ int main(int argc, char** argv) {
 			gs.net.ApplyInsaneList();
 		}
 		if (gs.is_starter == false) {
-			printfDx(loginResult.c_str());
+			for (auto& res : loginResult) {
+				printfDx("[%.*s]: %s\n", static_cast<int>(res.first.size()), res.first.data(), res.second.get() ? "Logged in" : "Failed to log in");
+			}
 			printfDx("\n");
 			printfDx("%s\n", openlr2::versionName);
 			printfDx("PUSH ANY KEY\n");
