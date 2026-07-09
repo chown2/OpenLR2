@@ -529,6 +529,8 @@ int main(int argc, char** argv) {
 		gs.net.IR_ID = gs.gameplay.playerstat.irid;
 		if (gs.net.LR2IR_Login(gs.cmd_directplay) == 1) {
 			SaveIRID(gs.net.rankingData.myID, gs.config.player.id);
+		} else {
+			gs.net.rankingData.myID = gs.net.IR_ID;
 		}
 		printfDx(gs.net.request_result);
 		ErrorLogAdd(gs.net.request_result);
