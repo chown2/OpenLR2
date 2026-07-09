@@ -55,7 +55,7 @@ int InitDST(DSTstruct *dst) {
 	return 1;
 }
 
-int ReadDST(DSTstruct *dst, CSVbuf *csv, int order){
+static int ReadDST(DSTstruct *dst, CSVbuf *csv, int order, int line){
 
 	//parameters only for first line
 	if (dst->dstCount == 0) {
@@ -90,7 +90,22 @@ int ReadDST(DSTstruct *dst, CSVbuf *csv, int order){
 	dst->draw[dst->dstCount].r = csv->val[9];
 	dst->draw[dst->dstCount].g = csv->val[10];
 	dst->draw[dst->dstCount].b = csv->val[11];
-	dst->draw[dst->dstCount].blend = csv->val[12];
+	dst->draw[dst->dstCount].blend = [&](int blend) {
+		switch (blend) {
+		case 0: return DX_BLENDMODE_NOBLEND;
+		case 1: return DX_BLENDMODE_ALPHA;
+		case 2: return DX_BLENDMODE_ADD;
+		case 3: return DX_BLENDMODE_SUB;
+		case 4: return DX_BLENDMODE_MUL;
+		case 5: return DX_BLENDMODE_SUB2;
+		case 9: return DX_BLENDMODE_INVDESTCOLOR;
+		case 10: return DX_BLENDMODE_INVSRC;
+		case 11: return DX_BLENDMODE_MULA;
+		default: 
+			ErrorLogFmtAdd("Invalid blend mode %d for %s at line %d! Defaulting to 1...\n", blend, csv->str[0], line);
+			return DX_BLENDMODE_ALPHA;
+		}
+	}(csv->val[12]);
 	dst->draw[dst->dstCount].filter = csv->val[13];
 	dst->draw[dst->dstCount].angle = (float)csv->val[14];
 	dst->draw[dst->dstCount].center = csv->val[15];
@@ -100,7 +115,7 @@ int ReadDST(DSTstruct *dst, CSVbuf *csv, int order){
 	return 1;
 }
 
-int ReadSRC(SRCstruct *src, CSVbuf *csv, skstruct *sk){
+static int ReadSRC(SRCstruct *src, CSVbuf *csv, skstruct *sk){
 	src->n = csv->val[1];
 	src->cycle = csv->val[9];
 	src->timer = csv->val[10];
@@ -149,7 +164,7 @@ bool CheckIndexRange(int index, int min, int max, int line, char *str){
 	return false;
 }
 
-int ReadSRC_BAR_TITLE(SRCstruct *src, CSVbuf *csv, skstruct *sk){
+static int ReadSRC_BAR_TITLE(SRCstruct *src, CSVbuf *csv, skstruct *sk){
 	src->n = csv->val[1];
 	src->fontHandle = sk->fontHandle[csv->val[2]];
 	src->cycle = csv->val[2];
@@ -1009,7 +1024,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						if (sk->image.srcSize <= 0) break;
 						int oldDstCount = sk->image.dst[sk->image.srcSize - 1].dstCount;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->image.dst[sk->image.srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->image.dst[sk->image.srcSize - 1], &csv, tSkin_num, line);
 						if (sk->image.dst[sk->image.srcSize - 1].dstCount < 1 || sk->image.dst[sk->image.srcSize - 1].dataSize < 1) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。DSTの一番最初がエラーを起こしている可能性があります。\n", line, fBuf.body);
 						}
@@ -1036,7 +1051,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_TEXT"_hash:{
 						if (sk->otherObject[0].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[0].dst[sk->otherObject[0].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[0].dst[sk->otherObject[0].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_SLIDER"_hash:{
@@ -1054,7 +1069,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_SLIDER"_hash:{
 						if (sk->otherObject[2].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[2].dst[sk->otherObject[2].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[2].dst[sk->otherObject[2].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_BUTTON"_hash:{
@@ -1072,7 +1087,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BUTTON"_hash:{
 						if (sk->otherObject[1].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[1].dst[sk->otherObject[1].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[1].dst[sk->otherObject[1].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_ONMOUSE"_hash:{
@@ -1090,7 +1105,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_ONMOUSE"_hash:{
 						if (sk->otherObject[3].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[3].dst[sk->otherObject[3].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[3].dst[sk->otherObject[3].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_BGA"_hash:{
@@ -1108,7 +1123,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BGA"_hash:{
 						if (sk->otherObject[4].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[4].dst[sk->otherObject[4].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[4].dst[sk->otherObject[4].srcSize - 1], &csv, tSkin_num, line);
 						tSkin_num++;
 						break;
 					}
@@ -1127,7 +1142,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_NUMBER"_hash:{
 						if (sk->otherObject[6].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[6].dst[sk->otherObject[6].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[6].dst[sk->otherObject[6].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_MASK"_hash:{
@@ -1139,7 +1154,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_MASK"_hash:{
 						if (sk->otherObject[7].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[7].dst[sk->otherObject[7].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[7].dst[sk->otherObject[7].srcSize - 1], &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_BARGRAPH"_hash:{
@@ -1157,7 +1172,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BARGRAPH"_hash:{
 						if (sk->otherObject[5].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->otherObject[5].dst[sk->otherObject[5].srcSize - 1], &csv, tSkin_num);
+						ReadDST(&sk->otherObject[5].dst[sk->otherObject[5].srcSize - 1], &csv, tSkin_num, line);
 						tSkin_num++;
 						break;
 					}
@@ -1171,14 +1186,14 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_BODY_OFF"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_BODY_OFF[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_BODY_OFF[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
 					case "#DST_BAR_BODY_ON"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_BODY_ON[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_BODY_ON[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1200,7 +1215,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_TITLE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 4, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_TITLE[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_TITLE[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1274,12 +1289,12 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					case "#DST_BAR_FLASH"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_BAR_FLASH, &csv, tSkin_num);
+						ReadDST(&sk->dst_BAR_FLASH, &csv, tSkin_num, line);
 						break;
 					}
 					case "#DST_BAR_STAGEFILE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_BAR_STAGEFILE, &csv, tSkin_num);
+						ReadDST(&sk->dst_BAR_STAGEFILE, &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_MOUSECURSOR"_hash:{
@@ -1289,7 +1304,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					case "#DST_MOUSECURSOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_MOUSECURSOR, &csv, tSkin_num);
+						ReadDST(&sk->dst_MOUSECURSOR, &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_BAR_LEVEL"_hash:{
@@ -1302,7 +1317,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_LEVEL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_LEVEL[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_LEVEL[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1379,7 +1394,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_NOTE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
-							ReadDST(&sk->dst_NOTE[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_NOTE[csv.val[1]], &csv, tSkin_num, line);
 							tSkin_num += 2;
 						}
 						break;
@@ -1395,7 +1410,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_NOWJUDGE_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWJUDGE_1P[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_NOWJUDGE_1P[csv.val[1]], &csv, tSkin_num, line);
 							sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46;
 						}
 						break;
@@ -1408,7 +1423,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					case "#DST_NOWCOMBO_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_NOWCOMBO_1P[csv.val[1]], &csv, tSkin_num);
+						ReadDST(&sk->dst_NOWCOMBO_1P[csv.val[1]], &csv, tSkin_num, line);
 						sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46; //???mistake?
 						break;
 					}
@@ -1423,7 +1438,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_NOWJUDGE_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWJUDGE_2P[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_NOWJUDGE_2P[csv.val[1]], &csv, tSkin_num, line);
 							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47;
 						}
 						break;
@@ -1439,7 +1454,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_NOWCOMBO_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWCOMBO_2P[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_NOWCOMBO_2P[csv.val[1]], &csv, tSkin_num, line);
 							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47; //???mistake?
 						}
 						break;
@@ -1454,7 +1469,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_GROOVEGAUGE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_GROOVEGAUGE[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_GROOVEGAUGE[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1468,7 +1483,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_GAUGECHART_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_GAUGECHART_1P[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_GAUGECHART_1P[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1482,7 +1497,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_GAUGECHART_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_GAUGECHART_2P[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_GAUGECHART_2P[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1496,7 +1511,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_SCORECHART"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 2, line, pFbuf)) {
-							ReadDST(&sk->dst_SCORECHART[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_SCORECHART[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1510,7 +1525,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_LINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_LINE[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_LINE[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1524,7 +1539,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_JUDGELINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_JUDGELINE[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_JUDGELINE[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1538,7 +1553,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_LAMP[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_LAMP[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1552,7 +1567,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_MY_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_MY_LAMP[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_MY_LAMP[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1566,7 +1581,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_RIVAL_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_RIVAL_LAMP[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_RIVAL_LAMP[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1580,7 +1595,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_STAR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_STAR[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_STAR[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1591,7 +1606,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					}
 					case "#DST_THUMBNAIL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_THUMBNAIL, &csv, tSkin_num);
+						ReadDST(&sk->dst_THUMBNAIL, &csv, tSkin_num, line);
 						break;
 					}
 					case "#SRC_README"_hash:{
@@ -1604,14 +1619,14 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_README"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_README[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_README[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
 					case "#DST_EVENT_LOADINGBG"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 4, line, pFbuf)) {
-							ReadDST(&sk->dst_EVENT_LOADINGBG[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_EVENT_LOADINGBG[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1623,14 +1638,14 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_EVENT_MODE_CURSOR_ON"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
-							ReadDST(&sk->dst_EVENT_MODE_CURSOR_ON[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_EVENT_MODE_CURSOR_ON[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
 					case "#DST_EVENT_MODE_CURSOR_OFF"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
-							ReadDST(&sk->dst_EVENT_MODE_CURSOR_OFF[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_EVENT_MODE_CURSOR_OFF[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1791,7 +1806,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_RANK"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_RANK[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_RANK[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1805,7 +1820,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#DST_BAR_RIVAL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
-							ReadDST(&sk->dst_BAR_RIVAL[csv.val[1]], &csv, tSkin_num);
+							ReadDST(&sk->dst_BAR_RIVAL[csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
