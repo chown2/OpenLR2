@@ -298,8 +298,6 @@ int main(int argc, char** argv) {
 		gs.config.jukebox.numOfPath = 1;
 		gs.config.jukebox.path[0].assign("BeatVocaloids/");
 	}
-	int lr1ir = gs.config.network.lr1ir;
-	int lr2ir = gs.config.network.lr2ir;
 	if (!ReadMIDI(&gs, fs::make_preferred("LR2files/Config/midi.xml").data())) {
 		MessageBoxA(NULL, "Failed to read MIDI key config", "エラー", 0);
 		return -1;
@@ -532,9 +530,6 @@ int main(int argc, char** argv) {
 		if (gs.net.LR2IR_Login(gs.cmd_directplay) == 1) {
 			SaveIRID(gs.net.rankingData.myID, gs.config.player.id);
 		}
-		else {
-			gs.config.network.lr2ir = 0;
-		}
 		printfDx(gs.net.request_result);
 		ErrorLogAdd(gs.net.request_result);
 	}
@@ -560,7 +555,7 @@ int main(int argc, char** argv) {
 			DrawExtendGraph(0, 0, resX, resY, loadingGrHandle, 0);
 		}
 		if (((unsigned char)gs.config.jukebox.customfolder & 0x80) != 0) {
-			if (gs.config.network.lr2ir == 1) {
+			if (gs.net.isOnline == 1) {
 				gs.net.GetInsaneList();
 			}
 			gs.net.ApplyInsaneList();
@@ -2481,8 +2476,6 @@ int main(int argc, char** argv) {
 	gs.config.sound.fxtarget_2 = gs.audio.param.fxChannel[2];
 	gs.config.sound.fxp1_2 = gs.audio.param.fxParam[2][0];
 	gs.config.sound.fxp2_2 = gs.audio.param.fxParam[2][1];
-	gs.config.network.lr1ir = lr1ir;
-	gs.config.network.lr2ir = lr2ir;
 	if (gs.auto2avi == 0 && gs.is_recordmode == 0 && gs.rec.recMode == 0) {
 		WriteConfigXml(&gs, fs::make_preferred("LR2files/Config/config.xml").data());
 		WriteOpenLr2ConfigXml(&gs, fs::make_preferred("LR2files/Config/openlr2-config.xml").data());
