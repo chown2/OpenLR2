@@ -1,5 +1,4 @@
 ﻿#include "LR2_songmanage.h"
-#include "Engine.h"
 #include "LR2_statlong.h"
 #include "filesystem.h"
 #include "filesystem.h"
@@ -19,7 +18,6 @@
 #endif // _WIN32
 
 int EnabledInsane;
-static constexpr auto&& IR_DERIVED_RECORD_HASH = "IR_DERIVED_RECORD";
 
 namespace {
 
@@ -468,7 +466,7 @@ int SetUndefinedDifficulty(sqlite3 *sql) {
 	char str[1024];
 	sqlite3_stmt *pStmt;
 	CSTR folder;
-	int mode, difficulty;
+	int mode{}, difficulty{};
 
 	sqlite3_prepare(sql, "SELECT difficulty,folder,mode,path FROM song ORDER BY folder,mode,karinotes", -1, &pStmt, NULL);
 	while (sqlite3_step(pStmt) == 100) {
@@ -729,7 +727,7 @@ int LoadFolderDataFromDB(CSTR query, SONGDATA *song, sqlite3 *sql, int difficult
 	size_t nowsize, maxsize;
 	int slistCount;
 	CSTR nowFolder, newFolder, workingFolder;
-	int nowMode, nowDifficulty;
+	int nowMode{}, nowDifficulty{};
 
 	key = openlr2::adjustFilterKey(*cfg_select, key);
 	if ((cfg_select->ignoredifficultyall == 1) && (difficulty == 0)) difficulty = 1;
@@ -2037,8 +2035,8 @@ int GetFolderDataFromPath(CSTR path, sqlite3 *sql) {
 int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *diffFilter, int *mode, uint sort, int rivalID, char flag) {
 
 	sqlite3_stmt *pStmt;
-	int lastreadDiff;
-	int recentKeymode;
+	int lastreadDiff{};
+	int recentKeymode{};
 
 	ss->isExLevel = 0;
 	if (query.findStrPos("exlevel") >= 0) ss->isExLevel = 1;
@@ -3033,77 +3031,6 @@ int ParseBMSMETA(BMSMETA *meta, CSTR filepath, char flag) {
 	}
 
 	fclose(pFile);
-	if (meta->difficulty == -1) {
-		CSTR sdsd(meta->filepath);
-		sdsd.left(sdsd.length() - 4); //after all, not used
-		if (sdsd.left(2).isSame("_a")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("_h")) meta->difficulty = 3;
-		if (sdsd.left(2).isSame("_m")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("_e")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("_b")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("_l")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_sa")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("_sh")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("_sm")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("_se")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_sb")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_sl")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_da")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("_dh")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("_dm")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("_de")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_db")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_dl")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("_ex")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("7a")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("7h")) meta->difficulty = 3;
-		if (sdsd.left(2).isSame("7m")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("7e")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("7b")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("7l")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("a7")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("h7")) meta->difficulty = 3;
-		if (sdsd.left(2).isSame("m7")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("e7")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("n7")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("l7")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("5a")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("5h")) meta->difficulty = 3;
-		if (sdsd.left(2).isSame("5m")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("5e")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("5b")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("5l")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("a5")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("h5")) meta->difficulty = 3;
-		if (sdsd.left(2).isSame("m5")) meta->difficulty = 4;
-		if (sdsd.left(2).isSame("e5")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("n5")) meta->difficulty = 1;
-		if (sdsd.left(2).isSame("l5")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("a14")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("h14")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("m14")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("e14")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("b14")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("l14")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("a10")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("h10")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("m10")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("e10")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("b10")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("l10")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("14a")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("14h")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("14m")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("14e")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("14b")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("10l")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("10a")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("10h")) meta->difficulty = 3;
-		if (sdsd.left(3).isSame("10m")) meta->difficulty = 4;
-		if (sdsd.left(3).isSame("10e")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("10b")) meta->difficulty = 1;
-		if (sdsd.left(3).isSame("10l")) meta->difficulty = 1;
-	} // TOFIX: meta->filepath is not loaded yet, so above this is useless hahahaha
 	//TOFIX: find difficulty at left???
 	makeFileHash(filepath, meta->hash); //test : CSTR to char* as oBuf : possible
 	meta->parentfolderpath = filepath.getParentDirectory();

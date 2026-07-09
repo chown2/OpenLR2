@@ -1596,6 +1596,10 @@ static void ThreadProc_RankingAutoUpdate(game* g) {
 	}
 
 	bool isIR2 = g->net.IRstatus == 2;
+	if (!g->net.isOnline) {
+		if (!isIR2) g->net.IRstatus = 0;
+		return;
+	}
 
 	if (!g->config.network.autoupdate) {
 		if (!isIR2) g->net.IRstatus = 0;
@@ -1810,12 +1814,10 @@ int ProcS_Select(game *g_) {
 					return 1;
 				}
 			}
-			if (g.net.isOnline) {
-				g.net.IRstatus = 1;
-				g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
-				SetObjectStrings_SongSelect(&g);
-				return 1;
-			}
+			g.net.IRstatus = 1;
+			g.net.hHandle = std::jthread(ThreadProc_RankingAutoUpdate, &g);
+			SetObjectStrings_SongSelect(&g);
+			return 1;
 		}
 	}
 	g.net.IRstatus = 0;
