@@ -253,16 +253,13 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 	}
 }
 
-std::string CUSTOMIR_MANAGER::Login() {
-	std::string result;
-	for (auto& ir : mModules) {
-		if (ir->Login()) {
-			result += "[" + ir->Name() + "] Logged in\n";
-		} else {
-			result += "[" + ir->Name() + "] Failed to log in\n";
-		}
-	}
-	return result;
+std::vector<std::pair<std::string_view, std::future<bool>>> CUSTOMIR_MANAGER::Login()
+{
+	std::vector<std::pair<std::string_view, std::future<bool>>> results;
+	results.reserve(mModules.size());
+	for(auto& ir : mModules)
+		results.emplace_back(ir->Name(), std::async(std::launch::async, &CustomIR::Login, &*ir));
+	return results;
 }
 
 bool CUSTOMIR_MANAGER::IsDisplayIrOnline() const {
