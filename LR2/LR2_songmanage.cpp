@@ -466,7 +466,7 @@ int SetUndefinedDifficulty(sqlite3 *sql) {
 	char str[1024];
 	sqlite3_stmt *pStmt;
 	CSTR folder;
-	int mode, difficulty;
+	int mode{}, difficulty{};
 
 	sqlite3_prepare(sql, "SELECT difficulty,folder,mode,path FROM song ORDER BY folder,mode,karinotes", -1, &pStmt, NULL);
 	while (sqlite3_step(pStmt) == 100) {
@@ -727,7 +727,7 @@ int LoadFolderDataFromDB(CSTR query, SONGDATA *song, sqlite3 *sql, int difficult
 	size_t nowsize, maxsize;
 	int slistCount;
 	CSTR nowFolder, newFolder, workingFolder;
-	int nowMode, nowDifficulty;
+	int nowMode{}, nowDifficulty{};
 
 	key = openlr2::adjustFilterKey(*cfg_select, key);
 	if ((cfg_select->ignoredifficultyall == 1) && (difficulty == 0)) difficulty = 1;
@@ -2035,8 +2035,8 @@ int GetFolderDataFromPath(CSTR path, sqlite3 *sql) {
 int LoadFilteredBmsListFromDB(CSTR query, sqlite3 *sql, SONGSELECT *ss, int *diffFilter, int *mode, uint sort, int rivalID, char flag) {
 
 	sqlite3_stmt *pStmt;
-	int lastreadDiff;
-	int recentKeymode;
+	int lastreadDiff{};
+	int recentKeymode{};
 
 	ss->isExLevel = 0;
 	if (query.findStrPos("exlevel") >= 0) ss->isExLevel = 1;
