@@ -368,7 +368,7 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 		sk->customfile[i].fillzero();
 	}
 	sk->customfile_count = 0;
-	
+
 	DeleteGraph(sk->GrHandle[GRHTYPE_PREVIEW]);
 	sk->GrHandle[GRHTYPE_PREVIEW] = MakeGraph(skinSizeX, skinSizeY); //TODO_RESOULUTION
 	DeleteGraph(sk->GrHandle[104]);
@@ -427,7 +427,7 @@ int InitImageFont(ImageFont *imgfont) {
 
 int ReadImageFont(CSTR filename, ImageFont *imgfont) {
 	CSTR str1;
-	
+
 	str1 = filename.getDirectory();
 
 	if (strcmp(str1, imgfont->filepath)) {
@@ -449,11 +449,11 @@ int ReadImageFont(CSTR filename, ImageFont *imgfont) {
 			ErrorLogFmtAdd("画像フォントファイル%sの読み込みに失敗しました\n",filename.body);
 			return -1;
 		}
-		
+
 		CSTR str2(256);
 		CSVbuf csvBuf;
 		strcpy(imgfont->filepath, str1);
-		
+
 		while (FileRead_gets(str2, 250, f) != -1) {
 			if (*str2.atPos(0) == '#') {
 				str2.trimWhiteSpace();
@@ -685,7 +685,7 @@ int ApplyFlipside(skstruct *sk){
 	memcpy(&dstTemp, &sk->dst_GROOVEGAUGE[0], sizeof(DSTstruct));
 	memcpy(&sk->dst_GROOVEGAUGE[0], &sk->dst_GROOVEGAUGE[1], sizeof(DSTstruct));
 	memcpy(&sk->dst_GROOVEGAUGE[1], &dstTemp, sizeof(DSTstruct));
-	
+
 	for (int i = 0; i < 6; i++) {
 		memcpy(&srcTemp, &sk->src_NOWJUDGE_1P[i], sizeof(SRCstruct));
 		memcpy(&sk->src_NOWJUDGE_1P[i], &sk->src_NOWJUDGE_2P[i], sizeof(SRCstruct));
@@ -818,6 +818,18 @@ static void adjust_input_filepath(CSTR& path)
 #endif // _WIN32
 }
 
+// Fowler–Noll–Vo hash function
+constexpr size_t static hash(std::string_view s) {
+	size_t value = 14695981039346656037ull;
+	for (unsigned char c : s)
+		value = (value ^ c) * 1099511628211ull;
+	return value;
+}
+
+[[nodiscard]] consteval size_t operator""_hash(const char *s, size_t len) {
+	return hash(std::string_view{ s, len });
+}
+
 // ReadSkin // maybe unsatble
 int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku, char flag_skipFont) {
 	FILE *pFile;
@@ -927,7 +939,9 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 
 
 				if (!fBuf.left(1).isDiff("#")) {
-					if (fBuf.left(6).isSame("#IMAGE")) {
+					std::string_view fBufStringView(fBuf.c_str());
+					switch (hash(fBufStringView.substr(0, fBufStringView.find(',')))) {
+					case "#IMAGE"_hash:{
 						if (sk->count == 100) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#IMAGEを登録できません。\n", line, fBuf.body);
 						}
@@ -961,8 +975,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 								sk->count++;
 							}
 						}
+						break;
 					}
-					else if (fBuf.left(5).isSame("#FONT") && !flag_skipFont) {
+					case "#FONT"_hash:{
+						if (flag_skipFont) break;
 						if (sk->num_of_struct == 10) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上#FONTを登録できません。\n", line, fBuf.body);
 						}
@@ -975,8 +991,9 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							}
 							sk->num_of_struct = sk->num_of_struct + 1;
 						}
+						break;
 					}
-					else if (fBuf.left(10).isSame("#SRC_IMAGE")) {
+					case "#SRC_IMAGE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->image.src[sk->image.srcSize], &csv, sk);
 						if (sk->image.src[sk->image.srcSize].graphcount < 1 || sk->image.src[sk->image.srcSize].count < 1) {
@@ -986,8 +1003,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_IMAGEに対応した#DST_IMAGEが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->image.srcSize++;
+						break;
 					}
-					else if (fBuf.left(10).isSame("#DST_IMAGE") && sk->image.srcSize > 0) {
+					case "#DST_IMAGE"_hash:{
+						if (sk->image.srcSize <= 0) break;
 						int oldDstCount = sk->image.dst[sk->image.srcSize - 1].dstCount;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->image.dst[sk->image.srcSize - 1], &csv, tSkin_num);
@@ -997,8 +1016,9 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						else if (sk->image.dst[sk->image.srcSize - 1].dstCount == oldDstCount){
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nDSTの登録に失敗しました。この行の登録のみ失敗しました。\n", line, fBuf.body);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#SRC_TEXT")) {
+					case "#SRC_TEXT"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->otherObject[0].src[sk->otherObject[0].srcSize].n = csv.val[1];
 						sk->otherObject[0].src[sk->otherObject[0].srcSize].fontHandle = sk->fontHandle[csv.val[2]];
@@ -1011,12 +1031,15 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						sk->otherObject[0].src[sk->otherObject[0].srcSize].op4 = csv.val[8];
 						sk->otherObject[0].src[sk->otherObject[0].srcSize].op5 = csv.val[9];
 						sk->otherObject[0].srcSize++;
+						break;
 					}
-					else if (fBuf.left(9).isSame("#DST_TEXT") && sk->otherObject[0].srcSize > 0) {
+					case "#DST_TEXT"_hash:{
+						if (sk->otherObject[0].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[0].dst[sk->otherObject[0].srcSize - 1], &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(11).isSame("#SRC_SLIDER")) {
+					case "#SRC_SLIDER"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[2].src[sk->otherObject[2].srcSize], &csv, sk);
 						if (sk->otherObject[2].src[sk->otherObject[2].srcSize].graphcount < 1 || sk->otherObject[2].src[sk->otherObject[2].srcSize].count < 1) {
@@ -1026,12 +1049,15 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_SLIDERに対応した#DST_SLIDERが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[2].srcSize++;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#DST_SLIDER") && sk->otherObject[2].srcSize > 0) {
+					case "#DST_SLIDER"_hash:{
+						if (sk->otherObject[2].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[2].dst[sk->otherObject[2].srcSize - 1], &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(11).isSame("#SRC_BUTTON")) {
+					case "#SRC_BUTTON"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[1].src[sk->otherObject[1].srcSize], &csv, sk);
 						if (sk->otherObject[1].src[sk->otherObject[1].srcSize].graphcount < 1 || sk->otherObject[1].src[sk->otherObject[1].srcSize].count < 1) {
@@ -1041,13 +1067,15 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BUTTONに対応した#DST_BUTTONが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[1].srcSize++;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#DST_BUTTON") && sk->otherObject[1].srcSize > 0) {
+					case "#DST_BUTTON"_hash:{
+						if (sk->otherObject[1].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[1].dst[sk->otherObject[1].srcSize - 1], &csv, tSkin_num);
-
+						break;
 					}
-					else if (fBuf.left(12).isSame("#SRC_ONMOUSE")) {
+					case "#SRC_ONMOUSE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[3].src[sk->otherObject[3].srcSize], &csv, sk);
 						if (sk->otherObject[3].src[sk->otherObject[3].srcSize].graphcount < 1 || sk->otherObject[3].src[sk->otherObject[3].srcSize].count < 1) {
@@ -1057,12 +1085,15 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[3].srcSize++;
+						break;
 					}
-					else if (fBuf.left(12).isSame("#DST_ONMOUSE") && sk->otherObject[3].srcSize > 0) {
+					case "#DST_ONMOUSE"_hash:{
+						if (sk->otherObject[3].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[3].dst[sk->otherObject[3].srcSize - 1], &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(8).isSame("#SRC_BGA")) {
+					case "#SRC_BGA"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[4].src[sk->otherObject[4].srcSize], &csv, sk);
 						if (sk->otherObject[4].src[sk->otherObject[4].srcSize].graphcount < 1 || sk->otherObject[4].src[sk->otherObject[4].srcSize].count < 1) {
@@ -1072,13 +1103,16 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではありません)ひとつ前の#SRC_BGAに対応した#DST_BGAが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[4].srcSize++;
+						break;
 					}
-					else if (fBuf.left(8).isSame("#DST_BGA") && sk->otherObject[4].srcSize > 0) {
-						SplitCSV(fBuf, &csv, ","); 
+					case "#DST_BGA"_hash:{
+						if (sk->otherObject[4].srcSize <= 0) break;
+						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[4].dst[sk->otherObject[4].srcSize - 1], &csv, tSkin_num);
 						tSkin_num++;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#SRC_NUMBER")) {
+					case "#SRC_NUMBER"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[6].src[sk->otherObject[6].srcSize], &csv, sk);
 						if (sk->otherObject[6].src[sk->otherObject[6].srcSize].graphcount < 1 || sk->otherObject[6].src[sk->otherObject[6].srcSize].count < 1) {
@@ -1088,21 +1122,27 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_NUMBERに対応した#DST_NUMBERが 存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[6].srcSize++;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#DST_NUMBER") && sk->otherObject[6].srcSize > 0) {
-						SplitCSV(fBuf, &csv, ","); 
+					case "#DST_NUMBER"_hash:{
+						if (sk->otherObject[6].srcSize <= 0) break;
+						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[6].dst[sk->otherObject[6].srcSize - 1], &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(9).isSame("#SRC_MASK")) {
+					case "#SRC_MASK"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[7].src[sk->otherObject[7].srcSize], &csv, sk);
 						sk->otherObject[7].srcSize++;
+						break;
 					}
-					else if (fBuf.left(9).isSame("#DST_MASK") && sk->otherObject[7].srcSize > 0) {
+					case "#DST_MASK"_hash:{
+						if (sk->otherObject[7].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[7].dst[sk->otherObject[7].srcSize - 1], &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_BARGRAPH")) {
+					case "#SRC_BARGRAPH"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->otherObject[5].src[sk->otherObject[5].srcSize], &csv, sk);
 						if (sk->otherObject[5].src[sk->otherObject[5].srcSize].graphcount < 1 || sk->otherObject[5].src[sk->otherObject[5].srcSize].count < 1) {
@@ -1112,414 +1152,489 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n(この行のエラーではあ りません)ひとつ前の#SRC_BARGRAPHに対応した#DST_BARGRAP Hが存在しないか、登録に失敗したようです\n", line, fBuf.body);
 						}
 						sk->otherObject[5].srcSize++;
+						break;
 					}
-					else if (fBuf.left(13).isSame("#DST_BARGRAPH") && sk->otherObject[5].srcSize > 0) {
+					case "#DST_BARGRAPH"_hash:{
+						if (sk->otherObject[5].srcSize <= 0) break;
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->otherObject[5].dst[sk->otherObject[5].srcSize - 1], &csv, tSkin_num);
 						tSkin_num++;
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_BAR_BODY")) {
+					case "#SRC_BAR_BODY"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_BODY[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(17).isSame("#DST_BAR_BODY_OFF")) {
+					case "#DST_BAR_BODY_OFF"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_BODY_OFF[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_BAR_BODY_ON")) {
+					case "#DST_BAR_BODY_ON"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_BODY_ON[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(11).isSame("#BAR_CENTER")) {
+					case "#BAR_CENTER"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 29, line, pFbuf)) {
 							SplitCSV(fBuf, &csv, ",");
 							sk->BAR_CENTER = csv.val[1];
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_BAR_TITLE")) {
+					case "#SRC_BAR_TITLE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 4, line, pFbuf)) {
 							ReadSRC_BAR_TITLE(&sk->src_BAR_TITLE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_BAR_TITLE")) {
+					case "#DST_BAR_TITLE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 4, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_TITLE[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(11).isSame("#TRANSCOLOR")) {
+					case "#TRANSCOLOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						SetTransColor(csv.val[1], csv.val[2], csv.val[3]);
+						break;
 					}
-					else if (fBuf.left(11).isSame("#TRANSCLOLR")) {
+					case "#TRANSCLOLR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						SetTransColor(csv.val[1], csv.val[2], csv.val[3]);
+						break;
 					}
-					else if (fBuf.left(12).isSame("#TRANSCLOLOR")) {
+					case "#TRANSCLOLOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						SetTransColor(csv.val[1], csv.val[2],csv.val[3]);
+						break;
 					}
-					else if (fBuf.left(11).isSame("#STARTINPUT")) {
+					case "#STARTINPUT"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->startinput_start = csv.val[1];
 						sk->startinput_rank = csv.val[2];
 						sk->startinput_update = csv.val[3];
+						break;
 					}
-					else if (fBuf.left(10).isSame("#SCENETIME")) {
+					case "#SCENETIME"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->scenetime = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(8).isSame("#FADEOUT")) {
+					case "#FADEOUT"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->fadeout = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(6).isSame("#CLOSE")) {
+					case "#CLOSE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->close = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(5).isSame("#SKIP")) {
+					case "#SKIP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->close = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(10).isSame("#PLAYSTART")) {
+					case "#PLAYSTART"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->playstart = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(10).isSame("#LOADSTART")) {
+					case "#LOADSTART"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->loadstart = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(8).isSame("#LOADEND")) {
+					case "#LOADEND"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->loadend = csv.val[1];
+						break;
 					}
-					else if (fBuf.left(14).isSame("#BAR_AVAILABLE")) {
+					case "#BAR_AVAILABLE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->bar_availabe_from = csv.val[1];
 						sk->bar_availabe_to = csv.val[2];
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_BAR_FLASH")) {
+					case "#SRC_BAR_FLASH"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->src_BAR_FLASH, &csv, sk);
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_BAR_FLASH")) {
+					case "#DST_BAR_FLASH"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->dst_BAR_FLASH, &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(18).isSame("#DST_BAR_STAGEFILE")) {
+					case "#DST_BAR_STAGEFILE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->dst_BAR_STAGEFILE, &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_MOUSECURSOR")) {
+					case "#SRC_MOUSECURSOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->src_MOUSECURSOR, &csv, sk);
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_MOUSECURSOR")) {
+					case "#DST_MOUSECURSOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->dst_MOUSECURSOR, &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_BAR_LEVEL")) {
+					case "#SRC_BAR_LEVEL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_LEVEL[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_BAR_LEVEL")) {
+					case "#DST_BAR_LEVEL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_LEVEL[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#SRC_NOTE")) {
+					case "#SRC_NOTE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_NOTE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#SRC_MINE")) {
+					case "#SRC_MINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_MINE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_LN_START")) {
+					case "#SRC_LN_START"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_LN_START[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(11).isSame("#SRC_LN_END")) {
+					case "#SRC_LN_END"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_LN_END[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(12).isSame("#SRC_LN_BODY")) {
+					case "#SRC_LN_BODY"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_LN_BODY[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_AUTO_NOTE")) {
+					case "#SRC_AUTO_NOTE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_AUTO_NOTE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_AUTO_MINE")) {
+					case "#SRC_AUTO_MINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_AUTO_MINE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(18).isSame("#SRC_AUTO_LN_START")) {
+					case "#SRC_AUTO_LN_START"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_AUTO_LN_START[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_AUTO_LN_END")) {
+					case "#SRC_AUTO_LN_END"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_AUTO_LN_END[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(17).isSame("#SRC_AUTO_LN_BODY")) {
+					case "#SRC_AUTO_LN_BODY"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadSRC(&sk->src_AUTO_LN_BODY[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#DST_NOTE")) {
+					case "#DST_NOTE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 19, line, pFbuf)) {
 							ReadDST(&sk->dst_NOTE[csv.val[1]], &csv, tSkin_num);
 							tSkin_num += 2;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_NOWJUDGE_1P")) {
+					case "#SRC_NOWJUDGE_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadSRC(&sk->src_NOWJUDGE_1P[csv.val[1]], &csv, sk);
 							sk->src_NOWJUDGE_1P[csv.val[1]].timer = 46;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_NOWJUDGE_1P")) {
+					case "#DST_NOWJUDGE_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadDST(&sk->dst_NOWJUDGE_1P[csv.val[1]], &csv, tSkin_num);
 							sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_NOWCOMBO_1P")) {
+					case "#SRC_NOWCOMBO_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->src_NOWCOMBO_1P[csv.val[1]], &csv, sk);
 						sk->src_NOWCOMBO_1P[csv.val[1]].timer = 46;
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_NOWCOMBO_1P")) {
+					case "#DST_NOWCOMBO_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->dst_NOWCOMBO_1P[csv.val[1]], &csv, tSkin_num);
 						sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46; //???mistake?
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_NOWJUDGE_2P")) {
+					case "#SRC_NOWJUDGE_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadSRC(&sk->src_NOWJUDGE_2P[csv.val[1]], &csv, sk);
 							sk->src_NOWJUDGE_2P[csv.val[1]].timer = 47;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_NOWJUDGE_2P")) {
+					case "#DST_NOWJUDGE_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadDST(&sk->dst_NOWJUDGE_2P[csv.val[1]], &csv, tSkin_num);
 							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_NOWCOMBO_2P")) {
+					case "#SRC_NOWCOMBO_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadSRC(&sk->src_NOWCOMBO_2P[csv.val[1]], &csv, sk);
 							sk->src_NOWCOMBO_2P[csv.val[1]].timer = 47;
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_NOWCOMBO_2P")) {
+					case "#DST_NOWCOMBO_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadDST(&sk->dst_NOWCOMBO_2P[csv.val[1]], &csv, tSkin_num);
 							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47; //???mistake?
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_GROOVEGAUGE")) {
+					case "#SRC_GROOVEGAUGE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC(&sk->src_GROOVEGAUGE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_GROOVEGAUGE")) {
+					case "#DST_GROOVEGAUGE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_GROOVEGAUGE[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(18).isSame("#SRC_GAUGECHART_1P")) {
+					case "#SRC_GAUGECHART_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC(&sk->src_GAUGECHART_1P[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(18).isSame("#DST_GAUGECHART_1P")) {
+					case "#DST_GAUGECHART_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_GAUGECHART_1P[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(18).isSame("#SRC_GAUGECHART_2P")) {
+					case "#SRC_GAUGECHART_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC(&sk->src_GAUGECHART_2P[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(18).isSame("#DST_GAUGECHART_2P")) {
+					case "#DST_GAUGECHART_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_GAUGECHART_2P[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(15).isSame("#SRC_SCORECHART")) {
+					case "#SRC_SCORECHART"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 2, line, pFbuf)) {
 							ReadSRC(&sk->src_SCORECHART[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(15).isSame("#DST_SCORECHART")) {
+					case "#DST_SCORECHART"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 2, line, pFbuf)) {
 							ReadDST(&sk->dst_SCORECHART[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#SRC_LINE")) {
+					case "#SRC_LINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC(&sk->src_LINE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#DST_LINE")) {
+					case "#DST_LINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_LINE[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_JUDGELINE")) {
+					case "#SRC_JUDGELINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC(&sk->src_JUDGELINE[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_JUDGELINE")) {
+					case "#DST_JUDGELINE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_JUDGELINE[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_BAR_LAMP")) {
+					case "#SRC_BAR_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_LAMP[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#DST_BAR_LAMP")) {
+					case "#DST_BAR_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_LAMP[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#SRC_BAR_MY_LAMP")) {
+					case "#SRC_BAR_MY_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_MY_LAMP[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(16).isSame("#DST_BAR_MY_LAMP")) {
+					case "#DST_BAR_MY_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_MY_LAMP[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(19).isSame("#SRC_BAR_RIVAL_LAMP")) {
+					case "#SRC_BAR_RIVAL_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_RIVAL_LAMP[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(19).isSame("#DST_BAR_RIVAL_LAMP")) {
+					case "#DST_BAR_RIVAL_LAMP"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_RIVAL_LAMP[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_BAR_STAR")) {
+					case "#SRC_BAR_STAR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_STAR[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#DST_BAR_STAR")) {
+					case "#DST_BAR_STAR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_STAR[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_THUMBNAIL")) {
+					case "#SRC_THUMBNAIL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->src_THUMBNAIL, &csv, sk);
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_THUMBNAIL")) {
+					case "#DST_THUMBNAIL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadDST(&sk->dst_THUMBNAIL, &csv, tSkin_num);
+						break;
 					}
-					else if (fBuf.left(11).isSame("#SRC_README")) {
+					case "#SRC_README"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadSRC_BAR_TITLE(&sk->src_README[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(11).isSame("#DST_README")) {
+					case "#DST_README"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
 							ReadDST(&sk->dst_README[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(20).isSame("#DST_EVENT_LOADINGBG")) {
+					case "#DST_EVENT_LOADINGBG"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 4, line, pFbuf)) {
 							ReadDST(&sk->dst_EVENT_LOADINGBG[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(22).isSame("#SRC_EVENT_MODE_CURSOR")) {
+					case "#SRC_EVENT_MODE_CURSOR"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						ReadSRC(&sk->src_EVENT_MODE_CURSOR, &csv, sk);
+						break;
 					}
-					else if (fBuf.left(25).isSame("#DST_EVENT_MODE_CURSOR_ON")) {
+					case "#DST_EVENT_MODE_CURSOR_ON"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
 							ReadDST(&sk->dst_EVENT_MODE_CURSOR_ON[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(26).isSame("#DST_EVENT_MODE_CURSOR_OFF")) {
+					case "#DST_EVENT_MODE_CURSOR_OFF"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 10, line, pFbuf)) {
 							ReadDST(&sk->dst_EVENT_MODE_CURSOR_OFF[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(17).isSame("#EVENT_STARTINPUT")) {
+					case "#EVENT_STARTINPUT"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->event_STARTINPUT[0] = csv.val[1];
 						sk->event_STARTINPUT[1] = csv.val[2];
@@ -1531,8 +1646,9 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						sk->event_STARTINPUT[7] = csv.val[8];
 						sk->event_STARTINPUT[8] = csv.val[9];
 						sk->event_STARTINPUT[9] = csv.val[10];
+						break;
 					}
-					else if (fBuf.left(14).isSame("#EVENT_FADEOUT")) {
+					case "#EVENT_FADEOUT"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->event_FADEOUT[0] = csv.val[1];
 						sk->event_FADEOUT[1] = csv.val[2];
@@ -1544,8 +1660,10 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						sk->event_FADEOUT[7] = csv.val[8];
 						sk->event_FADEOUT[8] = csv.val[9];
 						sk->event_FADEOUT[9] = csv.val[10];
+						break;
 					}
-					else if (fBuf.left(8).isSame("#LR2FONT") && !flag_skipFont) {
+					case "#LR2FONT"_hash:{
+						if (flag_skipFont) break;
 						SplitCSV(fBuf, &csv, ",");
 						adjust_input_filepath(csv.str[1]);
 						if (sk->num_of_ImageFont == 10) {
@@ -1568,60 +1686,69 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							InitImageFont(&sk->ImageFonts[sk->num_of_ImageFont]);
 							sk->num_of_ImageFont++;
 						}
+						break;
 					}
-					else if (fBuf.left(9).isSame("#HELPFILE")) {
+					case "#HELPFILE"_hash:{
 						adjust_input_filepath(csv.str[1]);
 						SplitCSV(fBuf, &csv, ",");
 						if (sk->helpfileCount < 10) {
 							sk->helpfilePath[sk->helpfileCount].assign(&csv.str[1]);
 							sk->helpfileCount = sk->helpfileCount + 1;
 						}
+						break;
 					}
-					else if (fBuf.left(6).isSame("#NOBGA")) {
+					case "#NOBGA"_hash:{
 						sk->flag_BGA = 0;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#FLIPRESULT")) {
+					case "#FLIPRESULT"_hash:{
 						sk->flag_flip = true;
 						sk->op[350] = false;
 						sk->op[351] = true;
+						break;
 					}
-					else if (fBuf.left(9).isSame("#FLIPSIDE")) {
+					case "#FLIPSIDE"_hash:{
 						flipside = true;
+						break;
 					}
-					else if (fBuf.left(12).isSame("#DISABLEFLIP")) {
+					case "#DISABLEFLIP"_hash:{
 						sk->flag_flip = false;
 						sk->op[350] = true;
 						sk->op[351] = false;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#TEXTMERGIN")) {
+					case "#TEXTMERGIN"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->textmergin_1 = csv.val[1];
 						sk->textmergin_2 = csv.val[2];
+						break;
 					}
-					else if (fBuf.left(12).isSame("#SCRATCHSIDE")) {
+					case "#SCRATCHSIDE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						sk->scratchside_1 = csv.val[1];
 						sk->scratchside_2 = csv.val[2];
+						break;
 					}
-					else if (fBuf.left(8).isSame("#INCLUDE")) {
+					case "#INCLUDE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						adjust_input_filepath(csv.str[1]);
 						for (int i = 0; i < sk->customfile_count; i++) {
 							if (sk->customfileRANDOM[i].isSame(csv.str[1].left(sk->customfileRANDOM[i].length()))
 								&& sk->customfile[i].isDiff("RANDOM") && sk->customfile[i].isDiff("ERROR")
 								&& (sk->customfile[i].length() > 0)) {
-								
 								csv.str[1].replace("*", sk->customfile[i]);
 								break;
 							}
 						}
 						if (tSkin_num == 0) tSkin_num = 1;
 						tSkin_num += ReadSkin(sk, GetRandomFileNoError(csv.str[1], dir), unused, tSkin_num, sku, flag_skipFont);
+						break;
 					}
-					else if (fBuf.left(13).isSame("#CUSTOMOPTION")) {
+					case "#CUSTOMOPTION"_hash:{
 						sk->customfile_count++;
+						break;
 					}
-					else if (fBuf.left(11).isSame("#CUSTOMFILE")) {
+					case "#CUSTOMFILE"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						adjust_input_filepath(csv.str[2]);
 						sk->customfileRANDOM[sk->customfile_count].assign(&csv.str[2]);
@@ -1630,18 +1757,21 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 							sk->customfile[sk->customfile_count].assign( GetRandomFile(sk->customfileRANDOM[sk->customfile_count], 1) );
 						}
 						sk->customfile_count++;
+						break;
 					}
-					else if (fBuf.left(13).isSame("#CUSTOMFOLDER")) {
+					case "#CUSTOMFOLDER"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						adjust_input_filepath(csv.str[2]);
 						sk->customfileRANDOM[sk->customfile_count].assign(&csv.str[2]);
 						sk->customfile[sk->customfile_count].assign(&sku->customize_filename[sk->customfile_count]);
 						sk->customfile_count++;
+						break;
 					}
-					else if (fBuf.left(13).isSame("#RELOADBANNER")) {
+					case "#RELOADBANNER"_hash:{
 						sk->reloadbanner = 1;
+						break;
 					}
-					else if (fBuf.left(10).isSame("#SETOPTION")) {
+					case "#SETOPTION"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (csv.val[1] < 1000) {
 							sk->op[csv.val[1]] = (csv.val[2] != 0);
@@ -1649,33 +1779,40 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						else {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\n#SETOPTIONの第一引数(オプション値)は900～999の範囲内にして下さい。\n", line, fBuf.body);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#SRC_BAR_RANK")) {
+					case "#SRC_BAR_RANK"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_RANK[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(13).isSame("#DST_BAR_RANK")) {
+					case "#DST_BAR_RANK"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_RANK[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#SRC_BAR_RIVAL")) {
+					case "#SRC_BAR_RIVAL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadSRC(&sk->src_BAR_RIVAL[csv.val[1]], &csv, sk);
 						}
+						break;
 					}
-					else if (fBuf.left(14).isSame("#DST_BAR_RIVAL")) {
+					case "#DST_BAR_RIVAL"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 9, line, pFbuf)) {
 							ReadDST(&sk->dst_BAR_RIVAL[csv.val[1]], &csv, tSkin_num);
 						}
+						break;
 					}
-					else if (fBuf.left(11).isSame("#HORIZONTAL")) {
+					case "#HORIZONTAL"_hash:{
 						sk->horizontal = 1;
+						break;
+					}
 					}
 				}
 				tSkin_num++;
