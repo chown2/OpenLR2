@@ -1335,6 +1335,7 @@ int ProcGame(game *g) {
 		int stage = g->gameplay.bmsobj.notes[g->gameplay.bmsobj.note_count].stage;
 		if (op < 50) {
 			switch (op) {
+			case -1: break; // HACK: don't go out of bounds when g->gameplay.bmsobj.count is 0 on chart loading error
 			case 1:
 				if (g->rec.recMode != 2) {
 					PlaySound(&g->audio, &g->gameplay.keysound[val], g->audio.chnStageBgm[stage], stage);

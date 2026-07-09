@@ -1137,7 +1137,7 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 	qsort(gp->bmsobj.notes, gp->bmsobj.count, sizeof(NoteStruct), CMP_NotesByRealTimingOp);
 
 	for (int i = 0; i < gp->bmsobj.count; i++) {
-		if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_1P_HIDDEN_SC) {
+		if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[i].op && gp->bmsobj.notes[i].op <= CHANNEL_2P_NOTE_END) {
 			notecount++;
 			endtime = gp->bmsobj.notes[i].bmsTiming;
 		}
@@ -1173,7 +1173,7 @@ void MakeExtraChart(gameplay *gp, CHARTCONVERTER *cc) {  //test completed
 		laneOfSound[i] = -1;
 
 		for (int j = 0; j < gp->bmsobj.count; j++) {
-			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_1P_HIDDEN_SC) {
+			if (CHANNEL_1P_NOTE_SC <= gp->bmsobj.notes[j].op && gp->bmsobj.notes[j].op <= CHANNEL_2P_NOTE_END) {
 				if ((int)gp->bmsobj.notes[j].val == i) {
 					Lane[gp->bmsobj.notes[j].op-10]++;
 				}
