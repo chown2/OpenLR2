@@ -83,7 +83,7 @@ class CustomIR {
 public:
 	CustomIR() = delete;
 	CustomIR(const std::filesystem::path& directory);
-	bool Good() const;
+	[[nodiscard]] bool DidInitializeSuccessfully() const { return !mName.empty(); }
 	bool Login();
 	SendScoreStatus SendScore(const IRScoreV1& score);
 	openlr2::GetStatus GetResultRank(const char* songHash, openlr2::IRRankResult& out);
@@ -91,6 +91,7 @@ public:
 	openlr2::GetStatus GetGhost(const char* songHash, openlr2::GhostMode mode, int targetPlayerId, openlr2::IRGhostResult& out);
 	[[nodiscard]] std::string GetWebRankingUrl(const char* songHash);
 	[[nodiscard]] const std::string& Name() const { return mName; };
+	[[nodiscard]] bool DidLoginSuccessfully() const { return mDidLoginSuccessfully; };
 private:
 	struct ModuleDeleter {
 		void operator()(std::remove_pointer_t<HMODULE>* handle);
@@ -98,6 +99,7 @@ private:
 	std::unique_ptr<std::remove_pointer_t<HMODULE>, ModuleDeleter> mDllHandle;
 	std::string mName;
 	MethodTable mMethods;
+	bool mDidLoginSuccessfully{};
 };
 
 CustomIR::CustomIR(const std::filesystem::path& _directory) {
@@ -135,13 +137,9 @@ void CustomIR::ModuleDeleter::operator()(std::remove_pointer_t<HMODULE>* handle)
 	FreeLibrary(handle);
 }
 
-bool CustomIR::Good() const {
-	return !mName.empty();
-}
-
 bool CustomIR::Login() {
-	if (mMethods.LoginV1 == nullptr) return true;
-	return mMethods.LoginV1();
+	mDidLoginSuccessfully = mMethods.LoginV1 == nullptr || mMethods.LoginV1();
+	return mDidLoginSuccessfully;
 }
 
 SendScoreStatus CustomIR::SendScore(const IRScoreV1& score) {
@@ -225,7 +223,7 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 			continue;
 		}
 		auto& ir = *mModules.emplace_back(std::make_shared<CustomIR>(dir));
-		if (!ir.Good()) {
+		if (!ir.DidInitializeSuccessfully()) {
 			mModules.pop_back();
 			ErrorLogFmtAdd("'%s' no valid CustomIR module found\n", dir.path().string().c_str());
 			continue;
@@ -257,11 +255,9 @@ void CUSTOMIR_MANAGER::Initialize(const std::filesystem::path& directory, std::s
 
 std::string CUSTOMIR_MANAGER::Login() {
 	std::string result;
-	mLoggedInIrs.clear();
 	for (auto& ir : mModules) {
 		if (ir->Login()) {
 			result += "[" + ir->Name() + "] Logged in\n";
-			mLoggedInIrs.push_back(ir->Name());
 		} else {
 			result += "[" + ir->Name() + "] Failed to log in\n";
 		}
@@ -270,7 +266,9 @@ std::string CUSTOMIR_MANAGER::Login() {
 }
 
 bool CUSTOMIR_MANAGER::IsDisplayIrOnline() const {
-	return std::ranges::contains(mLoggedInIrs, mDisplayIr);
+	const auto irIt = std::ranges::find(mModules, mDisplayIr, &CustomIR::Name);
+	if (irIt == mModules.end()) { return false; }
+	return (*irIt)->DidLoginSuccessfully();
 }
 
 std::string CUSTOMIR_MANAGER::GetWebRankingUrl(const char* songHash) const {

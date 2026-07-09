@@ -47,7 +47,6 @@ private:
 	std::vector<std::future<std::optional<openlr2::IRRankResult>>> mDiscardedResultIrFutures;
 	std::future<std::optional<openlr2::IRRankResult>> mResultIrFuture;
 	std::string mDisplayIr;
-	std::vector<std::string> mLoggedInIrs;
 };
 
 namespace openlr2 {
