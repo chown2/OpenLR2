@@ -573,6 +573,8 @@ int WriteOpenLr2ConfigXml(game *g, const char *filename){
 
 	fputs("\t<system>\n", pFile);
 	WriteXML_Tab2Int(pFile, "resolution", (g->config).system.resolution);
+	WriteXML_Tab2Int(pFile, "fullscreenfilter", (g->config).system.fullscreenfilter);
+	WriteXML_Tab2BoolAsInt(pFile, "fullscreenfitstretch", (g->config).system.fullscreenfitstretch);
 	fputs("\t</system>\n", pFile);
 
 	fputs("\t<play>\n", pFile);
@@ -1178,6 +1180,8 @@ int ReadOpenLr2Config(game* g, const char* filepath) {
 		return 0;
 	}
 	ReadXml_Int("config", "system", "resolution", 0, &g->config.system.resolution, hXml);
+	ReadXml_Int("config", "system", "fullscreenfilter", 0, &g->config.system.fullscreenfilter, hXml);
+	ReadXml_PositiveIntAsBool("config", "system", "fullscreenfitstretch", false, &g->config.system.fullscreenfitstretch, hXml);
 	ReadXml_PositiveIntAsBool("config", "play", "gaugeautoshift", false, &g->config.play.m_gas, hXml);
 	ReadXml_Str("config", "skin", "courseresult", "", &g->config.skin.skinFilePath[15], hXml);
 	ReadXml_Str("config", "network", "display_ir", "", &g->config.network.displayIr, hXml);

@@ -437,9 +437,7 @@ int main(int argc, char** argv) {
 	ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 	gs.is_clicked_screenModeChange = 0;
 	gs.flag_Screenshot = false;
-	ReadOptionstrFile(gs.txtStruct.option_str, fs::make_preferred("LR2files/Config/optionstr.csv").data());
-	if (gs.txtStruct.option_str[12].str[2].length() == 0)
-		gs.txtStruct.option_str[12].str[2].assign("BORDERLESS");
+	ReadOptionstrFile(gs.txtStruct, fs::make_preferred("LR2files/Config/optionstr.csv").data());
 	gs.audio.is_fmod_disabled = gs.config.sound.disablefmod;
 	if (gs.config.sound.disablefmod != 0) {
 		gs.config.select.preview = 0;
@@ -511,6 +509,7 @@ int main(int argc, char** argv) {
 		SetUseDirect3DVersion(use_dx);
 	}
 	SetUseDisplayIndex(-1);
+	SetFullScreenScalingMode(gs.config.system.fullscreenfilter, gs.config.system.fullscreenfitstretch ? 1 : 0);
 	if (DxLib_Init() == -1) return 0;
 	if constexpr (is_linux()) { SetMainWindowText(openlr2::versionName); }
 	ChangeFont("", 0);

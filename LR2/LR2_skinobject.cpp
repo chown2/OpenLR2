@@ -4024,6 +4024,25 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					}
 				}
 				break;
+			case 400:
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.system.fullscreenfilter, 0, 1, g->sSelect.panel);
+				if (isClickSuccess == 2) {
+					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
+					SetFullScreenScalingMode(g->config.system.fullscreenfilter, g->config.system.fullscreenfitstretch ? 1 : 0);
+					SetObjectStrings_SongSelect(g);
+				}
+				break;
+			case 401: {
+				int tmp = g->config.system.fullscreenfitstretch ? 1 : 0;
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &tmp, 0, 1, g->sSelect.panel);
+				if (isClickSuccess == 2) {
+					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
+					g->config.system.fullscreenfitstretch = !g->config.system.fullscreenfitstretch;
+					SetFullScreenScalingMode(g->config.system.fullscreenfilter, g->config.system.fullscreenfitstretch ? 1 : 0);
+					SetObjectStrings_SongSelect(g);
+				}
+				break;
+			}
 			default:
 				continue;
 		}
@@ -4209,7 +4228,7 @@ int ButtonByInput(DrawingBuf */*drb*/, SRCstruct *src, DSTstruct *dst, Timer *T,
 }
 
 int InitObjectString(TextStruct *txt){
-	for (int i = 0; i < 300; i++) {
+	for (int i = 0; i < std::size(txt->objectStr); i++) {
 		txt->objectStr[i].fillzero();
 	}
 	txt->objectStr[0].assign("これはテストこれはテストこれはテスト");
@@ -4218,7 +4237,7 @@ int InitObjectString(TextStruct *txt){
 }
 
 int SetObjectString(uint num, CSTR string, CSTR *objectList){
-	if (num > 299) {
+	if (num > 399) {
 		return 0;
 	}
 	if (string.isDiff("(null)") == 0) {
@@ -4240,56 +4259,45 @@ CSTR GetStringFromArray(int num, CSTR *strings) {
 	return strings[num];
 }
 
-
-int DefineOptionStrNum(OptionString *arrOpStr){
-	arrOpStr[19].count = 4;
-	arrOpStr[5].count = 4;
-	arrOpStr[14].count = 4;
-	arrOpStr[15].count = 4;
-	arrOpStr[22].count = 4;
-	arrOpStr[7].count = 9;
-	arrOpStr[8].count = 2;
-	arrOpStr[9].count = 3;
-	arrOpStr[13].count = 2;
-	arrOpStr[2].count = 6;
-	arrOpStr[6].count = 2;
-	arrOpStr[3].count = 6;
-	arrOpStr[0].count = 8;
-	arrOpStr[4].count = 6;
-	arrOpStr[16].count = 2;
-	arrOpStr[12].count = 3;
-	arrOpStr[10].count = 5;
-	arrOpStr[1].count = 6;
-	arrOpStr[11].count = 2;
-	arrOpStr[17].count = 3;
-	arrOpStr[18].count = 5;
-	arrOpStr[20].count = 6;
-	arrOpStr[23].count = 2;
-	arrOpStr[21].count = 2;
-	arrOpStr[24].count = 2;
-	return 1;
-}
-
-int ReadOptionstr(OptionString *opStr, CSVbuf csv) {
-	for (int i = 0; i < opStr->count; i++) {
+static int ReadOptionstr(OptionString *opStr, CSVbuf& csv) {
+	for (size_t i = 0; i < std::size(opStr->str); i++) {
 		opStr->str[i].assign(&csv.str[1+i]);
 	}
-	for (int i = opStr->count; i < 10; i++) {
-		opStr->str[i].fillzero();
-	}
 	return 1;
 }
 
-// : CSVbuf copy
-int ReadOptionstrFile(OptionString *arrOpStr, CSTR filepath) {
+static void ReadOptionStrVec(std::vector<std::string>& vec, CSVbuf& csv) {
+	for (const auto& src : csv.str) {
+		if (src.length() == 0) break;
+		vec.emplace_back(src.c_str());
+	}
+}
+
+static void MakeOLR2StrDefaults(TextStruct& txtStruct) {
+	if (txtStruct.option_str[10].str[5].length() == 0)
+		txtStruct.option_str[10].str[5].assign("MAINBPM");
+	if (txtStruct.option_str[12].str[2].length() == 0)
+		txtStruct.option_str[12].str[2].assign("BORDERLESS");
+
+	auto fill_default_vec = []<size_t size>(std::vector<std::string>&vec, const std::array<const char*, size>&defaults) {
+		for (size_t i = vec.size(); i < defaults.size(); i++) {
+			vec.emplace_back(defaults[i]);
+		}
+	};
+	constexpr std::array<const char*, 2> fullscreenfilter_defaults{ "BILINEAR", "NEAREST" };
+	constexpr std::array<const char*, 2> fullscreenfitstretch_defaults{ "OFF", "ON" };
+	fill_default_vec(txtStruct.option_fullscreenfilter, fullscreenfilter_defaults);
+	fill_default_vec(txtStruct.option_fullscreenfitstretch, fullscreenfitstretch_defaults);
+}
+
+int ReadOptionstrFile(TextStruct& txtStruct, CSTR filepath) {
 	int bufSize = 256;
 
 	FILE *pFile;
 	CSTR fBuf(bufSize);
 	char* pFbuf;
 	CSVbuf csv;
-
-	DefineOptionStrNum(arrOpStr);
+	OptionString* arrOpStr = txtStruct.option_str;
 	pFile = fopen(filepath.body, "r");
 	if (pFile == 0) {
 		ErrorLogAdd("オプション文字列リストが見つかりません。\n");
@@ -4377,6 +4385,12 @@ int ReadOptionstrFile(OptionString *arrOpStr, CSTR filepath) {
 			else if (fBuf.left(10).isSame("#COURSE_IR")) {
 				ReadOptionstr(&arrOpStr[24], csv);
 			}
+			else if (fBuf.starts_with("#FULLSCREEN_FILTER")) {
+				ReadOptionStrVec(txtStruct.option_fullscreenfilter, csv);
+			}
+			else if (fBuf.starts_with("#FULLSCREEN_FITSTRETCH")) {
+				ReadOptionStrVec(txtStruct.option_fullscreenfitstretch, csv);
+			}
 			*fBuf.atPos(0) = '\0';
 		}
 		pFbuf = fBuf.outstr();
@@ -4385,5 +4399,7 @@ int ReadOptionstrFile(OptionString *arrOpStr, CSTR filepath) {
 	fclose(pFile);
 
 	ErrorLogAdd("オプション文字列リストを読み込みました。\n");
+
+	MakeOLR2StrDefaults(txtStruct);
 	return 1;
 }
