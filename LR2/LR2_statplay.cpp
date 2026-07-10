@@ -5,40 +5,55 @@
 #include "Scene02_Songselect.h" //objstr in CheckMission()
 
 bool CheckScoreSaveConditon(game *g){ //TOFIX : p2_assist == 1 but no battle, doesn't match with actual condition
-	if ( (g->config.play.battle == OPTION_BATTLE_OFF || g->config.play.battle == OPTION_BATTLE_GBATTLE) && !g->config.play.m_isExtra
-		&& g->config.play.m_addlong == 0 && g->config.play.m_loudness <= 0
-		&& !g->config.play.m_isLunaris && g->config.play.hsfix != 4 && g->config.play.m_addmine == 0 
-		&& (g->config.play.m_addnote == 0 && !g->config.play.m_isExtra) && !g->config.play.autokey
-		&& (1 || g->sSelect.metaSelected.keymode < 10)
-		&& g->config.play.assist[PLAYER_1] == 0 && (g->config.play.assist[PLAYER_2] == 0 || g->sSelect.metaSelected.keymode < 10) 
-		&& g->config.play.random[PLAYER_1] < OPTION_RANDOM_SCATTER && g->config.play.random[PLAYER_2] < OPTION_RANDOM_SCATTER) {
-		return true;
-	}
-	return false;
+	if (g->config.play.battle != OPTION_BATTLE_OFF && g->config.play.battle != OPTION_BATTLE_GBATTLE)	return false;
+	if (g->config.play.m_isExtra)									return false;
+	if (g->config.play.m_addlong != 0)								return false;
+	if (g->config.play.m_loudness > 0)								return false;
+	if (g->config.play.m_isLunaris)									return false;
+	if (g->config.play.hsfix == OPTION_HSFIX_CONSTANT)				return false;
+	if (g->config.play.m_addmine != 0)								return false;
+	if (g->config.play.m_addnote != 0)								return false;
+	if (g->config.play.autokey)										return false;
+	if (g->config.play.assist[PLAYER_1] != 0)						return false;
+	if (g->config.play.assist[PLAYER_2] != 0 && g->sSelect.metaSelected.keymode >= 10)	return false;
+	if (g->config.play.random[PLAYER_1] >= OPTION_RANDOM_SCATTER)	return false;
+	if (g->config.play.random[PLAYER_2] >= OPTION_RANDOM_SCATTER)	return false;
+
+	return true;
 }
 
 int CheckClearLampChallenge(game *g){ //TOFIX : assist[PLAYER_2] == 1 but no battle, doesn't match with actual condition
-	if (g->config.play.m_addlong == 1 || g->config.play.m_loudness > 0
-		|| g->config.play.m_isLunaris || g->config.play.m_addlong > 0
-		|| g->config.play.m_addmine || g->config.play.m_addnote || g->config.play.battle == OPTION_BATTLE_BATTLE) {
-		return 0;
-	}
+	if (g->config.play.m_addlong == 1) 								return 0;
+	if (g->config.play.m_loudness > 0) 								return 0;
+	if (g->config.play.m_isLunaris) 								return 0;
+	if (g->config.play.m_addlong > 0) 								return 0;
+	if (g->config.play.m_addmine) 									return 0;
+	if (g->config.play.m_addnote) 									return 0;
+	if (g->config.play.battle == OPTION_BATTLE_BATTLE) 				return 0;
 
-	if (g->config.play.random[PLAYER_1] < OPTION_RANDOM_SCATTER && g->config.play.random[PLAYER_2] < OPTION_RANDOM_SCATTER && g->config.play.hsfix != OPTION_HSFIX_CONSTANT
-		&& !g->config.play.autokey && (1 || g->sSelect.metaSelected.keymode < 10)
-		&& g->config.play.assist[PLAYER_1] == 0 && (g->config.play.assist[PLAYER_2] == 0 || g->sSelect.metaSelected.keymode < 10)) {
-		switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
-			? g->gameplay.player[PLAYER_1].gaugeType
-			: g->config.play.gaugeType[PLAYER_1]) {
-		case OPTION_GAUGE_HARD: return 3;
-		case OPTION_GAUGE_DEATH: return 4;
-		case OPTION_GAUGE_EASY: return 1;
-		case OPTION_GAUGE_PATTACK: return 4;
-		case OPTION_GAUGE_GATTACK: return 3;
-		default: return 2;
-		}
+	if (g->config.play.random[PLAYER_1] >= OPTION_RANDOM_SCATTER) 	return 1;
+	if (g->config.play.random[PLAYER_2] >= OPTION_RANDOM_SCATTER) 	return 1;
+	if (g->config.play.hsfix == OPTION_HSFIX_CONSTANT) 				return 1;
+	if (g->config.play.autokey) 									return 1;
+	if (g->config.play.assist[PLAYER_1] != 0)						return 1;
+	if (g->config.play.assist[PLAYER_2] != 0 && g->sSelect.metaSelected.keymode >= 10)	return 1;
+
+	//not assist
+	switch (g->procSelecter == 4 || g->procSelecter == 5 || g->procSelecter == 13
+		? g->gameplay.player[PLAYER_1].gaugeType
+		: g->config.play.gaugeType[PLAYER_1]) {
+	case OPTION_GAUGE_EASY:
+		return 1;
+	default: //TODO: change undefined gauge to assist
+	case OPTION_GAUGE_GROOVE:
+		return 2;
+	case OPTION_GAUGE_GATTACK:
+	case OPTION_GAUGE_HARD:
+		return 3;
+	case OPTION_GAUGE_DEATH:
+	case OPTION_GAUGE_PATTACK:
+		return 4;
 	}
-	return 1;
 }
 
 uint ConvertOptionHistory(game *g){
