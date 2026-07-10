@@ -279,8 +279,6 @@ enum OPTION {
 	OPTION_RANDOM_END = OPTION_RANDOM_CONVERGE,
 };
 
-constexpr const char* HSFIXSTRINGS[] = { "OFF", "MAXBPM", "MINBPM", "AVERAGE", "CONSTANT", "MAINBPM" };
-
 struct BMSMETA {
 	CSTR hash;
 	CSTR title;
@@ -503,6 +501,7 @@ struct CONFIG_SOUND {
 };
 
 struct CONFIG_SYSTEM {
+	int fullscreenfilter{};
 	int screenmode{};
 	int vsync{};
 	int directdraw{};
@@ -525,6 +524,7 @@ struct CONFIG_SYSTEM {
 	int softwarerendering{};
 	int resolution{};   // 0=SD 640x480, 1=HD 1280x720, 2=UHD 1920x1080
 	unsigned int coreCount = 0;
+	bool fullscreenfitstretch{};
 };
 
 struct CONFIG_TOOLS {
@@ -766,7 +766,6 @@ struct RECORDING {
 
 struct OptionString {
 	CSTR str[10];
-	int count;
 };
 
 struct LaneStruct {
@@ -1253,11 +1252,13 @@ struct README {
 };
 
 struct TextStruct {
-	CSTR objectStr[300];
+	CSTR objectStr[400];
 	int hKeyInput;
 	int st_text_num;
 	struct README readme;
 	struct OptionString option_str[25];
+	std::vector<std::string> option_fullscreenfilter;
+	std::vector<std::string> option_fullscreenfitstretch;
 };
 
 struct REPLAY {

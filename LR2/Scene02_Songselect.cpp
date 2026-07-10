@@ -1015,8 +1015,7 @@ int SetObjectStrings_SongSelect(game *g) {
 	SetObjectString(71, g->txtStruct.option_str[16].str[g->config.play.scoregraph], g->txtStruct.objectStr);
 	SetObjectString(72, g->txtStruct.option_str[14].str[g->config.play.play_ghost], g->txtStruct.objectStr);
 	SetObjectString(73, g->txtStruct.option_str[15].str[g->config.play.p1_lanecover], g->txtStruct.objectStr);
-	if (g->txtStruct.option_str[10].count <= g->config.play.hsfix) SetObjectString(74, HSFIXSTRINGS[g->config.play.hsfix], g->txtStruct.objectStr);
-	else SetObjectString(74, g->txtStruct.option_str[10].str[g->config.play.hsfix], g->txtStruct.objectStr);
+	SetObjectString(74, g->txtStruct.option_str[10].str[g->config.play.hsfix], g->txtStruct.objectStr);
 	SetObjectString(76, g->txtStruct.option_str[9].str[g->config.play.bga], g->txtStruct.objectStr);
 	SetObjectString(75, g->txtStruct.option_str[8].str[g->config.play.bgasize], g->txtStruct.objectStr);
 	SetObjectString(77, g->txtStruct.option_str[13].str[g->config.system.highcolor], g->txtStruct.objectStr);
@@ -1096,6 +1095,9 @@ int SetObjectStrings_SongSelect(game *g) {
 	}
 
 	SetObjectString(199, g->txtStruct.option_str[22].str[g->config.course.defaultgauge], g->txtStruct.objectStr);
+
+	SetObjectString(300, g->txtStruct.option_fullscreenfilter[g->config.system.fullscreenfilter].c_str(), g->txtStruct.objectStr);
+	SetObjectString(301, g->txtStruct.option_fullscreenfitstretch[g->config.system.fullscreenfitstretch ? 1 : 0].c_str(), g->txtStruct.objectStr);
 
 	return 1;
 }
