@@ -576,8 +576,7 @@ int WriteOpenLr2ConfigXml(game *g, const char *filename){
 	fputs("\t</system>\n", pFile);
 
 	fputs("\t<play>\n", pFile);
-	sprintf(buf, "\t\t<%s>%d</%s>\n", "gaugeautoshift", (g->config).play.m_gas, "gaugeautoshift");
-	fputs(buf, pFile);
+	WriteXML_Tab2BoolAsInt(pFile, "gaugeautoshift", (g->config).play.m_gas);
 	fputs("\t</play>\n", pFile);
 
 	fputs("\t<skin>\n", pFile);
