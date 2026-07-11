@@ -15,29 +15,27 @@
 
 #ifdef _WIN32
 
-std::string utf2ansi(const std::string_view in, unsigned int codepage) {
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, in.data(), in.size(), nullptr, 0);
-	std::wstring wstr(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, in.data(), in.size(), wstr.data(), size_needed);
-	size_needed = WideCharToMultiByte(codepage, 0, wstr.data(), wstr.size(), nullptr, 0, 0, 0);
-	std::string out(size_needed, 0);
-	WideCharToMultiByte(codepage, 0, wstr.data(), wstr.size(), out.data(), out.size(), 0, 0);
-	return out;
-}
-
-std::string ansi2utf(const std::string_view str, unsigned int codepage) {
-	int wide_buf_size = MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
+static std::string convert(std::string_view str, int from, int to) {
+	int wide_buf_size = MultiByteToWideChar(from, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
 	auto wstr = std::make_unique_for_overwrite<wchar_t[]>(wide_buf_size);
-	MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), wstr.get(), wide_buf_size);
+	MultiByteToWideChar(from, 0, str.data(), static_cast<int>(str.size()), wstr.get(), wide_buf_size);
 
-	int narrow_buf_size = WideCharToMultiByte(CP_UTF8, 0, wstr.get(), wide_buf_size, nullptr, 0, nullptr, nullptr);
+	int narrow_buf_size = WideCharToMultiByte(to, 0, wstr.get(), wide_buf_size, nullptr, 0, nullptr, nullptr);
 	auto lstr = std::make_unique_for_overwrite<char[]>(narrow_buf_size);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.get(), wide_buf_size, lstr.get(), narrow_buf_size, nullptr, nullptr);
+	WideCharToMultiByte(to, 0, wstr.get(), wide_buf_size, lstr.get(), narrow_buf_size, nullptr, nullptr);
 
 	std::string out;
 	// NOTE: narrow_buf_size doesn't include null-terminator as we are passing size to WideCharToMultiByte explicitly.
 	out.assign(lstr.get(), narrow_buf_size);
 	return out;
+}
+
+std::string utf2ansi(const std::string_view str, unsigned int codepage) {
+	return convert(str, CP_UTF8, codepage);
+}
+
+std::string ansi2utf(const std::string_view str, unsigned int codepage) {
+	return convert(str, codepage, CP_UTF8);
 }
 
 #else
