@@ -286,27 +286,27 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 		InitDST(&sk->dst_NOTE[i]);
 	}
 
-	for (int i = 0; i < 2; i++) {
-		InitSRC(&sk->src_LINE[i]);
-		InitDST(&sk->dst_LINE[i]);
+	for (int p : { PLAYER_1, PLAYER_2 }) {
+		InitSRC(&sk->src_LINE[p]);
+		InitDST(&sk->dst_LINE[p]);
 	}
 
 	for (int i = 0; i < 6; i++) {
-		InitSRC(&sk->src_NOWJUDGE_1P[i]);
-		InitSRC(&sk->src_NOWJUDGE_2P[i]);
+		InitSRC(&sk->src_NOWJUDGE[PLAYER_1][i]);
+		InitSRC(&sk->src_NOWJUDGE[PLAYER_2][i]);
 	}
 	for (int i = 0; i < 6; i++) {
-		InitDST(&sk->dst_NOWJUDGE_1P[i]);
-		InitDST(&sk->dst_NOWJUDGE_2P[i]);
+		InitDST(&sk->dst_NOWJUDGE[PLAYER_1][i]);
+		InitDST(&sk->dst_NOWJUDGE[PLAYER_2][i]);
 	}
 
 	for (int i = 0; i < 6; i++) {
-		InitSRC(&sk->src_NOWCOMBO_1P[i]);
-		InitSRC(&sk->src_NOWCOMBO_2P[i]);
+		InitSRC(&sk->src_NOWCOMBO[PLAYER_1][i]);
+		InitSRC(&sk->src_NOWCOMBO[PLAYER_2][i]);
 	}
 	for (int i = 0; i < 6; i++) {
-		InitDST(&sk->dst_NOWCOMBO_1P[i]);
-		InitDST(&sk->dst_NOWCOMBO_2P[i]);
+		InitDST(&sk->dst_NOWCOMBO[PLAYER_1][i]);
+		InitDST(&sk->dst_NOWCOMBO[PLAYER_2][i]);
 	}
 
 	for (int i = 0; i < 6; i++) {
@@ -324,10 +324,10 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	}
 
 	for (int i = 0; i < 2; i++) {
-		InitSRC(&sk->src_GAUGECHART_1P[i]);
-		InitDST(&sk->dst_GAUGECHART_1P[i]);
-		InitSRC(&sk->src_GAUGECHART_2P[i]);
-		InitDST(&sk->dst_GAUGECHART_2P[i]);
+		InitSRC(&sk->src_GAUGECHART[PLAYER_1][i]);
+		InitDST(&sk->dst_GAUGECHART[PLAYER_1][i]);
+		InitSRC(&sk->src_GAUGECHART[PLAYER_2][i]);
+		InitDST(&sk->dst_GAUGECHART[PLAYER_2][i]);
 	}
 
 	for (int i = 0; i < 3; i++) {
@@ -335,9 +335,9 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 		InitDST(&sk->dst_SCORECHART[i]);
 	}
 
-	for (int i = 0; i < 2; i++) {
-		InitSRC(&sk->src_JUDGELINE[i]);
-		InitDST(&sk->dst_JUDGELINE[i]);
+	for (int p : { PLAYER_1, PLAYER_2 }) {
+		InitSRC(&sk->src_JUDGELINE[p]);
+		InitDST(&sk->dst_JUDGELINE[p]);
 	}
 	sk->scratchAngle_1 = 0.0;
 	sk->scratchAngle_2 = 0.0;
@@ -372,10 +372,10 @@ int InitSkin(skstruct *sk, int /*unused*/, char font) {
 	(sk->adjust).size_x = 0;
 	(sk->adjust).size_y = 0;
 	(sk->adjust).dark_type = 0;
-	(sk->adjust).note_1p_x = 0;
-	(sk->adjust).note_1p_y = 0;
-	(sk->adjust).note_2p_x = 0;
-	(sk->adjust).note_2p_y = 0;
+	(sk->adjust).note_x[PLAYER_1] = 0;
+	(sk->adjust).note_y[PLAYER_1] = 0;
+	(sk->adjust).note_x[PLAYER_2] = 0;
+	(sk->adjust).note_y[PLAYER_2] = 0;
 	sk->scratchside_1 = 0;
 	sk->scratchside_2 = 1;
 	for (int i = 0; i < 20; i++) {
@@ -693,30 +693,30 @@ int ApplyFlipside(skstruct *sk){
 	SRCstruct srcTemp;
 	DSTstruct dstTemp;
 
-	memcpy(&srcTemp, &sk->src_GROOVEGAUGE[0], sizeof(SRCstruct));
-	memcpy(&sk->src_GROOVEGAUGE[0], &sk->src_GROOVEGAUGE[1], sizeof(SRCstruct));
-	memcpy(&sk->src_GROOVEGAUGE[1], &srcTemp, sizeof(SRCstruct));
+	memcpy(&srcTemp, &sk->src_GROOVEGAUGE[PLAYER_1], sizeof(SRCstruct));
+	memcpy(&sk->src_GROOVEGAUGE[PLAYER_1], &sk->src_GROOVEGAUGE[PLAYER_2], sizeof(SRCstruct));
+	memcpy(&sk->src_GROOVEGAUGE[PLAYER_2], &srcTemp, sizeof(SRCstruct));
 
-	memcpy(&dstTemp, &sk->dst_GROOVEGAUGE[0], sizeof(DSTstruct));
-	memcpy(&sk->dst_GROOVEGAUGE[0], &sk->dst_GROOVEGAUGE[1], sizeof(DSTstruct));
-	memcpy(&sk->dst_GROOVEGAUGE[1], &dstTemp, sizeof(DSTstruct));
+	memcpy(&dstTemp, &sk->dst_GROOVEGAUGE[PLAYER_1], sizeof(DSTstruct));
+	memcpy(&sk->dst_GROOVEGAUGE[PLAYER_1], &sk->dst_GROOVEGAUGE[PLAYER_2], sizeof(DSTstruct));
+	memcpy(&sk->dst_GROOVEGAUGE[PLAYER_2], &dstTemp, sizeof(DSTstruct));
 
 	for (int i = 0; i < 6; i++) {
-		memcpy(&srcTemp, &sk->src_NOWJUDGE_1P[i], sizeof(SRCstruct));
-		memcpy(&sk->src_NOWJUDGE_1P[i], &sk->src_NOWJUDGE_2P[i], sizeof(SRCstruct));
-		memcpy(&sk->src_NOWJUDGE_2P[i], &srcTemp, sizeof(SRCstruct));
+		memcpy(&srcTemp, &sk->src_NOWJUDGE[PLAYER_1][i], sizeof(SRCstruct));
+		memcpy(&sk->src_NOWJUDGE[PLAYER_1][i], &sk->src_NOWJUDGE[PLAYER_2][i], sizeof(SRCstruct));
+		memcpy(&sk->src_NOWJUDGE[PLAYER_2][i], &srcTemp, sizeof(SRCstruct));
 
-		memcpy(&dstTemp, &sk->dst_NOWJUDGE_1P[i], sizeof(DSTstruct));
-		memcpy(&sk->dst_NOWJUDGE_1P[i], &sk->dst_NOWJUDGE_2P[i], sizeof(DSTstruct));
-		memcpy(&sk->dst_NOWJUDGE_2P[i], &dstTemp, sizeof(DSTstruct));
+		memcpy(&dstTemp, &sk->dst_NOWJUDGE[PLAYER_1][i], sizeof(DSTstruct));
+		memcpy(&sk->dst_NOWJUDGE[PLAYER_1][i], &sk->dst_NOWJUDGE[PLAYER_2][i], sizeof(DSTstruct));
+		memcpy(&sk->dst_NOWJUDGE[PLAYER_2][i], &dstTemp, sizeof(DSTstruct));
 
-		memcpy(&srcTemp, &sk->src_NOWCOMBO_1P[i], sizeof(SRCstruct));
-		memcpy(&sk->src_NOWCOMBO_1P[i], &sk->src_NOWCOMBO_2P[i], sizeof(SRCstruct));
-		memcpy(&sk->src_NOWCOMBO_2P[i], &srcTemp, sizeof(SRCstruct));
+		memcpy(&srcTemp, &sk->src_NOWCOMBO[PLAYER_1][i], sizeof(SRCstruct));
+		memcpy(&sk->src_NOWCOMBO[PLAYER_1][i], &sk->src_NOWCOMBO[PLAYER_2][i], sizeof(SRCstruct));
+		memcpy(&sk->src_NOWCOMBO[PLAYER_2][i], &srcTemp, sizeof(SRCstruct));
 
-		memcpy(&dstTemp, &sk->dst_NOWCOMBO_1P[i], sizeof(DSTstruct));
-		memcpy(&sk->dst_NOWCOMBO_1P[i], &sk->dst_NOWCOMBO_2P[i], sizeof(DSTstruct));
-		memcpy(&sk->dst_NOWCOMBO_2P[i], &dstTemp, sizeof(DSTstruct));
+		memcpy(&dstTemp, &sk->dst_NOWCOMBO[PLAYER_1][i], sizeof(DSTstruct));
+		memcpy(&sk->dst_NOWCOMBO[PLAYER_1][i], &sk->dst_NOWCOMBO[PLAYER_2][i], sizeof(DSTstruct));
+		memcpy(&sk->dst_NOWCOMBO[PLAYER_2][i], &dstTemp, sizeof(DSTstruct));
 	}
 
 	for (int i = 0; i < 10; i++) {
@@ -742,13 +742,13 @@ int ApplyFlipside(skstruct *sk){
 		//AdditionlTODO: need to add feature MINE, AUTO?
 	}
 
-	memcpy(&srcTemp, &sk->src_LINE[0], sizeof(SRCstruct));
-	memcpy(&sk->src_LINE[0], &sk->src_LINE[1], sizeof(SRCstruct));
-	memcpy(&sk->src_LINE[1], &srcTemp, sizeof(SRCstruct));
+	memcpy(&srcTemp, &sk->src_LINE[PLAYER_1], sizeof(SRCstruct));
+	memcpy(&sk->src_LINE[PLAYER_1], &sk->src_LINE[PLAYER_2], sizeof(SRCstruct));
+	memcpy(&sk->src_LINE[PLAYER_2], &srcTemp, sizeof(SRCstruct));
 
 	memcpy(&dstTemp, &sk->dst_LINE[0], sizeof(DSTstruct));
-	memcpy(&sk->dst_LINE[0], &sk->dst_LINE[1], sizeof(DSTstruct));
-	memcpy(&sk->dst_LINE[1], &dstTemp, sizeof(DSTstruct));
+	memcpy(&sk->dst_LINE[PLAYER_1], &sk->dst_LINE[PLAYER_2], sizeof(DSTstruct));
+	memcpy(&sk->dst_LINE[PLAYER_2], &dstTemp, sizeof(DSTstruct));
 
 
 	for (int i = 0; i < (sk->image).srcSize; i++) {
@@ -1402,60 +1402,60 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#SRC_NOWJUDGE_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadSRC(&sk->src_NOWJUDGE_1P[csv.val[1]], &csv, sk);
-							sk->src_NOWJUDGE_1P[csv.val[1]].timer = 46;
+							ReadSRC(&sk->src_NOWJUDGE[PLAYER_1][csv.val[1]], &csv, sk);
+							sk->src_NOWJUDGE[PLAYER_1][csv.val[1]].timer = 46;
 						}
 						break;
 					}
 					case "#DST_NOWJUDGE_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWJUDGE_1P[csv.val[1]], &csv, tSkin_num, line);
-							sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46;
+							ReadDST(&sk->dst_NOWJUDGE[PLAYER_1][csv.val[1]], &csv, tSkin_num, line);
+							sk->dst_NOWJUDGE[PLAYER_1][csv.val[1]].timer = 46;
 						}
 						break;
 					}
 					case "#SRC_NOWCOMBO_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadSRC(&sk->src_NOWCOMBO_1P[csv.val[1]], &csv, sk);
-						sk->src_NOWCOMBO_1P[csv.val[1]].timer = 46;
+						ReadSRC(&sk->src_NOWCOMBO[PLAYER_1][csv.val[1]], &csv, sk);
+						sk->src_NOWCOMBO[PLAYER_1][csv.val[1]].timer = 46;
 						break;
 					}
 					case "#DST_NOWCOMBO_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
-						ReadDST(&sk->dst_NOWCOMBO_1P[csv.val[1]], &csv, tSkin_num, line);
-						sk->dst_NOWJUDGE_1P[csv.val[1]].timer = 46; //???mistake?
+						ReadDST(&sk->dst_NOWCOMBO[PLAYER_1][csv.val[1]], &csv, tSkin_num, line);
+						sk->dst_NOWJUDGE[PLAYER_1][csv.val[1]].timer = 46; //???mistake?
 						break;
 					}
 					case "#SRC_NOWJUDGE_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadSRC(&sk->src_NOWJUDGE_2P[csv.val[1]], &csv, sk);
-							sk->src_NOWJUDGE_2P[csv.val[1]].timer = 47;
+							ReadSRC(&sk->src_NOWJUDGE[PLAYER_2][csv.val[1]], &csv, sk);
+							sk->src_NOWJUDGE[PLAYER_2][csv.val[1]].timer = 47;
 						}
 						break;
 					}
 					case "#DST_NOWJUDGE_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWJUDGE_2P[csv.val[1]], &csv, tSkin_num, line);
-							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47;
+							ReadDST(&sk->dst_NOWJUDGE[PLAYER_2][csv.val[1]], &csv, tSkin_num, line);
+							sk->dst_NOWJUDGE[PLAYER_2][csv.val[1]].timer = 47;
 						}
 						break;
 					}
 					case "#SRC_NOWCOMBO_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadSRC(&sk->src_NOWCOMBO_2P[csv.val[1]], &csv, sk);
-							sk->src_NOWCOMBO_2P[csv.val[1]].timer = 47;
+							ReadSRC(&sk->src_NOWCOMBO[PLAYER_2][csv.val[1]], &csv, sk);
+							sk->src_NOWCOMBO[PLAYER_2][csv.val[1]].timer = 47;
 						}
 						break;
 					}
 					case "#DST_NOWCOMBO_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 5, line, pFbuf)) {
-							ReadDST(&sk->dst_NOWCOMBO_2P[csv.val[1]], &csv, tSkin_num, line);
-							sk->dst_NOWJUDGE_2P[csv.val[1]].timer = 47; //???mistake?
+							ReadDST(&sk->dst_NOWCOMBO[PLAYER_2][csv.val[1]], &csv, tSkin_num, line);
+							sk->dst_NOWJUDGE[PLAYER_2][csv.val[1]].timer = 47; //???mistake?
 						}
 						break;
 					}
@@ -1476,28 +1476,28 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 					case "#SRC_GAUGECHART_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadSRC(&sk->src_GAUGECHART_1P[csv.val[1]], &csv, sk);
+							ReadSRC(&sk->src_GAUGECHART[PLAYER_1][csv.val[1]], &csv, sk);
 						}
 						break;
 					}
 					case "#DST_GAUGECHART_1P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_GAUGECHART_1P[csv.val[1]], &csv, tSkin_num, line);
+							ReadDST(&sk->dst_GAUGECHART[PLAYER_1][csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
 					case "#SRC_GAUGECHART_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadSRC(&sk->src_GAUGECHART_2P[csv.val[1]], &csv, sk);
+							ReadSRC(&sk->src_GAUGECHART[PLAYER_2][csv.val[1]], &csv, sk);
 						}
 						break;
 					}
 					case "#DST_GAUGECHART_2P"_hash:{
 						SplitCSV(fBuf, &csv, ",");
 						if (CheckIndexRange(csv.val[1], 0, 1, line, pFbuf)) {
-							ReadDST(&sk->dst_GAUGECHART_2P[csv.val[1]], &csv, tSkin_num, line);
+							ReadDST(&sk->dst_GAUGECHART[PLAYER_2][csv.val[1]], &csv, tSkin_num, line);
 						}
 						break;
 					}
@@ -1684,7 +1684,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 						if (sk->num_of_ImageFont == 10) {
 							ErrorLogFmtAdd("スキン読み込みエラー %d行目\n%s\nこれ以上の登録はできません。\n", line, fBuf.body);
 						}
-						else if (csv.val[2] == 1 || sk->disableimagefont == 0) {
+						else if (csv.val[2] == 1 || !sk->disableImageFont) {
 							if (csv.str[1].isDiff("CONTINUE")) {
 								for (int i = 0; i < sk->customfile_count; i++) {
 									if(sk->customfileRANDOM[i].isSame(csv.str[1].left(sk->customfileRANDOM[i].length())) && sk->customfile[i].isDiff("RANDOM") && sk->customfile[i].isDiff("ERROR") && sk->customfile[i].length() > 0){
@@ -1880,10 +1880,10 @@ int LoadScene(skstruct* sk, CSTR skinfile, int p5, char font) {
 	(sk->adjust).size_x = tsku.adjust.size_x;
 	(sk->adjust).size_y = tsku.adjust.size_y;
 	(sk->adjust).dark_type = tsku.adjust.dark_type;
-	(sk->adjust).note_1p_x = tsku.adjust.note_1p_x;
-	(sk->adjust).note_1p_y = tsku.adjust.note_1p_y;
-	(sk->adjust).note_2p_x = tsku.adjust.note_2p_x;
-	(sk->adjust).note_2p_y = tsku.adjust.note_2p_y;
+	(sk->adjust).note_x[PLAYER_1] = tsku.adjust.note_x[PLAYER_1];
+	(sk->adjust).note_y[PLAYER_1] = tsku.adjust.note_y[PLAYER_1];
+	(sk->adjust).note_x[PLAYER_2] = tsku.adjust.note_x[PLAYER_2];
+	(sk->adjust).note_y[PLAYER_2] = tsku.adjust.note_y[PLAYER_2];
 	for (int i = 0; i < 40; i++) {
 		int t = tsku.customize_value[i];
 		if (900 <= t && t < 1000) sk->op[t] = 1;
