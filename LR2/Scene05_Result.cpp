@@ -7,7 +7,8 @@
 #include <optional>
 
 int ProcS_Result(game *g, sqlite3 *sql) {
-	g->net.customIR.BeginResultIr(*g, sql, 0, g->gameplay.p1Score.EncodeGhostData().body);
+	if(g->gameplay.replay.status != 2)
+		g->net.customIR.BeginResultIr(*g, sql, 0, g->gameplay.p1Score.EncodeGhostData().body);
 
 	LoadSceneG(g, &g->skstruct, SKINTYPE_RESULT);
 	
