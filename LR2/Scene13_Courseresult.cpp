@@ -170,7 +170,8 @@ int ProcS_CourseResult(game *g, sqlite3 *sql) {
 	PlayerCheckAndSwap(&g->gameplay);
 	CheckCourseClear(g);
 	ProcS_subCourseResult(g, sql);
-	g->net.customIR.BeginResultIr(*g, sql, 0, /*ghost=*/"");
+	if(g->gameplay.replay.status != 2)
+		g->net.customIR.BeginResultIr(*g, sql, 0, /*ghost=*/"");
 	LoadSceneG(g, &g->skstruct, SKINTYPE_COURSERESULT);
 	
 	if (g->skstruct.flag_flip) {
