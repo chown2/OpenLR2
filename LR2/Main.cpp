@@ -250,7 +250,8 @@ int main(int argc, char** argv) {
 	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 	SetFontCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 
-	{
+	// Not always desired, e.g. launching from debugger.
+	if (getenv("OPENLR2_NO_CD") == nullptr) {
 		auto curDir = GetExecutablePath();
 		std::filesystem::current_path(curDir);
 		gs.baseDirectory.assign(curDir.string().c_str(), 0).add("/");
