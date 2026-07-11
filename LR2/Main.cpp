@@ -1436,7 +1436,6 @@ int main(int argc, char** argv) {
 					ProcI_PO4Select(&gs, sql3);
 					break;
 				default:
-					//goto LAB_00434b4b; //we don't need this JMP. because gs.procSelecter doesn't change in this case.
 					break;
 			}
 			if (procPrev != gs.procSelecter) { //This is Close of Scene
