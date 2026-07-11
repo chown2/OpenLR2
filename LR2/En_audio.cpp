@@ -257,10 +257,11 @@ int IsAltSoundExist(CSTR *filepath){
 int ReleaseSound(AUDIO *aud, SOUNDDATA *sound){
 	CSTR &filepath = sound->filename;
 
+	sound->streaming = false;
 	if (!sound->load) {
 		return -1;
 	}
-	if (filepath.length() <= 1) {
+	if (filepath.length() == 0) {
 		filepath.fillzero();
 		sound->length = 0;
 		sound->load = false;

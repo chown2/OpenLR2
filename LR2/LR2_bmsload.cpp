@@ -669,6 +669,11 @@ int LoadBmsResource(gameplay *gp, CSTR /*BMSfilepath*/, AUDIO *aud, ConfigStruct
 
 	std::unique_lock l{gp->criticalSection};
 
+	// Unloading keysounds of previous song.
+	for (auto [keysound, filename] : std::views::zip(gp->keysound, gp->keysound_filename)) {
+		if (filename.length() == 0) ReleaseSound(aud, &keysound);
+	}
+
 	std::vector<unsigned int> keysoundLoadQueue;
 	std::vector<std::jthread> keysoundsLoadWorkers;
 	std::atomic<unsigned int> keysoundsLoaded = 0;
