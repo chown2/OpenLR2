@@ -38,13 +38,13 @@ std::string utf2ansi(const std::string_view in, unsigned int codepage) {
 }
 
 std::string ansi2utf(const std::string_view str, unsigned int codepage) {
-	int size_needed = MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
-	auto wstr = std::make_unique_for_overwrite<wchar_t[]>(size_needed);
-	MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), wstr.get(), size_needed);
+	int wide_buf_size = MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), nullptr, 0);
+	auto wstr = std::make_unique_for_overwrite<wchar_t[]>(wide_buf_size);
+	MultiByteToWideChar(codepage, 0, str.data(), static_cast<int>(str.size()), wstr.get(), wide_buf_size);
 
-	int narrow_buf_size = WideCharToMultiByte(CP_UTF8, 0, wstr.get(), size_needed, 0, 0, 0, FALSE);
+	int narrow_buf_size = WideCharToMultiByte(CP_UTF8, 0, wstr.get(), wide_buf_size, nullptr, 0, nullptr, nullptr);
 	auto lstr = std::make_unique_for_overwrite<char[]>(narrow_buf_size);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.get(), narrow_buf_size, lstr.get(), narrow_buf_size, 0, FALSE);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.get(), wide_buf_size, lstr.get(), narrow_buf_size, nullptr, nullptr);
 
 	std::string out;
 	// NOTE: narrow_buf_size doesn't include null-terminator as we are passing size to WideCharToMultiByte explicitly.
