@@ -4311,6 +4311,7 @@ int ReadOptionstrFile(TextStruct& txtStruct, CSTR filepath) {
 	pFbuf = fBuf.outstr();
 	for (pFbuf = fgets(pFbuf, bufSize, pFile); pFbuf; pFbuf = fgets(pFbuf, bufSize, pFile)) {
 		fBuf = ansi2utf(pFbuf, 932).c_str();
+		pFbuf = fBuf.outstr();
 		if (*(fBuf.atPos(0)) == '#') {
 			SplitCSV(fBuf, &csv, ",");
 

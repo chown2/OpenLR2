@@ -34,6 +34,7 @@ int SkinSelect_SoundSet(game *g, CSTR filepath) {
 		fBuf.trimWhiteSpace();
 		DealWhiteSpace(&fBuf);
 		fBuf = ansi2utf(pFbuf, 932).c_str();
+		pFbuf = fBuf.outstr();
 		if (isdigit(*fBuf.atPos(1)) && isdigit(*fBuf.atPos(2))) {
 
 			int type = atol(fBuf.getSliced(1, 2));

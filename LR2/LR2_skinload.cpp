@@ -877,6 +877,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 	pFbuf = fBuf.outstr();
 	for (pFbuf = fgets(pFbuf, 1023, pFile); pFbuf; pFbuf = fgets(pFbuf, 1023, pFile)) {
 		fBuf = ansi2utf(pFbuf, 932).c_str();
+		pFbuf = fBuf.outstr();
 		ExpandSkinObjectMax(&sk->image, 50);
 		for (auto& obj : sk->otherObject) {
 			ExpandSkinObjectMax(&obj, 20);
