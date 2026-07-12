@@ -24,19 +24,19 @@ void ReactInput(game *g) {
 			SetTimeLapse(16, &g->timer1);
 			g->txtStruct.readme.show = 0;
 		}
-		else if (g->KeyInput.mouse_buttonL == 2) { //original is very slow, it is adequately fast. It's misbehavior...but isn't it good?
+		else if (g->KeyInput.mouse_buttonL == 2) {
 			if (g->KeyInput.mouse_oldX < 200) {
 				g->txtStruct.readme.w += g->timer1.tickTime * 600.0 / 1000.0;
 			}
-			else if (g->KeyInput.mouse_oldX > 440) {
-				g->txtStruct.readme.w += g->timer1.tickTime * 600.0 / -1000.0;
+			else if (g->KeyInput.mouse_oldX > skinSizeX - 200) {
+				g->txtStruct.readme.w -= g->timer1.tickTime * 1200.0 / 1000.0;
 			}
 			
 			if (g->KeyInput.mouse_oldY < 150) {
-				g->txtStruct.readme.h -= g->timer1.tickTime * 600.0 / -1000.0;
+				g->txtStruct.readme.h += g->timer1.tickTime * 600.0 / 1000.0;
 			}
-			else if (g->KeyInput.mouse_oldY > 330) {
-				g->txtStruct.readme.h -= g->timer1.tickTime * 600.0 / 1000.0;
+			else if (g->KeyInput.mouse_oldY > skinSizeY - 150) {
+				g->txtStruct.readme.h -= g->timer1.tickTime * 1200.0 / 1000.0;
 			}
 		}
 
@@ -44,11 +44,11 @@ void ReactInput(game *g) {
 			g->txtStruct.readme.h += g->timer1.tickTime * 600.0 / 1000.0;
 		}
 		if (g->KeyInput.inputID[KEY_INPUT_DOWN] == 2) {
-			g->txtStruct.readme.h += 600.0 * g->timer1.tickTime / -1000.0;
+			g->txtStruct.readme.h -= g->timer1.tickTime * 1200.0/ 1000.0;
 		}
 		//TODO_RESOULUTION
-		if (g->txtStruct.readme.h < 480 - g->txtStruct.readme.y) g->txtStruct.readme.h = 480 - g->txtStruct.readme.y;
-		if (g->txtStruct.readme.w < 640 - g->txtStruct.readme.x) g->txtStruct.readme.w = 640 - g->txtStruct.readme.x;
+		if (g->txtStruct.readme.h < skinSizeY - g->txtStruct.readme.y) g->txtStruct.readme.h = skinSizeY - g->txtStruct.readme.y;
+		if (g->txtStruct.readme.w < skinSizeX - g->txtStruct.readme.x) g->txtStruct.readme.w = skinSizeX - g->txtStruct.readme.x;
 		if (g->txtStruct.readme.w > 0) g->txtStruct.readme.w = 0;
 		if (g->txtStruct.readme.h > 0) g->txtStruct.readme.h = 0;
 	}
