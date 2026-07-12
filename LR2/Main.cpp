@@ -250,7 +250,8 @@ int main(int argc, char** argv) {
 	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 	SetFontCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 
-	{
+	// Not always desired, e.g. launching from debugger.
+	if (getenv("OPENLR2_NO_CD") == nullptr) {
 		auto curDir = GetExecutablePath();
 		std::filesystem::current_path(curDir);
 		gs.baseDirectory.assign(curDir.string().c_str(), 0).add("/");
@@ -1435,7 +1436,6 @@ int main(int argc, char** argv) {
 					ProcI_PO4Select(&gs, sql3);
 					break;
 				default:
-					//goto LAB_00434b4b; //we don't need this JMP. because gs.procSelecter doesn't change in this case.
 					break;
 			}
 			if (procPrev != gs.procSelecter) { //This is Close of Scene
