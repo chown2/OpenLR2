@@ -102,7 +102,7 @@ static int ReadDST(DSTstruct *dst, CSVbuf *csv, int order, int line){
 		case 10: return DX_BLENDMODE_INVSRC;
 		case 11: return DX_BLENDMODE_MULA;
 		default: 
-			ErrorLogFmtAdd("Invalid blend mode %d for %s at line %d! Defaulting to 1...\n", blend, csv->str[0], line);
+			ErrorLogFmtAdd("Invalid blend mode %d for %s at line %d! Defaulting to 1...\n", blend, csv->str[0].body, line);
 			return DX_BLENDMODE_ALPHA;
 		}
 	}(csv->val[12]);
