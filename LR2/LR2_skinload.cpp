@@ -1893,7 +1893,12 @@ int LoadScene(skstruct* sk, CSTR skinfile, int p5, char font) {
 int LoadSceneG(game* g, skstruct* sk, int skinNum, int font) {
 	CSTR skinfile(g->config.skin.skinFilePath[skinNum]);
 
-	const SkinHeader& skin = g->skinData.Data[g->skinData.skinID[skinNum]];
+	int skinId = g->skinData.skinID[skinNum];
+	if (skinId == -1) {
+		return 0;
+	}
+
+	const SkinHeader& skin = g->skinData.Data[skinId];
 	if (skin.hasResolutionTag) {
 		Resize(g, skin.targetX, skin.targetY, 0);   // per-skin #RESOLUTION wins
 	}
