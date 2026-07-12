@@ -3682,7 +3682,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					cstrSprintf(&tcstr, fs::make_preferred("LR2files/SkinCustomize/%s.xml").data(), MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
-					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)
+					for (int j = 0; j < 100; j++) {
 						if (g->skinData.Data[g->skinData.previewID].customs[j].dst_op_start == 0) {
 							for (int k = g->skinData.Data[g->skinData.previewID].customs[j].dst_op_start; k < g->skinData.Data[g->skinData.previewID].customs[j].dst_op_count; k++) {
 								if (g->skinData.Data[g->skinData.previewID].customs[j].op_label[k].isSame(&sku.customize_filename[j])) {
@@ -3740,7 +3740,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					cstrSprintf(&tcstr, fs::make_preferred("LR2files/SkinCustomize/%s.xml").data(), MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
-					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)
+					for (int j = 0; j < 100; j++) {
 						if (g->skinData.Data[g->skinData.previewID].customs[j].dst_op_start == 0) {
 							for (int k = g->skinData.Data[g->skinData.previewID].customs[j].dst_op_start; k < g->skinData.Data[g->skinData.previewID].customs[j].dst_op_count; k++) {
 								if (g->skinData.Data[g->skinData.previewID].customs[j].op_label[k].isSame(&sku.customize_filename[j])) {
@@ -3835,7 +3835,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 					cstrSprintf(&tcstr, fs::make_preferred("LR2files/SkinCustomize/%s.xml").data(), MD5str(g->skinData.Data[g->skinData.previewID].skinFile));
 					ReadSkinCustomize(&sku, tcstr);
 
-					for (int j = 0; j < 100; j++) { // VULNERABILITY : out of index sku (array size 40, but access to 100)
+					for (int j = 0; j < 100; j++) {
 						if (g->skinData.Data[g->skinData.previewID].customs[j].dst_op_start == 0) {
 							sku.customize_filename[j].assign(&g->skinData.Data[g->skinData.previewID].customs[j].op_label[g->skinData.Data[g->skinData.previewID].customs[j].dst_op_selected]);
 						}
