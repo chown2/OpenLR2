@@ -1999,7 +1999,7 @@ int main(int argc, char** argv) {
 			int h = gs.txtStruct.readme.h;
 			for (int i = 0; i < gs.txtStruct.readme.lines; i++) {
 				int y = gs.skstruct.src_README[0].op1 * i + h;
-				if ( y < 480 && (gs.skstruct.src_README[0].op1*(i + 1) + h > 0) ) {
+				if ( y < skinSizeY && (gs.skstruct.src_README[0].op1*(i + 1) + h > 0) ) {
 					AddDrawingBuffer_TextXY(&gs.skstruct.drBuf, &gs.skstruct.src_README[0], &gs.skstruct.dst_README[0], &gs.timer1, i + 1000, gs.txtStruct.readme.w, y);
 					AddDrawingBuffer_TextXY(&gs.skstruct.drBuf, &gs.skstruct.src_README[1],	&gs.skstruct.dst_README[1], &gs.timer1, i + 1000, gs.txtStruct.readme.w, gs.skstruct.src_README[1].op1 * i + h);
 					h = gs.txtStruct.readme.h;
