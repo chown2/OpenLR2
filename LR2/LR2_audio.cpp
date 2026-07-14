@@ -352,6 +352,7 @@ int ReadLR2SoundSet(game *g, CSTR filepath, char reFlag) {
 	pFbuf = fBuf.outstr();
 	for (pFbuf = fgets(pFbuf, 256, hFile); pFbuf; pFbuf = fgets(pFbuf, 256, hFile)) {
 		fBuf = ansi2utf(pFbuf, 932).c_str();
+		pFbuf = fBuf.outstr();
 		if (*fBuf.atPos(0) == '#') {
 			fBuf.trimWhiteSpace();
 			DealWhiteSpace(&fBuf);

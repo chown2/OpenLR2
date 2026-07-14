@@ -753,26 +753,7 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	(sku->adjust).note_y[PLAYER_2] = 0;
 	(sku->adjust).size_x = 0;
 	(sku->adjust).size_y = 0;
-	sku->customize_value[0] = 0;
-	sku->customize_value[1] = 0;
-	sku->customize_value[2] = 0;
-	sku->customize_value[3] = 0;
-	sku->customize_value[4] = 0;
-	sku->customize_value[5] = 0;
-	sku->customize_value[6] = 0;
-	sku->customize_value[7] = 0;
-	sku->customize_value[8] = 0;
-	sku->customize_value[9] = 0;
-	sku->customize_value[10] = 0;
-	sku->customize_value[0xb] = 0;
-	sku->customize_value[0xc] = 0;
-	sku->customize_value[0xd] = 0;
-	sku->customize_value[0xe] = 0;
-	sku->customize_value[0xf] = 0;
-	sku->customize_value[0x10] = 0;
-	sku->customize_value[0x11] = 0;
-	sku->customize_value[0x12] = 0;
-	sku->customize_value[0x13] = 0;
+	std::ranges::fill(sku->customize_value, 0);
 	(sku->adjust).shift_x = 0;
 	(sku->adjust).shift_y = 0;
 	(sku->adjust).rate_x = 100;
@@ -798,27 +779,16 @@ int ReadSkinCustomize(SkinUser *sku, char *FilePath) {
 	ReadXml_Int("skincustomize", "note_2p", "x", 0, &(sku->adjust).note_x[PLAYER_2], hXml);
 	ReadXml_Int("skincustomize", "note_2p", "y", 0, &(sku->adjust).note_y[PLAYER_2], hXml);
 
-	//it's doubled code, so changed a little
 	for (int i = 0; i < 40; i++) {
 		CSTR tmp;
 
-		cstrSprintf(&tmp, "config_%d", i); //cstrSprintf(&tmp, "confit_%d", i);
+		cstrSprintf(&tmp, "config_%d", i);
 		if( hXml && (xmlCur = hXml->FirstChildElement("skincustomize")) && (xmlCur = xmlCur->FirstChildElement("skinconfig")) && (xmlCur = xmlCur->FirstChildElement(tmp)) )
 			sku->customize_value[i] = atol(xmlCur->ToElement()->GetText());
-		else
-			sku->customize_value[i] = 0;
 
 		cstrSprintf(&tmp, "filename_%d", i);
 		ReadXml_Str("skincustomize", "customfile", tmp, CSTR(""), &sku->customize_filename[i], hXml);
 	}
-
-	////0~39 repeat
-	//if (hXml && (xmlCur = hXml->FirstChildElement("skincustomize")) && (xmlCur = xmlCur->FirstChildElement("skinconfig")) && (xmlCur->FirstChildElement("config_0")))
-	//	sku->customize_value[0] = atol(xmlCur->ToElement()->GetText());
-	//else
-	//	sku->customize_value[0] = 0;
-	////0~39 repeat
-	//ReadXml_Str("skincustomize", "customfile", "filename_0", CSTR(""), &sku->customize_filename[0], hXml);
 
 	delete(hXml);
 

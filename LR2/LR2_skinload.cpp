@@ -102,7 +102,7 @@ static int ReadDST(DSTstruct *dst, CSVbuf *csv, int order, int line){
 		case 10: return DX_BLENDMODE_INVSRC;
 		case 11: return DX_BLENDMODE_MULA;
 		default: 
-			ErrorLogFmtAdd("Invalid blend mode %d for %s at line %d! Defaulting to 1...\n", blend, csv->str[0], line);
+			ErrorLogFmtAdd("Invalid blend mode %d for %s at line %d! Defaulting to 1...\n", blend, csv->str[0].body, line);
 			return DX_BLENDMODE_ALPHA;
 		}
 	}(csv->val[12]);
@@ -877,6 +877,7 @@ int ReadSkin(skstruct *sk,CSTR FilePath, int unused, int skin_num, SkinUser* sku
 	pFbuf = fBuf.outstr();
 	for (pFbuf = fgets(pFbuf, 1023, pFile); pFbuf; pFbuf = fgets(pFbuf, 1023, pFile)) {
 		fBuf = ansi2utf(pFbuf, 932).c_str();
+		pFbuf = fBuf.outstr();
 		ExpandSkinObjectMax(&sk->image, 50);
 		for (auto& obj : sk->otherObject) {
 			ExpandSkinObjectMax(&obj, 20);
@@ -1893,7 +1894,12 @@ int LoadScene(skstruct* sk, CSTR skinfile, int p5, char font) {
 int LoadSceneG(game* g, skstruct* sk, int skinNum, int font) {
 	CSTR skinfile(g->config.skin.skinFilePath[skinNum]);
 
-	const SkinHeader& skin = g->skinData.Data[g->skinData.skinID[skinNum]];
+	int skinId = g->skinData.skinID[skinNum];
+	if (skinId == -1) {
+		return 0;
+	}
+
+	const SkinHeader& skin = g->skinData.Data[skinId];
 	if (skin.hasResolutionTag) {
 		Resize(g, skin.targetX, skin.targetY, 0);   // per-skin #RESOLUTION wins
 	}

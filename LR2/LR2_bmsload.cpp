@@ -2251,6 +2251,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 				continue;
 			}
 			fBuf = ansi2utf(pFbuf, 932).c_str();
+			pFbuf = fBuf.outstr();
 			fBufOrg = fBuf;
 			fBuf.upper();
 

@@ -652,6 +652,7 @@ int ShowReadmes(game *g) {
 		char* pFbuf = fBuf.outstr();
 		for (pFbuf = fgets(pFbuf, 2048, pFile); pFbuf; pFbuf = fgets(pFbuf, 2048, pFile)) {
 			fBuf = ansi2utf(fBuf.body, 932).c_str();
+			pFbuf = fBuf.outstr();
 			DealWhiteSpace(&fBuf);
 			g->txtStruct.readme.body[g->txtStruct.readme.lines] = fBuf;
 			g->txtStruct.readme.lines++;
@@ -698,6 +699,7 @@ int ShowReadme(game *g, CSTR path) {
 		pFbuf = fBuf.outstr();
 		for (pFbuf = fgets(pFbuf, 0x3FC, pFile); pFbuf; pFbuf = fgets(pFbuf, 0x3FC, pFile)) {
 			fBuf = ansi2utf(pFbuf, 932).c_str();
+			pFbuf = fBuf.outstr();
 			g->txtStruct.readme.body[g->txtStruct.readme.lines] = fBuf;
 			g->txtStruct.readme.lines++;
 			int len = GetTextGraphLength(&fBuf, &g->skstruct.ImageFonts[g->skstruct.src_README[0].cycle]);
