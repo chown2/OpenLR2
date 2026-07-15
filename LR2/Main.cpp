@@ -547,6 +547,7 @@ int main(int argc, char** argv) {
 				printfDx("%.*s%s\n", static_cast<int>(name.size()), name.data(), isFutureReady(future) ? " - done!" : ellipsis(i, 3, 20).c_str());
 			ScreenFlip();
 			clsDx();
+			ClsDrawScreen();
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			++i;
 		}
