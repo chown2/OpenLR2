@@ -35,7 +35,7 @@ static MIDI midi;
 
 #ifdef _WIN32
 static void FixMousePointWithClientPosition(int* mouseX, int* mouseY) {
-	if (GetUseFullScreenResolutionMode() != DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW) return;
+	if (GetWindowModeFlag() == TRUE && GetUseFullScreenResolutionMode() != DX_FSRESOLUTIONMODE_BORDERLESS_WINDOW) return;
 
 	const HWND hWnd = GetMainWindowHandle();
 	if (hWnd == nullptr) return;
