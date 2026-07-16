@@ -712,6 +712,9 @@ extern unsigned int ShaderTxt_PSInclude_D3D11_len;
 extern unsigned char ShaderTxt_VSInclude_D3D11[];
 extern unsigned int ShaderTxt_VSInclude_D3D11_len;
 
+extern unsigned char ShaderTxt_CRT_Geom_D3D11[];
+extern unsigned int ShaderTxt_CRT_Geom_D3D11_len;
+
 #endif // DX_NON_SHADERCODE_BINARY
 
 extern int  DxShaderCodeBin_Filter_D3D11Convert ;
@@ -1848,6 +1851,7 @@ extern int Graphics_D3D11_ShaderCode_Base_Initialize( void )
 		SCBASE->ShaderTxt["DxShader_DataType_D3D11.h"] = { ShaderTxt_DataTypeSubInclude_D3D11, ShaderTxt_DataTypeSubInclude_D3D11_len };
 		SCBASE->ShaderTxt["DxShader_PS_D3D11.h"] = { ShaderTxt_PSInclude_D3D11, ShaderTxt_PSInclude_D3D11_len };
 		SCBASE->ShaderTxt["DxShader_VS_D3D11.h"] = { ShaderTxt_VSInclude_D3D11, ShaderTxt_VSInclude_D3D11_len };
+		SCBASE->ShaderTxt["CRT_Geom.hlsl"] = { ShaderTxt_CRT_Geom_D3D11 , ShaderTxt_CRT_Geom_D3D11_len };
 	}
 
 #endif // DX_NON_SHADERCODE_BINARY
@@ -4410,6 +4414,11 @@ extern int Graphics_D3D11_Shader_Initialize( void )
 				goto ERR ;
 			}
 		}
+
+		if (Graphics_D3D11_CompilePixelShader("CRT_Geom.hlsl", "CRTGeom_PS", NULL, &Shader->Base.CrtGeomPixelShader) != 0)
+		{
+			DXST_LOGFILE_ADDA("Couldn't compile CRT_Geom pixel shader\n");
+		}
 	}
 
 #endif // DX_NON_SHADERCODE_BINARY
@@ -4527,6 +4536,8 @@ extern int Graphics_D3D11_Shader_Terminate( void )
 	Graphics_D3D11_PixelShaderArray_Release(  ( D_ID3D11PixelShader ** )&Shader->Model.MV1_VertexLighting_Normal_PS,    sizeof( Shader->Model.MV1_VertexLighting_Normal_PS    ) / sizeof( D_ID3D11PixelShader  * ) ) ;
 
 #endif // DX_NON_MODEL
+
+	Graphics_D3D11_PixelShaderArray_Release((D_ID3D11PixelShader**)&Shader->Base.CrtGeomPixelShader, sizeof(Shader->Base.CrtGeomPixelShader) / sizeof(D_ID3D11PixelShader*));
 
 	// 正常終了
 	return 0 ;
@@ -6764,15 +6775,10 @@ extern int		Graphics_D3D11_StretchRect(
 		DestRectF.right  =     ( float )DestRect->right  / DestDesc.Width  * 2.0f - 1.0f   ;
 		DestRectF.bottom = - ( ( float )DestRect->bottom / DestDesc.Height * 2.0f - 1.0f ) ;
 
-		// FIXME:
-		// This is likely not a real solution.
-		// Seemingly, SRC texture has first and last column of pixels swapped.
-		// This hack might be truncating the faulty columns, instead filling them according to the filter.
-		int src_offset_hack = SrcRect->right - SrcRect->left == DestRect->right - DestRect->left ? 0 : 1;
-		SrcRectF.left    = ( float )(SrcRect->left + src_offset_hack)    / SrcDesc.Width ;
-		SrcRectF.top     = ( float )SrcRect->top						 / SrcDesc.Height ;
-		SrcRectF.right   = ( float )(SrcRect->right - src_offset_hack)   / SrcDesc.Width ;
-		SrcRectF.bottom  = ( float )SrcRect->bottom						 / SrcDesc.Height ;
+		SrcRectF.left    = ( float )SrcRect->left    / SrcDesc.Width ;
+		SrcRectF.top     = ( float )SrcRect->top     / SrcDesc.Height ;
+		SrcRectF.right   = ( float )SrcRect->right   / SrcDesc.Width ;
+		SrcRectF.bottom  = ( float )SrcRect->bottom  / SrcDesc.Height ;
 
 		if( BlendTexture != NULL )
 		{
@@ -25782,6 +25788,17 @@ extern	int		Graphics_Hardware_D3D11_ScreenFlipBase_PF( void )
 			) ;
 		}
 
+		D_ID3D11Texture2D* crtVessel = NULL;
+		D_ID3D11ShaderResourceView* crtVesselSRV = NULL;
+		if (GSYS.Screen.FullScreenScalingMode == DX_FSSCALINGMODE_CRT) {
+			D3D11Device_CreateTexture2D(&OWI->BufferTexture2DDesc, NULL, &crtVessel);
+			D_D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc{};
+			SRVDesc.Format = OWI->BufferTexture2DDesc.Format;
+			SRVDesc.ViewDimension = D_D3D11_SRV_DIMENSION_TEXTURE2D;
+			SRVDesc.Texture2D.MipLevels = 1;
+			D3D11Device_CreateShaderResourceView(crtVessel, &SRVDesc, &crtVesselSRV);
+		}
+
 		// サブバックバッファの内容を本バックバッファに転送
 		Graphics_D3D11_StretchRect(
 			GD3D11.Device.Screen.SubBackBufferTexture2D,
@@ -25790,8 +25807,15 @@ extern	int		Graphics_Hardware_D3D11_ScreenFlipBase_PF( void )
 			OWI->BufferTexture2D,
 			OWI->BufferRTV,
 			&DestRect,
-			GSYS.Screen.FullScreenScalingMode == DX_FSSCALINGMODE_BILINEAR ? D_D3D11_FILTER_TYPE_LINEAR : D_D3D11_FILTER_TYPE_POINT
-		) ;
+			GSYS.Screen.FullScreenScalingMode == DX_FSSCALINGMODE_BILINEAR ? D_D3D11_FILTER_TYPE_LINEAR : D_D3D11_FILTER_TYPE_POINT,
+			0, 0,
+			GSYS.Screen.FullScreenScalingMode == DX_FSSCALINGMODE_CRT ? GD3D11.Device.Shader.Base.CrtGeomPixelShader : 0,
+			0, 
+			GSYS.Screen.FullScreenScalingMode == DX_FSSCALINGMODE_CRT ? crtVesselSRV : 0
+		);
+
+		if (crtVesselSRV) crtVesselSRV->Release();
+		if (crtVessel) crtVessel->Release();
 	}
 
 	// バックバッファの透過色の部分を透過するフラグか、UpdateLayerdWindow を使用するフラグが立っている場合は処理を分岐

@@ -4029,7 +4029,7 @@ int SetObjectValue_Button(game *g, skstruct *sk, Timer *T, char flag) {
 				}
 				break;
 			case 400:
-				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.system.fullscreenfilter, 0, 1, g->sSelect.panel);
+				isClickSuccess = ButtonByInput(&sk->drBuf, &sk->otherObject[1].src[i], &sk->otherObject[1].dst[i], T, &g->KeyInput, &g->config.system.fullscreenfilter, 0, 2, g->sSelect.panel);
 				if (isClickSuccess == 2) {
 					PlaySound(&g->audio, &g->audio.sysSound.option_change, g->audio.chnKey, -1);
 					SetFullScreenScalingMode(g->config.system.fullscreenfilter, g->config.system.fullscreenfitstretch ? 1 : 0);
@@ -4288,7 +4288,7 @@ static void MakeOLR2StrDefaults(TextStruct& txtStruct) {
 			vec.emplace_back(defaults[i]);
 		}
 	};
-	constexpr std::array<const char*, 2> fullscreenfilter_defaults{ "BILINEAR", "NEAREST" };
+	constexpr std::array<const char*, 3> fullscreenfilter_defaults{ "BILINEAR", "NEAREST", "CRT" };
 	constexpr std::array<const char*, 2> fullscreenfitstretch_defaults{ "OFF", "ON" };
 	fill_default_vec(txtStruct.option_fullscreenfilter, fullscreenfilter_defaults);
 	fill_default_vec(txtStruct.option_fullscreenfitstretch, fullscreenfitstretch_defaults);
