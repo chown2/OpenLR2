@@ -226,7 +226,7 @@ static bool fWaitHiScoreUpdateInput = false;
 int ProcI_Result(game *g) {
 
 	auto switch_gauge_display = [](gameplay& gameplay, int buttonVal, PLAYERSTATUS& player) {
-		if (buttonVal == 1 && player.gaugeType != OPTION_GAUGE_PATTACK) {
+		if (buttonVal == 1 && player.gaugeType != OPTION_GAUGE_GATTACK) {
 			int& gauge = player.gaugeType;
 			if (gameplay.courseType != 2) [[likely]] {
 				switch (gauge) {
