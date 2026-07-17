@@ -1525,7 +1525,7 @@ int main(int argc, char** argv) {
 					if (gs.net.rankingData.showRanking == 0) {
 						if (gs.sSelect.stack_query[gs.sSelect.cur].findStrPos("__RIVAL__") >= 0) {
 							gs.net.rankingData.target_ID = gs.sSelect.stack_rivalID[gs.sSelect.cur];
-							gs.gameplay.targetCfg = gs.config.play; // TODO: GOMazk: need check
+							gs.gameplay.playConfigBackupBeforeTargetSomething = gs.config.play; // TODO: GOMazk: need check
 							if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 							gs.config.play.battle = OPTION_BATTLE_OFF;
 						}
@@ -1534,7 +1534,7 @@ int main(int argc, char** argv) {
 						}
 					}
 					else {
-						gs.gameplay.targetCfg = gs.config.play; // TODO: GOMazk: need check
+						gs.gameplay.playConfigBackupBeforeTargetSomething = gs.config.play; // TODO: GOMazk: need check
 						if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 						gs.config.play.battle = OPTION_BATTLE_OFF;
 						gs.net.rankingData.target_ID = gs.net.rankingData.ranking[gs.sSelect.cur_song].id;
@@ -1665,33 +1665,33 @@ int main(int argc, char** argv) {
 
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 					if (gs.net.rankingData.target_ID != 0) {
-						gs.config.play = gs.gameplay.targetCfg;
+						gs.config.play = gs.gameplay.playConfigBackupBeforeTargetSomething;
 					}
 					if (gs.gameplay.replay.status == 2) {
-						gs.config.play = gs.gameplay.replay.cfg;
+						gs.config.play = gs.gameplay.replay.playConfigBackupBeforeWatchingReplay;
 						ReleaseReplayBuffer(&gs.gameplay.replay);
-						gs.audio.param.eq_gain[0] = gs.gameplay.replay.aud.eq_gain[0];
-						gs.audio.param.eq_gain[1] = gs.gameplay.replay.aud.eq_gain[1];
-						gs.audio.param.eq_gain[3] = gs.gameplay.replay.aud.eq_gain[3];
-						gs.audio.param.eq_gain[4] = gs.gameplay.replay.aud.eq_gain[4];
-						gs.audio.param.eq_gain[2] = gs.gameplay.replay.aud.eq_gain[2];
-						gs.audio.param.eq_gain[6] = gs.gameplay.replay.aud.eq_gain[6];
-						gs.audio.param.eq_on = gs.gameplay.replay.aud.eq_on;
-						gs.audio.param.eq_gain[5] = gs.gameplay.replay.aud.eq_gain[5];
+						gs.audio.param.eq_gain[0] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[0];
+						gs.audio.param.eq_gain[1] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[1];
+						gs.audio.param.eq_gain[3] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[3];
+						gs.audio.param.eq_gain[4] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[4];
+						gs.audio.param.eq_gain[2] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[2];
+						gs.audio.param.eq_gain[6] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[6];
+						gs.audio.param.eq_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_on;
+						gs.audio.param.eq_gain[5] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[5];
 						for (int i = 0; i < 3; i++) {
-							gs.audio.param.fxParam[i][PLAYER_1] = gs.gameplay.replay.aud.fxParam[i][PLAYER_1];
-							gs.audio.param.fxParam[i][PLAYER_2] = gs.gameplay.replay.aud.fxParam[i][PLAYER_2];
-							gs.audio.param.fxChannel[i] = gs.gameplay.replay.aud.fxChannel[i];
-							gs.audio.param.fxType[i] = gs.gameplay.replay.aud.fxType[i];
-							gs.audio.param.fx_on[i] = gs.gameplay.replay.aud.fx_on[i];
+							gs.audio.param.fxParam[i][PLAYER_1] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxParam[i][PLAYER_1];
+							gs.audio.param.fxParam[i][PLAYER_2] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxParam[i][PLAYER_2];
+							gs.audio.param.fxChannel[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxChannel[i];
+							gs.audio.param.fxType[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxType[i];
+							gs.audio.param.fx_on[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fx_on[i];
 						}
-						gs.audio.param.pitch_on = gs.gameplay.replay.aud.pitch_on;
-						gs.audio.param.pitch_type = gs.gameplay.replay.aud.pitch_type;
-						gs.audio.param.volume_BGM = gs.gameplay.replay.aud.volume_BGM;
-						gs.audio.param.pitch_amount = gs.gameplay.replay.aud.pitch_amount;
-						gs.audio.param.volume_key = gs.gameplay.replay.aud.volume_key;
-						gs.audio.param.fx_volume_on = gs.gameplay.replay.aud.fx_volume_on;
-						gs.audio.param.volume_master = gs.gameplay.replay.aud.volume_master;
+						gs.audio.param.pitch_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_on;
+						gs.audio.param.pitch_type = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_type;
+						gs.audio.param.volume_BGM = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_BGM;
+						gs.audio.param.pitch_amount = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_amount;
+						gs.audio.param.volume_key = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_key;
+						gs.audio.param.fx_volume_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fx_volume_on;
+						gs.audio.param.volume_master = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_master;
 						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
 					else if (gs.gameplay.replay.status == 1) {
