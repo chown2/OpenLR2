@@ -1088,7 +1088,6 @@ struct AUDIO_PARAM {
 	int volume_key{};
 	int volume_BGM{};
 	int volume_master{};
-	double unk4e0[5]{};
 	double stagePitch[5]{};
 	double stageBgmVolume[5]{};
 	double stageKeyVolume[5]{};
