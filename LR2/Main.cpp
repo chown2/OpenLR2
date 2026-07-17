@@ -1665,33 +1665,50 @@ int main(int argc, char** argv) {
 
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 					if (gs.net.rankingData.target_ID != 0) {
-						gs.config.play = gs.gameplay.playConfigBackupBeforeTargetSomething;
+						if(auto& backup = gs.gameplay.playConfigBackupBeforeTargetSomething)
+						{
+							gs.config.play = *backup;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to");
+						}
 					}
 					if (gs.gameplay.replay.status == 2) {
-						gs.config.play = gs.gameplay.replay.playConfigBackupBeforeWatchingReplay;
-						ReleaseReplayBuffer(&gs.gameplay.replay);
-						gs.audio.param.eq_gain[0] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[0];
-						gs.audio.param.eq_gain[1] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[1];
-						gs.audio.param.eq_gain[3] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[3];
-						gs.audio.param.eq_gain[4] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[4];
-						gs.audio.param.eq_gain[2] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[2];
-						gs.audio.param.eq_gain[6] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[6];
-						gs.audio.param.eq_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_on;
-						gs.audio.param.eq_gain[5] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.eq_gain[5];
-						for (int i = 0; i < 3; i++) {
-							gs.audio.param.fxParam[i][PLAYER_1] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxParam[i][PLAYER_1];
-							gs.audio.param.fxParam[i][PLAYER_2] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxParam[i][PLAYER_2];
-							gs.audio.param.fxChannel[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxChannel[i];
-							gs.audio.param.fxType[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fxType[i];
-							gs.audio.param.fx_on[i] = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fx_on[i];
+						if(auto& backup = gs.gameplay.replay.playConfigBackupBeforeWatchingReplay) {
+							gs.config.play = *backup;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to");
 						}
-						gs.audio.param.pitch_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_on;
-						gs.audio.param.pitch_type = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_type;
-						gs.audio.param.volume_BGM = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_BGM;
-						gs.audio.param.pitch_amount = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.pitch_amount;
-						gs.audio.param.volume_key = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_key;
-						gs.audio.param.fx_volume_on = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.fx_volume_on;
-						gs.audio.param.volume_master = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay.volume_master;
+						ReleaseReplayBuffer(&gs.gameplay.replay);
+						if(auto& backup = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay)
+						{
+							gs.audio.param.eq_gain[0] = backup->eq_gain[0];
+							gs.audio.param.eq_gain[1] = backup->eq_gain[1];
+							gs.audio.param.eq_gain[3] = backup->eq_gain[3];
+							gs.audio.param.eq_gain[4] = backup->eq_gain[4];
+							gs.audio.param.eq_gain[2] = backup->eq_gain[2];
+							gs.audio.param.eq_gain[6] = backup->eq_gain[6];
+							gs.audio.param.eq_on = backup->eq_on;
+							gs.audio.param.eq_gain[5] = backup->eq_gain[5];
+							for (int i = 0; i < 3; i++) {
+								gs.audio.param.fxParam[i][PLAYER_1] = backup->fxParam[i][PLAYER_1];
+								gs.audio.param.fxParam[i][PLAYER_2] = backup->fxParam[i][PLAYER_2];
+								gs.audio.param.fxChannel[i] = backup->fxChannel[i];
+								gs.audio.param.fxType[i] = backup->fxType[i];
+								gs.audio.param.fx_on[i] = backup->fx_on[i];
+							}
+							gs.audio.param.pitch_on = backup->pitch_on;
+							gs.audio.param.pitch_type = backup->pitch_type;
+							gs.audio.param.volume_BGM = backup->volume_BGM;
+							gs.audio.param.pitch_amount = backup->pitch_amount;
+							gs.audio.param.volume_key = backup->volume_key;
+							gs.audio.param.fx_volume_on = backup->fx_volume_on;
+							gs.audio.param.volume_master = backup->volume_master;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to");
+						}
 						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
 					else if (gs.gameplay.replay.status == 1) {

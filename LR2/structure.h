@@ -1260,8 +1260,8 @@ struct REPLAY {
 	int max{};
 	int count{};
 	int status{}; /* 0:off 1:recording 2:playing */
-	CONFIG_PLAY playConfigBackupBeforeWatchingReplay;
-	AUDIO_PARAM audioParamBackupBeforeWatchingReplay;
+	std::optional<CONFIG_PLAY> playConfigBackupBeforeWatchingReplay;
+	std::optional<AUDIO_PARAM> audioParamBackupBeforeWatchingReplay;
 };
 
 struct EXTENDEDPLAYERSTATS {
@@ -1471,7 +1471,7 @@ struct gameplay {
 	int bpmChangedRealtime; /* timer142 */
 	int bpmChangedBmstime; /* bpm change timing */
 	char ghostBattle;
-	CONFIG_PLAY playConfigBackupBeforeTargetSomething;
+	std::optional<CONFIG_PLAY> playConfigBackupBeforeTargetSomething;
 	int delayDetectedCount;
 	int delayCheckCount;
 	char isCourse; 
