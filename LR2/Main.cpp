@@ -978,12 +978,6 @@ int main(int argc, char** argv) {
 
 			switch (gs.procSelecter) {
 				case SCENE_SELECT:
-					if (gs.gameplay.replay.status == 2) {
-						memcpy(&gs.config.play, &gs.gameplay.replay.cfg, sizeof(CONFIG_PLAY));
-					}
-					if (gs.net.rankingData.target_ID != 0) {
-						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
-					}
 					gs.gameplay.ghostBattle = 0;
 					ReadKeyConfig(&gs, (!gs.config.select.control)
 							? fs::make_preferred("LR2files/Config/keyconfig.xml" ).data()
@@ -1670,7 +1664,11 @@ int main(int argc, char** argv) {
 					}
 
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
+					if (gs.net.rankingData.target_ID != 0) {
+						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
+					}
 					if (gs.gameplay.replay.status == 2) {
+						memcpy(&gs.config.play, &gs.gameplay.replay.cfg, sizeof(CONFIG_PLAY));
 						ReleaseReplayBuffer(&gs.gameplay.replay);
 						gs.audio.param.eq_gain[0] = gs.gameplay.replay.aud.eq_gain[0];
 						gs.audio.param.eq_gain[1] = gs.gameplay.replay.aud.eq_gain[1];
