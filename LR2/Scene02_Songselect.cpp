@@ -2816,9 +2816,7 @@ int CreateRandomCourse(game *g, sqlite3 *sql, char playing) {
 			break;
 	}
 
-	CONFIG_COURSE tCfg;
-
-	memcpy(&tCfg, &g->config.course, sizeof(CONFIG_COURSE));
+	CONFIG_COURSE tCfg = g->config.course;
 
 	if (WriteRandomCourse(sql, &g->sSelect.course, &g->sSelect, tCfg, key) == 1) {
 		g->sSelect.is_coursemaking_done = 1;

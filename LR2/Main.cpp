@@ -424,7 +424,7 @@ int main(int argc, char** argv) {
 	gs.config.select.titleflash = gs.config.jukebox.titleflash;
 	if (gs.config.play.bga == 3) gs.config.play.bga = 1;
 	if (gs.config.select.disableDifficultyFilter) gs.config.select.ignoreDifficultyAll = false;
-	memcpy(&gs.sSelect.filter, &gs.config.select, sizeof(CONFIG_SELECT));
+	gs.sSelect.filter = gs.config.select;
 	{
 		CSTR newPath;
 		std::error_code ec; // ignore errors
@@ -1525,7 +1525,7 @@ int main(int argc, char** argv) {
 					if (gs.net.rankingData.showRanking == 0) {
 						if (gs.sSelect.stack_query[gs.sSelect.cur].findStrPos("__RIVAL__") >= 0) {
 							gs.net.rankingData.target_ID = gs.sSelect.stack_rivalID[gs.sSelect.cur];
-							memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
+							gs.gameplay.targetCfg = gs.config.play; // TODO: GOMazk: need check
 							if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 							gs.config.play.battle = OPTION_BATTLE_OFF;
 						}
@@ -1534,7 +1534,7 @@ int main(int argc, char** argv) {
 						}
 					}
 					else {
-						memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
+						gs.gameplay.targetCfg = gs.config.play; // TODO: GOMazk: need check
 						if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 						gs.config.play.battle = OPTION_BATTLE_OFF;
 						gs.net.rankingData.target_ID = gs.net.rankingData.ranking[gs.sSelect.cur_song].id;
@@ -1665,10 +1665,10 @@ int main(int argc, char** argv) {
 
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
 					if (gs.net.rankingData.target_ID != 0) {
-						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
+						gs.config.play = gs.gameplay.targetCfg;
 					}
 					if (gs.gameplay.replay.status == 2) {
-						memcpy(&gs.config.play, &gs.gameplay.replay.cfg, sizeof(CONFIG_PLAY));
+						gs.config.play = gs.gameplay.replay.cfg;
 						ReleaseReplayBuffer(&gs.gameplay.replay);
 						gs.audio.param.eq_gain[0] = gs.gameplay.replay.aud.eq_gain[0];
 						gs.audio.param.eq_gain[1] = gs.gameplay.replay.aud.eq_gain[1];
