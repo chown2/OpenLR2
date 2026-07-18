@@ -1670,7 +1670,7 @@ int main(int argc, char** argv) {
 							gs.config.play = *backup;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to");
+							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to\n");
 						}
 					}
 					if (gs.gameplay.replay.status == 2) {
@@ -1678,7 +1678,7 @@ int main(int argc, char** argv) {
 							gs.config.play = *backup;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to");
+							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to\n");
 						}
 						ReleaseReplayBuffer(&gs.gameplay.replay);
 						if(auto& backup = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay)
@@ -1707,7 +1707,7 @@ int main(int argc, char** argv) {
 							gs.audio.param.volume_master = backup->volume_master;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to");
+							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to\n");
 						}
 						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
