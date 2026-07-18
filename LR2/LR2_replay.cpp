@@ -734,8 +734,8 @@ int ReplayDataToInput(ReplayData *data, game *g, AUDIO *aud, gameplay *gp, input
 
 int SetReplayConfig(REPLAY *re, game *g, AUDIO *aud, gameplay *gp, inputStructure *in, Timer *T) {
 	
-	memcpy(&re->cfg, &g->config.play, sizeof(CONFIG_PLAY));
-	memcpy(&re->aud, &aud->param, sizeof(AUDIO_PARAM));
+	re->playConfigBackupBeforeWatchingReplay = g->config.play;
+	re->audioParamBackupBeforeWatchingReplay = aud->param;
 
 	while (re->count < re->max && re->data[re->count].timing == 0) {
 		ReplayDataToInput(&re->data[re->count], g, aud, gp, in, T);

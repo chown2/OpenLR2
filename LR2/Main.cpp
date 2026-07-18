@@ -424,7 +424,7 @@ int main(int argc, char** argv) {
 	gs.config.select.titleflash = gs.config.jukebox.titleflash;
 	if (gs.config.play.bga == 3) gs.config.play.bga = 1;
 	if (gs.config.select.disableDifficultyFilter) gs.config.select.ignoreDifficultyAll = false;
-	memcpy(&gs.sSelect.filter, &gs.config.select, sizeof(CONFIG_SELECT));
+	gs.sSelect.filter = gs.config.select;
 	{
 		CSTR newPath;
 		std::error_code ec; // ignore errors
@@ -978,12 +978,6 @@ int main(int argc, char** argv) {
 
 			switch (gs.procSelecter) {
 				case SCENE_SELECT:
-					if (gs.gameplay.replay.status == 2) {
-						memcpy(&gs.config.play, &gs.gameplay.replay.cfg, sizeof(CONFIG_PLAY));
-					}
-					if (gs.net.rankingData.target_ID != 0) {
-						memcpy(&gs.config.play, &gs.gameplay.targetCfg, sizeof(CONFIG_PLAY));
-					}
 					gs.gameplay.ghostBattle = 0;
 					ReadKeyConfig(&gs, (!gs.config.select.control)
 							? fs::make_preferred("LR2files/Config/keyconfig.xml" ).data()
@@ -1531,7 +1525,7 @@ int main(int argc, char** argv) {
 					if (gs.net.rankingData.showRanking == 0) {
 						if (gs.sSelect.stack_query[gs.sSelect.cur].findStrPos("__RIVAL__") >= 0) {
 							gs.net.rankingData.target_ID = gs.sSelect.stack_rivalID[gs.sSelect.cur];
-							memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
+							gs.gameplay.playConfigBackupBeforeTargetSomething = gs.config.play; // TODO: GOMazk: need check
 							if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 							gs.config.play.battle = OPTION_BATTLE_OFF;
 						}
@@ -1540,7 +1534,7 @@ int main(int argc, char** argv) {
 						}
 					}
 					else {
-						memcpy(&gs.gameplay.targetCfg, &gs.config.play, sizeof(CONFIG_PLAY)); // need check
+						gs.gameplay.playConfigBackupBeforeTargetSomething = gs.config.play; // TODO: GOMazk: need check
 						if (gs.config.play.battle == OPTION_BATTLE_GBATTLE && gs.sSelect.bmsList[gs.sSelect.cur_song].keymode < 8) gs.gameplay.ghostBattle = 1;
 						gs.config.play.battle = OPTION_BATTLE_OFF;
 						gs.net.rankingData.target_ID = gs.net.rankingData.ranking[gs.sSelect.cur_song].id;
@@ -1670,30 +1664,51 @@ int main(int argc, char** argv) {
 					}
 
 					ReadKeyConfig(&gs, fs::make_preferred("LR2files/Config/keyconfig.xml").data());
-					if (gs.gameplay.replay.status == 2) {
-						ReleaseReplayBuffer(&gs.gameplay.replay);
-						gs.audio.param.eq_gain[0] = gs.gameplay.replay.aud.eq_gain[0];
-						gs.audio.param.eq_gain[1] = gs.gameplay.replay.aud.eq_gain[1];
-						gs.audio.param.eq_gain[3] = gs.gameplay.replay.aud.eq_gain[3];
-						gs.audio.param.eq_gain[4] = gs.gameplay.replay.aud.eq_gain[4];
-						gs.audio.param.eq_gain[2] = gs.gameplay.replay.aud.eq_gain[2];
-						gs.audio.param.eq_gain[6] = gs.gameplay.replay.aud.eq_gain[6];
-						gs.audio.param.eq_on = gs.gameplay.replay.aud.eq_on;
-						gs.audio.param.eq_gain[5] = gs.gameplay.replay.aud.eq_gain[5];
-						for (int i = 0; i < 3; i++) {
-							gs.audio.param.fxParam[i][PLAYER_1] = gs.gameplay.replay.aud.fxParam[i][PLAYER_1];
-							gs.audio.param.fxParam[i][PLAYER_2] = gs.gameplay.replay.aud.fxParam[i][PLAYER_2];
-							gs.audio.param.fxChannel[i] = gs.gameplay.replay.aud.fxChannel[i];
-							gs.audio.param.fxType[i] = gs.gameplay.replay.aud.fxType[i];
-							gs.audio.param.fx_on[i] = gs.gameplay.replay.aud.fx_on[i];
+					if (gs.net.rankingData.target_ID != 0) {
+						if(auto& backup = gs.gameplay.playConfigBackupBeforeTargetSomething)
+						{
+							gs.config.play = *backup;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to");
 						}
-						gs.audio.param.pitch_on = gs.gameplay.replay.aud.pitch_on;
-						gs.audio.param.pitch_type = gs.gameplay.replay.aud.pitch_type;
-						gs.audio.param.volume_BGM = gs.gameplay.replay.aud.volume_BGM;
-						gs.audio.param.pitch_amount = gs.gameplay.replay.aud.pitch_amount;
-						gs.audio.param.volume_key = gs.gameplay.replay.aud.volume_key;
-						gs.audio.param.fx_volume_on = gs.gameplay.replay.aud.fx_volume_on;
-						gs.audio.param.volume_master = gs.gameplay.replay.aud.volume_master;
+					}
+					if (gs.gameplay.replay.status == 2) {
+						if(auto& backup = gs.gameplay.replay.playConfigBackupBeforeWatchingReplay) {
+							gs.config.play = *backup;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to");
+						}
+						ReleaseReplayBuffer(&gs.gameplay.replay);
+						if(auto& backup = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay)
+						{
+							gs.audio.param.eq_gain[0] = backup->eq_gain[0];
+							gs.audio.param.eq_gain[1] = backup->eq_gain[1];
+							gs.audio.param.eq_gain[3] = backup->eq_gain[3];
+							gs.audio.param.eq_gain[4] = backup->eq_gain[4];
+							gs.audio.param.eq_gain[2] = backup->eq_gain[2];
+							gs.audio.param.eq_gain[6] = backup->eq_gain[6];
+							gs.audio.param.eq_on = backup->eq_on;
+							gs.audio.param.eq_gain[5] = backup->eq_gain[5];
+							for (int i = 0; i < 3; i++) {
+								gs.audio.param.fxParam[i][PLAYER_1] = backup->fxParam[i][PLAYER_1];
+								gs.audio.param.fxParam[i][PLAYER_2] = backup->fxParam[i][PLAYER_2];
+								gs.audio.param.fxChannel[i] = backup->fxChannel[i];
+								gs.audio.param.fxType[i] = backup->fxType[i];
+								gs.audio.param.fx_on[i] = backup->fx_on[i];
+							}
+							gs.audio.param.pitch_on = backup->pitch_on;
+							gs.audio.param.pitch_type = backup->pitch_type;
+							gs.audio.param.volume_BGM = backup->volume_BGM;
+							gs.audio.param.pitch_amount = backup->pitch_amount;
+							gs.audio.param.volume_key = backup->volume_key;
+							gs.audio.param.fx_volume_on = backup->fx_volume_on;
+							gs.audio.param.volume_master = backup->volume_master;
+							backup.reset();
+						} else {
+							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to");
+						}
 						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
 					else if (gs.gameplay.replay.status == 1) {

@@ -1088,7 +1088,6 @@ struct AUDIO_PARAM {
 	int volume_key{};
 	int volume_BGM{};
 	int volume_master{};
-	double unk4e0[5]{};
 	double stagePitch[5]{};
 	double stageBgmVolume[5]{};
 	double stageKeyVolume[5]{};
@@ -1260,8 +1259,8 @@ struct REPLAY {
 	int max{};
 	int count{};
 	int status{}; /* 0:off 1:recording 2:playing */
-	struct CONFIG_PLAY cfg;
-	struct AUDIO_PARAM aud;
+	std::optional<CONFIG_PLAY> playConfigBackupBeforeWatchingReplay;
+	std::optional<AUDIO_PARAM> audioParamBackupBeforeWatchingReplay;
 };
 
 struct EXTENDEDPLAYERSTATS {
@@ -1471,7 +1470,7 @@ struct gameplay {
 	int bpmChangedRealtime; /* timer142 */
 	int bpmChangedBmstime; /* bpm change timing */
 	char ghostBattle;
-	struct CONFIG_PLAY targetCfg; /* //1p_speed ~ struct */
+	std::optional<CONFIG_PLAY> playConfigBackupBeforeTargetSomething;
 	int delayDetectedCount;
 	int delayCheckCount;
 	char isCourse; 
