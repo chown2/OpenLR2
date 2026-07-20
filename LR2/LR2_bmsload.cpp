@@ -2034,7 +2034,7 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 	int bmsobj_stageFirst{};
 	double oldSpeedMultiplier{};
 		
-	char mapAdded[2][10] = { 0, };
+	char mapAdded[2][10]{};
 	double prevStageTime = -1.0;
 	double meaLength{};
 
@@ -3010,8 +3010,8 @@ int ParseBmsFile(gameplay *gp, CSTR filename, AUDIO *aud, ConfigStruct* cfg, BMS
 			double t_realTiming = 0.0;
 			double t_bmsTiming = 0.0;
 			double t_renderTiming = 0.0;
-			bool mapAdded[2][10] = { 0, };
-			int addNoteCount[2] = { 0, };
+			bool mapAdded[2][10]{};
+			int addNoteCount[2]{};
 
 			for (int i = 0; i < gp->bmsobj.count; i++) {
 				if (l_realTiming < gp->bmsobj.notes[i].realTiming) {

@@ -1452,7 +1452,7 @@ int main(int argc, char** argv) {
 					}
 					gs.gameplay.courseStageNow = 0;
 					gs.gameplay.courseType = -1;
-					if (gs.sSelect.bmsList[gs.sSelect.cur_song].coursePlayable == 1) {
+					if (gs.procSelecter != SCENE_SKINSELECT && gs.sSelect.bmsList[gs.sSelect.cur_song].coursePlayable == 1) {
 						SONGDATA sd;
 						gs.gameplay.isCourse = 1;
 						gs.gameplay.courseStageCount = gs.sSelect.bmsList[gs.sSelect.cur_song].courseStageCount;
