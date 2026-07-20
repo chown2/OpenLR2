@@ -11,7 +11,11 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <future>
+#include <iterator>
+#include <string_view>
 #include <thread>
+#include <utility>
 
 #include <DxLib.h>
 extern "C" {
@@ -535,16 +539,24 @@ int main(int argc, char** argv) {
 		gs.net.customIR.Initialize(path, gs.config.network.displayIr.body ? gs.config.network.displayIr.body : "");
 	}
 	auto ellipsis = [](size_t i, size_t count, size_t slow_down_factor) { return std::string((i / slow_down_factor % count) + 1, '.'); };
-	auto loginResult = gs.net.customIR.Login();
+	auto getLoginResultMessage = [](bool good) { return good ? "Logged in" : "Failed to log in"; };
+	auto loginResult = [&gs]{
+		std::vector<std::pair<std::string_view, std::future<bool>>> res = gs.net.customIR.Login();
+		// A shared_future so that we can call .get() repeatedly
+		std::vector<std::pair<std::string_view, std::shared_future<bool>>> out;
+		out.insert(out.end(), std::make_move_iterator(res.begin()), std::make_move_iterator(res.end()));
+		return out;
+	}();
 	{
 		size_t i{};
-		while(!std::ranges::all_of(loginResult, isFutureReady, &std::pair<std::string_view, std::future<bool>>::second))
+		while(!std::ranges::all_of(loginResult, isFutureReady, &std::pair<std::string_view, std::shared_future<bool>>::second))
 		{
 			if(loadingGrHandle > 0)
 				DrawExtendGraph(0, 0, resX, resY, loadingGrHandle, 0);
 			printfDx("Logging into internet ranking:\n");
 			for(auto& [name, future] : loginResult)
-				printfDx("%.*s%s\n", static_cast<int>(name.size()), name.data(), isFutureReady(future) ? " - done!" : ellipsis(i, 3, 20).c_str());
+				printfDx("[%.*s]: %s\n", static_cast<int>(name.size()), name.data(),
+						 isFutureReady(future) ? getLoginResultMessage(future.get()) : ellipsis(i, 3, 20).c_str());
 			ScreenFlip();
 			clsDx();
 			ClsDrawScreen();
@@ -586,7 +598,8 @@ int main(int argc, char** argv) {
 		}
 		if (gs.is_starter == false) {
 			for (auto& res : loginResult) {
-				printfDx("[%.*s]: %s\n", static_cast<int>(res.first.size()), res.first.data(), res.second.get() ? "Logged in" : "Failed to log in");
+				printfDx("[%.*s]: %s\n", static_cast<int>(res.first.size()), res.first.data(),
+						 getLoginResultMessage(res.second.get()));
 			}
 			printfDx("\n");
 			printfDx("%s\n", openlr2::versionName);
@@ -1670,7 +1683,7 @@ int main(int argc, char** argv) {
 							gs.config.play = *backup;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to");
+							ErrorLogAdd("BUG: playConfigBackupBeforeTargetSomething is not filled but was supposed to\n");
 						}
 					}
 					if (gs.gameplay.replay.status == 2) {
@@ -1678,7 +1691,7 @@ int main(int argc, char** argv) {
 							gs.config.play = *backup;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to");
+							ErrorLogAdd("BUG: playConfigBackupBeforeWatchingReplay is not filled but was supposed to\n");
 						}
 						ReleaseReplayBuffer(&gs.gameplay.replay);
 						if(auto& backup = gs.gameplay.replay.audioParamBackupBeforeWatchingReplay)
@@ -1707,7 +1720,7 @@ int main(int argc, char** argv) {
 							gs.audio.param.volume_master = backup->volume_master;
 							backup.reset();
 						} else {
-							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to");
+							ErrorLogAdd("BUG: audioParamBackupBeforeWatchingReplay is not filled but was supposed to\n");
 						}
 						ApplySoundFX(&gs.audio, 1, gs.config.sound.disableDSP);
 					}
