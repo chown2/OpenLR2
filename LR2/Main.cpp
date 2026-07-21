@@ -169,13 +169,9 @@ static void MoveWindowToDisplay(int targetDisplayIndex, int sourceDisplayIndex) 
 	SetWindowPosition(targetX + wx - sourceX, targetY + wy - sourceY);
 }
 
-// Applies the configured screen mode.
-//   0 = desktop fullscreen (exclusive, bypasses the DWM -> lower input latency)
-//   1 = windowed
-//   2 = borderless fullscreen (virtual; composited by the DWM)
-// DxLib picks exclusive vs borderless through SetFullScreenResolutionMode;
-// ChangeWindowMode only toggles windowed(1)/fullscreen(0).
 static void ApplyScreenMode(int screenmode) {
+	// DxLib picks exclusive vs borderless through SetFullScreenResolutionMode;
+	// ChangeWindowMode only toggles windowed(1)/fullscreen(0).
 	switch (screenmode) {
 		case 0: {
 			const int displayInfoIndex = FindMonitorThatContainsWindowCenter();

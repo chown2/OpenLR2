@@ -504,6 +504,9 @@ struct CONFIG_SOUND {
 
 struct CONFIG_SYSTEM {
 	int fullscreenfilter{};
+	// 0 = desktop fullscreen (exclusive, bypasses the DWM)
+	// 1 = windowed
+	// 2 = borderless fullscreen (virtual, composited by the DWM)
 	int screenmode{};
 	int vsync{};
 	int directdraw{};
@@ -527,6 +530,7 @@ struct CONFIG_SYSTEM {
 	int resolution{};   // 0=SD 640x480, 1=HD 1280x720, 2=FHD 1920x1080
 	unsigned int coreCount = 0;
 	bool fullscreenfitstretch{};
+	int oldConfigScreenMode{}; // We use our own \ref screenmode now
 };
 
 struct CONFIG_TOOLS {

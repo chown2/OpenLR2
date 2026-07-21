@@ -1,5 +1,6 @@
 ﻿#include "LR2_configsave.h"
 #include "En_xml.h"
+#include <algorithm>
 #include <filesystem>
 #include <iterator>
 
@@ -156,7 +157,7 @@ int WriteConfigXml(game *g, const char *filename){
 	fputs("<config>\n", pFile);
 
 	fputs("\t<system>\n", pFile);
-	WriteXML_Tab2Int(pFile, "screenmode", (g->config).system.screenmode);
+	WriteXML_Tab2Int(pFile, "screenmode", (g->config).system.oldConfigScreenMode);
 	WriteXML_Tab2Int(pFile, "vsync", (g->config).system.vsync);
 	WriteXML_Tab2Int(pFile, "directdraw", (g->config).system.directdraw);
 	WriteXML_Tab2Int(pFile, "highcolor", (g->config).system.highcolor);
@@ -563,8 +564,6 @@ int WriteConfigXml(game *g, const char *filename){
 }
 
 int WriteOpenLr2ConfigXml(game *g, const char *filename){
-	char buf[256];
-
 	FILE *pFile = fopen(filename, "w");
 	if (pFile == nullptr) return 0;
 
@@ -575,6 +574,7 @@ int WriteOpenLr2ConfigXml(game *g, const char *filename){
 	WriteXML_Tab2Int(pFile, "resolution", (g->config).system.resolution);
 	WriteXML_Tab2Int(pFile, "fullscreenfilter", (g->config).system.fullscreenfilter);
 	WriteXML_Tab2BoolAsInt(pFile, "fullscreenfitstretch", (g->config).system.fullscreenfitstretch);
+	WriteXML_Tab2Int(pFile, "screenmode", (g->config).system.screenmode);
 	fputs("\t</system>\n", pFile);
 
 	fputs("\t<play>\n", pFile);
@@ -947,8 +947,10 @@ int ReadConfig(game* g, const char* filepath) {
 		return 0;
 	}
 
-	ReadXml_Int("config", "system", "screenmode", 0, &g->config.system.screenmode, hXml);
-	if ((unsigned)g->config.system.screenmode > 2) g->config.system.screenmode = 1;
+	ReadXml_Int("config", "system", "screenmode", 0, &g->config.system.oldConfigScreenMode, hXml);
+	// LR2 crashes on out-of-range values, and we may have written OpenLR2-specific '2' before
+	if (g->config.system.oldConfigScreenMode < 0 || g->config.system.oldConfigScreenMode > 1)
+		g->config.system.oldConfigScreenMode = 0;
 	ReadXml_Int("config", "system", "vsync", 0, &g->config.system.vsync, hXml);
 	ReadXml_Int("config", "system", "directdraw", 0, &g->config.system.directdraw, hXml);
 	ReadXml_Int("config", "system", "maindisplay", 0, &g->config.system.maindisplay, hXml);
@@ -1149,12 +1151,20 @@ int ReadOpenLr2Config(game* g, const char* filepath) {
 		delete(hXml);
 		return 0;
 	}
+
 	ReadXml_Int("config", "system", "resolution", 0, &g->config.system.resolution, hXml);
 	ReadXml_Int("config", "system", "fullscreenfilter", 0, &g->config.system.fullscreenfilter, hXml);
 	ReadXml_PositiveIntAsBool("config", "system", "fullscreenfitstretch", false, &g->config.system.fullscreenfitstretch, hXml);
+	ReadXml_Int("config", "system", "screenmode", 0, &g->config.system.screenmode, hXml);
+	if (g->config.system.screenmode < 0 || g->config.system.screenmode > 2)
+		g->config.system.screenmode = 0; // out-of-range
+
 	ReadXml_PositiveIntAsBool("config", "play", "gaugeautoshift", false, &g->config.play.m_gas, hXml);
+
 	ReadXml_Str("config", "skin", "courseresult", "", &g->config.skin.skinFilePath[15], hXml);
+
 	ReadXml_Str("config", "network", "display_ir", "", &g->config.network.displayIr, hXml);
+
 	delete(hXml);
 	return 1;
 }
